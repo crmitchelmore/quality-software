@@ -1,23 +1,30 @@
 # Quality Software
 
-A two-part project:
+A multi-part project:
 
 1. **Pattern catalogue** — a large, richly-tagged catalogue of **275** software-engineering
    patterns (architecture down to code-level idioms, including a cutting-edge `ai-ml`
    category), stored as structured YAML and rendered to browsable Markdown.
-2. **Pattern-conformance validator** — a design for a mature mechanism that checks
+2. **Practice catalogue** — product-management and UX-design **practice patterns**
+   (`product-patterns/`, `ux-patterns/`) plus cross-domain **design philosophies**, all
+   cross-referenced back into the software catalogue. See the generated
+   [cross-source connections](docs/cross-source-connections.md).
+3. **Pattern-conformance validator** — a design for a mature mechanism that checks
    whether agent/human code changes apply the patterns a project has chosen, across
    three phases (later / write-time / PR-level). See [`design/validator`](design/validator/).
 
 ## Layout
 
 ```
-schema/        pattern.schema.json + philosophy.schema.json + vocabularies.yaml
-patterns/      <category>/<id>.yaml   — one file per pattern (source of truth)
-philosophies/  <id>.yaml              — one file per design philosophy
-docs/          generated Markdown: index.md + patterns/** + philosophies/**
-tools/         TypeScript tooling: validate(:phil), generate-docs(:phil), stats
-design/        validator design (Part 2)
+schema/         pattern.schema.json + practice-pattern.schema.json + philosophy.schema.json + vocabularies.yaml
+patterns/       <category>/<id>.yaml   — one file per software pattern (source of truth)
+product-patterns/  <id>.yaml           — one file per product-management practice pattern
+ux-patterns/    <id>.yaml              — one file per UX-design practice pattern
+philosophies/   <id>.yaml              — one file per design philosophy (software / product / ux / cross-cutting)
+practice-manifest.yaml  single source of truth for practice-pattern + new philosophy IDs
+docs/           generated Markdown: index.md + patterns/** + product-patterns/** + ux-patterns/** + philosophies/**
+tools/          TypeScript tooling: validate(:practice/:phil), generate-docs(:practice/:phil), stats
+design/         validator design
 ```
 
 ## Each pattern captures
@@ -45,21 +52,41 @@ Contract, Data-Oriented Design). Each philosophy:
 The generated [philosophy index](docs/philosophies/index.md) also includes a reverse
 *pattern → philosophies that motivate it* table.
 
+## Product & UX practice patterns
+
+`product-patterns/` and `ux-patterns/` extend the same rigour to product management and
+UX design. Each **practice pattern** shares one schema (`schema/practice-pattern.schema.json`)
+with a `discipline` of `product` or `ux`, and captures:
+
+- problem / context / forces / solution, plus `when_to_use` and `anti_patterns`;
+- **product metrics** (for product patterns) or **UX heuristics** (for UX patterns);
+- prose **examples** contrasting a poorer vs better approach;
+- **ratings** for three organisation stages: early (pre-PMF), growth, enterprise;
+- **cross-references** into the software catalogue (`related_software_patterns`), to other
+  practice patterns, and to philosophies — each with a reason.
+
+Philosophies can also be tagged `discipline: product | ux | cross-cutting` and associate
+practice patterns (e.g. *The Lean Startup*, *The Design of Everyday Things*, *Design Thinking*).
+The generated [cross-source connections](docs/cross-source-connections.md) page is a reverse
+index of every software pattern and philosophy referenced by a product or UX pattern.
+
 ## Tooling
 
 ```bash
 cd tools
 npm install
-npm run validate      # pattern schema + vocab + cross-reference checks (add --strict for CI)
-npm run validate:phil # philosophy schema + cross-references to real pattern/philosophy ids
-npm run docs          # regenerate docs/patterns/** from patterns/
-npm run docs:phil     # regenerate docs/philosophies/** from philosophies/
-npm run stats         # catalogue coverage summary
-npm run build         # validate + validate:phil + docs + docs:phil
+npm run validate          # software pattern schema + vocab + cross-reference checks (add --strict for CI)
+npm run validate:practice # product/UX practice-pattern schema + global id uniqueness + cross-refs
+npm run validate:phil     # philosophy schema + cross-references to real pattern/philosophy ids
+npm run docs              # regenerate docs/patterns/** from patterns/
+npm run docs:practice     # regenerate docs/product-patterns/**, docs/ux-patterns/**, cross-source index
+npm run docs:phil         # regenerate docs/philosophies/** from philosophies/
+npm run stats             # catalogue coverage summary
+npm run build             # validate (all) + docs (all)
 ```
 
-`patterns/*.yaml` and `philosophies/*.yaml` are the source of truth; `docs/` is generated.
-Run `npm run build` before committing changes.
+Source-of-truth YAML lives in `patterns/`, `product-patterns/`, `ux-patterns/` and
+`philosophies/`; `docs/` is generated. Run `npm run build` before committing changes.
 
 ## Tracking
 
