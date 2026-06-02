@@ -37,6 +37,7 @@ export interface PhilosophyReference {
 export interface Philosophy {
   id: string;
   title: string;
+  discipline?: "software" | "product" | "ux" | "cross-cutting";
   aka?: string[];
   originators: string[];
   origin: { type: string; title: string; year?: number; era?: string };
@@ -47,8 +48,10 @@ export interface Philosophy {
   in_practice?: string;
   complements?: string[];
   tensions_with?: Tension[];
-  associated_patterns: PatternAssoc[];
+  associated_patterns?: PatternAssoc[];
   at_odds_patterns?: PatternAssoc[];
+  associated_practice_patterns?: PatternAssoc[];
+  at_odds_practice_patterns?: PatternAssoc[];
   successfully_applied: AppliedEvidence[];
   best_for?: string[];
   criticisms?: string[];

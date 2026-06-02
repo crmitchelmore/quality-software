@@ -2,6 +2,7 @@ import { mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { ROOT, loadPatterns, type Pattern } from "./lib/patterns.js";
 import { loadPhilosophies, type Philosophy } from "./lib/philosophies.js";
+import { loadPractice, type PracticePattern } from "./lib/practice.js";
 
 const DOCS = join(ROOT, "docs");
 const PHIL_DOCS = join(DOCS, "philosophies");
@@ -12,9 +13,16 @@ const STRENGTH_LABEL: Record<string, string> = {
   "inferred": "inferred",
 };
 
+const PRACTICE_DIR: Record<string, string> = { product: "product", ux: "ux" };
+
 function patternLink(p: Pattern | undefined, id: string): string {
   if (!p) return `\`${id}\``;
   return `[${p.title}](../patterns/${p.category}/${p.id}.md)`;
+}
+
+function practiceLink(p: PracticePattern | undefined, id: string): string {
+  if (!p) return `\`${id}\``;
+  return `[${p.title}](../${PRACTICE_DIR[p.discipline]}-patterns/${p.id}.md)`;
 }
 
 function philLink(ph: Philosophy | undefined, id: string): string {
@@ -25,6 +33,7 @@ function philLink(ph: Philosophy | undefined, id: string): string {
 function renderPhilosophy(
   ph: Philosophy,
   patternsById: Map<string, Pattern>,
+  practiceById: Map<string, PracticePattern>,
   philById: Map<string, Philosophy>,
 ): string {
   const out: string[] = [];
@@ -37,7 +46,7 @@ function renderPhilosophy(
     `*${ph.origin.title}*`,
     ph.origin.year ? `(${ph.origin.year})` : ph.origin.era ?? "",
   ].filter(Boolean).join(" · ");
-  out.push(`**Origin:** ${originBits}`);
+  out.push(`**Discipline:** ${ph.discipline ?? "software"} · **Origin:** ${originBits}`);
   if (ph.aka?.length) out.push(`\n**Also known as:** ${ph.aka.join(", ")}`);
   out.push("");
 
@@ -56,18 +65,37 @@ function renderPhilosophy(
     out.push("");
   }
 
-  out.push("## Associated patterns\n");
-  out.push("Patterns from the catalogue that embody or operationalise this philosophy:\n");
-  for (const a of ph.associated_patterns) {
-    out.push(`- ${patternLink(patternsById.get(a.pattern), a.pattern)} — ${a.reason}`);
+  if (ph.associated_patterns?.length) {
+    out.push("## Associated software patterns\n");
+    out.push("Patterns from the catalogue that embody or operationalise this philosophy:\n");
+    for (const a of ph.associated_patterns) {
+      out.push(`- ${patternLink(patternsById.get(a.pattern), a.pattern)} — ${a.reason}`);
+    }
+    out.push("");
   }
-  out.push("");
+
+  if (ph.associated_practice_patterns?.length) {
+    out.push("## Associated practice patterns\n");
+    out.push("Product / UX patterns that embody or operationalise this philosophy:\n");
+    for (const a of ph.associated_practice_patterns) {
+      out.push(`- ${practiceLink(practiceById.get(a.pattern), a.pattern)} — ${a.reason}`);
+    }
+    out.push("");
+  }
 
   if (ph.at_odds_patterns?.length) {
-    out.push("## Patterns in tension\n");
+    out.push("## Software patterns in tension\n");
     out.push("Patterns this philosophy would caution against or use sparingly:\n");
     for (const a of ph.at_odds_patterns) {
       out.push(`- ${patternLink(patternsById.get(a.pattern), a.pattern)} — ${a.reason}`);
+    }
+    out.push("");
+  }
+
+  if (ph.at_odds_practice_patterns?.length) {
+    out.push("## Practice patterns in tension\n");
+    for (const a of ph.at_odds_practice_patterns) {
+      out.push(`- ${practiceLink(practiceById.get(a.pattern), a.pattern)} — ${a.reason}`);
     }
     out.push("");
   }
@@ -129,11 +157,12 @@ function renderIndex(
     "Each philosophy associates patterns from the [pattern catalogue](../index.md) and records where it has reportedly been applied.\n",
   );
 
-  out.push("| Philosophy | Originators | Origin | Patterns |");
-  out.push("| --- | --- | --- | :-: |");
+  out.push("| Philosophy | Discipline | Originators | Origin | Patterns |");
+  out.push("| --- | --- | --- | --- | :-: |");
   for (const ph of [...philosophies].sort((a, b) => a.title.localeCompare(b.title))) {
+    const nAssoc = (ph.associated_patterns?.length ?? 0) + (ph.associated_practice_patterns?.length ?? 0);
     out.push(
-      `| [${ph.title}](${ph.id}.md) | ${ph.originators.join(", ")} | *${ph.origin.title}*${ph.origin.year ? ` (${ph.origin.year})` : ""} | ${ph.associated_patterns.length} |`,
+      `| [${ph.title}](${ph.id}.md) | ${ph.discipline ?? "software"} | ${ph.originators.join(", ")} | *${ph.origin.title}*${ph.origin.year ? ` (${ph.origin.year})` : ""} | ${nAssoc} |`,
     );
   }
   out.push("");
@@ -142,7 +171,7 @@ function renderIndex(
   out.push("## Patterns and the philosophies that motivate them\n");
   const reverse = new Map<string, string[]>();
   for (const ph of philosophies) {
-    for (const a of ph.associated_patterns) {
+    for (const a of ph.associated_patterns ?? []) {
       (reverse.get(a.pattern) ?? reverse.set(a.pattern, []).get(a.pattern)!).push(ph.id);
     }
   }
@@ -163,6 +192,8 @@ function renderIndex(
 function main(): void {
   const patterns = loadPatterns();
   const patternsById = new Map(patterns.map((p) => [p.id, p]));
+  const practice = loadPractice();
+  const practiceById = new Map(practice.map((p) => [p.id, p]));
   const philosophies = loadPhilosophies();
   const philById = new Map(philosophies.map((p) => [p.id, p]));
 
@@ -172,7 +203,7 @@ function main(): void {
   for (const ph of philosophies) {
     writeFileSync(
       join(PHIL_DOCS, `${ph.id}.md`),
-      renderPhilosophy(ph, patternsById, philById) + "\n",
+      renderPhilosophy(ph, patternsById, practiceById, philById) + "\n",
     );
   }
   writeFileSync(join(PHIL_DOCS, "index.md"), renderIndex(philosophies, patternsById) + "\n");

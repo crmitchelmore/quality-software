@@ -1,0 +1,140 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Practice Pattern (Product Management / UX Design)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "title",
+    "discipline",
+    "category",
+    "maturity",
+    "short_description",
+    "description",
+    "problem",
+    "solution",
+    "examples",
+    "ratings",
+    "references"
+  ],
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "title": { "type": "string", "minLength": 3 },
+    "aka": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "discipline": { "type": "string", "enum": ["product", "ux"] },
+    "category": { "type": "string" },
+    "maturity": {
+      "type": "string",
+      "enum": ["time-tested", "established", "emerging", "cutting-edge"]
+    },
+    "short_description": { "type": "string", "minLength": 10, "maxLength": 320 },
+    "description": { "type": "string", "minLength": 50 },
+    "problem": { "type": "string", "minLength": 20 },
+    "context": { "type": "string" },
+    "forces": { "type": "array", "items": { "type": "string" } },
+    "solution": { "type": "string", "minLength": 30 },
+    "when_to_use": { "type": "array", "items": { "type": "string" } },
+    "anti_patterns": { "type": "array", "items": { "type": "string" } },
+    "metrics": { "type": "array", "items": { "type": "string" } },
+    "heuristics": { "type": "array", "items": { "type": "string" } },
+    "examples": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["poor", "better", "explanation"],
+        "properties": {
+          "title": { "type": "string" },
+          "poor": { "type": "string" },
+          "better": { "type": "string" },
+          "explanation": { "type": "string" }
+        }
+      }
+    },
+    "related_practice_patterns": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["pattern", "reason"],
+        "properties": {
+          "pattern": { "type": "string" },
+          "reason": { "type": "string" }
+        }
+      }
+    },
+    "related_software_patterns": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["pattern", "reason"],
+        "properties": {
+          "pattern": { "type": "string" },
+          "reason": { "type": "string" }
+        }
+      }
+    },
+    "related_philosophies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["philosophy", "reason"],
+        "properties": {
+          "philosophy": { "type": "string" },
+          "reason": { "type": "string" }
+        }
+      }
+    },
+    "tags": { "type": "array", "items": { "type": "string" } },
+    "product_stages": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "ratings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["early", "growth", "enterprise"],
+      "properties": {
+        "early": { "$ref": "#/definitions/rating" },
+        "growth": { "$ref": "#/definitions/rating" },
+        "enterprise": { "$ref": "#/definitions/rating" }
+      }
+    },
+    "references": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["title"],
+        "properties": {
+          "title": { "type": "string" },
+          "author": { "type": "string" },
+          "year": { "type": "integer" },
+          "url": { "type": "string" }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "discipline": { "const": "product" } } },
+      "then": { "required": ["metrics"] }
+    },
+    {
+      "if": { "properties": { "discipline": { "const": "ux" } } },
+      "then": { "required": ["heuristics"] }
+    }
+  ],
+  "definitions": {
+    "rating": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["score", "notes"],
+      "properties": {
+        "score": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "notes": { "type": "string" }
+      }
+    }
+  }
+}

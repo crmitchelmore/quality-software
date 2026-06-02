@@ -151,3 +151,54 @@ project_types:
   - low-latency
   - safety-critical
   - prototype
+
+# ---------------------------------------------------------------------------
+# Practice (product management + UX design) vocabularies
+# ---------------------------------------------------------------------------
+
+disciplines:
+  - software
+  - product
+  - ux
+  - cross-cutting   # philosophies spanning disciplines
+
+# Product-management pattern categories (mapped to recognised PM workstreams).
+pm_categories:
+  - product-strategy
+  - customer-discovery
+  - problem-framing
+  - prioritization
+  - roadmapping
+  - experimentation
+  - metrics-analytics
+  - growth
+  - go-to-market
+  - pricing-packaging
+  - stakeholder-alignment
+  - product-operations
+  - lifecycle-retention
+
+# UX / human-centred-design pattern categories (NN/g- and HCD-style areas).
+ux_categories:
+  - user-research
+  - information-architecture
+  - interaction-design
+  - content-design
+  - visual-interface-design
+  - accessibility-inclusive-design
+  - usability-evaluation
+  - service-design
+  - design-systems
+  - navigation-wayfinding
+  - forms-input
+  - feedback-status
+  - onboarding-education
+  - trust-safety
+
+# Rating contexts for practice patterns (analogue of small/medium/large for code).
+# Interpreted as product/organisation maturity: early (0->1 / startup),
+# growth (scaling product & team), enterprise (mature, large-scale org).
+product_stages:
+  - early
+  - growth
+  - enterprise

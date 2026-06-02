@@ -7,9 +7,11 @@
   "scripts": {
     "validate": "tsx src/validate.ts",
     "validate:phil": "tsx src/validate-philosophies.ts",
+    "validate:practice": "tsx src/validate-practice.ts",
     "docs": "tsx src/generate-docs.ts",
     "docs:phil": "tsx src/generate-philosophy-docs.ts",
-    "build": "npm run validate && npm run validate:phil && npm run docs && npm run docs:phil",
+    "docs:practice": "tsx src/generate-practice-docs.ts",
+    "build": "npm run validate && npm run validate:practice && npm run validate:phil && npm run docs && npm run docs:practice && npm run docs:phil",
     "stats": "tsx src/stats.ts"
   },
   "dependencies": {

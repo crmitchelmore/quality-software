@@ -10,6 +10,7 @@ import {
   loadPhilosophiesSafe,
   type Philosophy,
 } from "./lib/philosophies.js";
+import { loadPracticeSafe } from "./lib/practice.js";
 
 /**
  * Validates every philosophy YAML against:
@@ -32,6 +33,7 @@ function main(): void {
 
   const vocab = loadVocabularies();
   const patternIds = new Set(loadPatternsSafe().patterns.map((p) => p.id));
+  const practiceIds = new Set(loadPracticeSafe().patterns.map((p) => p.id));
   const { philosophies, errors: loadErrors } = loadPhilosophiesSafe();
   const errors: string[] = loadErrors.map(
     (e) => `${e.file.replace(ROOT + "/", "")}: YAML parse error — ${e.message}`,
@@ -52,9 +54,12 @@ function main(): void {
     if (!ph.__file.endsWith(`${ph.id}.yaml`)) {
       errors.push(`${where}: filename should match id '${ph.id}.yaml'`);
     }
-    for (const bf of ph.best_for ?? []) {
-      if (!vocab.project_types.includes(bf)) {
-        errors.push(`${where}: best_for value '${bf}' not in vocabularies.yaml project_types`);
+    const isSoftware = !ph.discipline || ph.discipline === "software";
+    if (isSoftware) {
+      for (const bf of ph.best_for ?? []) {
+        if (!vocab.project_types.includes(bf)) {
+          errors.push(`${where}: best_for value '${bf}' not in vocabularies.yaml project_types`);
+        }
       }
     }
   }
@@ -64,13 +69,25 @@ function main(): void {
     const where = ph.__file.replace(ROOT + "/", "");
 
     const patternRefs: Array<[string, string[]]> = [
-      ["associated_patterns", ph.associated_patterns.map((a) => a.pattern)],
+      ["associated_patterns", (ph.associated_patterns ?? []).map((a) => a.pattern)],
       ["at_odds_patterns", (ph.at_odds_patterns ?? []).map((a) => a.pattern)],
     ];
     for (const [field, list] of patternRefs) {
       for (const ref of list) {
         if (!patternIds.has(ref)) {
           errors.push(`${where}: ${field} references unknown pattern '${ref}'`);
+        }
+      }
+    }
+
+    const practiceRefs: Array<[string, string[]]> = [
+      ["associated_practice_patterns", (ph.associated_practice_patterns ?? []).map((a) => a.pattern)],
+      ["at_odds_practice_patterns", (ph.at_odds_practice_patterns ?? []).map((a) => a.pattern)],
+    ];
+    for (const [field, list] of practiceRefs) {
+      for (const ref of list) {
+        if (!practiceIds.has(ref)) {
+          errors.push(`${where}: ${field} references unknown practice pattern '${ref}'`);
         }
       }
     }

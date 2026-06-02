@@ -11,13 +11,16 @@
     "short_description",
     "description",
     "core_tenets",
-    "associated_patterns",
     "successfully_applied",
     "references"
   ],
   "properties": {
     "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
     "title": { "type": "string", "minLength": 3 },
+    "discipline": {
+      "type": "string",
+      "enum": ["software", "product", "ux", "cross-cutting"]
+    },
     "aka": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
     "originators": {
       "type": "array",
@@ -32,7 +35,7 @@
       "properties": {
         "type": {
           "type": "string",
-          "enum": ["book", "essay", "paper", "talk", "manifesto", "tradition", "blog"]
+          "enum": ["book", "essay", "paper", "talk", "manifesto", "tradition", "blog", "framework", "principles", "method"]
         },
         "title": { "type": "string" },
         "year": { "type": "integer" },
@@ -101,6 +104,30 @@
         }
       }
     },
+    "associated_practice_patterns": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["pattern", "reason"],
+        "properties": {
+          "pattern": { "type": "string" },
+          "reason": { "type": "string" }
+        }
+      }
+    },
+    "at_odds_practice_patterns": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["pattern", "reason"],
+        "properties": {
+          "pattern": { "type": "string" },
+          "reason": { "type": "string" }
+        }
+      }
+    },
     "successfully_applied": {
       "type": "array",
       "minItems": 1,
@@ -149,5 +176,30 @@
         }
       }
     }
-  }
+  },
+  "allOf": [
+    {
+      "$comment": "software philosophies (or those with no discipline) must associate software patterns",
+      "if": { "not": { "required": ["discipline"] } },
+      "then": { "required": ["associated_patterns"] }
+    },
+    {
+      "if": { "properties": { "discipline": { "const": "software" } }, "required": ["discipline"] },
+      "then": { "required": ["associated_patterns"] }
+    },
+    {
+      "if": { "properties": { "discipline": { "enum": ["product", "ux"] } }, "required": ["discipline"] },
+      "then": { "required": ["associated_practice_patterns"] }
+    },
+    {
+      "$comment": "cross-cutting philosophies must associate at least one pattern of either kind",
+      "if": { "properties": { "discipline": { "const": "cross-cutting" } }, "required": ["discipline"] },
+      "then": {
+        "anyOf": [
+          { "required": ["associated_patterns"] },
+          { "required": ["associated_practice_patterns"] }
+        ]
+      }
+    }
+  ]
 }
