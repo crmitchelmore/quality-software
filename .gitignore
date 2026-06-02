@@ -1,0 +1,13 @@
+
+# Beads / Dolt files (added by bd init)
+.dolt/
+*.db
+.beads-credential-key
+
+# Node / tooling
+tools/node_modules/
+node_modules/
+*.log
+.DS_Store
+
+# Generated docs are reproducible via `npm run docs` but we DO commit them for browsing.

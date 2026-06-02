@@ -1,0 +1,111 @@
+id: repository
+title: Repository
+scale: design
+category: data-persistence
+maturity: time-tested
+short_description: >-
+  Mediate between the domain and data mapping layers using a collection-like
+  interface for accessing aggregates, hiding the persistence mechanism from the domain.
+description: >-
+  A repository presents the illusion of an in-memory collection of domain objects.
+  Clients add, remove, and query aggregates through a narrow interface (e.g.
+  findById, save, byCustomer) while the implementation handles the database, ORM,
+  caching, and query construction. This keeps persistence concerns out of the domain
+  and gives a single, testable seam for data access.
+problem: >-
+  Domain and application code littered with SQL/ORM calls becomes coupled to the
+  storage technology, hard to test, and inconsistent in how it loads/saves objects.
+context: >-
+  Domain-centric applications (especially DDD) where aggregates have clear
+  boundaries and you want persistence abstracted behind a collection-like API.
+consequences:
+  - Centralises and standardises data access; domain stays persistence-ignorant.
+  - Trivially mockable, enabling fast domain tests with in-memory implementations.
+  - Risk of leaky/generic repositories that just wrap the ORM and add no value.
+  - Can hide expensive queries; needs care to avoid N+1 and over-fetching.
+synergies:
+  - pattern: unit-of-work
+    reason: Unit of Work coordinates saving changes tracked across repositories in one transaction.
+  - pattern: aggregate
+    reason: Repositories are defined per aggregate root, preserving consistency boundaries.
+  - pattern: hexagonal-architecture
+    reason: The repository interface is the canonical outbound persistence port.
+  - pattern: specification
+    reason: Specifications express query criteria passed to the repository without leaking SQL.
+alternatives:
+  - active-record
+  - data-mapper
+conflicts_with:
+  - active-record
+languages:
+  - language-agnostic
+  - csharp
+  - java
+  - typescript
+  - python
+  - go
+frameworks:
+  - spring-boot
+  - dotnet
+  - entity-framework
+  - hibernate
+  - typeorm
+  - prisma
+  - sqlalchemy
+project_types:
+  - backend-service
+  - microservices
+  - modular-monolith
+  - web-api
+tags:
+  - persistence-ignorance
+  - ddd
+  - testability
+  - data-access
+examples:
+  - language: typescript
+    title: Customer data access
+    negative: |
+      // Application service builds SQL inline; coupled to the driver and untestable.
+      class RegisterService {
+        async register(email: string) {
+          const db = await pool.connect();
+          const dup = await db.query("SELECT 1 FROM customers WHERE email=$1", [email]);
+          if (dup.rowCount) throw new Error("exists");
+          await db.query("INSERT INTO customers(email, status) VALUES($1,'active')", [email]);
+        }
+      }
+    positive: |
+      interface CustomerRepository {
+        byEmail(email: Email): Promise<Customer | null>;
+        save(customer: Customer): Promise<void>;
+      }
+
+      class RegisterService {
+        constructor(private readonly customers: CustomerRepository) {}
+        async register(email: Email): Promise<void> {
+          if (await this.customers.byEmail(email)) throw new EmailTaken(email);
+          await this.customers.save(Customer.register(email));
+        }
+      }
+      // SqlCustomerRepository implements CustomerRepository; tests use an in-memory one.
+    explanation: >-
+      The positive version expresses intent (byEmail/save) and lets the service be
+      tested with an in-memory repository, with storage details confined to one adapter.
+ratings:
+  small:
+    score: 3
+    notes: Useful but can be overkill for tiny apps; a thin data layer may suffice. Avoid generic repos that just wrap an ORM.
+  medium:
+    score: 4
+    notes: Good default for domain-centric services; pairs with Unit of Work and DI.
+  large:
+    score: 5
+    notes: Strong fit for large DDD systems; standardises access and protects the domain from storage churn.
+references:
+  - title: Patterns of Enterprise Application Architecture
+    author: Martin Fowler
+    year: 2002
+  - title: Domain-Driven Design
+    author: Eric Evans
+    year: 2003

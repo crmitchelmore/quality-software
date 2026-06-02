@@ -1,0 +1,141 @@
+# Controlled vocabularies for the pattern catalogue.
+# Tooling validates that pattern YAML only uses values defined here.
+
+scales:
+  - architectural   # large-scale, system/structure-level
+  - integration     # crossing process/service/message boundaries
+  - data            # persistence, storage, data flow
+  - concurrency     # threading, async, parallelism
+  - design          # mid-level object/module design (e.g. GoF)
+  - implementation  # small-scale, code-level idioms
+  - frontend        # UI/client structural patterns
+  - organisational  # team/process-shaped patterns
+
+categories:
+  - gof-creational
+  - gof-structural
+  - gof-behavioural
+  - architecture
+  - cloud-distributed
+  - resilience
+  - enterprise-application
+  - enterprise-integration
+  - messaging
+  - ddd-tactical
+  - ddd-strategic
+  - concurrency
+  - functional
+  - frontend
+  - data-persistence
+  - api-design
+  - testing
+  - security
+  - implementation
+
+maturity:
+  - time-tested     # decades of proven use
+  - established     # widely adopted, stable
+  - emerging        # gaining traction
+  - cutting-edge    # recent, still being validated
+
+languages:
+  - language-agnostic
+  - typescript
+  - javascript
+  - python
+  - java
+  - csharp
+  - go
+  - rust
+  - cpp
+  - c
+  - kotlin
+  - swift
+  - ruby
+  - php
+  - scala
+  - elixir
+  - erlang
+  - haskell
+  - clojure
+  - sql
+  - shell
+
+frameworks:
+  - none
+  - react
+  - angular
+  - vue
+  - svelte
+  - solidjs
+  - nextjs
+  - remix
+  - redux
+  - rxjs
+  - nodejs
+  - express
+  - nestjs
+  - fastify
+  - deno
+  - spring
+  - spring-boot
+  - micronaut
+  - quarkus
+  - jakarta-ee
+  - dotnet
+  - aspnet
+  - entity-framework
+  - django
+  - flask
+  - fastapi
+  - celery
+  - rails
+  - laravel
+  - symfony
+  - akka
+  - play
+  - phoenix
+  - actix
+  - tokio
+  - gin
+  - grpc
+  - graphql
+  - kafka
+  - rabbitmq
+  - nats
+  - redis
+  - kubernetes
+  - istio
+  - terraform
+  - aws-lambda
+  - azure-functions
+  - hibernate
+  - sqlalchemy
+  - prisma
+  - typeorm
+  - xstate
+
+project_types:
+  - library
+  - sdk
+  - cli-tool
+  - web-frontend
+  - web-api
+  - backend-service
+  - microservices
+  - modular-monolith
+  - monolith
+  - mobile-app
+  - desktop-app
+  - embedded
+  - data-pipeline
+  - etl
+  - ml-system
+  - game
+  - realtime-system
+  - distributed-system
+  - serverless
+  - high-throughput
+  - low-latency
+  - safety-critical
+  - prototype

@@ -1,0 +1,23 @@
+{
+  "name": "quality-software-tools",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Tooling for the software-engineering pattern catalogue: schema validation, cross-reference checking, and Markdown doc generation.",
+  "scripts": {
+    "validate": "tsx src/validate.ts",
+    "docs": "tsx src/generate-docs.ts",
+    "build": "npm run validate && npm run docs",
+    "stats": "tsx src/stats.ts"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "js-yaml": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}

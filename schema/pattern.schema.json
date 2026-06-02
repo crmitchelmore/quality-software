@@ -1,0 +1,167 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/crmitchelmore/quality-software/schema/pattern.schema.json",
+  "title": "Software Engineering Pattern",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "title",
+    "scale",
+    "category",
+    "maturity",
+    "short_description",
+    "description",
+    "languages",
+    "frameworks",
+    "project_types",
+    "examples",
+    "ratings"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "Stable kebab-case identifier, unique across the catalogue. Used for cross-references."
+    },
+    "title": { "type": "string", "minLength": 2 },
+    "aka": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Also-known-as / alternative names."
+    },
+    "scale": { "type": "string" },
+    "category": { "type": "string" },
+    "maturity": { "type": "string" },
+    "short_description": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 320,
+      "description": "One- or two-sentence summary."
+    },
+    "description": {
+      "type": "string",
+      "minLength": 40,
+      "description": "Fuller explanation of intent and mechanics."
+    },
+    "problem": { "type": "string", "description": "The problem/forces this pattern resolves." },
+    "context": { "type": "string", "description": "When this pattern applies." },
+    "consequences": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Trade-offs, both benefits and liabilities."
+    },
+    "works_well_with": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Pattern ids that compose synergistically with this one (with a reason)."
+    },
+    "synergies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["pattern", "reason"],
+        "properties": {
+          "pattern": { "type": "string" },
+          "reason": { "type": "string" }
+        }
+      },
+      "description": "Structured synergy edges: which pattern and why they pair well."
+    },
+    "conflicts_with": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Pattern ids that conflict or are mutually exclusive."
+    },
+    "alternatives": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Pattern ids solving a similar problem differently."
+    },
+    "languages": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" },
+      "description": "Languages where commonly used (from vocabularies.languages)."
+    },
+    "frameworks": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" },
+      "description": "Frameworks/platforms where commonly used (from vocabularies.frameworks)."
+    },
+    "project_types": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" },
+      "description": "Project kinds the pattern fits (from vocabularies.project_types)."
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Free-form descriptive tags."
+    },
+    "diagram": {
+      "type": "string",
+      "description": "Mermaid diagram source (required for architectural-scale patterns)."
+    },
+    "examples": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["language", "positive", "negative", "explanation"],
+        "properties": {
+          "language": { "type": "string" },
+          "title": { "type": "string" },
+          "negative": { "type": "string", "description": "Anti-pattern / before code." },
+          "positive": { "type": "string", "description": "Pattern-applied / after code." },
+          "explanation": { "type": "string", "description": "Why positive is better." }
+        }
+      }
+    },
+    "ratings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["small", "medium", "large"],
+      "properties": {
+        "small": { "$ref": "#/definitions/rating" },
+        "medium": { "$ref": "#/definitions/rating" },
+        "large": { "$ref": "#/definitions/rating" }
+      },
+      "description": "Fit per project size. small=<10k LOC libs/web apps/apis; medium<=100k; large>100k."
+    },
+    "references": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["title"],
+        "properties": {
+          "title": { "type": "string" },
+          "author": { "type": "string" },
+          "url": { "type": "string" },
+          "year": { "type": "integer" }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "rating": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["score", "notes"],
+      "properties": {
+        "score": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5,
+          "description": "1=avoid, 2=rarely, 3=situational, 4=good fit, 5=excellent fit."
+        },
+        "notes": { "type": "string" }
+      }
+    }
+  }
+}

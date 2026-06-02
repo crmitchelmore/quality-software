@@ -1,0 +1,94 @@
+id: guard-clause
+title: Guard Clause (Early Return)
+aka:
+  - Early Return
+  - Bouncer Pattern
+scale: implementation
+category: implementation
+maturity: time-tested
+short_description: >-
+  Handle preconditions and edge cases up front with early returns, so the main
+  logic runs at minimal indentation without deep nesting.
+description: >-
+  A guard clause checks an invalid or exceptional condition at the top of a function
+  and returns (or throws) immediately, rejecting bad input before the core logic.
+  Replacing nested if/else "arrow code" with a sequence of flat guards reduces
+  cognitive load, makes the happy path obvious, and keeps each precondition close to
+  the reason it exists.
+problem: >-
+  Deeply nested conditionals ("arrow code") obscure the main flow and make it hard
+  to see which branch handles the real work.
+context: Any function with preconditions, validation, or edge cases to reject.
+consequences:
+  - Flattens nesting and makes the happy path linear and obvious.
+  - Each precondition is local and independently readable.
+  - Many scattered returns can hurt if cleanup is required (prefer RAII/defer/finally).
+synergies:
+  - pattern: null-object
+    reason: Guards and null objects both remove defensive branching from core logic.
+  - pattern: fail-fast
+    reason: Guard clauses are the concrete mechanism for failing fast on bad input.
+languages:
+  - language-agnostic
+  - javascript
+  - typescript
+  - python
+  - go
+  - java
+  - csharp
+  - rust
+frameworks:
+  - none
+project_types:
+  - library
+  - cli-tool
+  - web-api
+  - backend-service
+  - web-frontend
+tags:
+  - readability
+  - control-flow
+  - validation
+examples:
+  - language: javascript
+    title: Discount eligibility
+    negative: |
+      function discount(user) {
+        if (user) {
+          if (user.isActive) {
+            if (user.orders.length > 10) {
+              return 0.2;
+            } else {
+              return 0.1;
+            }
+          } else {
+            return 0;
+          }
+        } else {
+          return 0;
+        }
+      }
+    positive: |
+      function discount(user) {
+        if (!user) return 0;
+        if (!user.isActive) return 0;
+        if (user.orders.length <= 10) return 0.1;
+        return 0.2;
+      }
+    explanation: >-
+      The positive version rejects each disqualifying case first, leaving the
+      meaningful result unindented and easy to read.
+ratings:
+  small:
+    score: 5
+    notes: Always appropriate; pure readability win with no structural cost.
+  medium:
+    score: 5
+    notes: Universally beneficial; a baseline habit for clean functions.
+  large:
+    score: 5
+    notes: Scales perfectly; reduces review friction across large codebases.
+references:
+  - title: Refactoring; "Replace Nested Conditional with Guard Clauses"
+    author: Martin Fowler
+    year: 2018

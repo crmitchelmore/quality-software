@@ -1,0 +1,169 @@
+id: hexagonal-architecture
+title: Hexagonal Architecture (Ports & Adapters)
+aka:
+  - Ports and Adapters
+  - Onion Architecture (close relative)
+scale: architectural
+category: architecture
+maturity: time-tested
+short_description: >-
+  Isolate application core logic from external concerns by expressing all
+  interactions through technology-agnostic ports, with adapters that bind those
+  ports to concrete drivers (UI, DB, queues) at the edges.
+description: >-
+  Hexagonal Architecture, coined by Alistair Cockburn, structures an application
+  so the domain/use-case core depends on nothing but abstractions ("ports").
+  Inbound ports describe what the application can do; outbound ports describe what
+  the application needs. Adapters live outside the core and translate between a
+  concrete technology (HTTP, gRPC, SQL, Kafka, CLI) and a port. Because the core
+  defines the interfaces and the infrastructure implements them, the dependency
+  arrow always points inward (dependency inversion), making the core testable in
+  isolation and the I/O technologies replaceable.
+problem: >-
+  Business logic tends to get tangled with frameworks, databases, and transport
+  code, making it hard to test, hard to change persistence/transport, and prone
+  to leaking infrastructure concerns into the domain.
+context: >-
+  Applications that must outlive their frameworks, need strong test isolation, or
+  support multiple delivery mechanisms (REST + CLI + message consumer) over the
+  same logic.
+consequences:
+  - Core logic is unit-testable with no infrastructure (drive via test adapters).
+  - Transport and persistence become swappable without touching business rules.
+  - Adds indirection and boilerplate (interfaces, mappers) that is overkill for tiny apps.
+  - Requires discipline to keep domain types from leaking framework annotations.
+synergies:
+  - pattern: dependency-injection
+    reason: Wiring adapters to ports at the composition root is exactly what DI containers do.
+  - pattern: repository
+    reason: Repository is the canonical outbound persistence port.
+  - pattern: domain-model
+    reason: A rich domain model lives naturally inside the hexagon's core.
+  - pattern: anti-corruption-layer
+    reason: ACL adapters protect the core from external models at the boundary.
+conflicts_with:
+  - transaction-script
+alternatives:
+  - layered-architecture
+  - clean-architecture
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - typescript
+  - go
+  - python
+frameworks:
+  - spring-boot
+  - dotnet
+  - nestjs
+  - nodejs
+project_types:
+  - backend-service
+  - microservices
+  - modular-monolith
+  - web-api
+tags:
+  - dependency-inversion
+  - testability
+  - boundaries
+  - clean-core
+diagram: |-
+  flowchart LR
+    subgraph Drivers["Driving Adapters (inbound)"]
+      REST[REST Controller]
+      CLI[CLI Handler]
+      MQin[Queue Consumer]
+    end
+    subgraph Core["Application Core (Hexagon)"]
+      direction TB
+      INP{{Inbound Port\nUseCase Interface}}
+      APP[Use Cases / Domain]
+      OUTP{{Outbound Port\nRepository / Gateway}}
+      INP --> APP --> OUTP
+    end
+    subgraph Driven["Driven Adapters (outbound)"]
+      DB[(SQL Adapter)]
+      MQout[Kafka Adapter]
+      EXT[HTTP Client Adapter]
+    end
+    REST --> INP
+    CLI --> INP
+    MQin --> INP
+    OUTP --> DB
+    OUTP --> MQout
+    OUTP --> EXT
+examples:
+  - language: typescript
+    title: Order placement use case
+    negative: |
+      // Domain logic welded to Express + the ORM. Untestable without HTTP + DB.
+      app.post("/orders", async (req, res) => {
+        const conn = await mysql.createConnection(DB_URL);
+        if (!req.body.items?.length) return res.status(400).send("no items");
+        const total = req.body.items.reduce((s, i) => s + i.price * i.qty, 0);
+        await conn.query("INSERT INTO orders (customer, total) VALUES (?, ?)", [
+          req.body.customerId,
+          total,
+        ]);
+        await stripe.charges.create({ amount: total, source: req.body.token });
+        res.status(201).send("ok");
+      });
+    positive: |
+      // --- core (no framework imports) ---
+      export interface OrderRepository {        // outbound port
+        save(order: Order): Promise<void>;
+      }
+      export interface PaymentGateway {         // outbound port
+        charge(amount: Money, token: string): Promise<void>;
+      }
+      export interface PlaceOrder {             // inbound port
+        execute(cmd: PlaceOrderCommand): Promise<OrderId>;
+      }
+
+      export class PlaceOrderService implements PlaceOrder {
+        constructor(
+          private readonly orders: OrderRepository,
+          private readonly payments: PaymentGateway,
+        ) {}
+        async execute(cmd: PlaceOrderCommand): Promise<OrderId> {
+          const order = Order.create(cmd.customerId, cmd.items); // invariants enforced here
+          await this.payments.charge(order.total, cmd.paymentToken);
+          await this.orders.save(order);
+          return order.id;
+        }
+      }
+
+      // --- adapters (edge) ---
+      // SqlOrderRepository implements OrderRepository
+      // StripePaymentGateway implements PaymentGateway
+      // express route just maps HTTP <-> PlaceOrderCommand and calls placeOrder.execute()
+    explanation: >-
+      The positive version keeps all rules in PlaceOrderService behind ports, so it
+      can be tested with in-memory fakes and its DB/transport/payment provider can be
+      swapped by replacing an adapter, never the core.
+ratings:
+  small:
+    score: 2
+    notes: >-
+      Overkill for <10k LOC apps and most libraries; the indirection cost outweighs
+      the benefit when there is one transport and one datastore. A simple layered or
+      transaction-script approach ships faster.
+  medium:
+    score: 4
+    notes: >-
+      Strong fit once the domain has real rules and you want fast tests and the option
+      to change persistence/transport. Keep adapters thin.
+  large:
+    score: 5
+    notes: >-
+      Excellent for large/long-lived systems and microservices: enforces boundaries,
+      keeps the core stable as infrastructure churns, and scales across teams.
+references:
+  - title: Hexagonal Architecture
+    author: Alistair Cockburn
+    year: 2005
+    url: https://alistair.cockburn.us/hexagonal-architecture/
+  - title: Get Your Hands Dirty on Clean Architecture
+    author: Tom Hombergs
+    year: 2019
