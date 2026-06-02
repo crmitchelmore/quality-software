@@ -2,7 +2,7 @@
 
 > Treat complexity as the enemy and design deep modules with simple interfaces, so that the cost of understanding and changing a system stays low as it grows.
 
-**Origin:** John Ousterhout · *A Philosophy of Software Design* · (2018)
+**Discipline:** software · **Origin:** John Ousterhout · *A Philosophy of Software Design* · (2018)
 
 **Also known as:** APoSD, Ousterhout's philosophy
 
@@ -27,7 +27,7 @@ John Ousterhout's philosophy frames software design as a continuous fight agains
 - **Information leakage** — A design smell where the same knowledge (e.g. a file format) is spread across modules, coupling them invisibly. Hide each design decision in one place.
 - **Tactical vs strategic programming** — Tactical programming optimises for getting the next feature working; strategic programming invests continuously in a clean design, which pays back as the system grows.
 
-## Associated patterns
+## Associated software patterns
 
 Patterns from the catalogue that embody or operationalise this philosophy:
 
@@ -37,7 +37,7 @@ Patterns from the catalogue that embody or operationalise this philosophy:
 - [Guard Clause (Early Return)](../patterns/implementation/guard-clause.md) — Supports defining errors out of existence and reducing special cases the body must handle.
 - [Layered (N-Tier) Architecture](../patterns/architecture/layered-architecture.md) — Each layer should present a simpler interface upward than the complexity it manages, a layered expression of module depth.
 
-## Patterns in tension
+## Software patterns in tension
 
 Patterns this philosophy would caution against or use sparingly:
 

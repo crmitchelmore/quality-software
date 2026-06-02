@@ -2,7 +2,7 @@
 
 > Separate simple from easy: prefer unbraided concepts and explicit data transformations over familiar conveniences that entangle state, identity and behaviour.
 
-**Origin:** Rich Hickey · *Simple Made Easy* · (2011)
+**Discipline:** software · **Origin:** Rich Hickey · *Simple Made Easy* · (2011)
 
 **Also known as:** Decomplecting, Simplicity over ease
 
@@ -27,7 +27,7 @@ Rich Hickey's Simple Made Easy argues that software quality depends on separatin
 - **Complecting** — To complect is to braid concepts together so they must change or be understood as one. Good design separates those strands again.
 - **Values, not places** — Immutable values describe facts. Mutable places introduce time and identity, making every read depend on when it happens and who else can write.
 
-## Associated patterns
+## Associated software patterns
 
 Patterns from the catalogue that embody or operationalise this philosophy:
 
@@ -39,7 +39,7 @@ Patterns from the catalogue that embody or operationalise this philosophy:
 - [Function Composition](../patterns/functional/function-composition.md) — Builds behaviour by composing small independent transformations rather than hiding sequencing behind mutable collaborators.
 - [Map-Filter-Reduce](../patterns/functional/map-filter-reduce.md) — Expresses collection processing as transparent value transformations instead of stateful iteration mixed with business logic.
 
-## Patterns in tension
+## Software patterns in tension
 
 Patterns this philosophy would caution against or use sparingly:
 

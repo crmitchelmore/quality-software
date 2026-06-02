@@ -2,7 +2,7 @@
 
 > Put a rich, shared model of the business domain at the centre of software, aligning code, language and team boundaries so that complexity is tackled where it actually lives.
 
-**Origin:** Eric Evans · *Domain-Driven Design: Tackling Complexity in the Heart of Software* · (2003)
+**Discipline:** software · **Origin:** Eric Evans · *Domain-Driven Design: Tackling Complexity in the Heart of Software* · (2003)
 
 **Also known as:** DDD
 
@@ -27,7 +27,7 @@ Domain-Driven Design holds that the primary complexity of most business software
 - **Aggregate** — A cluster of objects treated as a single unit for changes, with one root enforcing invariants and controlling access.
 - **Anti-corruption layer** — A translation layer that protects a clean model from the semantics of a legacy or external system it must integrate with.
 
-## Associated patterns
+## Associated software patterns
 
 Patterns from the catalogue that embody or operationalise this philosophy:
 
@@ -39,7 +39,7 @@ Patterns from the catalogue that embody or operationalise this philosophy:
 - [Domain Event](../patterns/ddd-tactical/domain-event.md) — Expresses meaningful occurrences in the domain and decouples bounded contexts.
 - [Repository](../patterns/data-persistence/repository.md) — Gives aggregates a collection-like persistence interface without leaking storage concerns into the model.
 
-## Patterns in tension
+## Software patterns in tension
 
 Patterns this philosophy would caution against or use sparingly:
 

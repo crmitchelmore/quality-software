@@ -2,7 +2,7 @@
 
 > Put pure, total, immutable logic at the centre of the system, keep effects at the edges, and use types and constructors so invalid states cannot be represented.
 
-**Origin:** ML and Haskell traditions, Gary Bernhardt, Yaron Minsky · *ML/Haskell type-driven programming, Functional Core Imperative Shell, and Effective ML* · (2012)
+**Discipline:** software · **Origin:** ML and Haskell traditions, Gary Bernhardt, Yaron Minsky · *ML/Haskell type-driven programming, Functional Core Imperative Shell, and Effective ML* · (2012)
 
 **Also known as:** Functional core, imperative shell, Make illegal states unrepresentable, Parse, don't validate
 
@@ -27,7 +27,7 @@ Functional Core & Type-Driven Design combines the functional-programming traditi
 - **Illegal states unrepresentable** — Types encode invariants such as non-empty lists, validated identifiers or allowed state transitions, so many errors cannot be expressed by well-typed code.
 - **Parse, don't validate** — Validation should produce a richer value that carries proof of validity; repeatedly checking raw strings and maps leaves the same uncertainty everywhere.
 
-## Associated patterns
+## Associated software patterns
 
 Patterns from the catalogue that embody or operationalise this philosophy:
 
@@ -39,7 +39,7 @@ Patterns from the catalogue that embody or operationalise this philosophy:
 - [Type State](../patterns/implementation/type-state.md) — Encodes valid state transitions in types so operations are only available in legal states.
 - [Smart Constructor](../patterns/implementation/smart-constructor.md) — Centralises invariant checks at creation time and returns only values that satisfy them.
 
-## Patterns in tension
+## Software patterns in tension
 
 Patterns this philosophy would caution against or use sparingly:
 

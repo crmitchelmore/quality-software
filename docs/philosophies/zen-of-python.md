@@ -2,7 +2,7 @@
 
 > Guide design toward explicit, readable and unsurprising Python: simple beats complex, errors should not pass silently, and there should be one obvious way to do it.
 
-**Origin:** Tim Peters · *PEP 20 -- The Zen of Python* · (2004)
+**Discipline:** software · **Origin:** Tim Peters · *PEP 20 -- The Zen of Python* · (2004)
 
 **Also known as:** PEP 20, import this
 
@@ -27,7 +27,7 @@ The Zen of Python is Tim Peters' compact set of aphorisms that captures the desi
 - **Readability counts** — Code is written for people first. Concise cleverness loses when it obscures intent or makes maintenance harder.
 - **One obvious way** — The language and libraries should guide users toward a clear idiom instead of presenting many equivalent mechanisms for the same task.
 
-## Associated patterns
+## Associated software patterns
 
 Patterns from the catalogue that embody or operationalise this philosophy:
 
@@ -39,7 +39,7 @@ Patterns from the catalogue that embody or operationalise this philosophy:
 - [Options Object](../patterns/implementation/options-object.md) — Names configuration values explicitly, avoiding long positional argument lists whose meaning is implicit.
 - [Template Method](../patterns/gof-behavioural/template-method.md) — When used sparingly, provides one obvious algorithm skeleton while leaving clear extension points for specialised steps.
 
-## Patterns in tension
+## Software patterns in tension
 
 Patterns this philosophy would caution against or use sparingly:
 

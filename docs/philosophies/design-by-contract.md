@@ -2,7 +2,7 @@
 
 > Define software elements by explicit contracts: preconditions for callers, postconditions for suppliers and invariants that every valid object state must preserve.
 
-**Origin:** Bertrand Meyer · *Object-Oriented Software Construction* · (1988)
+**Discipline:** software · **Origin:** Bertrand Meyer · *Object-Oriented Software Construction* · (1988)
 
 **Also known as:** DbC, Contract programming
 
@@ -27,7 +27,7 @@ Design by Contract, introduced by Bertrand Meyer in Eiffel and Object-Oriented S
 - **Postconditions** — Guarantees a routine makes if it returns normally, giving callers a reliable basis for the next step.
 - **Class invariants** — Properties that define a valid instance and must be preserved by all public methods.
 
-## Associated patterns
+## Associated software patterns
 
 Patterns from the catalogue that embody or operationalise this philosophy:
 
@@ -39,7 +39,7 @@ Patterns from the catalogue that embody or operationalise this philosophy:
 - [Specification](../patterns/ddd-tactical/specification.md) — Encapsulates business rules that can serve as readable, reusable contract predicates.
 - [Null Object](../patterns/implementation/null-object.md) — Replaces null with an object that satisfies the expected interface contract for benign absence.
 
-## Patterns in tension
+## Software patterns in tension
 
 Patterns this philosophy would caution against or use sparingly:
 

@@ -2,7 +2,7 @@
 
 > Use very short feedback loops — tests first, simple design, continuous integration and frequent refactoring — so design emerges safely from working, verified behaviour.
 
-**Origin:** Kent Beck · *Extreme Programming Explained and Test-Driven Development by Example* · (1999)
+**Discipline:** software · **Origin:** Kent Beck · *Extreme Programming Explained and Test-Driven Development by Example* · (1999)
 
 **Also known as:** XP, TDD, Red-green-refactor
 
@@ -27,7 +27,7 @@ Extreme Programming made disciplined feedback the centre of software development
 - **Tests as design pressure** — A hard-to-write test often indicates a hard-to-use interface, hidden coupling or a missing seam; the test is feedback about the design.
 - **Simple design and YAGNI** — XP delays abstraction until duplication or a real requirement proves it is needed, preventing speculative frameworks from hardening around imagined futures.
 
-## Associated patterns
+## Associated software patterns
 
 Patterns from the catalogue that embody or operationalise this philosophy:
 
@@ -39,7 +39,7 @@ Patterns from the catalogue that embody or operationalise this philosophy:
 - [Property-Based Testing](../patterns/testing/property-based-testing.md) — Extends example-driven tests with generated cases, strengthening confidence before refactoring.
 - [Feature Toggle](../patterns/implementation/feature-toggle.md) — Allows incremental changes to be integrated continuously while behaviour remains controlled until ready for users.
 
-## Patterns in tension
+## Software patterns in tension
 
 Patterns this philosophy would caution against or use sparingly:
 

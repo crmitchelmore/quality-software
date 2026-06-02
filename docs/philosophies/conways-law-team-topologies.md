@@ -2,7 +2,7 @@
 
 > Treat organisation design as system design: software mirrors communication paths, so shape team boundaries, cognitive load and interaction modes deliberately.
 
-**Origin:** Melvin Conway, Matthew Skelton, Manuel Pais · *How Do Committees Invent? and Team Topologies* · (1968)
+**Discipline:** software · **Origin:** Melvin Conway, Matthew Skelton, Manuel Pais · *How Do Committees Invent? and Team Topologies* · (1968)
 
 **Also known as:** Conway's Law, Team Topologies, Inverse Conway manoeuvre
 
@@ -27,7 +27,7 @@ Conway's Law observes that organisations design systems that copy their communic
 - **Inverse Conway manoeuvre** — Deliberately change team boundaries and collaboration paths to bias the software architecture toward the desired modular shape.
 - **Cognitive load** — Team ownership should be sized so that teams can understand, change and operate their systems without constant cross-team coordination.
 
-## Associated patterns
+## Associated software patterns
 
 Patterns from the catalogue that embody or operationalise this philosophy:
 
@@ -38,7 +38,7 @@ Patterns from the catalogue that embody or operationalise this philosophy:
 - [Anti-Corruption Layer](../patterns/cloud-distributed/anti-corruption-layer.md) — Protects a team's model from another team's or legacy system's semantics, reducing accidental coupling across boundaries.
 - [Published Language](../patterns/ddd-strategic/published-language.md) — Gives teams an explicit shared contract for integration without requiring constant direct collaboration.
 
-## Patterns in tension
+## Software patterns in tension
 
 Patterns this philosophy would caution against or use sparingly:
 

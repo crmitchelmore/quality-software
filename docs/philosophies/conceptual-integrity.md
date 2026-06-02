@@ -2,7 +2,7 @@
 
 > Make a system feel as though it was designed by one mind: one coherent set of ideas, constraints and metaphors, protected from feature accretion and committee compromise.
 
-**Origin:** Fred Brooks · *The Mythical Man-Month* · (1975)
+**Discipline:** software · **Origin:** Fred Brooks · *The Mythical Man-Month* · (1975)
 
 **Also known as:** Brooks's conceptual integrity, Unified design vision
 
@@ -26,7 +26,7 @@ Fred Brooks argued that conceptual integrity is the most important consideration
 - **Second-system effect** — A team's second major system is prone to over-elaboration because designers try to include every attractive feature and lesson from the first.
 - **Surgical team** — Brooks's organisational pattern assigns a chief programmer/architectial vision holder and a small supporting team, reducing communication paths while preserving a unified design.
 
-## Associated patterns
+## Associated software patterns
 
 Patterns from the catalogue that embody or operationalise this philosophy:
 
@@ -37,7 +37,7 @@ Patterns from the catalogue that embody or operationalise this philosophy:
 - [Domain Model](../patterns/enterprise-application/domain-model.md) — Encodes the system's central concepts directly, making the unified design idea visible in code.
 - [Microkernel (Plugin) Architecture](../patterns/architecture/microkernel.md) — Maintains a small stable core concept while allowing controlled extension through plugins.
 
-## Patterns in tension
+## Software patterns in tension
 
 Patterns this philosophy would caution against or use sparingly:
 

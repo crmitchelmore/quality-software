@@ -1,0 +1,109 @@
+id: opportunity-solution-tree
+title: Opportunity Solution Tree
+aka:
+  - OST
+discipline: product
+category: customer-discovery
+maturity: established
+short_description: >-
+  Map a desired outcome to the customer opportunities that could move it, and only then to candidate
+  solutions, so discovery stays anchored to needs rather than jumping straight to features.
+description: >-
+  An Opportunity Solution Tree is a visual structure that connects a single target outcome (at the
+  root) to the customer opportunities — needs, pains and desires surfaced in research — that could
+  influence it, then to the solutions that might address each opportunity, and finally to the
+  experiments that test those solutions. Its purpose is to make a team's thinking explicit and to keep
+  the problem space and solution space distinct. By forcing every proposed solution to hang off a
+  named opportunity which in turn ladders up to the outcome, it resists the common failure of teams
+  generating feature ideas with no traceable link to a real customer need or a business result.
+problem: >-
+  Teams jump from a vague goal straight to a backlog of features, with no shared view of which customer
+  needs those features serve or whether addressing them would actually move the outcome. Prioritisation
+  becomes a contest of opinions and pet ideas.
+context: >-
+  Used by empowered product teams doing continuous discovery, typically alongside regular customer
+  interviews that feed new opportunities into the tree.
+forces:
+  - Breadth of opportunities competes with depth — too many and the tree is noise, too few and you bias early.
+  - Stakeholders push favourite solutions; the tree must hold the line that solutions serve opportunities.
+  - Outcomes must be framed as behaviour change the team can influence, not vanity targets.
+solution: >-
+  Anchor the root in one clear, measurable outcome. Populate the opportunity layer only from real
+  research evidence, phrased as customer needs in the customer's words, and group/size them. Branch
+  candidate solutions under specific opportunities, then attach assumption tests under solutions.
+  Revisit the tree continuously as interviews surface new opportunities, and prioritise by which
+  opportunity, if addressed, would most move the outcome.
+when_to_use:
+  - A team owns an outcome and needs to decide where to focus discovery effort.
+  - Stakeholders keep proposing solutions and you need a shared way to evaluate them against needs.
+  - You run continuous customer interviews and need somewhere to organise what you learn.
+anti_patterns:
+  - Filling the opportunity layer with solutions in disguise ("needs a dashboard") rather than needs.
+  - Building the tree once and never updating it as research continues.
+  - Rooting the tree in an output ("ship feature X") instead of an outcome.
+metrics:
+  - Movement of the root outcome metric over discovery cycles.
+  - Share of shipped work traceable to a named opportunity on the tree.
+  - Number of opportunities sized from primary research vs assumed.
+examples:
+  - title: Opportunities vs solutions
+    poor: >-
+      Under the outcome "increase weekly active users" the team lists "add dark mode", "build a mobile
+      app" and "send more emails" as the branches.
+    better: >-
+      Under the same outcome the opportunity branches read "I lose my place when I come back",
+      "I forget the product exists between visits" and "the app is hard to use at night" — each drawn
+      from interview quotes. Solutions like dark mode then hang under the relevant need.
+    explanation: >-
+      The poor version skips the problem space and commits to features no one has tied to a need. The
+      better version keeps opportunities as needs, so solutions can be compared on how well they serve them.
+  - title: Choosing where to focus
+    poor: >-
+      The team tackles the opportunity with the most internal excitement and builds three solutions for it.
+    better: >-
+      The team assesses each opportunity on how many customers feel it, how intensely, and how much
+      addressing it would move the outcome, then targets the highest-leverage one.
+    explanation: >-
+      A tree is only useful if it drives prioritisation by impact on the outcome rather than by
+      enthusiasm; the structure makes that comparison visible.
+related_practice_patterns:
+  - pattern: feature-flag-experimentation
+    reason: >-
+      Solutions hung off the tree graduate into flag-gated experiments, where each assumption test is
+      run as a controlled experiment against the outcome metric.
+related_philosophies:
+  - philosophy: lean-startup
+    reason: >-
+      The tree's experiment layer is where Lean Startup's validated-learning loop attaches to specific
+      solution bets.
+tags:
+  - discovery
+  - prioritization
+  - outcomes
+  - visual-thinking
+product_stages:
+  - early
+  - growth
+ratings:
+  early:
+    score: 4
+    notes: >-
+      Excellent for keeping a young team honest about serving needs, though with few customers the
+      opportunity set is thin and changes fast.
+  growth:
+    score: 5
+    notes: >-
+      Ideal at growth stage: enough research signal to populate a rich tree and enough competing ideas
+      to need disciplined, outcome-anchored prioritisation.
+  enterprise:
+    score: 4
+    notes: >-
+      Valuable per team, but at enterprise scale trees must be federated across many teams and reconciled
+      with portfolio-level outcomes, which adds coordination overhead.
+references:
+  - title: "Continuous Discovery Habits"
+    author: Teresa Torres
+    year: 2021
+  - title: "Opportunity Solution Trees (Product Talk)"
+    author: Teresa Torres
+    url: "https://www.producttalk.org/opportunity-solution-tree/"

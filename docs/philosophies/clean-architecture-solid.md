@@ -2,7 +2,7 @@
 
 > Keep business policy independent of delivery mechanisms by making dependencies point inward, applying SOLID principles and treating frameworks, databases and UI as plugins.
 
-**Origin:** Robert C. Martin · *Clean Architecture: A Craftsman's Guide to Software Structure and Design* · (2017)
+**Discipline:** software · **Origin:** Robert C. Martin · *Clean Architecture: A Craftsman's Guide to Software Structure and Design* · (2017)
 
 **Also known as:** Clean Architecture, SOLID, Uncle Bob's architecture
 
@@ -26,7 +26,7 @@ Clean Architecture extends Robert C. Martin's SOLID object-design principles int
 - **Use cases as application policy** — Use cases orchestrate application-specific business rules independently of controllers, presenters, repositories and frameworks.
 - **Details are plugins** — Databases, web frameworks, UI and external services are replaceable mechanisms attached at the perimeter, not foundations that dictate the core design.
 
-## Associated patterns
+## Associated software patterns
 
 Patterns from the catalogue that embody or operationalise this philosophy:
 
@@ -38,7 +38,7 @@ Patterns from the catalogue that embody or operationalise this philosophy:
 - [Repository](../patterns/data-persistence/repository.md) — Gives use cases and domain code a persistence abstraction rather than coupling them to a database API or ORM.
 - [Service Layer](../patterns/enterprise-application/service-layer.md) — A common place to express application use cases and coordinate domain operations apart from controllers and infrastructure.
 
-## Patterns in tension
+## Software patterns in tension
 
 Patterns this philosophy would caution against or use sparingly:
 

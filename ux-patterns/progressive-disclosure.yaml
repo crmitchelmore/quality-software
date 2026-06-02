@@ -1,0 +1,109 @@
+id: progressive-disclosure
+title: Progressive Disclosure
+aka:
+  - Staged Disclosure
+  - Show More on Demand
+discipline: ux
+category: interaction-design
+maturity: time-tested
+short_description: >-
+  Show only what most users need most of the time, and reveal advanced or secondary options on demand,
+  so interfaces stay learnable without sacrificing depth.
+description: >-
+  Progressive disclosure sequences information and controls so that the common, essential subset is
+  presented first and the rare, advanced, or detailed material is moved a step away — behind a "more
+  options" link, a secondary screen, an expandable section, or an advanced mode. It manages complexity
+  by matching what is visible to what the user is likely to need at that moment, reducing cognitive load
+  and the chance of error without removing capability. The art lies in choosing the dividing line: put
+  the wrong things in the advanced tier and you frustrate users who need them; expose everything and you
+  overwhelm the majority. It is one of the oldest and most broadly applicable interaction patterns,
+  spanning forms, settings, menus, onboarding, and data displays.
+problem: >-
+  Presenting every option, field, and detail at once overwhelms users, hides the common path among rarely
+  used controls, and makes interfaces feel intimidating and error-prone — yet removing the advanced
+  capability would frustrate power users who depend on it.
+context: >-
+  Applies anywhere an interface must serve both novice and expert needs, or where a task has a simple
+  common case and a complex edge case: settings, creation flows, search, configuration, dashboards.
+forces:
+  - Simplicity for the majority competes with immediate access for the minority who need advanced options.
+  - Hiding options reduces clutter but adds an interaction cost and a discoverability risk.
+  - The "common case" differs across user segments, so any single split is a compromise.
+solution: >-
+  Identify the controls and information the large majority need for the primary task and present those
+  by default. Move advanced, destructive, or infrequently used items one clearly signposted step away —
+  an expander, an "advanced" toggle, or a secondary view — with an affordance that makes their existence
+  discoverable. Keep the disclosure shallow (ideally one level) and ensure defaults are safe so most
+  users never need to open the advanced tier.
+when_to_use:
+  - A task has a simple common case and a more complex, less frequent case.
+  - The interface must serve both first-time and expert users without two separate products.
+  - A screen has grown crowded and the essential path is getting lost among options.
+anti_patterns:
+  - Burying frequently needed controls in an "advanced" area, forcing most users to dig.
+  - Hiding options with no visible affordance, so users never discover the capability exists.
+  - Nesting disclosure several levels deep, turning a simple task into a treasure hunt.
+heuristics:
+  - "Default to the 80% case; one click reveals the rest."
+  - "Make the existence of hidden options discoverable even when their detail is not shown."
+  - "Keep disclosure shallow — prefer one expandable step over nested layers."
+  - "Pair disclosure with safe, sensible defaults so the advanced tier is genuinely optional."
+examples:
+  - title: A settings screen
+    poor: >-
+      The account settings page lists all 40 preferences in one flat column, so the two settings 90% of
+      users want are lost among networking, developer, and experimental toggles.
+    better: >-
+      The page shows the handful of common settings, with "Advanced settings" expandable sections for the
+      rest, clearly labelled so power users know where to look.
+    explanation: >-
+      The better version keeps the common path obvious while preserving full capability one signposted
+      click away, lowering load without removing power.
+  - title: A creation form
+    poor: >-
+      A "create event" form shows every possible field — recurrence rules, timezone overrides, custom
+      reminders — at once, so a user adding a simple lunch faces a wall of inputs.
+    better: >-
+      The form asks for title, time, and place, with "Add recurrence", "More reminder options" revealing
+      the advanced fields only when needed.
+    explanation: >-
+      Sequencing the rare fields behind explicit affordances keeps the frequent task trivial while leaving
+      depth available for the occasions that need it.
+related_practice_patterns:
+  - pattern: optimistic-ui-feedback
+    reason: >-
+      Both manage the perceived complexity of an interaction — disclosure controls how much is shown,
+      optimistic feedback controls how quickly it responds — and they often combine in streamlined flows.
+related_philosophies:
+  - philosophy: design-of-everyday-things
+    reason: >-
+      Progressive disclosure embodies Norman's call to manage complexity and avoid overwhelming the user,
+      keeping the mapping between goals and visible controls tight.
+tags:
+  - complexity-management
+  - cognitive-load
+  - forms
+  - onboarding
+ratings:
+  early:
+    score: 4
+    notes: >-
+      Helps a young product feel approachable, though with a small feature set there is less to disclose
+      and over-engineering the split can be premature.
+  growth:
+    score: 5
+    notes: >-
+      As features multiply, disclosure is the main lever for keeping a growing product learnable without
+      cutting capability.
+  enterprise:
+    score: 5
+    notes: >-
+      Essential for feature-rich enterprise tools serving mixed expertise; needs consistent disclosure
+      conventions across the suite so users learn the pattern once.
+references:
+  - title: "Progressive Disclosure (Nielsen Norman Group)"
+    author: Jakob Nielsen
+    url: "https://www.nngroup.com/articles/progressive-disclosure/"
+  - title: "The Design of Everyday Things"
+    author: Don Norman
+    year: 2013

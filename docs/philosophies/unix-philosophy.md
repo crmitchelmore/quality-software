@@ -2,7 +2,7 @@
 
 > Build small programs that each do one thing well and compose them through uniform text interfaces, favouring simplicity, composability and clarity over monolithic features.
 
-**Origin:** Doug McIlroy, Ken Thompson, Dennis Ritchie, Rob Pike · *The Bell System Technical Journal (Unix issue) and The Art of Unix Programming* · (1978)
+**Discipline:** software · **Origin:** Doug McIlroy, Ken Thompson, Dennis Ritchie, Rob Pike · *The Bell System Technical Journal (Unix issue) and The Art of Unix Programming* · (1978)
 
 **Also known as:** Do one thing well, McIlroy's tenets
 
@@ -27,7 +27,7 @@ The Unix philosophy emerged from Bell Labs as a set of pragmatic design maxims f
 - **Mechanism, not policy** — Tools should provide mechanism and leave policy to the caller, keeping them reusable across contexts.
 - **Text as the narrow waist** — A single universal interface (lines of text) lets an open-ended set of tools interoperate without prior agreement.
 
-## Associated patterns
+## Associated software patterns
 
 Patterns from the catalogue that embody or operationalise this philosophy:
 
@@ -37,7 +37,7 @@ Patterns from the catalogue that embody or operationalise this philosophy:
 - [Map-Filter-Reduce](../patterns/functional/map-filter-reduce.md) — Stream transformation composed from small, single-purpose operations mirrors filter pipelines.
 - [Microservices](../patterns/architecture/microservices.md) — "Do one thing well" and compose over clear interfaces is the small-services rationale, scaled to the network.
 
-## Patterns in tension
+## Software patterns in tension
 
 Patterns this philosophy would caution against or use sparingly:
 

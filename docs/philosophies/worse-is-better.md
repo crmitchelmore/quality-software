@@ -2,7 +2,7 @@
 
 > Prefer a simple implementation that ships, spreads and evolves over a complete, perfectly correct system that arrives too late or is too hard to port.
 
-**Origin:** Richard P. Gabriel · *The Rise of Worse Is Better* · (1991)
+**Discipline:** software · **Origin:** Richard P. Gabriel · *The Rise of Worse Is Better* · (1991)
 
 **Also known as:** New Jersey approach, Worse-is-better
 
@@ -26,7 +26,7 @@ Richard P. Gabriel's worse-is-better contrasts two design cultures. The MIT or "
 - **The 90% solution** — The missing 10% is a conscious trade: shipping a simple useful core creates adoption and feedback that can fund later improvement.
 - **Evolution over perfection** — Worse-is-better is a theory of design fitness. Systems win by being habitable, portable and easy to clone, not only by being internally elegant.
 
-## Associated patterns
+## Associated software patterns
 
 Patterns from the catalogue that embody or operationalise this philosophy:
 
@@ -37,7 +37,7 @@ Patterns from the catalogue that embody or operationalise this philosophy:
 - [Microkernel (Plugin) Architecture](../patterns/architecture/microkernel.md) — Keeps the shipped core small and lets capabilities grow through plug-ins, matching the idea of a simple survivable nucleus.
 - [Fallback](../patterns/resilience/fallback.md) — Accepts imperfect behaviour in uncommon cases so the common path remains simple and the system continues to operate.
 
-## Patterns in tension
+## Software patterns in tension
 
 Patterns this philosophy would caution against or use sparingly:
 

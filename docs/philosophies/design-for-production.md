@@ -2,7 +2,7 @@
 
 > Design systems for the conditions they will actually meet in production: failure, partial recovery, overload, latency, human operation and graceful degradation.
 
-**Origin:** Michael Nygard · *Release It!* · (2007)
+**Discipline:** software · **Origin:** Michael Nygard · *Release It!* · (2007)
 
 **Also known as:** Production-oriented design, Stability engineering, Release It! philosophy
 
@@ -27,7 +27,7 @@ Design for Production / Stability, associated most strongly with Michael Nygard'
 - **Production is the real test** — A design is not proven by passing happy-path tests; it is proven by behaviour under latency, overload, partial failure and operational intervention.
 - **Graceful degradation** — Systems should preserve the most important user outcomes when secondary capabilities are impaired.
 
-## Associated patterns
+## Associated software patterns
 
 Patterns from the catalogue that embody or operationalise this philosophy:
 
@@ -39,7 +39,7 @@ Patterns from the catalogue that embody or operationalise this philosophy:
 - [Backpressure](../patterns/resilience/backpressure.md) — Communicates overload upstream instead of silently queuing work until collapse.
 - [Health Endpoint Monitoring](../patterns/cloud-distributed/health-endpoint-monitoring.md) — Gives operators and orchestration systems a concrete signal for readiness, liveness and dependency health.
 
-## Patterns in tension
+## Software patterns in tension
 
 Patterns this philosophy would caution against or use sparingly:
 

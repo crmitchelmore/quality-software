@@ -2,7 +2,7 @@
 
 > Keep software always releasable by working in small batches, automating the deployment pipeline, reducing work-in-progress and optimising flow with fast feedback.
 
-**Origin:** Jez Humble, David Farley, Nicole Forsgren, Gene Kim, Mary Poppendieck, Tom Poppendieck · *Continuous Delivery and Lean Software Development* · (2010)
+**Discipline:** software · **Origin:** Jez Humble, David Farley, Nicole Forsgren, Gene Kim, Mary Poppendieck, Tom Poppendieck · *Continuous Delivery and Lean Software Development* · (2010)
 
 **Also known as:** CD, Lean Software Development, Accelerate
 
@@ -27,7 +27,7 @@ Continuous Delivery applies lean thinking to the path from idea to production. H
 - **Always releasable** — The system is kept in a state where release is a business choice; technical release work is routine, rehearsed and mostly automated.
 - **DORA metrics** — Deployment frequency, lead time for changes, change failure rate and time to restore service provide a balanced view of throughput and resilience.
 
-## Associated patterns
+## Associated software patterns
 
 Patterns from the catalogue that embody or operationalise this philosophy:
 
@@ -38,7 +38,7 @@ Patterns from the catalogue that embody or operationalise this philosophy:
 - [Deployment Stamp (Cells)](../patterns/cloud-distributed/deployment-stamp.md) — Provides repeatable, isolated deployment units that make environment creation and progressive rollout more automatable.
 - [Database per Service](../patterns/data-persistence/database-per-service.md) — Reduces cross-team release coupling by allowing services to evolve and deploy their own data model independently.
 
-## Patterns in tension
+## Software patterns in tension
 
 Patterns this philosophy would caution against or use sparingly:
 

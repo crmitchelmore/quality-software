@@ -2,7 +2,7 @@
 
 > Decompose systems around design decisions likely to change, hiding each decision behind a stable module interface rather than mirroring processing steps or implementation order.
 
-**Origin:** David Parnas · *On the Criteria To Be Used in Decomposing Systems into Modules* · (1972)
+**Discipline:** software · **Origin:** David Parnas · *On the Criteria To Be Used in Decomposing Systems into Modules* · (1972)
 
 **Also known as:** Parnas decomposition, Secrets-based modularity
 
@@ -26,7 +26,7 @@ Information hiding is Parnas's criterion for modular decomposition: a module sho
 - **Changeability criterion** — The right decomposition is the one that minimises expected future change cost, not the one that most closely resembles the order in which work happens at runtime.
 - **Interface as ignorance boundary** — A good interface lets clients remain ignorant of the hidden decision; a bad interface forces them to encode the same assumption and makes the secret public in practice.
 
-## Associated patterns
+## Associated software patterns
 
 Patterns from the catalogue that embody or operationalise this philosophy:
 
@@ -37,7 +37,7 @@ Patterns from the catalogue that embody or operationalise this philosophy:
 - [Repository](../patterns/data-persistence/repository.md) — Hides persistence and query details behind a collection-like abstraction owned by the data access module.
 - [Anti-Corruption Layer](../patterns/cloud-distributed/anti-corruption-layer.md) — Protects a model by localising translation knowledge and preventing another system's design decisions from becoming everyone else's dependency.
 
-## Patterns in tension
+## Software patterns in tension
 
 Patterns this philosophy would caution against or use sparingly:
 

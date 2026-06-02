@@ -1,0 +1,111 @@
+id: lean-startup
+title: The Lean Startup
+discipline: product
+aka:
+  - Build-Measure-Learn
+  - Validated Learning
+originators:
+  - Eric Ries
+origin:
+  type: book
+  title: "The Lean Startup: How Today's Entrepreneurs Use Continuous Innovation to Create Radically Successful Businesses"
+  year: 2011
+short_description: >-
+  Treat a new product as a series of experiments: build the smallest thing that tests a hypothesis,
+  measure real behaviour, and learn whether to persevere or pivot — minimising waste on unvalidated ideas.
+description: >-
+  The Lean Startup applies lean-manufacturing thinking to the deep uncertainty of new products. Its core
+  claim is that a startup's job is not to execute a plan but to learn what customers actually want as fast
+  and cheaply as possible. Work is organised as a build-measure-learn loop: turn an idea into a minimum
+  viable product, measure how real users respond, and extract validated learning that informs the next
+  cycle. Progress is judged not by features shipped or plans completed but by validated learning about the
+  business model. When evidence contradicts the founding assumptions, the team pivots — a structured change
+  of strategy — rather than persisting out of sunk cost. The philosophy reframes the central risk of new
+  products from "can we build it?" to "should we build it, and will anyone want it?".
+core_tenets:
+  - Progress is measured in validated learning, not features shipped or plans executed.
+  - Build the minimum viable product needed to test the riskiest assumption, then iterate.
+  - Run a continuous build-measure-learn loop and optimise for its speed.
+  - Use actionable metrics over vanity metrics; beware numbers that flatter but do not inform decisions.
+  - Pivot when evidence invalidates a core hypothesis; persevere when it is confirmed.
+  - Treat every feature and strategy as a falsifiable experiment, not a commitment.
+key_ideas:
+  - name: Minimum Viable Product
+    explanation: >-
+      The smallest product or experiment that lets the team collect the maximum validated learning about
+      customers with the least effort.
+  - name: Validated learning
+    explanation: >-
+      Empirical demonstration that a team has discovered valuable truths about its prospects, replacing
+      assumptions with evidence.
+  - name: Pivot vs persevere
+    explanation: >-
+      A periodic, evidence-based decision either to change a fundamental element of the strategy or to
+      keep testing the current course.
+  - name: Innovation accounting
+    explanation: >-
+      A discipline for measuring progress, setting milestones, and prioritising work when traditional
+      financial metrics are uninformative for a new venture.
+in_practice: >-
+  Frame the riskiest belief as a hypothesis, build the cheapest experiment that tests it, instrument the
+  outcome with actionable metrics, and hold a regular pivot-or-persevere review. Prefer concierge MVPs,
+  landing-page tests, and flag-gated experiments over fully built features when the demand itself is unproven.
+complements:
+  - continuous-delivery-lean
+tensions_with:
+  - philosophy: conceptual-integrity
+    reason: >-
+      Lean Startup's rapid pivots and MVPs can erode a single coherent product vision, which a
+      conceptual-integrity stance prizes and protects.
+associated_practice_patterns:
+  - pattern: feature-flag-experimentation
+    reason: >-
+      Flag-gated controlled experiments are the most direct operationalisation of build-measure-learn at
+      the feature level.
+  - pattern: opportunity-solution-tree
+    reason: >-
+      The tree's experiment layer is where Lean Startup's validated-learning loop attaches to specific
+      solution bets, keeping pivots anchored to evidence.
+successfully_applied:
+  - where: Dropbox
+    what: >-
+      Famously validated demand for file-sync with an explainer video MVP before building the full
+      product, a canonical Lean Startup example.
+    evidence_strength: secondary-source
+    source:
+      title: "The Lean Startup"
+      year: 2011
+  - where: IMVU and early-stage software startups
+    what: >-
+      Ries developed the method at IMVU, releasing early and iterating against customer behaviour rather
+      than a fixed launch plan.
+    evidence_strength: primary-source
+    source:
+      title: "The Lean Startup"
+      year: 2011
+  - where: Enterprise innovation programmes
+    what: >-
+      Large organisations adopted innovation accounting and MVP practice for internal new-venture units
+      ("The Startup Way").
+    evidence_strength: secondary-source
+    source:
+      title: "The Startup Way"
+      year: 2017
+best_for:
+  - early-stage-product
+  - new-market-entry
+  - zero-to-one
+criticisms:
+  - MVP rhetoric is often misused to justify shipping low-quality work rather than to test a hypothesis.
+  - Heavy experimentation suits high-uncertainty bets but adds overhead where the problem is already well understood.
+  - Some valuable products require sustained vision and investment that frequent-pivot pressure can undermine.
+references:
+  - title: "The Lean Startup"
+    author: Eric Ries
+    year: 2011
+  - title: "The Startup Way"
+    author: Eric Ries
+    year: 2017
+  - title: "Running Lean"
+    author: Ash Maurya
+    year: 2012

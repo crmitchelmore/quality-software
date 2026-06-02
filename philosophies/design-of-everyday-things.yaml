@@ -1,0 +1,112 @@
+id: design-of-everyday-things
+title: The Design of Everyday Things
+discipline: ux
+aka:
+  - Norman's Principles
+  - Human-Centred Design (Norman)
+originators:
+  - Don Norman
+origin:
+  type: book
+  title: "The Design of Everyday Things"
+  year: 1988
+short_description: >-
+  Design so that the right action is obvious and error is hard: make affordances, signifiers, feedback
+  and mappings carry the user's understanding, and put the difficulty in the world rather than the head.
+description: >-
+  Don Norman's philosophy holds that usability failures are design failures, not user failures. When a
+  door is pushed the wrong way or a control is operated incorrectly, the fault lies with an interface that
+  failed to communicate how it works. Good design closes two gaps: the gulf of execution (knowing how to
+  act) and the gulf of evaluation (knowing what happened). It does so through a small set of fundamental
+  principles — affordances and signifiers that suggest possible actions, a good conceptual model the user
+  can reason with, natural mappings between controls and effects, immediate and informative feedback, and
+  constraints that make errors difficult. Norman frames design as human-centred: observe real human
+  capabilities and limitations, and shape the artefact to fit them rather than expecting people to adapt.
+  The later edition adds that good design also anticipates error and helps people recover from it.
+core_tenets:
+  - Usability problems are design problems; do not blame the user for predictable mistakes.
+  - Make actions discoverable through affordances and explicit signifiers.
+  - Give a clear conceptual model so users can predict how the system behaves.
+  - Provide immediate, informative feedback so users know the result of every action.
+  - Use natural mappings so the relationship between control and effect is obvious.
+  - Use constraints and good defaults to prevent errors, and design for graceful recovery when they occur.
+key_ideas:
+  - name: Affordance and signifier
+    explanation: >-
+      An affordance is a possible action an object offers; a signifier is the perceivable cue that tells
+      the user that action is available and how to do it.
+  - name: Gulf of execution and evaluation
+    explanation: >-
+      The gaps between a user's intention and the actions allowed, and between the system's state and the
+      user's ability to perceive and interpret it; good design narrows both.
+  - name: Conceptual model
+    explanation: >-
+      The mental model a design conveys about how it works, allowing the user to predict the effects of
+      their actions.
+  - name: Mapping
+    explanation: >-
+      The correspondence between controls and their effects; natural mappings exploit spatial and cultural
+      analogies so the right action is self-evident.
+in_practice: >-
+  Make the available actions and current state visible; choose controls whose layout mirrors their effect;
+  acknowledge every action with prompt feedback; constrain inputs so invalid actions are hard; and design
+  the error path as carefully as the happy path. Test with real users and treat their confusion as a defect
+  to fix in the design.
+complements:
+  - a-philosophy-of-software-design
+tensions_with:
+  - philosophy: worse-is-better
+    reason: >-
+      Norman's insistence on getting the human-facing model and feedback right can conflict with a
+      worse-is-better preference for shipping simpler, less polished interfaces sooner.
+associated_practice_patterns:
+  - pattern: optimistic-ui-feedback
+    reason: >-
+      Immediate, visible response to action directly applies Norman's feedback principle and narrows the
+      gulf of evaluation.
+  - pattern: progressive-disclosure
+    reason: >-
+      Managing visible complexity so the right action stays obvious operationalises Norman's emphasis on
+      discoverability and a clear conceptual model.
+successfully_applied:
+  - where: Apple human interface guidelines and consumer software
+    what: >-
+      Norman's principles (affordances, feedback, mappings, constraints) became foundational vocabulary in
+      mainstream interface design guidelines.
+    evidence_strength: secondary-source
+    source:
+      title: "The Design of Everyday Things, revised edition"
+      year: 2013
+  - where: Don Norman's tenure leading user experience at Apple
+    what: >-
+      Norman coined the term "user experience" while applying human-centred principles to product design at Apple.
+    evidence_strength: primary-source
+    source:
+      title: "The Design of Everyday Things, revised edition"
+      year: 2013
+  - where: Usability and HCI education
+    what: >-
+      The book is a standard text underpinning decades of usability practice, heuristic evaluation, and
+      human-centred design curricula.
+    evidence_strength: secondary-source
+    source:
+      title: "The Design of Everyday Things"
+      year: 1988
+best_for:
+  - consumer-products
+  - physical-and-digital-interfaces
+  - any-user-facing-system
+criticisms:
+  - The principles describe what good design achieves but offer less prescriptive method for getting there.
+  - Originating in physical product design, some examples need translation to dynamic, software-only contexts.
+  - Universal "obviousness" is harder where users, cultures, and accessibility needs differ widely.
+references:
+  - title: "The Design of Everyday Things"
+    author: Don Norman
+    year: 1988
+  - title: "The Design of Everyday Things, revised and expanded edition"
+    author: Don Norman
+    year: 2013
+  - title: "Emotional Design"
+    author: Don Norman
+    year: 2004

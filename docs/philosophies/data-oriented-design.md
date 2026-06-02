@@ -2,7 +2,7 @@
 
 > Design around the data a program transforms and how that data is laid out, accessed and moved through real hardware, especially caches and memory bandwidth.
 
-**Origin:** Mike Acton, Richard Fabian · *Data-Oriented Design and C++* · (2014)
+**Discipline:** software · **Origin:** Mike Acton, Richard Fabian · *Data-Oriented Design and C++* · (2014)
 
 **Also known as:** DOD, Data-oriented programming
 
@@ -27,7 +27,7 @@ Data-Oriented Design argues that the purpose of a program is to transform data, 
 - **Data layout is design** — Field order, contiguity, grouping and lifetime influence performance and therefore belong in the core design discussion.
 - **Hot and cold separation** — Frequently accessed fields are stored apart from rarely used fields so hot paths avoid unnecessary cache pollution.
 
-## Associated patterns
+## Associated software patterns
 
 Patterns from the catalogue that embody or operationalise this philosophy:
 
@@ -38,7 +38,7 @@ Patterns from the catalogue that embody or operationalise this philosophy:
 - [Copy-on-Write](../patterns/concurrency/copy-on-write.md) — Separates read-heavy sharing from mutation, which can improve locality and avoid unnecessary copies when used carefully.
 - [Map-Filter-Reduce](../patterns/functional/map-filter-reduce.md) — Expresses computation as bulk data transformations that can often be batched, streamed or parallelised.
 
-## Patterns in tension
+## Software patterns in tension
 
 Patterns this philosophy would caution against or use sparingly:
 

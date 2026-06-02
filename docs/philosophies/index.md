@@ -1,27 +1,29 @@
 # Software Design Philosophies
 
-Total philosophies: **16**
+Total philosophies: **18**
 
 Each philosophy associates patterns from the [pattern catalogue](../index.md) and records where it has reportedly been applied.
 
-| Philosophy | Originators | Origin | Patterns |
-| --- | --- | --- | :-: |
-| [A Philosophy of Software Design](a-philosophy-of-software-design.md) | John Ousterhout | *A Philosophy of Software Design* (2018) | 5 |
-| [Clean Architecture & SOLID](clean-architecture-solid.md) | Robert C. Martin | *Clean Architecture: A Craftsman's Guide to Software Structure and Design* (2017) | 7 |
-| [Conceptual Integrity](conceptual-integrity.md) | Fred Brooks | *The Mythical Man-Month* (1975) | 6 |
-| [Continuous Delivery & Lean Software](continuous-delivery-lean.md) | Jez Humble, David Farley, Nicole Forsgren, Gene Kim, Mary Poppendieck, Tom Poppendieck | *Continuous Delivery and Lean Software Development* (2010) | 6 |
-| [Conway's Law & Team Topologies](conways-law-team-topologies.md) | Melvin Conway, Matthew Skelton, Manuel Pais | *How Do Committees Invent? and Team Topologies* (1968) | 6 |
-| [Data-Oriented Design](data-oriented-design.md) | Mike Acton, Richard Fabian | *Data-Oriented Design and C++* (2014) | 6 |
-| [Design by Contract](design-by-contract.md) | Bertrand Meyer | *Object-Oriented Software Construction* (1988) | 7 |
-| [Design for Production / Stability](design-for-production.md) | Michael Nygard | *Release It!* (2007) | 7 |
-| [Domain-Driven Design](domain-driven-design.md) | Eric Evans | *Domain-Driven Design: Tackling Complexity in the Heart of Software* (2003) | 7 |
-| [Extreme Programming & Test-Driven Development](extreme-programming-tdd.md) | Kent Beck | *Extreme Programming Explained and Test-Driven Development by Example* (1999) | 7 |
-| [Functional Core & Type-Driven Design](functional-core-type-driven.md) | ML and Haskell traditions, Gary Bernhardt, Yaron Minsky | *ML/Haskell type-driven programming, Functional Core Imperative Shell, and Effective ML* (2012) | 7 |
-| [Information Hiding & Modular Decomposition](information-hiding.md) | David Parnas | *On the Criteria To Be Used in Decomposing Systems into Modules* (1972) | 6 |
-| [Simple Made Easy](simple-made-easy.md) | Rich Hickey | *Simple Made Easy* (2011) | 7 |
-| [The Unix Philosophy](unix-philosophy.md) | Doug McIlroy, Ken Thompson, Dennis Ritchie, Rob Pike | *The Bell System Technical Journal (Unix issue) and The Art of Unix Programming* (1978) | 5 |
-| [The Zen of Python](zen-of-python.md) | Tim Peters | *PEP 20 -- The Zen of Python* (2004) | 7 |
-| [Worse Is Better](worse-is-better.md) | Richard P. Gabriel | *The Rise of Worse Is Better* (1991) | 6 |
+| Philosophy | Discipline | Originators | Origin | Patterns |
+| --- | --- | --- | --- | :-: |
+| [A Philosophy of Software Design](a-philosophy-of-software-design.md) | software | John Ousterhout | *A Philosophy of Software Design* (2018) | 5 |
+| [Clean Architecture & SOLID](clean-architecture-solid.md) | software | Robert C. Martin | *Clean Architecture: A Craftsman's Guide to Software Structure and Design* (2017) | 7 |
+| [Conceptual Integrity](conceptual-integrity.md) | software | Fred Brooks | *The Mythical Man-Month* (1975) | 6 |
+| [Continuous Delivery & Lean Software](continuous-delivery-lean.md) | software | Jez Humble, David Farley, Nicole Forsgren, Gene Kim, Mary Poppendieck, Tom Poppendieck | *Continuous Delivery and Lean Software Development* (2010) | 6 |
+| [Conway's Law & Team Topologies](conways-law-team-topologies.md) | software | Melvin Conway, Matthew Skelton, Manuel Pais | *How Do Committees Invent? and Team Topologies* (1968) | 6 |
+| [Data-Oriented Design](data-oriented-design.md) | software | Mike Acton, Richard Fabian | *Data-Oriented Design and C++* (2014) | 6 |
+| [Design by Contract](design-by-contract.md) | software | Bertrand Meyer | *Object-Oriented Software Construction* (1988) | 7 |
+| [Design for Production / Stability](design-for-production.md) | software | Michael Nygard | *Release It!* (2007) | 7 |
+| [Domain-Driven Design](domain-driven-design.md) | software | Eric Evans | *Domain-Driven Design: Tackling Complexity in the Heart of Software* (2003) | 7 |
+| [Extreme Programming & Test-Driven Development](extreme-programming-tdd.md) | software | Kent Beck | *Extreme Programming Explained and Test-Driven Development by Example* (1999) | 7 |
+| [Functional Core & Type-Driven Design](functional-core-type-driven.md) | software | ML and Haskell traditions, Gary Bernhardt, Yaron Minsky | *ML/Haskell type-driven programming, Functional Core Imperative Shell, and Effective ML* (2012) | 7 |
+| [Information Hiding & Modular Decomposition](information-hiding.md) | software | David Parnas | *On the Criteria To Be Used in Decomposing Systems into Modules* (1972) | 6 |
+| [Simple Made Easy](simple-made-easy.md) | software | Rich Hickey | *Simple Made Easy* (2011) | 7 |
+| [The Design of Everyday Things](design-of-everyday-things.md) | ux | Don Norman | *The Design of Everyday Things* (1988) | 2 |
+| [The Lean Startup](lean-startup.md) | product | Eric Ries | *The Lean Startup: How Today's Entrepreneurs Use Continuous Innovation to Create Radically Successful Businesses* (2011) | 2 |
+| [The Unix Philosophy](unix-philosophy.md) | software | Doug McIlroy, Ken Thompson, Dennis Ritchie, Rob Pike | *The Bell System Technical Journal (Unix issue) and The Art of Unix Programming* (1978) | 5 |
+| [The Zen of Python](zen-of-python.md) | software | Tim Peters | *PEP 20 -- The Zen of Python* (2004) | 7 |
+| [Worse Is Better](worse-is-better.md) | software | Richard P. Gabriel | *The Rise of Worse Is Better* (1991) | 6 |
 
 ## Patterns and the philosophies that motivate them
 
