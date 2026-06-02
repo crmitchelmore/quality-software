@@ -3,7 +3,7 @@ import { join } from "node:path";
 import Ajv from "ajv";
 import {
   ROOT,
-  loadPatterns,
+  loadPatternsSafe,
   loadVocabularies,
   type Pattern,
 } from "./lib/patterns.js";
@@ -25,8 +25,10 @@ function main(): void {
 
   const strict = process.argv.includes("--strict");
   const vocab = loadVocabularies();
-  const patterns = loadPatterns();
-  const errors: string[] = [];
+  const { patterns, errors: loadErrors } = loadPatternsSafe();
+  const errors: string[] = loadErrors.map(
+    (e) => `${e.file.replace(ROOT + "/", "")}: YAML parse error — ${e.message}`,
+  );
   const warnings: string[] = [];
 
   const ids = new Set<string>();

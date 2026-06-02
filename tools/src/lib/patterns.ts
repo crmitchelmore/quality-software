@@ -79,10 +79,35 @@ export function patternFiles(): string[] {
   return globSync("**/*.yaml", { cwd: PATTERNS_DIR }).map((p) => join(PATTERNS_DIR, p)).sort();
 }
 
+export interface LoadError {
+  file: string;
+  message: string;
+}
+
+export interface LoadResult {
+  patterns: Pattern[];
+  errors: LoadError[];
+}
+
+export function loadPatternsSafe(): LoadResult {
+  const patterns: Pattern[] = [];
+  const errors: LoadError[] = [];
+  for (const file of patternFiles()) {
+    try {
+      const data = yaml.load(readFileSync(file, "utf8")) as Pattern;
+      if (data === null || typeof data !== "object") {
+        errors.push({ file, message: "file is empty or not a YAML mapping" });
+        continue;
+      }
+      data.__file = file;
+      patterns.push(data);
+    } catch (e) {
+      errors.push({ file, message: (e as Error).message.split("\n")[0] });
+    }
+  }
+  return { patterns, errors };
+}
+
 export function loadPatterns(): Pattern[] {
-  return patternFiles().map((file) => {
-    const data = yaml.load(readFileSync(file, "utf8")) as Pattern;
-    data.__file = file;
-    return data;
-  });
+  return loadPatternsSafe().patterns;
 }
