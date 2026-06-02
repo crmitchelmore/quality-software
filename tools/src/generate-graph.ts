@@ -85,7 +85,7 @@ function main(): void {
   mkdirSync(GRAPH_DIR, { recursive: true });
   writeFileSync(
     join(GRAPH_DIR, "knowledge-graph.json"),
-    JSON.stringify({ nodes, edges, generatedAt: new Date().toISOString() }, null, 2) + "\n",
+    JSON.stringify({ nodes, edges }, null, 2) + "\n",
   );
 
   writeFileSync(join(GRAPH_DIR, "index.md"), renderMarkdown(nodes, edges) + "\n");

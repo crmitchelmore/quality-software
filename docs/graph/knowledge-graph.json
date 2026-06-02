@@ -17484,6 +17484,5 @@
       "kind": "pattern-synergy-pattern",
       "reason": "Approval tests can protect legacy seams while the pyramid is being rebuilt."
     }
-  ],
-  "generatedAt": "2026-06-02T22:35:37.955Z"
+  ]
 }
