@@ -1,0 +1,108 @@
+id: inversion-of-control
+title: Inversion of Control
+aka:
+  - IoC
+  - Hollywood Principle
+scale: design
+category: implementation
+maturity: time-tested
+short_description: >-
+  Let a framework, runtime, or composition root call application code at defined
+  extension points instead of application code controlling every step directly.
+description: >-
+  Inversion of Control reverses the usual direction of control flow. Rather than a
+  module creating collaborators and orchestrating the whole lifecycle, it exposes
+  hooks, handlers, or interfaces that an external orchestrator invokes. The pattern
+  is common in frameworks, plugin systems, DI containers, and event loops: the local
+  code owns a focused decision while the surrounding runtime owns sequencing.
+problem: >-
+  Application code becomes rigid when every module drives construction, scheduling,
+  and lifecycle decisions itself.
+context: >-
+  Use when a stable orchestration mechanism needs to call variable application
+  behaviour through narrow extension points.
+consequences:
+  - Enables reusable frameworks and composition roots around specialised business code.
+  - Separates lifecycle orchestration from local policy decisions.
+  - Can make execution flow harder to follow because callbacks are invoked externally.
+  - Debugging requires understanding the container, framework, or event loop contract.
+synergies:
+  - pattern: dependency-injection
+    reason: DI applies IoC to object construction by giving wiring control to the outside.
+  - pattern: template-method
+    reason: Template Method inverts control by letting a superclass define the algorithm and subclasses fill hooks.
+  - pattern: event-emitter
+    reason: Event emitters invert control from direct calls to subscriber callbacks.
+  - pattern: hexagonal-architecture
+    reason: Hexagonal systems use IoC at the boundary so adapters drive ports without domain code knowing the transport.
+alternatives:
+  - service-locator
+  - command
+conflicts_with:
+  - service-locator
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - typescript
+  - python
+frameworks:
+  - spring
+  - dotnet
+  - nestjs
+  - django
+  - none
+project_types:
+  - web-api
+  - backend-service
+  - desktop-app
+  - modular-monolith
+  - library
+tags:
+  - lifecycle
+  - framework
+  - callbacks
+examples:
+  - language: java
+    title: Framework-controlled request handling
+    negative: |
+      public final class Server {
+          public void start() {
+              var controller = new OrdersController();
+              while (true) {
+                  Request request = readRequest();
+                  if (request.path().equals("/orders")) {
+                      controller.list(request);
+                  }
+              }
+          }
+      }
+    positive: |
+      public interface Handler {
+          Response handle(Request request);
+      }
+
+      public final class OrdersController implements Handler {
+          public Response handle(Request request) {
+              return Response.ok("orders");
+          }
+      }
+
+      router.get("/orders", new OrdersController());
+    explanation: >-
+      The positive version lets the routing framework own the request loop while the
+      controller contributes one well-defined handler.
+ratings:
+  small:
+    score: 3
+    notes: Useful for libraries and frameworks, but direct calls are clearer in tiny codebases.
+  medium:
+    score: 5
+    notes: Strong fit for web apps, CLIs, and plugin points with repeated lifecycle patterns.
+  large:
+    score: 5
+    notes: Essential for framework consistency, provided extension points are documented.
+references:
+  - title: Inversion of Control Containers and the Dependency Injection pattern
+    author: Martin Fowler
+    year: 2004

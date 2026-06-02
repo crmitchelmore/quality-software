@@ -1,0 +1,91 @@
+id: etag-conditional-request
+title: ETag / Conditional Request
+scale: integration
+category: api-design
+maturity: time-tested
+short_description: >-
+  Use entity tags with If-None-Match or If-Match headers to validate cached representations and prevent lost updates over HTTP.
+description: >-
+  An ETag is an opaque validator for a specific resource representation. Clients use If-None-Match to ask whether a cached response is still valid, receiving 304 when unchanged, or If-Match to update only if the server representation still has the expected tag. This brings HTTP-native cache revalidation and optimistic concurrency to APIs, but tags must be stable, representation-specific, and generated without exposing sensitive implementation details.
+problem: >-
+  Clients either refetch unchanged resources wastefully or overwrite concurrent changes because the server cannot tell which representation they edited.
+context: >-
+  Use for cacheable resources, expensive representations, and update flows where clients read before writing. Avoid weak or incorrectly scoped tags for writes that require strong concurrency guarantees.
+consequences:
+  - Reduces bandwidth and compute through standard HTTP revalidation.
+  - Prevents lost updates when combined with If-Match and 412 Precondition Failed.
+  - Incorrect ETag generation can leak data, miss changes, or invalidate caches too often.
+  - Collection ETags and paginated resources need careful scope and ordering rules.
+synergies:
+  - pattern: optimistic-concurrency-control
+    reason: >-
+      If-Match exposes optimistic concurrency as an HTTP precondition.
+  - pattern: pagination
+    reason: >-
+      Each page can have its own validator so clients revalidate bounded collection slices.
+  - pattern: rest
+    reason: >-
+      ETags use standard HTTP semantics that REST APIs can expose naturally.
+  - pattern: cache-aside
+    reason: >-
+      ETag-aware responses and caches reduce unnecessary reloads from backing stores.
+alternatives:
+  - idempotency-key
+  - read-replica
+  - optimistic-offline-lock
+conflicts_with:
+  - write-behind-cache
+languages:
+  - language-agnostic
+  - typescript
+  - java
+  - python
+  - go
+frameworks:
+  - express
+  - spring-boot
+  - fastapi
+  - aspnet
+  - rails
+project_types:
+  - web-api
+  - web-frontend
+  - mobile-app
+  - backend-service
+tags:
+  - http-cache
+  - conditional-update
+  - etag
+examples:
+  - language: typescript
+    title: Use If-Match for updates
+    negative: |
+      app.put("/documents/:id", async (req, res) => {
+        const saved = await documents.replace(req.params.id, req.body);
+        res.json(saved);
+      });
+      // Last writer wins even if the client edited stale content.
+    positive: |
+      app.put("/documents/:id", async (req, res) => {
+        const expected = req.header("If-Match");
+        if (!expected) return res.sendStatus(428);
+
+        const saved = await documents.replaceIfVersion(req.params.id, req.body, parseEtag(expected));
+        if (!saved) return res.status(412).type("application/problem+json").json(preconditionFailed());
+        res.set("ETag", makeEtag(saved.version)).json(saved);
+      });
+    explanation: >-
+      The positive version requires the client to prove which representation it edited and rejects stale writes instead of losing updates.
+ratings:
+  small:
+    score: 3
+    notes: >-
+      Useful for small APIs with editable resources or expensive responses.
+  medium:
+    score: 5
+    notes: >-
+      Excellent for medium REST APIs where caching and concurrency matter.
+  large:
+    score: 5
+    notes: >-
+      Essential in large HTTP ecosystems with shared caches, mobile clients, and concurrent editing.

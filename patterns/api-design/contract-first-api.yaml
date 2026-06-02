@@ -1,0 +1,95 @@
+id: contract-first-api
+title: Contract-First API (OpenAPI)
+scale: integration
+category: api-design
+maturity: established
+short_description: >-
+  Design and review the API contract before implementation, then generate docs, clients, tests, or server stubs from it.
+description: >-
+  Contract-First API development treats the API description as a versioned product artefact. Teams define paths, schemas, status codes, security, examples, and error responses in OpenAPI before or alongside code. This enables parallel client work, design review, mock servers, compatibility checks, and generated SDKs. The pattern only works when the contract is verified against implementation; stale specifications are worse than none.
+problem: >-
+  Code-first APIs often ship undocumented behaviours, inconsistent errors, and late-breaking client surprises because the contract is discovered after implementation.
+context: >-
+  Use when APIs have multiple consumers, SDKs, external partners, or independent frontend/backend teams. Keep the contract close to CI so implementation and specification cannot drift silently.
+consequences:
+  - Improves reviewability, documentation, mocking, and generated clients.
+  - Can slow exploratory work if every experiment requires formal schema design.
+  - Requires contract tests or validators to prevent spec/implementation drift.
+  - OpenAPI describes HTTP well but is less natural for event streams or GraphQL schemas.
+synergies:
+  - pattern: api-versioning
+    reason: >-
+      Versioned contract files make breaking and additive changes explicit during review.
+  - pattern: problem-details
+    reason: >-
+      Standard problem responses should be declared once and reused across operations.
+  - pattern: rest
+    reason: >-
+      REST resource contracts are well represented by OpenAPI paths, methods, schemas, and status codes.
+  - pattern: contract-testing
+    reason: >-
+      Consumer-driven tests can verify real services honour the published contract.
+alternatives:
+  - graphql
+  - grpc-rpc
+  - published-language
+conflicts_with:
+  - active-record
+languages:
+  - language-agnostic
+  - typescript
+  - java
+  - python
+  - csharp
+frameworks:
+  - express
+  - spring-boot
+  - fastapi
+  - aspnet
+  - none
+project_types:
+  - web-api
+  - sdk
+  - microservices
+  - backend-service
+tags:
+  - openapi
+  - contract
+  - sdk-generation
+examples:
+  - language: yaml
+    title: Specify errors and versions before coding
+    negative: |
+      paths:
+        /orders/{id}:
+          get:
+            responses:
+              "200":
+                description: OK
+      # Implementation also returns 404 and 409, but clients cannot see their shapes.
+    positive: |
+      paths:
+        /v1/orders/{id}:
+          get:
+            responses:
+              "200":
+                description: Order found
+              "404":
+                $ref: "#/components/responses/NotFoundProblem"
+              "409":
+                $ref: "#/components/responses/ConcurrencyProblem"
+    explanation: >-
+      The positive contract documents success and failure shapes so clients, tests, and generated SDKs share the same expectations before implementation details leak.
+ratings:
+  small:
+    score: 3
+    notes: >-
+      Helpful for small public APIs, but may be too formal for a throwaway prototype.
+  medium:
+    score: 5
+    notes: >-
+      Excellent for medium teams with parallel client/server work.
+  large:
+    score: 5
+    notes: >-
+      Critical for large API platforms with SDKs, compatibility checks, and governance.

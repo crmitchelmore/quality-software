@@ -118,14 +118,14 @@ export class PlaceOrderService implements PlaceOrder {
 
 **Synergies**
 
-- `dependency-injection` — Wiring adapters to ports at the composition root is exactly what DI containers do.
+- [Dependency Injection](../implementation/dependency-injection.md) — Wiring adapters to ports at the composition root is exactly what DI containers do.
 - [Repository](../data-persistence/repository.md) — Repository is the canonical outbound persistence port.
-- `domain-model` — A rich domain model lives naturally inside the hexagon's core.
-- `anti-corruption-layer` — ACL adapters protect the core from external models at the boundary.
+- [Domain Model](../enterprise-application/domain-model.md) — A rich domain model lives naturally inside the hexagon's core.
+- [Anti-Corruption Layer](../cloud-distributed/anti-corruption-layer.md) — ACL adapters protect the core from external models at the boundary.
 
-**Conflicts with:** `transaction-script`
+**Conflicts with:** [Transaction Script](../enterprise-application/transaction-script.md)
 
-**Alternatives:** `layered-architecture`, `clean-architecture`
+**Alternatives:** [Layered (N-Tier) Architecture](../architecture/layered-architecture.md), [Clean Architecture](../architecture/clean-architecture.md)
 
 ## Applicability tags
 

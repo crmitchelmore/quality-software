@@ -1,0 +1,102 @@
+id: service-locator
+title: Service Locator
+aka:
+  - Registry Lookup
+scale: design
+category: implementation
+maturity: established
+short_description: >-
+  Retrieve dependencies from a central registry at runtime, trading explicit
+  constructor wiring for dynamic lookup and late binding.
+description: >-
+  Service Locator provides a registry that maps service contracts to concrete
+  instances. Consumers ask the locator for what they need instead of receiving it
+  directly. This can simplify plugin-style bootstrapping and legacy integration, but
+  it hides dependencies inside method bodies and shifts missing-wiring failures from
+  construction time to runtime lookup.
+problem: >-
+  Some systems need late-bound services where passing every dependency explicitly is
+  awkward, especially in legacy code or plugin hosts.
+context: >-
+  Use sparingly at boundaries that genuinely require dynamic lookup; avoid using it
+  as the default application wiring style.
+consequences:
+  - Centralises service discovery and can ease migration from global singletons.
+  - Supports runtime plugin lookup when the set of services is not known statically.
+  - Hides dependencies from constructors, making code harder to read and test.
+  - Missing registrations fail at lookup time and may be far from startup.
+synergies:
+  - pattern: registry
+    reason: Service Locator is a specialised registry for service instances and factories.
+  - pattern: microkernel
+    reason: Dynamic plugin hosts may need lookup of capabilities discovered after startup.
+  - pattern: dependency-injection
+    reason: DI is the preferred alternative when dependencies are known at construction time.
+  - pattern: inversion-of-control
+    reason: A framework may own the locator, but overuse weakens IoC's explicit extension contracts.
+alternatives:
+  - dependency-injection
+  - registry
+  - factory-method
+conflicts_with:
+  - dependency-injection
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - typescript
+  - php
+frameworks:
+  - none
+  - spring
+  - dotnet
+  - laravel
+project_types:
+  - backend-service
+  - modular-monolith
+  - desktop-app
+  - sdk
+tags:
+  - lookup
+  - coupling
+  - legacy
+examples:
+  - language: typescript
+    title: Hidden service lookup
+    negative: |
+      class InvoiceController {
+        async send(id: string) {
+          const mailer = Services.get<Mailer>('mailer');
+          const invoice = await Services.get<InvoiceStore>('invoiceStore').load(id);
+          await mailer.send(invoice.customerEmail, invoice.render());
+        }
+      }
+    positive: |
+      class InvoiceController {
+        constructor(
+          private readonly mailer: Mailer,
+          private readonly invoices: InvoiceStore,
+        ) {}
+
+        async send(id: string) {
+          const invoice = await this.invoices.load(id);
+          await this.mailer.send(invoice.customerEmail, invoice.render());
+        }
+      }
+    explanation: >-
+      The positive version shows why Service Locator is often a smell: constructor
+      injection makes the controller's requirements visible and easier to test.
+ratings:
+  small:
+    score: 2
+    notes: Usually unnecessary; explicit construction is simpler.
+  medium:
+    score: 2
+    notes: Occasionally helpful for legacy migration, but DI is normally better.
+  large:
+    score: 3
+    notes: Situational for plugin hosts; dangerous as a general dependency strategy.
+references:
+  - title: Inversion of Control Containers and the Dependency Injection pattern
+    author: Martin Fowler
+    year: 2004

@@ -1,0 +1,106 @@
+id: event-emitter
+title: Event Emitter (Pub-Sub in-process)
+aka:
+  - In-Process Pub-Sub
+  - Event Dispatcher
+scale: design
+category: implementation
+maturity: established
+short_description: >-
+  Let components publish named in-process events to registered listeners without
+  directly calling every interested collaborator.
+description: >-
+  Event Emitter decouples a local producer from local subscribers through named
+  events and callback registration. It is useful for UI widgets, plugin hooks, and
+  modular extension points inside one process. It is not a durable messaging system:
+  listener order, error handling, and delivery guarantees are usually simple and must
+  be documented if correctness depends on them.
+problem: >-
+  A component that directly calls every side-effecting collaborator becomes coupled
+  to optional behaviours and extension points.
+context: >-
+  Use for in-process notifications where listeners are local, fast, and non-critical
+  or where failures can be handled synchronously.
+consequences:
+  - Decouples publishers from optional subscribers and plugin hooks.
+  - Allows multiple local reactions without changing the publisher.
+  - Can obscure control flow and make listener failures surprising.
+  - Does not provide persistence, retries, backpressure, or cross-process delivery.
+synergies:
+  - pattern: observer
+    reason: Event Emitter is a named-event variant of Observer for in-process callbacks.
+  - pattern: inversion-of-control
+    reason: Subscribers invert control by registering callbacks that the emitter invokes later.
+  - pattern: publish-subscribe
+    reason: Publish-Subscribe Channel is the distributed/integration form with brokered delivery semantics.
+  - pattern: domain-event
+    reason: Domain events can be dispatched in-process before being promoted to durable integration events.
+alternatives:
+  - observer
+  - publish-subscribe
+  - message-bus
+conflicts_with:
+  - request-reply
+languages:
+  - language-agnostic
+  - javascript
+  - typescript
+  - python
+  - csharp
+frameworks:
+  - nodejs
+  - react
+  - dotnet
+  - none
+project_types:
+  - web-frontend
+  - backend-service
+  - desktop-app
+  - library
+  - sdk
+tags:
+  - events
+  - callbacks
+  - decoupling
+examples:
+  - language: typescript
+    title: Local extension point
+    negative: |
+      class UploadService {
+        async upload(file: File) {
+          const result = await storage.save(file);
+          await thumbnailer.create(result.id);
+          await analytics.track('uploaded', result.id);
+          await cache.invalidate('uploads');
+          return result;
+        }
+      }
+    positive: |
+      class UploadService {
+        constructor(private readonly events: EventEmitter) {}
+
+        async upload(file: File) {
+          const result = await storage.save(file);
+          this.events.emit('upload.saved', { id: result.id });
+          return result;
+        }
+      }
+
+      events.on('upload.saved', event => thumbnailer.create(event.id));
+      events.on('upload.saved', event => analytics.track('uploaded', event.id));
+    explanation: >-
+      The positive version keeps upload persistence independent from optional local
+      reactions, so new subscribers can be added without editing UploadService.
+ratings:
+  small:
+    score: 3
+    notes: Handy for UI and plugin hooks, but direct calls are clearer for one listener.
+  medium:
+    score: 4
+    notes: Good for modular in-process extension points with documented listener behaviour.
+  large:
+    score: 3
+    notes: Use carefully; critical workflows often need durable messaging instead.
+references:
+  - title: Node.js Events API
+    author: OpenJS Foundation

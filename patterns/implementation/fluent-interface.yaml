@@ -1,0 +1,93 @@
+id: fluent-interface
+title: Fluent Interface
+aka:
+  - Method Chaining
+  - Fluent API
+scale: implementation
+category: implementation
+maturity: established
+short_description: >-
+  Design method chains that read like a small domain language while progressively
+  configuring or composing an object.
+description: >-
+  A Fluent Interface returns the receiver or a next-stage object from methods so
+  calls can be chained into a readable expression. It is most effective when the
+  chain models a natural sequence: query construction, validation rules, builders,
+  or test fixtures. The danger is making clever sentence-like APIs that obscure
+  control flow, errors, or required ordering.
+problem: >-
+  Repetitive configuration code can be noisy and lose the shape of the domain action
+  among temporary variables and setters.
+context: >-
+  Use for focused APIs where chaining improves readability and the valid sequence of
+  calls is simple or type-enforced.
+consequences:
+  - Produces concise, discoverable configuration or composition code.
+  - Can encode staged workflows when methods return narrower types.
+  - Debugging long chains can be harder than stepping through named variables.
+  - Over-fluent APIs can hide side effects and mandatory ordering.
+synergies:
+  - pattern: builder
+    reason: Builders commonly expose fluent methods for incremental construction.
+  - pattern: type-state
+    reason: Type State can make fluent chains safe by exposing only the next valid calls.
+  - pattern: options-object
+    reason: Options Object is often simpler when configuration has no meaningful sequence.
+alternatives:
+  - builder
+  - options-object
+conflicts_with:
+  - parameter-object
+languages:
+  - language-agnostic
+  - typescript
+  - java
+  - csharp
+  - ruby
+frameworks:
+  - none
+  - sqlalchemy
+  - entity-framework
+  - graphql
+project_types:
+  - library
+  - sdk
+  - web-api
+tags:
+  - api-design
+  - readability
+  - chaining
+examples:
+  - language: csharp
+    title: Query construction
+    negative: |
+      var query = new InvoiceQuery();
+      query.CustomerId = customerId;
+      query.IncludePaid = false;
+      query.SortField = "dueDate";
+      query.SortDescending = false;
+      var invoices = repository.Find(query);
+    positive: |
+      var invoices = repository
+          .Invoices()
+          .ForCustomer(customerId)
+          .UnpaidOnly()
+          .OrderByDueDate()
+          .Find();
+    explanation: >-
+      The positive version makes the query read as one domain expression, reducing
+      incidental setter noise while keeping each operation explicit.
+ratings:
+  small:
+    score: 3
+    notes: Nice for small libraries but unnecessary for one-off configuration.
+  medium:
+    score: 4
+    notes: Good fit for stable internal DSLs, builders, and test data setup.
+  large:
+    score: 3
+    notes: Useful selectively; long chains and hidden side effects become review risks.
+references:
+  - title: FluentInterface
+    author: Martin Fowler
+    year: 2005

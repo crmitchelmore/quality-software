@@ -1,0 +1,115 @@
+id: dependency-injection
+title: Dependency Injection
+aka:
+  - DI
+  - Constructor Injection
+scale: design
+category: implementation
+maturity: time-tested
+short_description: >-
+  Provide an object's dependencies from the outside rather than constructing them
+  internally, making collaborators explicit, replaceable, and testable.
+description: >-
+  Dependency Injection moves object wiring out of business logic. A class declares
+  the services it needs through its constructor, method, or configuration boundary,
+  and composition code supplies concrete implementations. This keeps policies from
+  knowing how to create infrastructure, supports test doubles without global state,
+  and makes runtime variation a configuration concern rather than a hidden branch.
+problem: >-
+  Classes that instantiate their own collaborators become tightly coupled to concrete
+  infrastructure and are difficult to test or reconfigure.
+context: >-
+  Use when modules depend on behaviours that vary by environment, test, adapter, or
+  deployment but should remain explicit at the module boundary.
+consequences:
+  - Makes dependencies visible in type signatures and constructor contracts.
+  - Improves testability because tests can pass focused substitutes.
+  - Can produce large constructors if a class has too many responsibilities.
+  - Container-heavy use can obscure wiring unless composition roots remain clear.
+synergies:
+  - pattern: inversion-of-control
+    reason: Dependency Injection is a concrete mechanism for IoC; construction control moves to the composition root.
+  - pattern: strategy
+    reason: Strategies are commonly injected so algorithms can vary without changing the consumer.
+  - pattern: hexagonal-architecture
+    reason: Ports and adapters rely on injecting adapter implementations into application services.
+  - pattern: service-locator
+    reason: Service Locator is an alternative that centralises lookup but hides dependencies from callers.
+alternatives:
+  - service-locator
+  - factory-method
+conflicts_with:
+  - service-locator
+languages:
+  - language-agnostic
+  - typescript
+  - java
+  - csharp
+  - python
+frameworks:
+  - none
+  - spring
+  - nestjs
+  - dotnet
+  - fastapi
+project_types:
+  - web-api
+  - backend-service
+  - modular-monolith
+  - microservices
+  - library
+tags:
+  - coupling
+  - testability
+  - composition
+examples:
+  - language: csharp
+    title: Injecting a payment gateway
+    negative: |
+      public sealed class CheckoutService
+      {
+          public Receipt Checkout(Cart cart)
+          {
+              var gateway = new StripeGateway();
+              var chargeId = gateway.Charge(cart.Total);
+              return new Receipt(chargeId);
+          }
+      }
+    positive: |
+      public interface PaymentGateway
+      {
+          string Charge(decimal amount);
+      }
+
+      public sealed class CheckoutService
+      {
+          private readonly PaymentGateway gateway;
+
+          public CheckoutService(PaymentGateway gateway)
+          {
+              this.gateway = gateway;
+          }
+
+          public Receipt Checkout(Cart cart)
+          {
+              var chargeId = gateway.Charge(cart.Total);
+              return new Receipt(chargeId);
+          }
+      }
+    explanation: >-
+      The positive version declares the payment dependency at construction time, so
+      production can supply Stripe while tests supply a deterministic fake.
+ratings:
+  small:
+    score: 4
+    notes: Good for tests and adapters, but manual wiring is usually enough.
+  medium:
+    score: 5
+    notes: Excellent fit as application services and adapters multiply.
+  large:
+    score: 5
+    notes: Essential for clear boundaries; enforce composition roots to avoid container magic.
+references:
+  - title: Inversion of Control Containers and the Dependency Injection pattern
+    author: Martin Fowler
+    year: 2004

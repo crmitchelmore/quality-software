@@ -90,10 +90,10 @@ async function getRate(): Promise<number> {
 
 **Synergies**
 
-- `retry` — Retry handles transient blips; the breaker stops retries once failures are systemic.
-- `bulkhead` — Bulkheads isolate resources so a tripped dependency cannot exhaust shared pools.
-- `timeout` — Timeouts bound each call so the breaker can detect slowness, not just errors.
-- `fallback` — A fallback supplies a degraded response while the circuit is open.
+- [Retry with Backoff](../resilience/retry.md) — Retry handles transient blips; the breaker stops retries once failures are systemic.
+- [Bulkhead](../resilience/bulkhead.md) — Bulkheads isolate resources so a tripped dependency cannot exhaust shared pools.
+- [Timeout](../resilience/timeout.md) — Timeouts bound each call so the breaker can detect slowness, not just errors.
+- [Fallback](../resilience/fallback.md) — A fallback supplies a degraded response while the circuit is open.
 
 ## Applicability tags
 

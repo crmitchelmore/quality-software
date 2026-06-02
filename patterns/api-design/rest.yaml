@@ -1,0 +1,94 @@
+id: rest
+title: REST
+scale: integration
+category: api-design
+maturity: time-tested
+short_description: >-
+  Model an HTTP API around resources, representations, standard methods, status codes, and cache semantics.
+description: >-
+  REST uses HTTP as an application protocol: resources are addressed by stable URIs, manipulated with methods such as GET, POST, PUT, PATCH, and DELETE, and represented with media types like JSON. Good REST APIs make safety, idempotency, cacheability, conditional requests, and error semantics explicit rather than tunnelling every action through a generic endpoint. Hypermedia is optional in many pragmatic APIs, but the resource model and HTTP semantics are not.
+problem: >-
+  APIs built as arbitrary remote procedure calls over HTTP lose standard caching, status, idempotency, observability, and tooling benefits.
+context: >-
+  Use for public or internal APIs where resource lifecycles, interoperability, browser/client support, and HTTP infrastructure matter. Prefer GraphQL for client-selected graphs and gRPC for low-latency strongly typed service-to-service calls.
+consequences:
+  - >-
+    Excellent ecosystem support: gateways, caches, logs, documentation, and client libraries understand HTTP.
+  - Resource modelling can be awkward for command-heavy workflows or streaming interactions.
+  - Over-fetching and under-fetching are common without careful endpoint design.
+  - Consistency depends on disciplined methods, status codes, problem details, pagination, and versioning.
+synergies:
+  - pattern: api-versioning
+    reason: >-
+      Versioning defines how resource contracts evolve without surprising existing clients.
+  - pattern: problem-details
+    reason: >-
+      Problem Details gives REST errors a standard machine-readable shape.
+  - pattern: etag-conditional-request
+    reason: >-
+      ETags bring HTTP cache validation and optimistic concurrency to resource representations.
+  - pattern: pagination
+    reason: >-
+      Collection resources need bounded, navigable pages rather than unbounded arrays.
+alternatives:
+  - graphql
+  - grpc-rpc
+  - request-reply
+conflicts_with:
+  - graphql
+  - grpc-rpc
+languages:
+  - language-agnostic
+  - typescript
+  - java
+  - python
+  - go
+frameworks:
+  - express
+  - fastapi
+  - spring-boot
+  - aspnet
+  - rails
+project_types:
+  - web-api
+  - backend-service
+  - microservices
+  - sdk
+tags:
+  - http
+  - resources
+  - interoperability
+examples:
+  - language: typescript
+    title: Use resource semantics, not a command tunnel
+    negative: |
+      app.post("/api", async (req, res) => {
+        if (req.body.action === "getUser") res.json(await users.get(req.body.id));
+        if (req.body.action === "deleteUser") res.json(await users.delete(req.body.id));
+      });
+    positive: |
+      app.get("/users/:id", async (req, res) => {
+        const user = await users.get(req.params.id);
+        if (!user) return res.status(404).type("application/problem+json").json(notFound());
+        res.json(user);
+      });
+
+      app.delete("/users/:id", async (req, res) => {
+        await users.delete(req.params.id);
+        res.status(204).end();
+      });
+    explanation: >-
+      The positive version lets clients, caches, gateways, and logs understand the operation through standard HTTP method and resource semantics.
+ratings:
+  small:
+    score: 5
+    notes: >-
+      Excellent default for small APIs because tooling and conventions reduce custom protocol work.
+  medium:
+    score: 5
+    notes: >-
+      Strong fit for most medium product APIs.
+  large:
+    score: 4
+    notes: >-
+      Still important at large scale, though GraphQL, gRPC, events, and specialised protocols often complement it.

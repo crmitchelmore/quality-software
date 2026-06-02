@@ -1,0 +1,93 @@
+id: idempotency-key
+title: Idempotency Key
+scale: integration
+category: api-design
+maturity: established
+short_description: >-
+  Require clients to send a stable key for retried non-idempotent requests so the server can return the original result.
+description: >-
+  An Idempotency Key identifies the logical operation, not an individual HTTP attempt. The server stores the key, request fingerprint, processing state, and final response or resource reference inside the same durable boundary as the side effect. If the client retries after a timeout or connection drop, the server recognises the key and either resumes, waits, or returns the original outcome. This pattern is crucial for payments, orders, fulfilment, and any at-least-once delivery path.
+problem: >-
+  Clients, gateways, and job runners retry requests when responses are lost, but repeating a non-idempotent operation can charge, reserve, or create twice.
+context: >-
+  Use for externally retried POST-like operations that create side effects. Keys must be scoped to a tenant/client and protected from unbounded retention.
+consequences:
+  - Makes retries safe for clients and infrastructure.
+  - Requires durable storage and careful handling of in-progress, failed, and mismatched duplicate requests.
+  - Retention windows and request fingerprints must balance replay safety with storage growth.
+  - Poor scoping can let one tenant interfere with another tenant key.
+synergies:
+  - pattern: idempotency
+    reason: >-
+      Idempotency Key is a concrete API mechanism for making retried writes logically idempotent.
+  - pattern: idempotent-receiver
+    reason: >-
+      Message consumers use the same duplicate detection idea for at-least-once delivery.
+  - pattern: retry
+    reason: >-
+      Retries become safe only when the server recognises repeated logical operations.
+  - pattern: problem-details
+    reason: >-
+      Mismatched key reuse should return a precise machine-readable error.
+alternatives:
+  - etag-conditional-request
+  - optimistic-concurrency-control
+  - command
+conflicts_with:
+  - active-record
+languages:
+  - language-agnostic
+  - typescript
+  - java
+  - python
+  - go
+frameworks:
+  - express
+  - spring-boot
+  - fastapi
+  - aspnet
+  - none
+project_types:
+  - web-api
+  - backend-service
+  - microservices
+  - distributed-system
+tags:
+  - safe-retry
+  - deduplication
+  - payments
+examples:
+  - language: typescript
+    title: Store the logical operation result
+    negative: |
+      app.post("/payments", async (req, res) => {
+        const payment = await gateway.charge(req.body.card, req.body.amount);
+        await payments.save(payment);
+        res.status(201).json(payment);
+      });
+      // If the response is lost, retrying may charge again.
+    positive: |
+      app.post("/payments", async (req, res) => {
+        const key = req.header("Idempotency-Key");
+        if (!key) return res.status(400).json(problem("missing-idempotency-key"));
+
+        const result = await idempotency.run(req.account.id, key, fingerprint(req.body), () =>
+          payments.chargeAndRecord(req.body.card, req.body.amount)
+        );
+        res.status(result.replayed ? 200 : 201).json(result.body);
+      });
+    explanation: >-
+      The positive version scopes and records the logical payment attempt, so retries return the original outcome instead of creating another charge.
+ratings:
+  small:
+    score: 4
+    notes: >-
+      Worth it even in small systems for payments, orders, and external retries.
+  medium:
+    score: 5
+    notes: >-
+      Excellent for medium APIs where mobile and gateway retries are normal.
+  large:
+    score: 5
+    notes: >-
+      Essential for large distributed write paths and webhook/message processing.

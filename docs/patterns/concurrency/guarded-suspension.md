@@ -1,0 +1,105 @@
+# Guarded Suspension
+
+> Suspend a thread inside a synchronised object until a guarded condition becomes true, then proceed while the condition is protected.
+
+**Scale:** concurrency · **Category:** concurrency · **Maturity:** time-tested
+
+**Also known as:** Wait Until Predicate
+
+## Description
+
+Guarded Suspension protects an operation with a predicate: if the object is not in the required state, the caller waits on a condition variable and rechecks the predicate after waking. The wait atomically releases the lock and reacquires it before returning, avoiding both busy waiting and missed notifications. The guard must always be tested in a loop because wakeups can be spurious and another thread can consume the condition first. Timeouts and cancellation should be part of the contract where indefinite waiting would harm availability.
+
+**Problem.** A thread needs a condition to become true before proceeding, but polling wastes CPU and naive sleep/notify protocols miss changes or race with state updates.
+
+**Context.** Use in monitors, bounded buffers, connection pools, and coordination primitives where an operation is valid only after state changes caused by another thread.
+
+## Consequences / Trade-offs
+
+- Avoids busy waiting while preserving atomicity between checking the condition and waiting.
+- Correctly handles spurious wakeups when the guard is rechecked in a loop.
+- Can block threads indefinitely unless timeout, interruption, or shutdown is designed.
+- Too many guarded waits can make liveness hard to reason about; document predicates clearly.
+
+## Ratings by project size
+
+| Project size | Score | Notes |
+| --- | --- | --- |
+| Small (<10k LOC) | ●●●○○ 3/5 | Useful for low-level coordination, but small apps should prefer queues or futures when they express the intent directly. |
+| Medium (≤100k LOC) | ●●●●○ 4/5 | Good inside reusable concurrency components, especially bounded buffers and pools. |
+| Large (>100k LOC) | ●●●○○ 3/5 | Necessary in internals but easy to misuse at scale; higher-level constructs are usually preferable for application code. |
+
+## Examples
+
+### Waiting for a result safely
+
+**❌ Negative (python)**
+
+```python
+import time
+
+class ResultBox:
+    def __init__(self):
+        self.ready = False
+        self.value = None
+
+    def set(self, value):
+        self.value = value
+        self.ready = True
+
+    def get(self):
+        while not self.ready:   # busy wait; no memory/notification discipline
+            time.sleep(0.001)
+        return self.value
+```
+
+**✅ Positive (python)**
+
+```python
+import threading
+
+class ResultBox:
+    def __init__(self):
+        self._condition = threading.Condition()
+        self._ready = False
+        self._value = None
+
+    def set(self, value):
+        with self._condition:
+            self._value = value
+            self._ready = True
+            self._condition.notify_all()
+
+    def get(self, timeout=None):
+        with self._condition:
+            if not self._condition.wait_for(lambda: self._ready, timeout=timeout):
+                raise TimeoutError("result not ready")
+            return self._value
+```
+
+*The positive version binds the guard and the state to one condition. Waiting releases the lock atomically and rechecks the predicate after wakeup, with a timeout for liveness.*
+
+## Relationships
+
+**Synergies**
+
+- [Monitor Object](../concurrency/monitor-object.md) — Guarded Suspension is usually implemented with monitor locks and condition variables that protect the predicate.
+- [Producer-Consumer](../concurrency/producer-consumer.md) — Consumers guard on queue-not-empty and producers guard on queue-not-full in bounded buffers.
+- [Semaphore](../concurrency/semaphore.md) — A semaphore is a reusable guarded suspension where the predicate is available permits greater than zero.
+- [Timeout](../resilience/timeout.md) — Timed waits prevent guarded operations from hanging forever when the condition never arrives.
+
+**Conflicts with:** [Reactor](../concurrency/reactor.md)
+
+**Alternatives:** [Balking](../concurrency/balking.md), [Future / Promise](../concurrency/future-promise.md), [Semaphore](../concurrency/semaphore.md)
+
+## Applicability tags
+
+- **Languages:** language-agnostic, java, csharp, cpp, python
+- **Frameworks:** none
+- **Project types:** library, backend-service, embedded, realtime-system
+- **Tags:** condition-variable, wait, predicate
+
+## References
+
+- Schmidt, Stal, Rohnert, Buschmann, Pattern-Oriented Software Architecture Volume 2, (2000)
+

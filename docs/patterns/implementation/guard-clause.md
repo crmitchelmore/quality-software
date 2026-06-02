@@ -69,8 +69,8 @@ function discount(user) {
 
 **Synergies**
 
-- `null-object` — Guards and null objects both remove defensive branching from core logic.
-- `fail-fast` — Guard clauses are the concrete mechanism for failing fast on bad input.
+- [Null Object](../implementation/null-object.md) — Guards and null objects both remove defensive branching from core logic.
+- [Fail Fast](../implementation/fail-fast.md) — Guard clauses are the concrete mechanism for failing fast on bad input.
 
 ## Applicability tags
 

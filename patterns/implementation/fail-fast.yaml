@@ -1,0 +1,111 @@
+id: fail-fast
+title: Fail Fast
+aka:
+  - Fast Failure
+scale: implementation
+category: implementation
+maturity: time-tested
+short_description: >-
+  Detect invalid state, bad input, or missing configuration immediately and stop at
+  the closest responsible boundary.
+description: >-
+  Fail Fast turns latent errors into immediate, local failures. Instead of accepting
+  a malformed value and allowing it to break later in a distant subsystem, code
+  validates assumptions at creation, startup, or boundary entry and raises a clear
+  error. The pattern improves diagnosability, but it should be balanced with tolerant
+  input handling where recovery or normalisation is the product requirement.
+problem: >-
+  Delayed failures appear far from their cause, produce misleading symptoms, and may
+  corrupt state before anyone notices.
+context: >-
+  Use for invariants, programmer errors, required configuration, and input that
+  cannot be safely normalised.
+consequences:
+  - Produces local, actionable failures with clearer stack traces.
+  - Prevents invalid state from entering deeper layers.
+  - Can reduce availability if used for recoverable external conditions.
+  - Requires clear error messages so fast failure is useful rather than abrupt.
+synergies:
+  - pattern: guard-clause
+    reason: Guard clauses are the common implementation mechanism for failing fast in functions.
+  - pattern: smart-constructor
+    reason: Smart constructors fail fast before invalid domain values can exist.
+  - pattern: input-validation
+    reason: Input validation applies fail-fast thinking at trust boundaries.
+  - pattern: lazy-initialization
+    reason: Lazy Initialization conflicts when it defers configuration or connection failures until first use.
+alternatives:
+  - fallback
+  - lazy-initialization
+  - input-validation
+conflicts_with:
+  - lazy-initialization
+  - fallback
+languages:
+  - language-agnostic
+  - typescript
+  - java
+  - csharp
+  - rust
+frameworks:
+  - none
+  - spring
+  - dotnet
+  - nodejs
+project_types:
+  - library
+  - web-api
+  - backend-service
+  - cli-tool
+tags:
+  - validation
+  - invariants
+  - diagnostics
+examples:
+  - language: typescript
+    title: Required configuration
+    negative: |
+      const apiKey = process.env.PAYMENTS_API_KEY;
+
+      export async function charge(amount: number) {
+        return fetch('/payments', {
+          headers: { Authorization: `Bearer ${apiKey}` },
+          method: 'POST',
+          body: JSON.stringify({ amount }),
+        });
+      }
+    positive: |
+      function requiredEnv(name: string): string {
+        const value = process.env[name];
+        if (!value) {
+          throw new Error(`Missing required environment variable: ${name}`);
+        }
+        return value;
+      }
+
+      const apiKey = requiredEnv('PAYMENTS_API_KEY');
+
+      export async function charge(amount: number) {
+        return fetch('/payments', {
+          headers: { Authorization: `Bearer ${apiKey}` },
+          method: 'POST',
+          body: JSON.stringify({ amount }),
+        });
+      }
+    explanation: >-
+      The positive version fails during startup with a precise configuration error
+      instead of sending broken requests later.
+ratings:
+  small:
+    score: 5
+    notes: Excellent default for invariants and required configuration.
+  medium:
+    score: 5
+    notes: Strongly improves diagnostics across many call paths.
+  large:
+    score: 4
+    notes: Essential internally, but combine with resilience patterns at unreliable external boundaries.
+references:
+  - title: The Pragmatic Programmer
+    author: Andrew Hunt and David Thomas
+    year: 1999

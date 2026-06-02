@@ -1,0 +1,107 @@
+# Entity
+
+> Model a domain concept whose identity and lifecycle matter more than its attributes. Entities protect invariants around identity, behaviour, and state transitions.
+
+**Scale:** design · **Category:** ddd-tactical · **Maturity:** time-tested
+
+## Description
+
+An Entity represents something the business recognises as the same thing over time, even as its properties change: an Order, Account, Claim, Vehicle, or Subscription. Its equality is based on stable identity, not a full structural comparison, and behaviour that changes its state lives close to the data it protects. Good entities are not anemic data bags; they expose intention-revealing methods such as confirm(), changeAddress(), or suspendForRisk() that enforce rules before mutating state. In DDD, entities often live inside aggregates, where only the aggregate root is referenced from outside the boundary.
+
+**Problem.** When identity-rich domain concepts are represented as loose records or DTOs, business rules scatter across services, updates bypass invariants, and equality becomes ambiguous. Systems then accidentally treat two versions of the same business object as different things, or two structurally similar objects as the same thing.
+
+**Context.** Use entities when a concept has continuity, lifecycle, ownership, or behaviour that depends on past state. They are most useful in domain models with non-trivial rules, not in CRUD screens that merely capture and display fields.
+
+## Consequences / Trade-offs
+
+- Gives identity, lifecycle, and invariant enforcement a clear home.
+- Makes domain operations readable because methods express business intent rather than field assignment.
+- Requires careful persistence mapping so ORM mechanics do not leak into the model.
+- Overusing entities for immutable measures or descriptive values creates needless mutability and identity management.
+
+## Ratings by project size
+
+| Project size | Score | Notes |
+| --- | --- | --- |
+| Small (<10k LOC) | ●●○○○ 2/5 | Useful only when even a small app has real lifecycle rules; for simple CRUD records it can be ceremony. |
+| Medium (≤100k LOC) | ●●●●○ 4/5 | Good fit once behaviour and state transitions are shared across multiple use cases. |
+| Large (>100k LOC) | ●●●●● 5/5 | Essential in large DDD models because identity and invariants must remain consistent across teams and persistence boundaries. |
+
+## Examples
+
+### Order identity and state transitions
+
+**❌ Negative (csharp)**
+
+```csharp
+public sealed class OrderDto
+{
+    public Guid Id { get; set; }
+    public string Status { get; set; } = "Draft";
+    public decimal Total { get; set; }
+}
+
+public sealed class OrderService
+{
+    public void Confirm(OrderDto order)
+    {
+        if (order.Total <= 0) throw new InvalidOperationException("empty order");
+        order.Status = "Confirmed";
+    }
+}
+```
+
+**✅ Positive (csharp)**
+
+```csharp
+public sealed class Order
+{
+    public OrderId Id { get; }
+    public Money Total { get; private set; }
+    public OrderStatus Status { get; private set; } = OrderStatus.Draft;
+
+    public Order(OrderId id, Money total)
+    {
+        Id = id;
+        Total = total;
+    }
+
+    public void Confirm()
+    {
+        if (Total.IsZero) throw new DomainException("An empty order cannot be confirmed.");
+        if (Status != OrderStatus.Draft) throw new DomainException("Only draft orders can be confirmed.");
+        Status = OrderStatus.Confirmed;
+    }
+
+    public override bool Equals(object? obj) => obj is Order other && Id.Equals(other.Id);
+    public override int GetHashCode() => Id.GetHashCode();
+}
+```
+
+*The positive version gives the order stable identity and makes Confirm the only valid transition point. Callers cannot set an arbitrary status string or bypass the empty-order rule.*
+
+## Relationships
+
+**Synergies**
+
+- [Value Object](../ddd-tactical/value-object.md) — Entities should delegate descriptive, equality-by-value concepts such as Money, EmailAddress, and Address to value objects.
+- [Aggregate](../ddd-tactical/aggregate.md) — Aggregates define which entity is the root and which child entities are modified only through that root.
+- [Repository](../data-persistence/repository.md) — Repositories load and save aggregate-root entities without leaking persistence concerns into domain code.
+- [Domain Event](../ddd-tactical/domain-event.md) — Entities can record domain events when business-significant state transitions occur.
+
+**Conflicts with:** [Active Record](../enterprise-application/active-record.md)
+
+**Alternatives:** [Value Object](../ddd-tactical/value-object.md), [Transaction Script](../enterprise-application/transaction-script.md)
+
+## Applicability tags
+
+- **Languages:** language-agnostic, csharp, java, typescript
+- **Frameworks:** none, dotnet, spring-boot, hibernate, entity-framework
+- **Project types:** backend-service, modular-monolith, microservices, web-api
+- **Tags:** ddd, identity, domain-model, invariants
+
+## References
+
+- Eric Evans, Domain-Driven Design, (2003)
+- Vaughn Vernon, Implementing Domain-Driven Design, (2013)
+

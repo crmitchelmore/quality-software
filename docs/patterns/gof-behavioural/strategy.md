@@ -71,11 +71,11 @@ class Checkout {
 
 **Synergies**
 
-- `dependency-injection` — The chosen strategy is typically injected into the context.
-- `factory-method` — A factory can select and create the appropriate strategy.
-- `null-object` — A no-op strategy provides a safe default with no conditionals.
+- [Dependency Injection](../implementation/dependency-injection.md) — The chosen strategy is typically injected into the context.
+- [Factory Method](../gof-creational/factory-method.md) — A factory can select and create the appropriate strategy.
+- [Null Object](../implementation/null-object.md) — A no-op strategy provides a safe default with no conditionals.
 
-**Alternatives:** `template-method`, `state`
+**Alternatives:** [Template Method](../gof-behavioural/template-method.md), [State](../gof-behavioural/state.md)
 
 ## Applicability tags
 

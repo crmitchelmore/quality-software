@@ -1,0 +1,91 @@
+id: pagination
+title: Pagination
+scale: integration
+category: api-design
+maturity: time-tested
+short_description: >-
+  Return large collections in bounded pages using stable ordering and continuation information instead of unbounded lists.
+description: >-
+  Pagination constrains collection responses so APIs, databases, and clients handle predictable amounts of data. Offset pagination is simple for small, mostly static lists; keyset or cursor pagination is safer for large or frequently changing datasets because it follows a stable sort key. Good pagination includes explicit limits, deterministic ordering, next/previous links or cursors, and clear consistency expectations.
+problem: >-
+  Unbounded collection endpoints cause slow queries, huge responses, timeouts, memory pressure, and inconsistent client behaviour as data grows.
+context: >-
+  Use for every API endpoint that can return more than a small fixed number of items. Choose cursor/keyset pagination when inserts or deletes happen during traversal.
+consequences:
+  - Protects databases and clients from accidental full scans and huge payloads.
+  - Cursor design can leak implementation details if tokens are not opaque or versioned.
+  - Offset pagination is easy but becomes slow and inconsistent at high offsets.
+  - Stable sorting and conditional requests are needed for predictable user experiences.
+synergies:
+  - pattern: etag-conditional-request
+    reason: >-
+      ETags let clients revalidate pages and avoid refetching unchanged collection slices.
+  - pattern: rest
+    reason: >-
+      REST collection resources should expose page boundaries and navigation links.
+  - pattern: read-replica
+    reason: >-
+      Paginated reads keep replica queries bounded and less likely to starve other traffic.
+  - pattern: hateoas
+    reason: >-
+      Page responses can include next and previous links rather than forcing clients to construct URLs.
+alternatives:
+  - iterator
+  - materialized-view
+  - gateway-aggregation
+conflicts_with:
+  - lazy-load
+languages:
+  - language-agnostic
+  - typescript
+  - python
+  - java
+  - sql
+frameworks:
+  - express
+  - fastapi
+  - spring-boot
+  - django
+  - none
+project_types:
+  - web-api
+  - backend-service
+  - data-pipeline
+  - mobile-app
+tags:
+  - bounded-results
+  - cursor
+  - keyset
+examples:
+  - language: typescript
+    title: Prefer stable cursors for changing data
+    negative: |
+      app.get("/orders", async (req, res) => {
+        const rows = await db.query("SELECT * FROM orders ORDER BY created_at DESC");
+        res.json(rows.rows);
+      });
+    positive: |
+      app.get("/orders", async (req, res) => {
+        const limit = Math.min(Number(req.query.limit ?? 50), 100);
+        const cursor = decodeCursor(req.query.cursor as string | undefined);
+        const rows = await ordersPageAfter(cursor, limit + 1);
+        res.json({
+          items: rows.slice(0, limit),
+          next_cursor: rows.length > limit ? encodeCursor(rows[limit - 1]) : null
+        });
+      });
+    explanation: >-
+      The positive version caps result size and uses a continuation cursor so clients can traverse a changing collection without unbounded scans.
+ratings:
+  small:
+    score: 4
+    notes: >-
+      Good default even for small APIs because growth is predictable.
+  medium:
+    score: 5
+    notes: >-
+      Essential for medium APIs and mobile clients.
+  large:
+    score: 5
+    notes: >-
+      Mandatory at large scale; pair with keyset indexes, ETags, and clear cursor contracts.

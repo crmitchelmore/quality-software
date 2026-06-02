@@ -69,14 +69,14 @@ class RegisterService {
 
 **Synergies**
 
-- `unit-of-work` — Unit of Work coordinates saving changes tracked across repositories in one transaction.
-- `aggregate` — Repositories are defined per aggregate root, preserving consistency boundaries.
+- [Unit of Work](../enterprise-application/unit-of-work.md) — Unit of Work coordinates saving changes tracked across repositories in one transaction.
+- [Aggregate](../ddd-tactical/aggregate.md) — Repositories are defined per aggregate root, preserving consistency boundaries.
 - [Hexagonal Architecture (Ports & Adapters)](../architecture/hexagonal-architecture.md) — The repository interface is the canonical outbound persistence port.
-- `specification` — Specifications express query criteria passed to the repository without leaking SQL.
+- [Specification](../ddd-tactical/specification.md) — Specifications express query criteria passed to the repository without leaking SQL.
 
-**Conflicts with:** `active-record`
+**Conflicts with:** [Active Record](../enterprise-application/active-record.md)
 
-**Alternatives:** `active-record`, `data-mapper`
+**Alternatives:** [Active Record](../enterprise-application/active-record.md), [Data Mapper](../enterprise-application/data-mapper.md)
 
 ## Applicability tags
 

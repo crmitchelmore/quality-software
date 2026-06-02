@@ -1,0 +1,98 @@
+id: smart-constructor
+title: Smart Constructor
+aka:
+  - Named Constructor with Validation
+  - Factory Function
+scale: implementation
+category: implementation
+maturity: established
+short_description: >-
+  Hide raw construction behind a named function that validates inputs and only
+  returns a value when its invariants hold.
+description: >-
+  Smart Constructor prevents invalid domain values from being created. The raw
+  constructor is private, internal, or conventional-only, while a named creation
+  function parses, validates, normalises, and returns either a valid instance or an
+  explicit error. It is a small but powerful way to move validation from scattered
+  consumers into the type that owns the invariant.
+problem: >-
+  Public constructors let callers create values that violate domain rules, forcing
+  every later consumer to defensively revalidate.
+context: >-
+  Use for value objects, identifiers, ranges, money, emails, and any type with
+  invariants beyond its primitive representation.
+consequences:
+  - Centralises validation at the creation boundary.
+  - Makes invalid states difficult or impossible to represent.
+  - Requires callers to handle creation failure explicitly.
+  - Overuse around trivial values can add noise without meaningful safety.
+synergies:
+  - pattern: value-object
+    reason: Value Objects rely on smart constructors to enforce equality-relevant invariants.
+  - pattern: newtype-wrapper
+    reason: Wrappers become meaningful when their constructors prevent invalid primitive values.
+  - pattern: input-validation
+    reason: Boundary validation can delegate domain-specific checks to smart constructors.
+  - pattern: fail-fast
+    reason: Smart constructors fail fast at the point invalid data attempts to enter the model.
+alternatives:
+  - factory-method
+  - guard-clause
+  - input-validation
+languages:
+  - language-agnostic
+  - typescript
+  - rust
+  - csharp
+  - java
+frameworks:
+  - none
+project_types:
+  - library
+  - web-api
+  - backend-service
+  - sdk
+  - safety-critical
+tags:
+  - validation
+  - invariants
+  - domain-modelling
+examples:
+  - language: typescript
+    title: Validated email value
+    negative: |
+      class EmailAddress {
+        constructor(public readonly value: string) {}
+      }
+
+      const email = new EmailAddress(request.body.email);
+    positive: |
+      class EmailAddress {
+        private constructor(public readonly value: string) {}
+
+        static parse(value: string): EmailAddress {
+          if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(value)) {
+            throw new Error('Invalid email address');
+          }
+          return new EmailAddress(value.toLowerCase());
+        }
+      }
+
+      const email = EmailAddress.parse(request.body.email);
+    explanation: >-
+      The positive version ensures every EmailAddress is validated and normalised at
+      creation, so downstream code can trust the type.
+ratings:
+  small:
+    score: 4
+    notes: Great for domain primitives with real invariants; skip for throwaway DTOs.
+  medium:
+    score: 5
+    notes: Excellent for keeping validation close to types used across many flows.
+  large:
+    score: 5
+    notes: Strongly improves model integrity when paired with value objects and wrappers.
+references:
+  - title: Domain Modeling Made Functional
+    author: Scott Wlaschin
+    year: 2018

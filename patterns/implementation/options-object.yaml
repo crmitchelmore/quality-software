@@ -1,0 +1,91 @@
+id: options-object
+title: Options Object
+aka:
+  - Named Options
+  - Configuration Object
+scale: implementation
+category: implementation
+maturity: established
+short_description: >-
+  Replace long lists of optional arguments with a single object whose named fields
+  describe configuration choices at the call site.
+description: >-
+  Options Object is a call-site readability idiom for functions with several optional
+  or defaulted settings. Named fields avoid positional booleans and make future
+  options backwards-compatible. It differs from Parameter Object: options are usually
+  configuration knobs for one operation, not a cohesive domain value that travels
+  through the model.
+problem: >-
+  Positional optional arguments and boolean flags make calls hard to read and fragile
+  when new options are added.
+context: >-
+  Use for APIs with several optional settings, especially in JavaScript/TypeScript or
+  Python where object/dict literals are idiomatic.
+consequences:
+  - Makes call sites self-documenting through field names.
+  - Allows backwards-compatible addition of optional settings.
+  - Can grow into an unvalidated bag of unrelated switches.
+  - Required values should still be explicit parameters or validated clearly.
+synergies:
+  - pattern: parameter-object
+    reason: Parameter Object is better when the fields represent one domain concept rather than loose options.
+  - pattern: builder
+    reason: Builder may replace Options Object when construction requires staged validation or many combinations.
+  - pattern: smart-constructor
+    reason: Smart constructors validate options before an object observes partial or contradictory settings.
+  - pattern: fluent-interface
+    reason: Fluent Interface is an alternative for APIs where ordered configuration reads better than an object literal.
+alternatives:
+  - parameter-object
+  - builder
+  - fluent-interface
+languages:
+  - typescript
+  - javascript
+  - python
+  - ruby
+  - php
+frameworks:
+  - nodejs
+  - react
+  - django
+  - rails
+  - none
+project_types:
+  - library
+  - sdk
+  - web-frontend
+  - web-api
+tags:
+  - api-design
+  - parameters
+  - configuration
+examples:
+  - language: typescript
+    title: Named optional settings
+    negative: |
+      renderChart(data, true, false, 'dark', 30);
+    positive: |
+      renderChart(data, {
+        animate: true,
+        showLegend: false,
+        theme: 'dark',
+        refreshSeconds: 30,
+      });
+    explanation: >-
+      The positive version names each option at the call site, avoiding a sequence of
+      unexplained booleans and preserving room for future settings.
+ratings:
+  small:
+    score: 5
+    notes: Excellent low-cost readability improvement for optional-heavy APIs.
+  medium:
+    score: 4
+    notes: Good fit, but validate options and avoid broad catch-all objects.
+  large:
+    score: 3
+    notes: Still useful, though typed parameter objects or builders may age better for core APIs.
+references:
+  - title: Refactoring; Introduce Parameter Object
+    author: Martin Fowler
+    year: 2018

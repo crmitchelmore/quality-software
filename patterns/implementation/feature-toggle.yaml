@@ -1,0 +1,97 @@
+id: feature-toggle
+title: Feature Toggle
+aka:
+  - Feature Flag
+  - Feature Switch
+scale: implementation
+category: implementation
+maturity: established
+short_description: >-
+  Route behaviour through a named runtime switch so code can be released separately
+  from enabling the feature for users.
+description: >-
+  Feature Toggle wraps an alternative behaviour behind a controlled decision point.
+  The toggle can support progressive rollout, experiments, emergency disablement, or
+  trunk-based development. A good toggle has an owner, expiry plan, default, and
+  observable state; without that hygiene, flags accumulate into hidden product logic
+  and create untested combinations.
+problem: >-
+  Teams need to deploy code before exposing it broadly, or disable risky behaviour
+  quickly without a new release.
+context: >-
+  Use for short-lived rollouts, experiments, operational safety switches, and migrations
+  where both old and new paths must coexist briefly.
+consequences:
+  - Decouples deployment from release and supports progressive exposure.
+  - Provides a fast rollback mechanism for risky paths.
+  - Increases test matrix size while both paths exist.
+  - Long-lived toggles become confusing configuration and should be retired.
+synergies:
+  - pattern: strangler-fig
+    reason: Toggles help move traffic from legacy to replacement code during strangler migrations.
+  - pattern: anti-corruption-layer
+    reason: A toggle can choose whether traffic uses a legacy adapter or a new anti-corruption adapter during migration.
+  - pattern: circuit-breaker
+    reason: Operational toggles can act as manual safety switches alongside automatic circuit breakers.
+  - pattern: strategy
+    reason: A toggle can choose between strategy implementations without scattering conditionals.
+alternatives:
+  - strategy
+  - circuit-breaker
+  - strangler-fig
+languages:
+  - language-agnostic
+  - typescript
+  - java
+  - csharp
+  - python
+frameworks:
+  - none
+  - react
+  - spring
+  - dotnet
+  - nodejs
+project_types:
+  - web-api
+  - backend-service
+  - web-frontend
+  - microservices
+  - mobile-app
+tags:
+  - rollout
+  - release
+  - operations
+examples:
+  - language: typescript
+    title: Named rollout decision
+    negative: |
+      async function calculatePrice(cart: Cart, user: User) {
+        if (user.id === '42' || process.env.NEW_PRICING === 'true') {
+          return newPricing(cart);
+        }
+        return oldPricing(cart);
+      }
+    positive: |
+      async function calculatePrice(cart: Cart, user: User, flags: FeatureFlags) {
+        if (await flags.enabled('pricing-v2', { userId: user.id })) {
+          return newPricing(cart);
+        }
+        return oldPricing(cart);
+      }
+    explanation: >-
+      The positive version centralises rollout rules behind a named flag instead of
+      scattering ad hoc environment and user checks in business logic.
+ratings:
+  small:
+    score: 3
+    notes: Useful for risky releases, but manual deploys may be simpler for tiny apps.
+  medium:
+    score: 5
+    notes: Excellent for trunk-based delivery and controlled migrations.
+  large:
+    score: 4
+    notes: Essential operationally, but governance and cleanup are mandatory.
+references:
+  - title: Feature Toggles
+    author: Pete Hodgson
+    year: 2017

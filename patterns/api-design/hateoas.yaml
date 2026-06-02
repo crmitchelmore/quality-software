@@ -1,0 +1,91 @@
+id: hateoas
+title: HATEOAS
+scale: integration
+category: api-design
+maturity: established
+short_description: >-
+  Include hypermedia links and actions in representations so clients can discover valid next transitions rather than hard-coding workflows.
+description: >-
+  HATEOAS, the hypermedia constraint of REST, makes the server advertise available links, forms, or actions with each resource representation. A client follows relations such as self, next, cancel, approve, or payment rather than manufacturing URLs and guessing state transitions. It improves evolvability for workflow-rich APIs, but it requires consistent relation names, media types, and client discipline to use links instead of treating them as decoration.
+problem: >-
+  Clients often duplicate server workflow rules and endpoint construction, causing breakage when routes or valid state transitions change.
+context: >-
+  Use where resources have state-dependent actions, long-lived external clients, or discoverability requirements. For simple internal CRUD APIs, full hypermedia may be more ceremony than value.
+consequences:
+  - Clients can adapt to available actions based on server-provided state.
+  - >-
+    Adds payload and design overhead: relation names and media types become contracts.
+  - Many client frameworks and teams ignore links unless intentionally designed around them.
+  - Can reduce out-of-band navigation documentation but not semantic documentation.
+synergies:
+  - pattern: rest
+    reason: >-
+      HATEOAS is a REST constraint that strengthens resource navigation and evolvability.
+  - pattern: state
+    reason: >-
+      State machines pair naturally with links that expose only valid transitions.
+  - pattern: pagination
+    reason: >-
+      Paginated collections can expose next, previous, first, and last relations.
+  - pattern: api-versioning
+    reason: >-
+      Hypermedia can reduce hard-coded route coupling across versions, though relation semantics still need compatibility.
+alternatives:
+  - graphql
+  - open-host-service
+  - published-language
+conflicts_with:
+  - grpc-rpc
+languages:
+  - language-agnostic
+  - typescript
+  - java
+  - python
+frameworks:
+  - spring-boot
+  - express
+  - fastapi
+  - aspnet
+  - none
+project_types:
+  - web-api
+  - sdk
+  - backend-service
+tags:
+  - hypermedia
+  - links
+  - workflow
+examples:
+  - language: typescript
+    title: Advertise valid actions
+    negative: |
+      res.json({
+        id: order.id,
+        status: order.status
+      });
+      // Client guesses that POST /orders/{id}/cancel is valid for every order.
+    positive: |
+      res.json({
+        id: order.id,
+        status: order.status,
+        _links: {
+          self: { href: `/orders/${order.id}` },
+          ...(order.canCancel() ? { cancel: { href: `/orders/${order.id}/cancellation`, method: "POST" } } : {}),
+          payment: { href: `/orders/${order.id}/payment` }
+        }
+      });
+    explanation: >-
+      The positive representation tells clients which transitions are currently valid, reducing duplicated workflow logic.
+ratings:
+  small:
+    score: 2
+    notes: >-
+      Often too much ceremony for small internal APIs.
+  medium:
+    score: 3
+    notes: >-
+      Useful for workflow-heavy or public APIs, but adoption must be deliberate.
+  large:
+    score: 4
+    notes: >-
+      Valuable for large long-lived API ecosystems when supported by relation governance and client tooling.

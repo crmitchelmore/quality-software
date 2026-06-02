@@ -1,0 +1,94 @@
+id: raii
+title: RAII (Resource Acquisition Is Initialization)
+aka:
+  - Scope-Bound Resource Management
+scale: implementation
+category: implementation
+maturity: time-tested
+short_description: >-
+  Bind resource lifetime to object lifetime so acquisition happens during
+  construction and release happens automatically when scope exits.
+description: >-
+  RAII wraps resources such as locks, files, sockets, and transactions in objects
+  whose destructors or scope-exit hooks release them. The caller cannot forget the
+  cleanup path because normal return, early return, and exception paths all leave the
+  scope. In languages without deterministic destructors, the same idiom appears as
+  using/try-with-resources/context managers.
+problem: >-
+  Manual open/close or lock/unlock pairs are easy to skip on error paths, causing
+  leaks, deadlocks, and partially committed work.
+context: >-
+  Use whenever a resource has a strict acquire/release lifecycle and the language or
+  framework supports deterministic scope cleanup.
+consequences:
+  - Makes cleanup reliable across success, early return, and exceptions.
+  - Keeps ownership local and visible in the scope that acquired the resource.
+  - Requires careful move/copy semantics in systems languages.
+  - Less direct in garbage-collected languages without deterministic finalisation.
+synergies:
+  - pattern: guard-clause
+    reason: RAII makes early returns safe because cleanup is tied to scope exit.
+  - pattern: fail-fast
+    reason: Fail-fast exceptions become safer when resources still release deterministically.
+  - pattern: unit-of-work
+    reason: Transaction guards can commit or roll back at scope boundaries.
+alternatives:
+  - unit-of-work
+  - template-method
+languages:
+  - cpp
+  - rust
+  - csharp
+  - java
+  - python
+frameworks:
+  - none
+  - dotnet
+  - spring
+project_types:
+  - library
+  - backend-service
+  - cli-tool
+  - embedded
+  - safety-critical
+tags:
+  - resources
+  - cleanup
+  - lifecycle
+examples:
+  - language: cpp
+    title: Lock release on every path
+    negative: |
+      void update(Cache& cache, std::mutex& mutex, const Item& item) {
+          mutex.lock();
+          if (!item.valid()) {
+              return; // mutex is never unlocked
+          }
+          cache.store(item);
+          mutex.unlock();
+      }
+    positive: |
+      void update(Cache& cache, std::mutex& mutex, const Item& item) {
+          std::lock_guard<std::mutex> lock(mutex);
+          if (!item.valid()) {
+              return;
+          }
+          cache.store(item);
+      }
+    explanation: >-
+      The lock guard releases the mutex when the function scope exits, so the guard
+      clause cannot accidentally leave the cache permanently locked.
+ratings:
+  small:
+    score: 5
+    notes: Excellent whenever resources exist; low ceremony and high safety.
+  medium:
+    score: 5
+    notes: Essential for locks, files, and transactions as error paths multiply.
+  large:
+    score: 5
+    notes: Foundational in systems code; document ownership conventions consistently.
+references:
+  - title: The C++ Programming Language
+    author: Bjarne Stroustrup
+    year: 2013

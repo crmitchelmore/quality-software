@@ -13,7 +13,8 @@ context: >-
   Use when distinct subdomains or workloads have proven needs that are not well served by the current store. Prefer one primary source of truth and explicit projections rather than many writable copies of the same facts.
 consequences:
   - Improves fit between data shape and access pattern, often simplifying queries and scaling.
-  - Raises operational complexity: teams need expertise, backups, monitoring, and access controls for each engine.
+  - >-
+    Raises operational complexity: teams need expertise, backups, monitoring, and access controls for each engine.
   - Consistency across stores becomes explicit and usually eventual.
   - Without ownership boundaries it degenerates into technology sprawl and duplicated truths.
 synergies:

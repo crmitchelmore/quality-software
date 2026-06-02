@@ -1,0 +1,111 @@
+id: type-state
+title: Type State
+aka:
+  - Typestate
+  - State-Encoded Types
+scale: design
+category: implementation
+maturity: established
+short_description: >-
+  Encode an object's lifecycle state in its type so invalid operations are rejected
+  at compile time rather than checked at runtime.
+description: >-
+  Type State represents each lifecycle phase with a distinct type or generic marker.
+  Methods consume one state and return the next, exposing only operations valid for
+  that phase. The idiom is strongest in languages with expressive type systems and
+  ownership semantics, but it can also inform staged builders and API design in more
+  mainstream languages.
+problem: >-
+  Objects with implicit lifecycle flags allow callers to invoke operations in the
+  wrong order, producing runtime failures that the compiler could prevent.
+context: >-
+  Use for protocols with important ordering rules, such as open/authenticated/closed,
+  draft/submitted/approved, or configured/started.
+consequences:
+  - Makes invalid lifecycle transitions unrepresentable in well-typed code.
+  - Documents the protocol through method availability and return types.
+  - Adds type complexity that may be excessive for simple state checks.
+  - Dynamic inputs still need validation before entering the typed protocol.
+synergies:
+  - pattern: state
+    reason: State models runtime behaviour changes; Type State shifts legal operations into the static type system.
+  - pattern: smart-constructor
+    reason: Smart constructors create the initial valid state and hide raw constructors.
+  - pattern: fluent-interface
+    reason: Staged fluent APIs can return a new type at each valid step.
+  - pattern: builder
+    reason: Builders use typestate to require mandatory fields before build is available.
+alternatives:
+  - state
+  - guard-clause
+  - builder
+languages:
+  - rust
+  - typescript
+  - java
+  - csharp
+  - haskell
+frameworks:
+  - none
+project_types:
+  - library
+  - sdk
+  - safety-critical
+  - backend-service
+  - embedded
+tags:
+  - types
+  - lifecycle
+  - invariants
+examples:
+  - language: rust
+    title: Connected socket protocol
+    negative: |
+      struct Connection {
+          connected: bool,
+      }
+
+      impl Connection {
+          fn send(&self, bytes: &[u8]) {
+              if !self.connected {
+                  panic!("not connected");
+              }
+              // write bytes
+          }
+      }
+    positive: |
+      struct Disconnected;
+      struct Connected;
+
+      struct Connection<State> {
+          state: std::marker::PhantomData<State>,
+      }
+
+      impl Connection<Disconnected> {
+          fn connect(self) -> Connection<Connected> {
+              Connection { state: std::marker::PhantomData }
+          }
+      }
+
+      impl Connection<Connected> {
+          fn send(&self, bytes: &[u8]) {
+              // write bytes
+          }
+      }
+    explanation: >-
+      The positive version exposes send only on Connection<Connected>, so code cannot
+      compile if it tries to send before connecting.
+ratings:
+  small:
+    score: 3
+    notes: Excellent for critical protocols, but may be too heavy for simple CRUD code.
+  medium:
+    score: 4
+    notes: Good for SDKs and domain lifecycles with costly invalid transitions.
+  large:
+    score: 4
+    notes: Valuable at boundaries and safety-critical flows; complexity must be contained.
+references:
+  - title: Typestate-Oriented Programming
+    author: Jonathan Aldrich, Joshua Sunshine, Darpan Saini, Zachary Sparks
+    year: 2009

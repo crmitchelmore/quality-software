@@ -1,0 +1,85 @@
+id: problem-details
+title: Problem Details (RFC 7807 Errors)
+scale: integration
+category: api-design
+maturity: established
+short_description: >-
+  Return machine-readable HTTP error bodies with standard fields such as type, title, status, detail, and instance.
+description: >-
+  Problem Details standardises error representations for HTTP APIs using the application/problem+json media type. Instead of every endpoint inventing an error shape, responses include a stable type URI or code, human title, HTTP status, optional detail, instance, and domain-specific extensions. The pattern improves client handling, documentation, logging correlation, and support workflows, especially when validation and concurrency failures need precise semantics.
+problem: >-
+  Ad hoc error bodies force clients to parse strings, special-case endpoints, and lose important debugging context.
+context: >-
+  Use for REST and HTTP APIs where clients need predictable error contracts. Avoid leaking stack traces, secrets, or internal table names in detail fields.
+consequences:
+  - Improves client compatibility and support diagnostics through a consistent error envelope.
+  - Type identifiers become long-lived contracts and should be documented.
+  - Details must be safe for clients; internal causes belong in logs with correlation IDs.
+  - Framework defaults often need customisation to produce useful domain error types.
+synergies:
+  - pattern: rest
+    reason: >-
+      Problem Details complements REST status codes with a standard response body.
+  - pattern: api-versioning
+    reason: >-
+      Error type stability must be managed across API versions.
+  - pattern: contract-first-api
+    reason: >-
+      OpenAPI contracts can enumerate problem responses and extension fields.
+  - pattern: idempotency-key
+    reason: >-
+      Duplicate or mismatched idempotency keys need precise error types clients can branch on.
+alternatives:
+  - data-transfer-object
+  - published-language
+conflicts_with:
+  - grpc-rpc
+languages:
+  - language-agnostic
+  - typescript
+  - java
+  - python
+  - csharp
+frameworks:
+  - express
+  - spring-boot
+  - fastapi
+  - aspnet
+  - rails
+project_types:
+  - web-api
+  - sdk
+  - backend-service
+tags:
+  - errors
+  - rfc7807
+  - http
+examples:
+  - language: typescript
+    title: Return structured errors
+    negative: |
+      res.status(409).send("Version is wrong");
+    positive: |
+      res.status(409).type("application/problem+json").json({
+        type: "https://api.example.com/problems/concurrency-conflict",
+        title: "Concurrency conflict",
+        status: 409,
+        detail: "The resource was modified after you loaded it.",
+        instance: `/orders/${orderId}`,
+        current_version: currentVersion
+      });
+    explanation: >-
+      The positive response gives clients a stable machine-readable problem type and safe details for recovery without parsing prose.
+ratings:
+  small:
+    score: 4
+    notes: >-
+      Low-cost improvement for small HTTP APIs.
+  medium:
+    score: 5
+    notes: >-
+      Excellent default for medium APIs with generated clients and validation errors.
+  large:
+    score: 5
+    notes: >-
+      Essential for large API ecosystems where clients need stable error contracts and diagnostics.

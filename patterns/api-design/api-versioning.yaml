@@ -1,0 +1,91 @@
+id: api-versioning
+title: API Versioning
+scale: integration
+category: api-design
+maturity: time-tested
+short_description: >-
+  Evolve API contracts without breaking existing clients by making compatibility, deprecation, and migration rules explicit.
+description: >-
+  API Versioning defines how clients opt into a contract and how providers introduce, deprecate, and retire changes. Versions may appear in URLs, headers, media types, schemas, or fields, but the important pattern is governance: additive changes are preferred, breaking changes are isolated, sunset dates are communicated, and observability shows who still uses old behaviour. Versioning is a lifecycle discipline, not just a string in a route.
+problem: >-
+  APIs inevitably change, and unmanaged breaking changes cause client outages or force providers to freeze flawed contracts forever.
+context: >-
+  Use for any API consumed outside a single deployment unit. Internal APIs also need versioning when clients cannot all update atomically.
+consequences:
+  - Protects existing clients while allowing deliberate contract evolution.
+  - Too many active versions multiply tests, documentation, security fixes, and support burden.
+  - URL versions are simple but can overstate differences; media-type or field evolution can be subtler.
+  - Deprecation without usage telemetry becomes guesswork.
+synergies:
+  - pattern: contract-first-api
+    reason: >-
+      Contract files make version differences reviewable and testable before implementation.
+  - pattern: problem-details
+    reason: >-
+      Error shapes should remain stable across versions or change only through a clear version boundary.
+  - pattern: rest
+    reason: >-
+      REST APIs commonly expose major versions through URLs or media types.
+  - pattern: graphql
+    reason: >-
+      GraphQL usually versions through additive schema evolution and deprecation metadata rather than endpoint versions.
+alternatives:
+  - strangler-fig
+  - anti-corruption-layer
+  - published-language
+conflicts_with:
+  - shared-kernel
+languages:
+  - language-agnostic
+  - typescript
+  - java
+  - python
+  - csharp
+frameworks:
+  - express
+  - spring-boot
+  - fastapi
+  - aspnet
+  - graphql
+project_types:
+  - web-api
+  - sdk
+  - backend-service
+  - microservices
+tags:
+  - compatibility
+  - deprecation
+  - contract-lifecycle
+examples:
+  - language: typescript
+    title: Do not change response meaning in place
+    negative: |
+      app.get("/orders/:id", async (req, res) => {
+        const order = await orders.get(req.params.id);
+        res.json({ id: order.id, total: order.totalCents }); // used to be decimal pounds
+      });
+    positive: |
+      app.get("/v1/orders/:id", async (req, res) => {
+        const order = await orders.get(req.params.id);
+        res.json({ id: order.id, total: order.totalPounds });
+      });
+
+      app.get("/v2/orders/:id", async (req, res) => {
+        const order = await orders.get(req.params.id);
+        res.json({ id: order.id, total_cents: order.totalCents });
+      });
+    explanation: >-
+      The positive version isolates a breaking representation change so existing clients keep their contract while new clients opt into v2.
+ratings:
+  small:
+    score: 3
+    notes: >-
+      Useful when even a small API has external clients; otherwise can be lightweight policy.
+  medium:
+    score: 5
+    notes: >-
+      Essential once clients deploy independently.
+  large:
+    score: 5
+    notes: >-
+      Load-bearing for large ecosystems; requires telemetry, deprecation policy, and contract tests.

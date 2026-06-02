@@ -1,0 +1,102 @@
+id: middleware-pipeline
+title: Middleware Pipeline
+aka:
+  - Interceptor Pipeline
+  - Request Pipeline
+scale: design
+category: implementation
+maturity: established
+short_description: >-
+  Process a request through an ordered chain of small middleware components, each of
+  which can inspect, enrich, short-circuit, or delegate to the next component.
+description: >-
+  Middleware Pipeline structures cross-cutting request behaviour as a sequence of
+  composable steps. Authentication, logging, correlation IDs, compression, and error
+  handling become independent middleware rather than being embedded in every handler.
+  Ordering is part of the design: a security middleware before routing has different
+  semantics from one after routing.
+problem: >-
+  Cross-cutting request concerns get duplicated across handlers or tangled into a
+  monolithic front controller.
+context: >-
+  Use when a flow has many orthogonal steps that need a consistent order around a
+  core handler.
+consequences:
+  - Separates cross-cutting concerns into small reusable components.
+  - Makes flow ordering explicit and configurable.
+  - Incorrect order can create subtle security or observability defects.
+  - Too many tiny middleware steps can make debugging the full path harder.
+synergies:
+  - pattern: chain-of-responsibility
+    reason: Middleware is a request-oriented Chain of Responsibility where each link may call the next.
+  - pattern: pipes-and-filters
+    reason: Both compose ordered processing stages; middleware usually shares request context and can short-circuit.
+  - pattern: decorator
+    reason: Middleware decorates a core handler with behaviour before and after invocation.
+  - pattern: front-controller
+    reason: A front controller often hosts the pipeline before dispatching to handlers.
+alternatives:
+  - chain-of-responsibility
+  - pipes-and-filters
+  - front-controller
+languages:
+  - language-agnostic
+  - typescript
+  - csharp
+  - java
+  - python
+frameworks:
+  - express
+  - aspnet
+  - fastapi
+  - django
+  - nestjs
+project_types:
+  - web-api
+  - backend-service
+  - microservices
+  - web-frontend
+tags:
+  - request-flow
+  - cross-cutting
+  - composition
+examples:
+  - language: typescript
+    title: Request concerns outside handlers
+    negative: |
+      app.get('/orders', async (req, res) => {
+        const started = Date.now();
+        if (!req.headers.authorization) {
+          res.status(401).send('missing token');
+          return;
+        }
+        try {
+          res.json(await orders.list(req.user.id));
+        } finally {
+          console.log('orders', Date.now() - started);
+        }
+      });
+    positive: |
+      app.use(timingMiddleware);
+      app.use(authenticationMiddleware);
+
+      app.get('/orders', async (req, res) => {
+        res.json(await orders.list(req.user.id));
+      });
+    explanation: >-
+      The positive version moves timing and authentication into ordered middleware,
+      leaving the route handler focused on the order-listing behaviour.
+ratings:
+  small:
+    score: 4
+    notes: Very useful in web apps once two or more cross-cutting concerns exist.
+  medium:
+    score: 5
+    notes: Excellent fit for consistent security, logging, and error handling.
+  large:
+    score: 4
+    notes: Powerful but needs pipeline conventions and tests for ordering.
+references:
+  - title: Pattern-Oriented Software Architecture Volume 4
+    author: Frank Buschmann, Kevlin Henney, Douglas C. Schmidt
+    year: 2007

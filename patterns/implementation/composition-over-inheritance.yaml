@@ -1,0 +1,96 @@
+id: composition-over-inheritance
+title: Composition over Inheritance
+aka:
+  - Prefer Composition
+scale: design
+category: implementation
+maturity: time-tested
+short_description: >-
+  Build behaviour by combining small collaborators instead of relying on deep class
+  hierarchies and inherited implementation.
+description: >-
+  Composition over Inheritance favours objects that delegate to explicit capabilities
+  rather than subclasses that inherit broad behaviour. Composition keeps variation
+  orthogonal: logging, pricing, persistence, and validation can be combined without
+  multiplying subclasses. Inheritance remains useful for stable taxonomies and
+  framework hooks, but it is a poor default for sharing mutable implementation.
+problem: >-
+  Deep inheritance trees couple unrelated behaviours, make changes ripple through
+  subclasses, and produce fragile base class dependencies.
+context: >-
+  Use when behaviour varies independently or when subclasses are being created mainly
+  to reuse code rather than model a true is-a relationship.
+consequences:
+  - Encourages small interfaces and replaceable capabilities.
+  - Avoids subclass explosion when multiple behaviours vary independently.
+  - Can introduce more objects and delegation wiring.
+  - Explicitly conflicts with inheritance-heavy reuse; inheritance may still be simpler for closed, stable hierarchies with shared contracts.
+synergies:
+  - pattern: strategy
+    reason: Strategy is a composition technique for varying an algorithm behind an interface.
+  - pattern: decorator
+    reason: Decorator composes responsibilities dynamically instead of subclassing combinations.
+  - pattern: dependency-injection
+    reason: DI supplies composed collaborators without the consumer constructing them.
+  - pattern: template-method
+    reason: Template Method is an inheritance-based alternative when a stable skeleton algorithm is intended.
+alternatives:
+  - template-method
+  - strategy
+  - decorator
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - typescript
+  - python
+frameworks:
+  - none
+project_types:
+  - library
+  - backend-service
+  - web-api
+  - desktop-app
+  - game
+tags:
+  - coupling
+  - polymorphism
+  - reuse
+examples:
+  - language: python
+    title: Pricing by capability
+    negative: |
+      class DiscountedExpressOrder(ExpressOrder):
+          def total(self):
+              return super().total() * 0.9 + self.express_fee()
+
+      class DiscountedGiftExpressOrder(DiscountedExpressOrder):
+          def total(self):
+              return super().total() + self.gift_wrap_fee()
+    positive: |
+      class Order:
+          def __init__(self, pricing_rules):
+              self.pricing_rules = pricing_rules
+
+          def total(self):
+              total = sum(line.amount for line in self.lines)
+              for rule in self.pricing_rules:
+                  total = rule.apply(total)
+              return total
+    explanation: >-
+      The positive version composes independent pricing rules instead of creating a
+      subclass for every combination of delivery, discount, and wrapping behaviour.
+ratings:
+  small:
+    score: 4
+    notes: Good default, though one or two simple subclasses may be harmless.
+  medium:
+    score: 5
+    notes: Excellent at preventing subclass explosion as feature combinations grow.
+  large:
+    score: 5
+    notes: Critical for maintainability; pair with clear interfaces and DI.
+references:
+  - title: Design Patterns
+    author: Erich Gamma, Richard Helm, Ralph Johnson, John Vlissides
+    year: 1994

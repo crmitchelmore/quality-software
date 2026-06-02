@@ -1,0 +1,95 @@
+id: parameter-object
+title: Parameter Object
+aka:
+  - Introduce Parameter Object
+scale: implementation
+category: implementation
+maturity: time-tested
+short_description: >-
+  Replace repeated groups of related parameters with a named object that carries the
+  concept and its invariants together.
+description: >-
+  Parameter Object turns a recurring parameter cluster into a domain-shaped value.
+  Instead of passing start/end/currency/locale through many methods, a named object
+  such as ReportingPeriod or MoneyFormat captures what those values mean. The object
+  can validate combinations, provide helper behaviour, and reduce call-site mistakes
+  caused by argument ordering.
+problem: >-
+  Long argument lists and repeated parameter clusters make APIs hard to call correctly
+  and scatter validation across functions.
+context: >-
+  Use when several parameters travel together, share validation rules, or represent a
+  concept that deserves a name.
+consequences:
+  - Clarifies method signatures by naming the grouped concept.
+  - Centralises validation for related fields and prevents swapped primitive values.
+  - Can become a vague bag of options if fields are unrelated.
+  - May be overkill for a single local call with two obvious parameters.
+synergies:
+  - pattern: value-object
+    reason: A strong Parameter Object is often a Value Object with equality and invariants.
+  - pattern: smart-constructor
+    reason: Smart constructors keep invalid parameter combinations out of the object.
+  - pattern: newtype-wrapper
+    reason: Wrapping primitive fields prevents accidental argument swaps inside the parameter object.
+  - pattern: options-object
+    reason: Options Object is better for optional configuration knobs rather than a cohesive domain concept.
+alternatives:
+  - options-object
+  - data-transfer-object
+languages:
+  - language-agnostic
+  - typescript
+  - java
+  - csharp
+  - python
+frameworks:
+  - none
+project_types:
+  - library
+  - web-api
+  - backend-service
+  - sdk
+tags:
+  - parameters
+  - domain-modelling
+  - validation
+examples:
+  - language: java
+    title: Grouping a reporting period
+    negative: |
+      List<Invoice> findInvoices(LocalDate start, LocalDate end, Currency currency, ZoneId zone) {
+          if (end.isBefore(start)) {
+              throw new IllegalArgumentException("end before start");
+          }
+          return store.query(start, end, currency, zone);
+      }
+    positive: |
+      public record ReportScope(LocalDate start, LocalDate end, Currency currency, ZoneId zone) {
+          public ReportScope {
+              if (end.isBefore(start)) {
+                  throw new IllegalArgumentException("end before start");
+              }
+          }
+      }
+
+      List<Invoice> findInvoices(ReportScope scope) {
+          return store.query(scope.start(), scope.end(), scope.currency(), scope.zone());
+      }
+    explanation: >-
+      The positive version gives the parameter group a name and validates date order
+      once, so every caller shares the same invariant.
+ratings:
+  small:
+    score: 4
+    notes: Useful as soon as a parameter cluster repeats or has validation.
+  medium:
+    score: 5
+    notes: Excellent for reducing API noise and primitive obsession across services.
+  large:
+    score: 4
+    notes: Still valuable, but avoid creating overly broad request-shaped buckets.
+references:
+  - title: Refactoring; Introduce Parameter Object
+    author: Martin Fowler
+    year: 2018

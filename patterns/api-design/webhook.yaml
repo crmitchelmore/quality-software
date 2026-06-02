@@ -1,0 +1,91 @@
+id: webhook
+title: Webhook
+scale: integration
+category: api-design
+maturity: established
+short_description: >-
+  Send event notifications to customer- or partner-owned HTTP endpoints so external systems can react without polling.
+description: >-
+  A webhook is an outbound HTTP callback triggered by an event in the provider system. Robust webhook APIs treat delivery as at least once: events have stable identifiers, signatures, timestamps, retry schedules, dead-letter visibility, and replay mechanisms. Payloads should be versioned and self-describing enough for consumers to process asynchronously, while secrets and personal data are minimised because events leave the provider boundary.
+problem: >-
+  External consumers need timely updates, but polling wastes capacity, increases latency, and still misses state transitions unless clients implement complex sync logic.
+context: >-
+  Use when third-party or separately deployed systems need event notifications over the public internet. Avoid using webhooks as the only source of truth; consumers should be able to reconcile.
+consequences:
+  - Reduces polling and enables near-real-time integrations.
+  - >-
+    Delivery is unreliable by nature: endpoints time out, certificates expire, and consumers deploy bugs.
+  - Security requires signature verification, secret rotation, and replay protection.
+  - Providers need event logs, retry controls, dashboards, and manual replay tools.
+synergies:
+  - pattern: publish-subscribe
+    reason: >-
+      Webhooks are HTTP-based publish-subscribe across organisational boundaries.
+  - pattern: retry
+    reason: >-
+      Delivery needs bounded retry with backoff and visibility into exhausted attempts.
+  - pattern: idempotent-receiver
+    reason: >-
+      Consumers must de-duplicate event IDs because providers will retry.
+  - pattern: outbox
+    reason: >-
+      Providers should enqueue webhook deliveries from committed events rather than inline with user transactions.
+alternatives:
+  - polling-consumer
+  - event-driven-consumer
+  - message-channel
+conflicts_with:
+  - request-reply
+languages:
+  - language-agnostic
+  - typescript
+  - python
+  - java
+  - go
+frameworks:
+  - express
+  - fastapi
+  - spring-boot
+  - nodejs
+  - none
+project_types:
+  - web-api
+  - backend-service
+  - serverless
+  - distributed-system
+tags:
+  - callbacks
+  - integration
+  - at-least-once
+examples:
+  - language: typescript
+    title: Sign and de-duplicate delivered events
+    negative: |
+      app.post("/webhook", async (req, res) => {
+        await fulfil(req.body.order_id);
+        res.sendStatus(200);
+      });
+    positive: |
+      app.post("/webhook", rawBody(), async (req, res) => {
+        verifySignature(req.rawBody, req.header("Webhook-Signature"), secret);
+        const event = JSON.parse(req.rawBody.toString());
+
+        const inserted = await receivedEvents.insertOnce(event.id);
+        if (inserted) await fulfil(event.data.order_id);
+        res.sendStatus(200);
+      });
+    explanation: >-
+      The positive consumer verifies authenticity and records event IDs so provider retries do not repeat fulfilment.
+ratings:
+  small:
+    score: 3
+    notes: >-
+      Useful for integrations even in small products, but needs basic signing and retry visibility.
+  medium:
+    score: 5
+    notes: >-
+      Excellent for partner ecosystems and asynchronous product integrations.
+  large:
+    score: 5
+    notes: >-
+      Essential at large scale, with event logs, replay, dead letters, and consumer observability.

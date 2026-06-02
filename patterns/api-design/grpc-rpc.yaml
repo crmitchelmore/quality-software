@@ -1,0 +1,87 @@
+id: grpc-rpc
+title: gRPC / RPC
+scale: integration
+category: api-design
+maturity: established
+short_description: >-
+  Define strongly typed service operations and messages, commonly over HTTP/2 with Protocol Buffers, for internal calls and streaming.
+description: >-
+  gRPC and similar RPC styles model integration as explicit service methods with request and response messages rather than resources. Interface definitions generate clients and servers, making contracts precise across languages. The pattern is well suited to internal low-latency systems, bidirectional streaming, and platform-owned APIs; it is less convenient for browsers, caching intermediaries, and human exploration than REST.
+problem: >-
+  Hand-written JSON clients and loosely documented internal endpoints drift from server reality and waste effort on repetitive transport code.
+context: >-
+  Use for service-to-service APIs where both sides can share generated contracts and operational tooling. Prefer REST for broad public interoperability and GraphQL for client-driven graph reads.
+consequences:
+  - Generated stubs provide strong typing and reduce client/server contract drift.
+  - Binary protocols and method semantics are less transparent to generic HTTP tooling.
+  - Schema evolution requires discipline around field numbers, compatibility, and deprecation.
+  - Streaming and deadlines are first-class, making backpressure and cancellation easier to express.
+synergies:
+  - pattern: contract-first-api
+    reason: >-
+      Both patterns start from an explicit contract; gRPC uses IDL while REST commonly uses OpenAPI.
+  - pattern: timeout
+    reason: >-
+      RPC calls should carry deadlines so upstream services do not wait indefinitely.
+  - pattern: circuit-breaker
+    reason: >-
+      Internal RPC clients benefit from circuit breakers around dependent services.
+  - pattern: bulkhead
+    reason: >-
+      Separate client pools isolate slow dependencies from unrelated calls.
+alternatives:
+  - rest
+  - graphql
+  - request-reply
+conflicts_with:
+  - rest
+  - graphql
+languages:
+  - language-agnostic
+  - go
+  - java
+  - typescript
+  - csharp
+frameworks:
+  - grpc
+  - spring-boot
+  - dotnet
+  - nodejs
+  - none
+project_types:
+  - microservices
+  - backend-service
+  - distributed-system
+  - low-latency
+tags:
+  - rpc
+  - protobuf
+  - service-to-service
+examples:
+  - language: typescript
+    title: Use typed contracts instead of ad hoc JSON
+    negative: |
+      const response = await fetch("http://pricing/call", {
+        method: "POST",
+        body: JSON.stringify({ method: "price", sku: item.sku, qty: item.qty })
+      });
+      const price = (await response.json()).amount;
+    positive: |
+      const deadline = new Date(Date.now() + 200);
+      const price = await pricingClient.price({ sku: item.sku, quantity: item.qty }, { deadline });
+      invoice.addLine(item.sku, price.amount);
+    explanation: >-
+      The positive version uses a generated client with typed fields and an explicit deadline, reducing contract drift and unbounded waits.
+ratings:
+  small:
+    score: 2
+    notes: >-
+      Usually unnecessary for small apps unless streaming or cross-language contracts are central.
+  medium:
+    score: 4
+    notes: >-
+      Good fit for internal services with generated clients and deadlines.
+  large:
+    score: 5
+    notes: >-
+      Excellent for large service meshes and low-latency platforms with strong contract governance.

@@ -1,0 +1,95 @@
+id: newtype-wrapper
+title: Newtype / Wrapper Type
+aka:
+  - Tiny Type
+  - Domain Primitive
+scale: implementation
+category: implementation
+maturity: established
+short_description: >-
+  Wrap a primitive value in a distinct type so the compiler and API signatures carry
+  domain meaning instead of accepting interchangeable strings or numbers.
+description: >-
+  Newtype / Wrapper Type creates a small type around a primitive representation such
+  as string, UUID, integer, or decimal. The wrapper distinguishes CustomerId from
+  OrderId even if both are strings, and it provides a home for parsing, formatting,
+  and invariants. The aim is not ceremony for every value, but protection for values
+  whose mix-ups would be costly.
+problem: >-
+  Primitive obsession lets unrelated values with the same representation be swapped
+  accidentally and leaves domain rules undocumented.
+context: >-
+  Use for identifiers, money, quantities, external references, and security-sensitive
+  tokens where the primitive alone is too weak.
+consequences:
+  - Prevents accidental mixing of domain concepts with identical primitive shapes.
+  - Gives validation and formatting behaviour an owning type.
+  - Adds conversion overhead at boundaries and may need serialization support.
+  - Too many tiny wrappers can make simple code verbose.
+synergies:
+  - pattern: smart-constructor
+    reason: Smart constructors ensure wrappers contain only valid primitive values.
+  - pattern: value-object
+    reason: Many wrappers are small Value Objects with equality by contained value.
+  - pattern: parameter-object
+    reason: Wrappers strengthen fields inside a parameter object and prevent swaps.
+  - pattern: input-validation
+    reason: Boundary validation can parse untrusted primitives into safe wrappers.
+alternatives:
+  - value-object
+  - parameter-object
+languages:
+  - language-agnostic
+  - typescript
+  - rust
+  - csharp
+  - java
+frameworks:
+  - none
+project_types:
+  - library
+  - sdk
+  - web-api
+  - backend-service
+  - safety-critical
+tags:
+  - types
+  - domain-modelling
+  - primitives
+examples:
+  - language: csharp
+    title: Distinct identifiers
+    negative: |
+      public Task<Order> LoadOrder(string customerId, string orderId)
+      {
+          return repository.Load(customerId, orderId);
+      }
+
+      await service.LoadOrder(orderId, customerId); // compiles
+    positive: |
+      public readonly record struct CustomerId(string Value);
+      public readonly record struct OrderId(string Value);
+
+      public Task<Order> LoadOrder(CustomerId customerId, OrderId orderId)
+      {
+          return repository.Load(customerId.Value, orderId.Value);
+      }
+
+      await service.LoadOrder(new CustomerId(customerId), new OrderId(orderId));
+    explanation: >-
+      The positive version gives customer and order identifiers distinct types, so a
+      swapped call is caught by the compiler instead of becoming a data bug.
+ratings:
+  small:
+    score: 3
+    notes: Use for high-value concepts; primitives are fine for local throwaway code.
+  medium:
+    score: 5
+    notes: Excellent for APIs and domains with many identifiers and external inputs.
+  large:
+    score: 5
+    notes: Critical for preventing cross-domain mix-ups; invest in serialization support.
+references:
+  - title: Domain Modeling Made Functional
+    author: Scott Wlaschin
+    year: 2018

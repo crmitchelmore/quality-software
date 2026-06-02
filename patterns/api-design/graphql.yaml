@@ -1,0 +1,92 @@
+id: graphql
+title: GraphQL Schema
+scale: integration
+category: api-design
+maturity: established
+short_description: >-
+  Expose a typed graph schema that lets clients request exactly the fields and relationships they need through queries and mutations.
+description: >-
+  A GraphQL schema defines object types, fields, arguments, mutations, and subscriptions as the API contract. Clients compose queries that traverse relationships, while resolvers fetch and authorise the required data. The pattern shines when many clients need different shapes over the same domain, but it demands query cost controls, batching, stable schema governance, and careful error and nullability design to avoid turning flexibility into operational risk.
+problem: >-
+  Multiple clients often need different combinations of related data, causing REST APIs to proliferate endpoints or force over-fetching and under-fetching.
+context: >-
+  Use for product APIs with diverse clients and graph-shaped reads. Prefer REST for cacheable resource APIs and gRPC for service-to-service protocols with strict latency and streaming needs.
+consequences:
+  - Clients can evolve screens without waiting for every bespoke endpoint.
+  - The schema becomes a strong contract with introspection and generated types.
+  - Unbounded nested queries can cause N+1 explosions or expensive database scans.
+  - HTTP caching and status semantics are less direct than in resource-oriented REST.
+synergies:
+  - pattern: backend-for-frontend
+    reason: >-
+      GraphQL often acts as a flexible BFF contract tailored to frontend needs.
+  - pattern: query-object
+    reason: >-
+      Query objects can package complex resolver criteria without leaking ad hoc SQL into field resolvers.
+  - pattern: api-versioning
+    reason: >-
+      GraphQL usually evolves through additive fields and deprecation instead of URL versions.
+  - pattern: gateway-aggregation
+    reason: >-
+      A graph gateway can aggregate multiple backend services behind one client-facing schema.
+alternatives:
+  - rest
+  - grpc-rpc
+  - gateway-aggregation
+conflicts_with:
+  - rest
+  - grpc-rpc
+languages:
+  - language-agnostic
+  - typescript
+  - java
+  - python
+  - go
+frameworks:
+  - graphql
+  - nodejs
+  - spring-boot
+  - fastapi
+  - none
+project_types:
+  - web-api
+  - web-frontend
+  - backend-service
+  - mobile-app
+tags:
+  - schema
+  - client-driven-queries
+  - typed-api
+examples:
+  - language: typescript
+    title: Batch resolver access
+    negative: |
+      const resolvers = {
+        Order: {
+          customer: (order: Order) =>
+            db.query("SELECT * FROM customers WHERE id=$1", [order.customerId])
+        }
+      };
+      // Listing 100 orders performs 100 customer queries.
+    positive: |
+      const resolvers = {
+        Order: {
+          customer: (order: Order, _args: unknown, ctx: Context) =>
+            ctx.customers.findByIdsBatched.load(order.customerId)
+        }
+      };
+    explanation: >-
+      The positive version preserves GraphQL flexibility while batching data access so a nested query does not become an N+1 database problem.
+ratings:
+  small:
+    score: 3
+    notes: >-
+      Useful for small multi-client products, but schema and resolver machinery can be heavier than REST.
+  medium:
+    score: 5
+    notes: >-
+      Excellent when frontend and mobile clients need varied graph-shaped data.
+  large:
+    score: 4
+    notes: >-
+      Powerful at large scale with governance, cost limits, persisted queries, and ownership boundaries.
