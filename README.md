@@ -2,9 +2,9 @@
 
 A two-part project:
 
-1. **Pattern catalogue** — a large, richly-tagged catalogue of software-engineering
-   patterns (architecture down to code-level idioms), stored as structured YAML and
-   rendered to browsable Markdown.
+1. **Pattern catalogue** — a large, richly-tagged catalogue of **275** software-engineering
+   patterns (architecture down to code-level idioms, including a cutting-edge `ai-ml`
+   category), stored as structured YAML and rendered to browsable Markdown.
 2. **Pattern-conformance validator** — a design for a mature mechanism that checks
    whether agent/human code changes apply the patterns a project has chosen, across
    three phases (later / write-time / PR-level). See [`design/validator`](design/validator/).
