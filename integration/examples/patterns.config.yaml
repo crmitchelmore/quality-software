@@ -1,0 +1,36 @@
+# Example philosophy-first conformance profile.
+# Copy to the ROOT of the project you want to govern, then run `conformance profile`.
+# Start everything at `advise`; promote to `block` only after measuring precision
+# (see design/validator/13-mvp-and-trust.md).
+
+projectSize: small
+
+philosophies:
+  adopt:
+    - id: a-philosophy-of-software-design   # John Ousterhout — deep modules, hide complexity
+      weight: primary
+    - id: domain-driven-design              # model the domain; keep it persistence-ignorant
+      weight: primary
+  reject: []
+
+adopt:
+  - id: hexagonal-architecture
+    enforcement: warn            # boundary rule is enforceable; warn (not block) for the MVP
+    options:
+      domainGlobs: ["src/domain/**", "src/application/**"]
+      forbidImportsFrom: ["src/infrastructure/**"]
+  - id: repository
+    enforcement: advise
+  - id: dependency-injection
+    enforcement: advise
+
+ban:
+  - id: service-locator
+    reason: Hides dependencies; contradicts explicit-dependencies tenet.
+  - id: active-record
+    reason: Couples the domain to persistence; conflicts with DDD persistence-ignorance.
+
+phases:
+  write: { enabled: true, mode: advise, failMode: open, llm: false, block: false }
+  pr:    { enabled: true, llm: true, failOn: block }
+  later: { enabled: true }

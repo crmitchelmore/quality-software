@@ -1,0 +1,26 @@
+{
+  "name": "@quality-software/conformance",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Runtime-agnostic pattern-conformance engine + GitHub Copilot CLI integration (hooks, skill, MCP) — MVP vertical slice.",
+  "bin": {
+    "conformance": "bin/conformance.mjs",
+    "conformance-mcp": "bin/conformance-mcp.mjs"
+  },
+  "scripts": {
+    "conformance": "tsx src/cli.ts",
+    "mcp": "tsx src/mcp.ts",
+    "test": "node --import tsx --test test/*.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "js-yaml": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}

@@ -6,8 +6,12 @@
 
 # Node / tooling
 tools/node_modules/
+integration/node_modules/
 node_modules/
 *.log
 .DS_Store
+
+# Per-project conformance session logs
+.conformance/
 
 # Generated docs are reproducible via `npm run docs` but we DO commit them for browsing.

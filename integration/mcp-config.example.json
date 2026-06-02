@@ -1,0 +1,13 @@
+{
+  "_comment": "Copy into ~/.copilot/mcp-config.json (merge the mcpServers map). Set CONFORMANCE_CATALOGUE_ROOT to the absolute path of the quality-software catalogue checkout.",
+  "mcpServers": {
+    "conformance": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["--import", "tsx", "/ABSOLUTE/PATH/TO/quality-software/integration/src/mcp.ts"],
+      "env": {
+        "CONFORMANCE_CATALOGUE_ROOT": "/ABSOLUTE/PATH/TO/quality-software"
+      }
+    }
+  }
+}

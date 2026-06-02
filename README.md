@@ -12,6 +12,9 @@ A multi-part project:
 3. **Pattern-conformance validator** — a design for a mature mechanism that checks
    whether agent/human code changes apply the patterns a project has chosen, across
    three phases (later / write-time / PR-level). See [`design/validator`](design/validator/).
+4. **Conformance integration (runnable MVP)** — a runtime-agnostic engine + GitHub Copilot
+   CLI integration (hooks, skill, MCP, plugin) + PR Action that guides agents to a project's
+   selected philosophies/patterns and keeps changes aligned. See [`integration`](integration/).
 
 ## Layout
 

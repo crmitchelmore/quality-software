@@ -1,0 +1,191 @@
+import { readFileSync, writeFileSync, existsSync } from "node:fs";
+import { isAbsolute, join } from "node:path";
+import { execSync } from "node:child_process";
+import {
+  handleSessionStart,
+  handlePostWrite,
+  handleGuardShell,
+  handleTurnEnd,
+} from "./adapters/copilot.js";
+import { loadCatalogue } from "./catalogue.js";
+import { loadProfile, ProfileError } from "./profile.js";
+import { proposeProfile } from "./init.js";
+import { Engine } from "./engine.js";
+import type { ChangeSet, Finding } from "./contract.js";
+import { walkSourceFiles } from "./fs-util.js";
+
+async function readStdin(): Promise<string> {
+  const chunks: Buffer[] = [];
+  for await (const c of process.stdin) chunks.push(c as Buffer);
+  return Buffer.concat(chunks).toString("utf8");
+}
+
+async function cmdHook(which: string): Promise<void> {
+  const raw = await readStdin();
+  let payload: Record<string, unknown> = {};
+  try {
+    payload = raw.trim() ? JSON.parse(raw) : {};
+  } catch {
+    payload = {};
+  }
+  let out = "{}";
+  switch (which) {
+    case "session-start":
+      out = handleSessionStart(payload);
+      break;
+    case "post-write":
+      out = await handlePostWrite(payload);
+      break;
+    case "guard-shell":
+      out = handleGuardShell(payload);
+      break;
+    case "turn-end":
+      out = handleTurnEnd(payload);
+      break;
+    default:
+      out = "{}";
+  }
+  process.stdout.write(out);
+}
+
+function cmdInit(write: boolean): void {
+  const cwd = process.cwd();
+  const catalogue = loadCatalogue(cwd);
+  const { yaml, report } = proposeProfile(cwd, catalogue, {});
+  process.stderr.write(report + "\n\n");
+  const target = join(cwd, "patterns.config.yaml");
+  if (write) {
+    if (existsSync(target)) {
+      process.stderr.write(`Refusing to overwrite existing ${target}. Remove it first.\n`);
+      process.exitCode = 1;
+      return;
+    }
+    writeFileSync(target, yaml);
+    process.stderr.write(`Wrote candidate ${target}. Review and ratify via PR.\n`);
+  } else {
+    process.stdout.write(yaml);
+  }
+}
+
+function changedFiles(cwd: string, base?: string): string[] {
+  try {
+    const ref = base ?? "HEAD";
+    const out = execSync(`git -C "${cwd}" diff --name-only --diff-filter=ACMR ${ref}`, {
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "ignore"],
+    });
+    return out.split("\n").map((s) => s.trim()).filter(Boolean);
+  } catch {
+    return [];
+  }
+}
+
+async function cmdCheck(args: string[]): Promise<void> {
+  const cwd = process.cwd();
+  const eventIdx = args.indexOf("--event");
+  const event = (eventIdx >= 0 ? args[eventIdx + 1] : "PR_REVIEW") as ChangeSet["event"];
+  const baseIdx = args.indexOf("--base");
+  const base = baseIdx >= 0 ? args[baseIdx + 1] : undefined;
+  const explicit = args.filter((a) => !a.startsWith("--") && a !== base && a !== event);
+
+  const profilePath = join(cwd, "patterns.config.yaml");
+  const catalogue = loadCatalogue(cwd);
+  let profile;
+  try {
+    profile = loadProfile(profilePath, catalogue);
+  } catch (e) {
+    process.stderr.write((e as Error).message + "\n");
+    process.exitCode = 2;
+    return;
+  }
+  for (const w of profile.warnings) process.stderr.write(`profile warning: ${w}\n`);
+
+  let paths = explicit.length ? explicit : changedFiles(cwd, base);
+  if (paths.length === 0) paths = [...walkSourceFiles(join(cwd, "src"))];
+
+  const files = paths
+    .map((p) => (isAbsolute(p) ? p : join(cwd, p)))
+    .filter((p) => existsSync(p))
+    .map((p) => ({ path: p, content: safeRead(p) }))
+    .filter((f) => f.content !== undefined) as { path: string; content: string }[];
+
+  const engine = new Engine(profile, catalogue);
+  const { findings, verdict } = await engine.evaluate({ event, repoRoot: cwd, files });
+
+  printFindings(findings);
+  const failOn = profile.phases.pr.failOn;
+  const shouldFail =
+    (event === "PR_REVIEW" || event === "BATCH") &&
+    findings.some((f) => severityAtLeast(f, failOn));
+  process.exitCode = shouldFail ? 1 : 0;
+  if (verdict.decision === "deny") process.exitCode = 1;
+}
+
+function safeRead(p: string): string | undefined {
+  try {
+    return readFileSync(p, "utf8");
+  } catch {
+    return undefined;
+  }
+}
+
+const ORDER = ["info", "advice", "warning", "block"];
+function severityAtLeast(f: Finding, min: string): boolean {
+  return ORDER.indexOf(f.severity) >= ORDER.indexOf(min);
+}
+
+function printFindings(findings: Finding[]): void {
+  if (findings.length === 0) {
+    process.stdout.write("✔ No conformance findings.\n");
+    return;
+  }
+  process.stdout.write(`Conformance findings (${findings.length}):\n`);
+  for (const f of findings) {
+    const loc = f.line ? `${f.path}:${f.line}` : f.path;
+    process.stdout.write(`\n  [${f.severity}] ${loc}\n    ${f.message}\n`);
+    if (f.suggestion) process.stdout.write(`    fix: ${f.suggestion}\n`);
+    if (f.rationale) process.stdout.write(`    why: ${f.rationale}\n`);
+  }
+  process.stdout.write("\n");
+}
+
+function cmdProfile(): void {
+  const cwd = process.cwd();
+  const catalogue = loadCatalogue(cwd);
+  try {
+    const profile = loadProfile(join(cwd, "patterns.config.yaml"), catalogue);
+    process.stdout.write(JSON.stringify(profile, null, 2) + "\n");
+  } catch (e) {
+    process.stderr.write((e as Error).message + "\n");
+    process.exitCode = e instanceof ProfileError ? 2 : 1;
+  }
+}
+
+async function main(): Promise<void> {
+  const [cmd, ...rest] = process.argv.slice(2);
+  switch (cmd) {
+    case "hook":
+      await cmdHook(rest[0] ?? "");
+      break;
+    case "init":
+      cmdInit(rest.includes("--write"));
+      break;
+    case "check":
+      await cmdCheck(rest);
+      break;
+    case "profile":
+      cmdProfile();
+      break;
+    default:
+      process.stderr.write(
+        "Usage:\n" +
+          "  conformance hook <session-start|post-write|guard-shell|turn-end>   (reads hook JSON on stdin)\n" +
+          "  conformance init [--write]                                          (propose a candidate profile)\n" +
+          "  conformance check [--event PR_REVIEW|BATCH] [--base <ref>] [paths…] (run the engine; exit 1 on block)\n" +
+          "  conformance profile                                                 (print the resolved profile)\n",
+      );
+      process.exitCode = cmd ? 1 : 0;
+  }
+}
+
+main();

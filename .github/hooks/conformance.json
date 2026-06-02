@@ -1,0 +1,36 @@
+{
+  "$schema": "https://docs.github.com/copilot/reference/hooks-reference",
+  "_comment": "Copilot CLI conformance hooks (advisory, fail-open). Requires the `conformance` binary on PATH and CONFORMANCE_CATALOGUE_ROOT pointing at the quality-software catalogue. See integration/README.md.",
+  "hooks": {
+    "sessionStart": [
+      {
+        "hooks": [
+          { "type": "command", "command": "conformance hook session-start", "timeout": 5000 }
+        ]
+      }
+    ],
+    "postToolUse": [
+      {
+        "matcher": "edit|create",
+        "hooks": [
+          { "type": "command", "command": "conformance hook post-write", "timeout": 5000 }
+        ]
+      }
+    ],
+    "preToolUse": [
+      {
+        "matcher": "bash",
+        "hooks": [
+          { "type": "command", "command": "conformance hook guard-shell", "timeout": 5000 }
+        ]
+      }
+    ],
+    "agentStop": [
+      {
+        "hooks": [
+          { "type": "command", "command": "conformance hook turn-end", "timeout": 5000 }
+        ]
+      }
+    ]
+  }
+}
