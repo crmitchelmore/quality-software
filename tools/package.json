@@ -11,7 +11,8 @@
     "docs": "tsx src/generate-docs.ts",
     "docs:phil": "tsx src/generate-philosophy-docs.ts",
     "docs:practice": "tsx src/generate-practice-docs.ts",
-    "build": "npm run validate && npm run validate:practice && npm run validate:phil && npm run docs && npm run docs:practice && npm run docs:phil",
+    "docs:graph": "tsx src/generate-graph.ts",
+    "build": "npm run validate && npm run validate:practice && npm run validate:phil && npm run docs && npm run docs:practice && npm run docs:phil && npm run docs:graph",
     "stats": "tsx src/stats.ts"
   },
   "dependencies": {
