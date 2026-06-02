@@ -1,0 +1,149 @@
+id: data-oriented-design
+title: Data-Oriented Design
+aka:
+  - DOD
+  - Data-oriented programming
+originators:
+  - Mike Acton
+  - Richard Fabian
+origin:
+  type: talk
+  title: "Data-Oriented Design and C++"
+  year: 2014
+short_description: >-
+  Design around the data a program transforms and how that data is laid out, accessed and moved
+  through real hardware, especially caches and memory bandwidth.
+description: >-
+  Data-Oriented Design argues that the purpose of a program is to transform data, so software
+  should be designed from the shape, volume, lifetime and access patterns of that data outward.
+  Popularised in game-engine circles by Mike Acton's CppCon talk and elaborated by Richard Fabian,
+  it rejects abstractions that hide the actual work from the machine: pointer-heavy object graphs,
+  per-object virtual dispatch and APIs that ignore cache lines, prefetching, SIMD and memory
+  bandwidth. Instead of modelling the world as interacting objects, designers ask what data exists,
+  how it changes, which operations touch it together and which layout makes those transformations
+  cheap. Struct-of-arrays, batching, hot/cold splitting and measuring real hardware effects are
+  typical consequences.
+core_tenets:
+  - >-
+    Start with the data: its size, frequency, lifetime, ownership, access order and transformation
+    pipeline.
+  - Optimise for hardware reality, especially cache locality, memory bandwidth, branch prediction
+    and vectorisation.
+  - Prefer layouts that match access patterns, often struct-of-arrays over array-of-structs for
+    hot homogeneous processing.
+  - Separate hot data from cold metadata so common loops read only what they need.
+  - Question object-oriented abstractions when they scatter related data or hide the cost of
+    indirection and dynamic dispatch.
+  - Measure with representative data and hardware; aesthetics of abstraction do not substitute for
+    observed throughput and latency.
+key_ideas:
+  - name: Transform data
+    explanation: >-
+      The program is understood as a sequence of transformations over data sets, not primarily as a
+      network of objects sending messages.
+  - name: Data layout is design
+    explanation: >-
+      Field order, contiguity, grouping and lifetime influence performance and therefore belong in
+      the core design discussion.
+  - name: Hot and cold separation
+    explanation: >-
+      Frequently accessed fields are stored apart from rarely used fields so hot paths avoid
+      unnecessary cache pollution.
+in_practice: >-
+  Inventory the data touched by the critical path; record cardinality and access frequency; design
+  storage so the common loop streams contiguous memory; batch operations; avoid needless pointer
+  chasing; use profiling counters before and after layout changes. Keep higher-level interfaces
+  where they do not obscure or damage the measured data flow.
+complements:
+  - simple-made-easy
+  - design-for-production
+  - worse-is-better
+tensions_with:
+  - philosophy: functional-core-type-driven
+    reason: >-
+      Functional designs often default to immutable persistent structures and rich type
+      abstractions; DOD may choose mutable contiguous buffers and simpler representations for hot
+      data paths.
+  - philosophy: domain-driven-design
+    reason: >-
+      DDD models concepts in domain terms, while DOD may deliberately reshape data away from the
+      domain model to fit access patterns and hardware.
+associated_patterns:
+  - pattern: flyweight
+    reason: >-
+      Shares intrinsic data to reduce memory footprint and improve locality for many similar
+      objects.
+  - pattern: object-pool
+    reason: >-
+      Controls allocation and reuse so memory behaviour is predictable in performance-sensitive
+      paths.
+  - pattern: memoization
+    reason: >-
+      Trades storage for repeated computation when the data access pattern makes cached results
+      cheaper.
+  - pattern: cache-aside
+    reason: >-
+      Makes the placement and reuse of frequently read data an explicit design concern.
+  - pattern: copy-on-write
+    reason: >-
+      Separates read-heavy sharing from mutation, which can improve locality and avoid unnecessary
+      copies when used carefully.
+  - pattern: map-filter-reduce
+    reason: >-
+      Expresses computation as bulk data transformations that can often be batched, streamed or
+      parallelised.
+at_odds_patterns:
+  - pattern: active-record
+    reason: >-
+      Row-shaped objects with behaviour tend to encourage per-entity access instead of batching and
+      layout around hot transformations.
+  - pattern: domain-model
+    reason: >-
+      Rich object models can preserve domain expressiveness at the cost of pointer-heavy layouts
+      and poor cache locality in tight loops.
+successfully_applied:
+  - where: Insomniac Games and game-engine performance work
+    what: >-
+      Mike Acton presented data-oriented design from production game-development experience,
+      emphasising measurement, cache behaviour and designing around actual data transforms.
+    evidence_strength: primary-source
+    source:
+      title: "Data-Oriented Design and C++"
+      year: 2014
+  - where: Game engines and entity-component-system architectures
+    what: >-
+      Modern game engines commonly use component arrays and batched systems for simulation and
+      rendering workloads where data locality dominates frame time.
+    evidence_strength: secondary-source
+    source:
+      title: Data-Oriented Design
+      year: 2018
+  - where: Unity DOTS / ECS
+    what: >-
+      Unity's Data-Oriented Technology Stack applies ECS and contiguous component data to improve
+      performance for large numbers of entities.
+    evidence_strength: secondary-source
+    source:
+      title: "Unity Data-Oriented Technology Stack documentation"
+best_for:
+  - game
+  - realtime-system
+  - high-throughput
+  - low-latency
+  - embedded
+criticisms:
+  - It can reduce local domain readability when data is reshaped primarily for hardware access.
+  - The benefits are workload-dependent; applying it outside measured hot paths can add complexity
+    without observable gain.
+  - Data layout optimisations may couple code to current hardware assumptions and require careful
+    benchmarking over time.
+references:
+  - title: "Data-Oriented Design and C++"
+    author: Mike Acton
+    year: 2014
+  - title: Data-Oriented Design
+    author: Richard Fabian
+    year: 2018
+  - title: "CppCon 2014: Data-Oriented Design and C++"
+    author: Mike Acton
+    year: 2014

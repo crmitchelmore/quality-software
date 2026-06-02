@@ -12,10 +12,11 @@ A two-part project:
 ## Layout
 
 ```
-schema/        pattern.schema.json + vocabularies.yaml (controlled tag values)
+schema/        pattern.schema.json + philosophy.schema.json + vocabularies.yaml
 patterns/      <category>/<id>.yaml   — one file per pattern (source of truth)
-docs/          generated Markdown: index.md + patterns/<category>/<id>.md
-tools/         TypeScript tooling: validate, generate-docs, stats
+philosophies/  <id>.yaml              — one file per design philosophy
+docs/          generated Markdown: index.md + patterns/** + philosophies/**
+tools/         TypeScript tooling: validate(:phil), generate-docs(:phil), stats
 design/        validator design (Part 2)
 ```
 
@@ -29,18 +30,36 @@ design/        validator design (Part 2)
 - **Mermaid diagram** (required for architectural-scale patterns).
 - **Ratings** for three project sizes: small (<10k LOC), medium (≤100k), large (>100k).
 
+## Design philosophies
+
+`philosophies/` holds distinct schools of software design thought (e.g. *A Philosophy of
+Software Design*, the Unix philosophy, Domain-Driven Design, Worse Is Better, Design by
+Contract, Data-Oriented Design). Each philosophy:
+
+- captures its originators, origin, core tenets and key ideas;
+- **associates patterns** from the catalogue that embody it (and patterns it is at odds with);
+- records **where it has reportedly been applied**, each with a source and an
+  `evidence_strength` (primary-source / secondary-source / inferred) to avoid over-claiming;
+- relates to other philosophies via `complements` / `tensions_with`.
+
+The generated [philosophy index](docs/philosophies/index.md) also includes a reverse
+*pattern → philosophies that motivate it* table.
+
 ## Tooling
 
 ```bash
 cd tools
 npm install
-npm run validate      # schema + vocabulary + cross-reference checks (add --strict for CI)
-npm run docs          # regenerate docs/ from patterns/
+npm run validate      # pattern schema + vocab + cross-reference checks (add --strict for CI)
+npm run validate:phil # philosophy schema + cross-references to real pattern/philosophy ids
+npm run docs          # regenerate docs/patterns/** from patterns/
+npm run docs:phil     # regenerate docs/philosophies/** from philosophies/
 npm run stats         # catalogue coverage summary
+npm run build         # validate + validate:phil + docs + docs:phil
 ```
 
-`patterns/*.yaml` is the source of truth; `docs/` is generated. Run `npm run build`
-(validate + docs) before committing pattern changes.
+`patterns/*.yaml` and `philosophies/*.yaml` are the source of truth; `docs/` is generated.
+Run `npm run build` before committing changes.
 
 ## Tracking
 

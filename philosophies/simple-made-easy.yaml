@@ -1,0 +1,165 @@
+id: simple-made-easy
+title: Simple Made Easy
+aka:
+  - Decomplecting
+  - Simplicity over ease
+originators:
+  - Rich Hickey
+origin:
+  type: talk
+  title: Simple Made Easy
+  year: 2011
+short_description: >-
+  Separate simple from easy: prefer unbraided concepts and explicit data transformations over
+  familiar conveniences that entangle state, identity and behaviour.
+description: >-
+  Rich Hickey's Simple Made Easy argues that software quality depends on separating the objective
+  property of simplicity from the subjective property of ease. Simple means unbraided: one concept,
+  one role, one axis of change. Easy means nearby, familiar or already in the toolchain. Easy things
+  may be complex when they complect concerns, while unfamiliar things may be simple once learned.
+  The talk applies this distinction to design choices in Clojure: values over mutable state, data
+  over opaque objects, functions over methods, and explicit composition over incidental coupling.
+  The aim is not minimalism for its own sake, but decomplecting systems so each part can be reasoned
+  about independently.
+core_tenets:
+  - >-
+    Simple is objective and structural: it means not intertwined, regardless of whether the idea is
+    familiar to the programmer.
+  - >-
+    Easy is subjective and contextual: it means close at hand, habitual or already installed, and
+    can hide significant complexity.
+  - Decomplect concerns so identity, state, time, behaviour and data representation do not become
+    braided together accidentally.
+  - Prefer values, persistent data and pure functions because they separate information from time
+    and make reasoning local.
+  - Use data as an open, inspectable medium rather than forcing all meaning through opaque object
+    method calls.
+  - Avoid incidental complexity even when it feels convenient in the short term.
+key_ideas:
+  - name: Simple vs easy
+    explanation: >-
+      Simplicity is about a thing's internal lack of entanglement; ease is about a user's proximity
+      to it. The two are often confused in technology choices.
+  - name: Complecting
+    explanation: >-
+      To complect is to braid concepts together so they must change or be understood as one. Good
+      design separates those strands again.
+  - name: Values, not places
+    explanation: >-
+      Immutable values describe facts. Mutable places introduce time and identity, making every
+      read depend on when it happens and who else can write.
+in_practice: >-
+  Model information as plain immutable data; express behaviour as functions that transform values;
+  keep identity and state transitions explicit and isolated; use namespaces and small libraries
+  rather than deep object hierarchies; choose unfamiliar tools when they reduce entanglement rather
+  than merely feeling easy.
+complements:
+  - functional-core-type-driven
+  - unix-philosophy
+  - a-philosophy-of-software-design
+  - data-oriented-design
+tensions_with:
+  - philosophy: clean-architecture-solid
+    reason: >-
+      SOLID can be practised simply, but object-oriented interpretations often distribute behaviour
+      across many method-bearing objects, which Hickey criticises as complecting state and action.
+  - philosophy: domain-driven-design
+    reason: >-
+      DDD tactical models can use rich mutable entities and object behaviour; Simple Made Easy
+      prefers data, values and functions unless identity and mutation are essential.
+  - philosophy: worse-is-better
+    reason: >-
+      Worse-is-better may choose the familiar easy implementation to ship; Simple Made Easy warns
+      that ease can import hidden complexity that slows the system later.
+associated_patterns:
+  - pattern: pure-function
+    reason: >-
+      A pure function separates calculation from time, identity and hidden state, directly serving
+      Hickey's decomplecting goal.
+  - pattern: immutability
+    reason: >-
+      Immutable data keeps facts stable and prevents state changes from being braided through every
+      consumer of a value.
+  - pattern: persistent-data-structure
+    reason: >-
+      Persistent structures make immutable values practical by sharing structure while preserving
+      prior versions.
+  - pattern: value-object
+    reason: >-
+      Value objects model concepts by their attributes rather than mutable identity, aligning with
+      the preference for values over places.
+  - pattern: cqrs
+    reason: >-
+      Separates reads from writes, reducing the complection of querying, mutation and consistency
+      concerns in one interface.
+  - pattern: function-composition
+    reason: >-
+      Builds behaviour by composing small independent transformations rather than hiding sequencing
+      behind mutable collaborators.
+  - pattern: map-filter-reduce
+    reason: >-
+      Expresses collection processing as transparent value transformations instead of stateful
+      iteration mixed with business logic.
+at_odds_patterns:
+  - pattern: active-record
+    reason: >-
+      Braids persistence, identity, data and behaviour into one object, exactly the kind of
+      complection Hickey warns about.
+  - pattern: service-locator
+    reason: >-
+      Hides dependencies behind global lookup, making the real strands of collaboration harder to
+      see and reason about.
+  - pattern: singleton
+    reason: >-
+      A globally reachable mutable identity is easy to access but often complects state, lifetime
+      and dependency management.
+successfully_applied:
+  - where: Clojure
+    what: >-
+      Hickey presents Clojure's emphasis on immutable persistent data structures, functions and
+      explicit state management as the practical expression of simple-not-easy design.
+    evidence_strength: primary-source
+    source:
+      title: Simple Made Easy
+      url: "https://www.infoq.com/presentations/Simple-Made-Easy/"
+      year: 2011
+  - where: Datomic
+    what: >-
+      Datomic's database-as-values model, immutable facts and time-aware queries reflect the same
+      separation of value, identity and time described in Hickey's talks and Datomic rationale.
+    evidence_strength: primary-source
+    source:
+      title: Datomic rationale and architecture talks
+      year: 2012
+  - where: Clojure standard library practice
+    what: >-
+      The library's pervasive use of plain data maps, sequences and small functions gives users
+      composable building blocks rather than large stateful class frameworks.
+    evidence_strength: inferred
+    source:
+      title: Clojure Rationale
+      url: "https://clojure.org/about/rationale"
+best_for:
+  - library
+  - backend-service
+  - data-pipeline
+  - etl
+  - high-throughput
+criticisms:
+  - It can understate the adoption cost of unfamiliar ideas; what is structurally simple may still
+    slow teams without the background to use it well.
+  - The talk is strongest as design judgement rather than a mechanical method; teams can disagree
+    about what is actually complected.
+  - Object-oriented domains with rich behaviour may find a pure data-and-functions style less
+    natural or more ceremonious.
+references:
+  - title: Simple Made Easy
+    author: Rich Hickey
+    year: 2011
+    url: "https://www.infoq.com/presentations/Simple-Made-Easy/"
+  - title: Clojure Rationale
+    author: Rich Hickey
+    url: "https://clojure.org/about/rationale"
+  - title: The Value of Values
+    author: Rich Hickey
+    year: 2012

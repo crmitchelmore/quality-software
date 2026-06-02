@@ -1,0 +1,159 @@
+id: clean-architecture-solid
+title: Clean Architecture & SOLID
+aka:
+  - Clean Architecture
+  - SOLID
+  - Uncle Bob's architecture
+originators:
+  - Robert C. Martin
+origin:
+  type: book
+  title: "Clean Architecture: A Craftsman's Guide to Software Structure and Design"
+  year: 2017
+short_description: >-
+  Keep business policy independent of delivery mechanisms by making dependencies point inward,
+  applying SOLID principles and treating frameworks, databases and UI as plugins.
+description: >-
+  Clean Architecture extends Robert C. Martin's SOLID object-design principles into a whole-system
+  architecture. Its dependency rule says source-code dependencies should point inward, toward the
+  more stable, higher-level policy of the application, and never outward toward details such as UI,
+  databases, web frameworks or devices. Entities and use cases express business rules; interface
+  adapters translate between that core and the outside world; frameworks and drivers sit at the
+  edge as replaceable details. SOLID provides the class and package-level discipline behind this
+  shape: single reasons to change, extension without modification, substitutable abstractions,
+  small client-specific interfaces, and dependence on abstractions rather than concretions. The
+  aim is not ceremony for its own sake, but keeping decisions that should change at different
+  rates from being tangled together.
+core_tenets:
+  - The dependency rule — source-code dependencies point inward toward policy; inner circles know
+    nothing about outer frameworks, databases, UI or devices.
+  - Separate policy from detail — business rules and use cases should be testable without a web
+    server, database, message broker or framework bootstrapped.
+  - Apply SOLID at module boundaries — small reasons to change, substitutable abstractions,
+    interface segregation and dependency inversion keep policies insulated.
+  - Treat frameworks and databases as plugins chosen at the edge, not as the architecture's centre
+    or the vocabulary of the domain.
+  - Cross boundaries with simple data structures and interfaces, translating where necessary so
+    outer concerns do not leak inward.
+key_ideas:
+  - name: Dependency rule
+    explanation: >-
+      Dependencies may cross architectural circles only inward. Runtime control can flow outward,
+      but source dependencies are inverted through interfaces owned by the inner policy.
+  - name: Use cases as application policy
+    explanation: >-
+      Use cases orchestrate application-specific business rules independently of controllers,
+      presenters, repositories and frameworks.
+  - name: Details are plugins
+    explanation: >-
+      Databases, web frameworks, UI and external services are replaceable mechanisms attached at
+      the perimeter, not foundations that dictate the core design.
+in_practice: >-
+  Put enterprise rules and use cases in framework-free packages; define ports or interfaces where
+  the core needs persistence, time, messaging or presentation; implement those interfaces in outer
+  adapters. Test use cases with in-memory fakes before wiring real frameworks. Keep DTOs and
+  persistence models at boundaries unless the domain model is deliberately shared. Be alert to
+  over-segmentation: the architecture should protect policy, not manufacture layers with no
+  hidden decision behind them.
+complements:
+  - information-hiding
+  - domain-driven-design
+  - a-philosophy-of-software-design
+tensions_with:
+  - philosophy: a-philosophy-of-software-design
+    reason: >-
+      Clean Architecture and SOLID can be applied as many small interfaces and classes; APoSD warns
+      that this easily becomes shallow-module classitis when interfaces hide little.
+  - philosophy: unix-philosophy
+    reason: >-
+      Clean Architecture favours inward, domain-specific policy boundaries, while Unix favours
+      small context-free tools connected by simple external protocols.
+associated_patterns:
+  - pattern: clean-architecture
+    reason: >-
+      The direct architectural pattern: concentric boundaries with business policy inside and
+      details outside.
+  - pattern: hexagonal-architecture
+    reason: >-
+      Ports and adapters express the same plugin idea, with the application core independent of
+      delivery and infrastructure mechanisms.
+  - pattern: onion-architecture
+    reason: >-
+      Reinforces inward dependencies and domain-centred layering closely aligned with Clean
+      Architecture's circles.
+  - pattern: dependency-injection
+    reason: >-
+      Supplies outer implementations to inner abstractions without making the core depend on
+      concrete details.
+  - pattern: inversion-of-control
+    reason: >-
+      Enables control flow to reach outward at runtime while preserving inward source-code
+      dependencies.
+  - pattern: repository
+    reason: >-
+      Gives use cases and domain code a persistence abstraction rather than coupling them to a
+      database API or ORM.
+  - pattern: service-layer
+    reason: >-
+      A common place to express application use cases and coordinate domain operations apart from
+      controllers and infrastructure.
+at_odds_patterns:
+  - pattern: active-record
+    reason: >-
+      Couples domain behaviour to persistence mechanisms, making the database an inner design
+      concern rather than an outer plugin.
+  - pattern: service-locator
+    reason: >-
+      Hides dependencies behind global lookup, weakening explicit dependency inversion and making
+      use cases harder to test and reason about.
+successfully_applied:
+  - where: Robert C. Martin's published architecture practice and examples
+    what: >-
+      Martin presents Clean Architecture as a synthesis of architectures he reports using and
+      teaching across enterprise systems, with dependency inversion keeping policy independent of
+      delivery mechanisms.
+    evidence_strength: primary-source
+    source:
+      title: "Clean Architecture: A Craftsman's Guide to Software Structure and Design"
+      year: 2017
+  - where: .NET eShopOnWeb reference application
+    what: >-
+      Microsoft's reference application is explicitly organised around Clean Architecture, using a
+      domain/application core with infrastructure and web projects at the edge.
+    evidence_strength: secondary-source
+    source:
+      title: eShopOnWeb ASP.NET Core Reference Application
+      url: https://github.com/dotnet-architecture/eShopOnWeb
+  - where: Enterprise application templates and training codebases
+    what: >-
+      Widely used Clean Architecture templates for .NET, Java and TypeScript report the same
+      separation of use cases, domain model, adapters and infrastructure for maintainable business
+      systems.
+    evidence_strength: secondary-source
+    source:
+      title: Clean Architecture Solution Template
+      url: https://github.com/jasontaylordev/CleanArchitecture
+best_for:
+  - web-api
+  - backend-service
+  - modular-monolith
+  - microservices
+  - distributed-system
+criticisms:
+  - Rigid layering can add boilerplate and indirection to simple CRUD systems where the protected
+    policy is thin.
+  - Misapplied SOLID can produce many tiny interfaces and classes that obscure the design instead
+    of hiding meaningful decisions.
+  - Framework independence is relative — performance, transactions and deployment constraints still
+    shape real architectures.
+references:
+  - title: "Clean Architecture: A Craftsman's Guide to Software Structure and Design"
+    author: Robert C. Martin
+    year: 2017
+  - title: Agile Software Development, Principles, Patterns, and Practices
+    author: Robert C. Martin
+    year: 2002
+  - title: The Clean Architecture
+    author: Robert C. Martin
+    year: 2012
+    url: https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html

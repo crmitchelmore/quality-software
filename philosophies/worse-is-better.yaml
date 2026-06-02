@@ -1,0 +1,152 @@
+id: worse-is-better
+title: Worse Is Better
+aka:
+  - New Jersey approach
+  - Worse-is-better
+originators:
+  - Richard P. Gabriel
+origin:
+  type: essay
+  title: The Rise of Worse Is Better
+  year: 1991
+short_description: >-
+  Prefer a simple implementation that ships, spreads and evolves over a complete, perfectly
+  correct system that arrives too late or is too hard to port.
+description: >-
+  Richard P. Gabriel's worse-is-better contrasts two design cultures. The MIT or "right thing"
+  approach ranks correctness, consistency and completeness highly, even when implementation becomes
+  hard. The New Jersey approach, associated with Unix and C, ranks implementation simplicity first:
+  a design may be incomplete or less theoretically correct if it is easy to build, port and explain.
+  Gabriel's unsettling claim is evolutionary rather than moral — the simple 90% solution is more
+  likely to spread, survive contact with real users, and improve through use than the cleaner 100%
+  solution that fails to propagate. Worse-is-better therefore values survivability, deployment and
+  feedback over architectural perfection.
+core_tenets:
+  - Simplicity of implementation is the highest design priority; interfaces and semantics may bend
+    if that keeps the system small and portable.
+  - A working 90% solution that users adopt can be better than a more complete design that arrives
+    too late or is too hard to implement widely.
+  - Correctness, consistency and completeness matter, but they are deliberately traded off when
+    they threaten implementation simplicity and adoption.
+  - Spread matters — a design that can be reimplemented, ported and understood by many people has
+    evolutionary advantages.
+  - Real use is the forcing function; rough systems that survive can be repaired and extended after
+    their value is proven.
+key_ideas:
+  - name: New Jersey vs MIT
+    explanation: >-
+      Gabriel contrasts Unix/C pragmatism with the Lisp/MIT "right thing" instinct. The first
+      optimises for simple implementation and propagation; the second for conceptual completeness.
+  - name: The 90% solution
+    explanation: >-
+      The missing 10% is a conscious trade: shipping a simple useful core creates adoption and
+      feedback that can fund later improvement.
+  - name: Evolution over perfection
+    explanation: >-
+      Worse-is-better is a theory of design fitness. Systems win by being habitable, portable and
+      easy to clone, not only by being internally elegant.
+in_practice: >-
+  Ship the smallest coherent capability that solves the common case, keep the implementation easy
+  to understand and port, and let real use determine which missing parts deserve investment. Prefer
+  plain mechanisms, compatibility and incremental repair over grand rewrites. Make the trade-off
+  explicit: do not disguise incompleteness as correctness.
+complements:
+  - unix-philosophy
+  - continuous-delivery-lean
+  - design-for-production
+tensions_with:
+  - philosophy: a-philosophy-of-software-design
+    reason: >-
+      APoSD favours strategic investment in clean, deep interfaces; worse-is-better accepts rougher
+      interfaces when that lowers implementation cost and accelerates adoption.
+  - philosophy: domain-driven-design
+    reason: >-
+      DDD invests in rich models and language before complexity leaks; worse-is-better often starts
+      with a smaller, less complete model and improves only after use proves the need.
+  - philosophy: design-by-contract
+    reason: >-
+      DbC wants precise preconditions, postconditions and invariants, while worse-is-better may
+      leave edge cases informal to keep the implementation small.
+associated_patterns:
+  - pattern: prototype
+    reason: >-
+      Captures the bias toward building a small working version early, learning from adoption and
+      replacing or evolving it as facts emerge.
+  - pattern: pipes-and-filters
+    reason: >-
+      Unix pipelines embody the New Jersey instinct: simple pieces with narrow behaviour compose
+      into useful systems without a complete central design.
+  - pattern: feature-toggle
+    reason: >-
+      Allows incomplete or risky functionality to ship behind controlled switches, preserving the
+      feedback loop without demanding full completeness up front.
+  - pattern: strangler-fig
+    reason: >-
+      Evolves a rough but useful system incrementally rather than waiting for a perfect replacement
+      to be designed and delivered.
+  - pattern: microkernel
+    reason: >-
+      Keeps the shipped core small and lets capabilities grow through plug-ins, matching the idea
+      of a simple survivable nucleus.
+  - pattern: fallback
+    reason: >-
+      Accepts imperfect behaviour in uncommon cases so the common path remains simple and the
+      system continues to operate.
+at_odds_patterns:
+  - pattern: contract-first-api
+    reason: >-
+      Contract-first work can front-load completeness and consistency; worse-is-better may choose a
+      simple implemented interface and stabilise it only after use.
+  - pattern: domain-model
+    reason: >-
+      A rich domain model can be the right thing for complex domains, but is often too much upfront
+      modelling for a worse-is-better first release.
+successfully_applied:
+  - where: Unix and C ecosystem
+    what: >-
+      Gabriel presents Unix and C as the canonical New Jersey example: simple implementation and
+      portability helped them spread faster than more complete "right thing" systems.
+    evidence_strength: primary-source
+    source:
+      title: The Rise of Worse Is Better
+      url: "https://www.dreamsongs.com/RiseOfWorseIsBetter.html"
+      year: 1991
+  - where: Early Unix tool culture
+    what: >-
+      Small, portable tools with incomplete but composable semantics became widely adopted and then
+      evolved through real use across Unix and later Unix-like systems.
+    evidence_strength: secondary-source
+    source:
+      title: The Art of Unix Programming
+      year: 2003
+  - where: Minimal viable product practice
+    what: >-
+      Lean product practice uses a similar evolutionary argument: release a small viable system to
+      learn from real users before investing in completeness.
+    evidence_strength: secondary-source
+    source:
+      title: The Lean Startup
+      year: 2011
+best_for:
+  - prototype
+  - cli-tool
+  - backend-service
+  - web-api
+  - distributed-system
+criticisms:
+  - It can become an excuse for avoidable defects, underspecified behaviour or permanent technical
+    debt if teams forget the later repair and evolution step.
+  - The approach underweights domains where correctness and completeness are non-negotiable, such
+    as safety-critical, financial or security-sensitive systems.
+  - Once a rough design spreads, compatibility pressure can freeze early mistakes for decades.
+references:
+  - title: The Rise of Worse Is Better
+    author: Richard P. Gabriel
+    year: 1991
+    url: "https://www.dreamsongs.com/RiseOfWorseIsBetter.html"
+  - title: "Lisp: Good News, Bad News, How to Win Big"
+    author: Richard P. Gabriel
+    year: 1991
+  - title: The Art of Unix Programming
+    author: Eric S. Raymond
+    year: 2003

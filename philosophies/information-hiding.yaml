@@ -1,0 +1,149 @@
+id: information-hiding
+title: Information Hiding & Modular Decomposition
+aka:
+  - Parnas decomposition
+  - Secrets-based modularity
+originators:
+  - David Parnas
+origin:
+  type: paper
+  title: On the Criteria To Be Used in Decomposing Systems into Modules
+  year: 1972
+short_description: >-
+  Decompose systems around design decisions likely to change, hiding each decision behind a
+  stable module interface rather than mirroring processing steps or implementation order.
+description: >-
+  Information hiding is Parnas's criterion for modular decomposition: a module should be
+  responsible for a design decision, implementation detail or source of volatility that other
+  modules need not know. The interface reveals only what clients require; the secret behind it
+  can change without forcing coordinated changes elsewhere. Parnas contrasted this with
+  flow-chart or processing-step decomposition, where modules follow execution order and therefore
+  share assumptions about data formats, algorithms and devices. The deeper claim is that good
+  modularity is a change-management strategy. A system is easier to understand and evolve when
+  each likely-to-change decision has one home, a narrow interface, and clients that depend on the
+  stable abstraction rather than on the hidden choice.
+core_tenets:
+  - Decompose by secrets — each module hides a design decision that is likely to change, rather
+    than exposing a processing step in the program's execution sequence.
+  - Interfaces should reveal as little as possible while still being useful; clients should not
+    need to know data representations, algorithms, devices or policies owned by another module.
+  - Localise change by giving every volatile decision one authoritative home; duplicated knowledge
+    across modules is information leakage.
+  - Treat module boundaries as design decisions made for future maintainers, not merely as file or
+    class boundaries imposed by the language.
+  - Prefer stable abstractions over direct dependency on details, so a hidden representation or
+    implementation can be replaced without cascading edits.
+key_ideas:
+  - name: Design decision as module secret
+    explanation: >-
+      The module is organised around knowledge it withholds: a data representation, algorithm,
+      hardware interface, protocol detail or policy choice that callers should not rely on.
+  - name: Changeability criterion
+    explanation: >-
+      The right decomposition is the one that minimises expected future change cost, not the one
+      that most closely resembles the order in which work happens at runtime.
+  - name: Interface as ignorance boundary
+    explanation: >-
+      A good interface lets clients remain ignorant of the hidden decision; a bad interface forces
+      them to encode the same assumption and makes the secret public in practice.
+in_practice: >-
+  Start a design review by asking what decisions are likely to change: storage format, transport,
+  parsing rules, scheduling policy, external service, hardware device or business rule. Put each
+  behind a small, intention-revealing interface and ensure only the owning module knows the
+  representation. Watch for information leakage in repeated conditionals, duplicated parsing,
+  reach-through accessors and tests that assert internals rather than behaviour.
+complements:
+  - a-philosophy-of-software-design
+  - clean-architecture-solid
+  - domain-driven-design
+tensions_with:
+  - philosophy: unix-philosophy
+    reason: >-
+      Unix composition exposes a uniform text interface deliberately, while information hiding may
+      prefer richer, narrower interfaces that conceal representation and avoid repeated parsing.
+  - philosophy: worse-is-better
+    reason: >-
+      Hiding volatile decisions can require upfront interface design; worse-is-better may accept
+      exposed details if the simpler implementation ships and spreads faster.
+associated_patterns:
+  - pattern: facade
+    reason: >-
+      Presents a small stable surface over a complex subsystem, hiding many implementation
+      decisions behind one module boundary.
+  - pattern: separated-interface
+    reason: >-
+      Separates the contract clients depend on from the implementation that owns the hidden
+      design decision.
+  - pattern: bridge
+    reason: >-
+      Decouples abstraction from implementation so representation or platform choices can vary
+      independently behind the interface.
+  - pattern: adapter
+    reason: >-
+      Contains the knowledge of an external interface in one place instead of letting foreign
+      assumptions leak through the system.
+  - pattern: repository
+    reason: >-
+      Hides persistence and query details behind a collection-like abstraction owned by the data
+      access module.
+  - pattern: anti-corruption-layer
+    reason: >-
+      Protects a model by localising translation knowledge and preventing another system's design
+      decisions from becoming everyone else's dependency.
+at_odds_patterns:
+  - pattern: active-record
+    reason: >-
+      Often exposes persistence representation through domain objects, making database structure a
+      shared assumption rather than a hidden decision.
+  - pattern: transaction-script
+    reason: >-
+      Organising code around processing steps can scatter representation and policy knowledge
+      across scripts, the decomposition Parnas warned against.
+successfully_applied:
+  - where: Naval Research Laboratory A-7E avionics Software Cost Reduction project
+    what: >-
+      Parnas and colleagues reported an information-hiding module guide for the A-7E operational
+      flight program, using hidden design decisions and precise interfaces to make avionics
+      software easier to change and review.
+    evidence_strength: primary-source
+    source:
+      title: The Modular Structure of Complex Systems
+      year: 1985
+  - where: Modular programming practice
+    what: >-
+      The 1972 paper is widely cited as the foundation for modular decomposition by hidden
+      decisions, influencing later object-oriented, abstract data type and architecture practice.
+    evidence_strength: secondary-source
+    source:
+      title: "Software Pioneers: Contributions to Software Engineering"
+      year: 2002
+  - where: A Philosophy of Software Design
+    what: >-
+      Ousterhout explicitly reuses information hiding as the basis for deep modules, treating
+      leaked design decisions as a central cause of software complexity.
+    evidence_strength: secondary-source
+    source:
+      title: A Philosophy of Software Design
+      year: 2018
+best_for:
+  - library
+  - sdk
+  - backend-service
+  - modular-monolith
+  - embedded
+  - safety-critical
+criticisms:
+  - Predicting what will change is difficult; hiding the wrong decisions can add indirection
+    without useful flexibility.
+  - Excessive encapsulation can make systems hard to inspect or debug if observability and
+    diagnostic interfaces are not designed deliberately.
+references:
+  - title: On the Criteria To Be Used in Decomposing Systems into Modules
+    author: David L. Parnas
+    year: 1972
+  - title: The Modular Structure of Complex Systems
+    author: David L. Parnas, Paul C. Clements, David M. Weiss
+    year: 1985
+  - title: "A Rational Design Process: How and Why to Fake It"
+    author: David L. Parnas, Paul C. Clements
+    year: 1986

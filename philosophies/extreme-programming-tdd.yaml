@@ -1,0 +1,156 @@
+id: extreme-programming-tdd
+title: Extreme Programming & Test-Driven Development
+aka:
+  - XP
+  - TDD
+  - Red-green-refactor
+originators:
+  - Kent Beck
+origin:
+  type: book
+  title: Extreme Programming Explained and Test-Driven Development by Example
+  year: 1999
+short_description: >-
+  Use very short feedback loops — tests first, simple design, continuous integration and frequent
+  refactoring — so design emerges safely from working, verified behaviour.
+description: >-
+  Extreme Programming made disciplined feedback the centre of software development. Kent Beck's
+  formulation combines social practices (pairing, collective ownership, sustainable pace, customer
+  collaboration) with technical practices that keep change cheap: test-first programming,
+  continuous integration, simple design and merciless refactoring. Test-Driven Development is the
+  design micro-cycle inside XP: write a failing test for the next observable behaviour, make it pass
+  with the simplest code, then refactor while the tests stay green. The point is not merely test
+  coverage. Tests are executable design constraints that force usable interfaces, reveal coupling
+  early and give teams courage to reshape the code continuously instead of preserving speculative
+  architecture.
+core_tenets:
+  - >-
+    Work in red-green-refactor loops: first make the desired behaviour fail as a test, then make it
+    pass, then improve the design without changing behaviour.
+  - Let tests drive emergent design; APIs should be shaped by how clients exercise behaviour, not by
+    speculative class diagrams.
+  - Practise YAGNI — do not build generality, hooks or infrastructure until a real test or story
+    requires them.
+  - >-
+    Keep the design simple: passing tests, no duplication, clear expression of intent and the fewest
+    moving parts needed now.
+  - Integrate continuously so incompatibilities surface within minutes or hours, not at the end of
+    a phase.
+  - >-
+    Use fast feedback to create courage: a strong test suite lets teams refactor aggressively and
+    keep the design supple.
+key_ideas:
+  - name: Red-green-refactor
+    explanation: >-
+      The smallest TDD cycle: observe failure, implement behaviour, then clean the design while the
+      safety net remains green.
+  - name: Tests as design pressure
+    explanation: >-
+      A hard-to-write test often indicates a hard-to-use interface, hidden coupling or a missing
+      seam; the test is feedback about the design.
+  - name: Simple design and YAGNI
+    explanation: >-
+      XP delays abstraction until duplication or a real requirement proves it is needed, preventing
+      speculative frameworks from hardening around imagined futures.
+in_practice: >-
+  Express each new behaviour as an executable example before implementation; keep tests fast enough
+  to run constantly; commit behind a green build; remove duplication as soon as it appears; refactor
+  in tiny safe steps; and treat CI failures as stop-the-line events. Use doubles only at genuine
+  external boundaries, because over-mocking can freeze implementation details rather than protect
+  behaviour.
+complements:
+  - continuous-delivery-lean
+  - simple-made-easy
+  - design-by-contract
+tensions_with:
+  - philosophy: a-philosophy-of-software-design
+    reason: >-
+      XP/TDD favours incremental discovery through tests; APoSD encourages deliberate interface
+      design up front, including designing alternatives before implementation.
+  - philosophy: worse-is-better
+    reason: >-
+      XP values shipping small increments quickly, but insists on disciplined tests and refactoring;
+      worse-is-better may accept rougher internals to maximise adoption speed.
+associated_patterns:
+  - pattern: arrange-act-assert
+    reason: >-
+      A clear unit-test structure that makes each TDD example easy to read and keeps setup,
+      behaviour and assertion distinct.
+  - pattern: given-when-then
+    reason: >-
+      Captures behaviour in business-readable examples, matching XP's emphasis on customer-facing
+      stories and acceptance tests.
+  - pattern: test-pyramid
+    reason: >-
+      Preserves the fast feedback loop by keeping most tests small and cheap while still covering
+      integration and end-to-end behaviour.
+  - pattern: test-double
+    reason: >-
+      Provides seams for hard external collaborators so tests can drive code without depending on
+      slow or unreliable infrastructure.
+  - pattern: mock-object
+    reason: >-
+      Originated in the same test-first tradition and can specify interactions where collaboration
+      behaviour is the design concern.
+  - pattern: property-based-testing
+    reason: >-
+      Extends example-driven tests with generated cases, strengthening confidence before refactoring.
+  - pattern: feature-toggle
+    reason: >-
+      Allows incremental changes to be integrated continuously while behaviour remains controlled
+      until ready for users.
+at_odds_patterns:
+  - pattern: service-locator
+    reason: >-
+      Hidden dependencies make tests harder to write and weaken the design feedback that TDD relies
+      on.
+successfully_applied:
+  - where: Chrysler Comprehensive Compensation System (C3)
+    what: >-
+      Beck's early XP work on the C3 payroll project is the canonical primary case for test-first,
+      small releases, continuous integration and refactoring practices, though the project itself
+      later had organisational and delivery difficulties.
+    evidence_strength: primary-source
+    source:
+      title: Extreme Programming Explained
+      year: 1999
+  - where: JUnit and xUnit practice
+    what: >-
+      Beck's xUnit work helped make automated programmer tests a mainstream mechanism for fast
+      feedback and refactoring safety across languages.
+    evidence_strength: primary-source
+    source:
+      title: Test-Driven Development by Example
+      year: 2002
+  - where: Agile engineering teams
+    what: >-
+      TDD and continuous integration became standard agile engineering practices, with broad
+      secondary literature documenting use in commercial software teams.
+    evidence_strength: secondary-source
+    source:
+      title: Extreme Programming Installed
+      year: 2000
+best_for:
+  - web-api
+  - backend-service
+  - library
+  - modular-monolith
+  - microservices
+  - prototype
+criticisms:
+  - Poorly written tests can couple to implementation details, making refactoring slower rather than
+    safer.
+  - TDD is less straightforward for exploratory UI, data science, concurrency and legacy systems
+    without clear seams.
+  - Teams can mistake high coverage for good design; the discipline still requires judgement about
+    boundaries and behaviours.
+references:
+  - title: Extreme Programming Explained
+    author: Kent Beck
+    year: 1999
+  - title: Test-Driven Development by Example
+    author: Kent Beck
+    year: 2002
+  - title: Extreme Programming Installed
+    author: Ron Jeffries, Ann Anderson, Chet Hendrickson
+    year: 2000

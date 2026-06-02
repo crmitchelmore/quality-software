@@ -1,0 +1,144 @@
+id: design-for-production
+title: Design for Production / Stability
+aka:
+  - Production-oriented design
+  - Stability engineering
+  - Release It! philosophy
+originators:
+  - Michael Nygard
+origin:
+  type: book
+  title: Release It!
+  year: 2007
+short_description: >-
+  Design systems for the conditions they will actually meet in production: failure, partial
+  recovery, overload, latency, human operation and graceful degradation.
+description: >-
+  Design for Production / Stability, associated most strongly with Michael Nygard's Release It!,
+  treats production as the real test of design. Correct functionality is not enough: systems must
+  survive slow dependencies, overload, bad data, stuck threads, cascading failures, retries,
+  deployment mistakes and the need for humans to diagnose them under pressure. The philosophy
+  names both stability anti-patterns and resilience patterns, pushing designers to add timeouts,
+  circuit breakers, bulkheads, backpressure, health checks, observability and graceful degradation
+  before the first outage proves the need. It is a pragmatic operational philosophy: design is good
+  only if it keeps delivering acceptable service when reality is messy.
+core_tenets:
+  - Assume dependencies will fail, slow down or return surprising results; design every integration
+    with bounded waiting and explicit failure semantics.
+  - Prevent local failures from becoming systemic failures through isolation, bulkheads, circuit
+    breakers and load shedding.
+  - >-
+    Build for recovery as much as prevention: restarts, retries, fallbacks and degraded modes need
+    deliberate design.
+  - Make production observable with health signals, logs, metrics, traces and correlation that
+    operators can use during incidents.
+  - Treat capacity and overload as design inputs, not afterthoughts discovered by users.
+  - Prefer failing predictably and partially over hanging, amplifying traffic or corrupting shared
+    resources.
+key_ideas:
+  - name: Stability patterns and anti-patterns
+    explanation: >-
+      Nygard catalogues recurring failure shapes and countermeasures, turning outage folklore into
+      design vocabulary.
+  - name: Production is the real test
+    explanation: >-
+      A design is not proven by passing happy-path tests; it is proven by behaviour under latency,
+      overload, partial failure and operational intervention.
+  - name: Graceful degradation
+    explanation: >-
+      Systems should preserve the most important user outcomes when secondary capabilities are
+      impaired.
+in_practice: >-
+  Put timeouts on every remote call; bound retries with backoff and jitter; isolate scarce pools;
+  add circuit breakers and fallbacks around fragile dependencies; expose health endpoints and
+  useful telemetry; test overload and dependency failure, not just correctness. Review designs by
+  asking how they fail, recover and explain themselves to operators.
+complements:
+  - continuous-delivery-lean
+  - simple-made-easy
+  - data-oriented-design
+tensions_with:
+  - philosophy: worse-is-better
+    reason: >-
+      Shipping a minimal implementation quickly can be valuable, but production design resists
+      omitting stability controls whose absence only appears under real load.
+  - philosophy: clean-architecture-solid
+    reason: >-
+      Layered purity can hide operational failure modes if dependency boundaries are designed only
+      for code organisation rather than timeouts, isolation and recovery.
+associated_patterns:
+  - pattern: timeout
+    reason: >-
+      Bounds waiting so one slow dependency cannot consume threads or requests indefinitely.
+  - pattern: circuit-breaker
+    reason: >-
+      Stops repeated calls to a failing dependency and gives it time to recover.
+  - pattern: bulkhead
+    reason: >-
+      Isolates resources so failure in one integration or tenant cannot sink the whole service.
+  - pattern: retry
+    reason: >-
+      Recovers from transient failure when bounded, delayed and paired with idempotency.
+  - pattern: fallback
+    reason: >-
+      Provides a reduced but useful response when the preferred dependency or feature is impaired.
+  - pattern: backpressure
+    reason: >-
+      Communicates overload upstream instead of silently queuing work until collapse.
+  - pattern: health-endpoint-monitoring
+    reason: >-
+      Gives operators and orchestration systems a concrete signal for readiness, liveness and
+      dependency health.
+at_odds_patterns:
+  - pattern: service-locator
+    reason: >-
+      Hidden dependencies make it harder to see which calls need timeouts, isolation, telemetry and
+      fallbacks.
+  - pattern: singleton
+    reason: >-
+      Global shared state can become an unisolated failure or contention point unless designed with
+      production limits in mind.
+successfully_applied:
+  - where: Release It! production case studies
+    what: >-
+      Nygard's book derives its patterns and anti-patterns from production incidents and recovery
+      work in large commercial systems.
+    evidence_strength: primary-source
+    source:
+      title: Release It!
+      year: 2007
+  - where: Netflix Hystrix and resilience engineering
+    what: >-
+      Netflix popularised circuit breakers, fallbacks and latency tolerance in service-to-service
+      calls through Hystrix and related resilience practices.
+    evidence_strength: secondary-source
+    source:
+      title: "Hystrix: Latency and Fault Tolerance for Distributed Systems"
+  - where: Cloud-native service operations
+    what: >-
+      Health checks, timeouts, bulkheads, rate limits and graceful degradation are standard
+      operational design elements in modern distributed systems.
+    evidence_strength: inferred
+    source:
+      title: "Cloud-native resilience practice"
+best_for:
+  - backend-service
+  - distributed-system
+  - microservices
+  - web-api
+  - high-throughput
+criticisms:
+  - Stability mechanisms add moving parts and can themselves fail or mask problems if poorly tuned.
+  - Resilience patterns require realistic load and failure testing; configuration copied from
+    another system can be worse than none.
+  - Designing for every possible outage can slow delivery unless teams prioritise the most likely
+    and highest-impact failure modes.
+references:
+  - title: "Release It!: Design and Deploy Production-Ready Software"
+    author: Michael Nygard
+    year: 2007
+  - title: "Release It!, second edition"
+    author: Michael Nygard
+    year: 2018
+  - title: "Hystrix: Latency and Fault Tolerance for Distributed Systems"
+    author: Netflix

@@ -1,0 +1,155 @@
+id: continuous-delivery-lean
+title: Continuous Delivery & Lean Software
+aka:
+  - CD
+  - Lean Software Development
+  - Accelerate
+originators:
+  - Jez Humble
+  - David Farley
+  - Nicole Forsgren
+  - Gene Kim
+  - Mary Poppendieck
+  - Tom Poppendieck
+origin:
+  type: book
+  title: Continuous Delivery and Lean Software Development
+  year: 2010
+short_description: >-
+  Keep software always releasable by working in small batches, automating the deployment pipeline,
+  reducing work-in-progress and optimising flow with fast feedback.
+description: >-
+  Continuous Delivery applies lean thinking to the path from idea to production. Humble and Farley
+  argued that release should be a low-risk, routine business decision, not a rare technical event:
+  every change passes through an automated deployment pipeline that proves the software is in a
+  releasable state. Lean Software Development adds the flow lens: reduce work-in-progress, eliminate
+  handoffs and queues, build quality in, deliver in small batches and learn quickly. Accelerate and
+  the DORA research programme later connected these practices to measurable software delivery and
+  organisational performance, popularising four key metrics: deployment frequency, lead time for
+  changes, change failure rate and time to restore service.
+core_tenets:
+  - Work in small batches so each change is easier to understand, test, deploy and roll back.
+  - Automate the deployment pipeline from commit through build, tests, environment provisioning and
+    release evidence.
+  - Keep software always releasable; mainline should represent a production-quality candidate, not a
+    parking place for partially integrated work.
+  - Build quality in with fast automated feedback rather than inspecting quality in at the end.
+  - Reduce work-in-progress and queues to improve flow, expose bottlenecks and shorten feedback
+    loops.
+  - Use DORA metrics as outcome signals, balancing speed with stability rather than optimising one
+    in isolation.
+key_ideas:
+  - name: Deployment pipeline
+    explanation: >-
+      A versioned, automated path that turns a commit into progressively stronger evidence that the
+      release candidate is safe to deploy.
+  - name: Always releasable
+    explanation: >-
+      The system is kept in a state where release is a business choice; technical release work is
+      routine, rehearsed and mostly automated.
+  - name: DORA metrics
+    explanation: >-
+      Deployment frequency, lead time for changes, change failure rate and time to restore service
+      provide a balanced view of throughput and resilience.
+in_practice: >-
+  Commit small changes to a shared mainline, run a fast build immediately, promote the same artefact
+  through increasingly production-like checks, and release with feature toggles or progressive
+  rollout techniques. Limit parallel work, make queues visible, measure delivery flow and treat
+  deployment failures as process feedback that should improve automation, tests or operability.
+complements:
+  - extreme-programming-tdd
+  - simple-made-easy
+  - unix-philosophy
+tensions_with:
+  - philosophy: clean-architecture-solid
+    reason: >-
+      CD/Lean prioritises flow and frequent release; heavyweight architecture governance or slow
+      approval gates can become queues unless automated or narrowed.
+  - philosophy: conceptual-integrity
+    reason: >-
+      Rapid decentralised delivery can erode a single coherent design vision unless architectural
+      guardrails and ownership are explicit.
+associated_patterns:
+  - pattern: feature-toggle
+    reason: >-
+      Decouples deployment from release, letting incomplete or risky functionality be integrated
+      and shipped safely in small batches.
+  - pattern: strangler-fig
+    reason: >-
+      Enables incremental migration with continuously releasable slices rather than a risky big-bang
+      replacement.
+  - pattern: circuit-breaker
+    reason: >-
+      Supports safe operation and faster recovery when frequent deployments expose integration or
+      dependency failures.
+  - pattern: outbox
+    reason: >-
+      Makes state changes and message publication reliable across service boundaries, reducing
+      failure modes in automated release pipelines.
+  - pattern: deployment-stamp
+    reason: >-
+      Provides repeatable, isolated deployment units that make environment creation and progressive
+      rollout more automatable.
+  - pattern: database-per-service
+    reason: >-
+      Reduces cross-team release coupling by allowing services to evolve and deploy their own data
+      model independently.
+at_odds_patterns:
+  - pattern: monolith
+    reason: >-
+      A monolith is not inherently incompatible, but when all changes must release as one large
+      batch it fights independent flow and low-risk deployment.
+  - pattern: service-locator
+    reason: >-
+      Hidden runtime dependencies make automated release confidence weaker and production failures
+      harder to localise quickly.
+successfully_applied:
+  - where: DORA / State of DevOps research cohorts
+    what: >-
+      The Accelerate research programme reported that continuous delivery capabilities correlate
+      with higher software delivery performance and organisational outcomes across large survey
+      samples.
+    evidence_strength: primary-source
+    source:
+      title: Accelerate
+      year: 2018
+  - where: Etsy continuous deployment practice
+    what: >-
+      Etsy publicly described frequent production deployments, extensive automation and monitoring
+      as part of its web operations culture.
+    evidence_strength: secondary-source
+    source:
+      title: Web Operations
+      year: 2010
+  - where: Amazon deployment practice
+    what: >-
+      Public accounts from Amazon engineering leaders describe highly automated, frequent service
+      deployments enabled by small teams and operational ownership.
+    evidence_strength: secondary-source
+    source:
+      title: Velocity Conference talks and Amazon engineering accounts
+      year: 2011
+best_for:
+  - web-api
+  - backend-service
+  - microservices
+  - distributed-system
+  - web-frontend
+  - data-pipeline
+criticisms:
+  - Delivery metrics can be gamed if treated as individual targets rather than system-level health
+    indicators.
+  - High deployment frequency without strong operability, testing and rollback discipline can simply
+    increase production churn.
+  - Legacy systems, regulated domains and tightly coupled databases may require substantial enabling
+    work before the benefits appear.
+references:
+  - title: Continuous Delivery
+    author: Jez Humble, David Farley
+    year: 2010
+  - title: Accelerate
+    author: Nicole Forsgren, Jez Humble, Gene Kim
+    year: 2018
+  - title: Lean Software Development
+    author: Mary Poppendieck, Tom Poppendieck
+    year: 2003

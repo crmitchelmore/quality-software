@@ -1,0 +1,154 @@
+id: conways-law-team-topologies
+title: Conway's Law & Team Topologies
+aka:
+  - Conway's Law
+  - Team Topologies
+  - Inverse Conway manoeuvre
+originators:
+  - Melvin Conway
+  - Matthew Skelton
+  - Manuel Pais
+origin:
+  type: paper
+  title: How Do Committees Invent? and Team Topologies
+  year: 1968
+short_description: >-
+  Treat organisation design as system design: software mirrors communication paths, so shape team
+  boundaries, cognitive load and interaction modes deliberately.
+description: >-
+  Conway's Law observes that organisations design systems that copy their communication structures.
+  What begins as a sociological observation becomes a design tool: if architecture and team
+  structure are coupled, then team boundaries should be chosen deliberately rather than inherited
+  accidentally. Team Topologies turns this into an operating model with four team types —
+  stream-aligned, platform, enabling and complicated-subsystem — and three interaction modes:
+  collaboration, X-as-a-Service and facilitating. The goal is a fast flow of change through teams
+  with bounded cognitive load. The inverse Conway manoeuvre makes the implication explicit: reshape
+  teams and communication paths to encourage the architecture you want.
+core_tenets:
+  - Systems mirror the communication structures of the organisations that build them; architecture
+    and organisation cannot be designed independently.
+  - Use team boundaries as architectural boundaries, aligning ownership with streams of value and
+    bounded contexts where possible.
+  - Manage cognitive load explicitly; a team should own a coherent slice that fits within what it
+    can understand and operate well.
+  - Prefer stable, long-lived teams over temporary project groups so learning, ownership and flow
+    accumulate.
+  - >-
+    Use the four team types deliberately: stream-aligned, platform, enabling and
+    complicated-subsystem.
+  - Choose interaction modes intentionally — collaboration for discovery, X-as-a-Service for
+    reduced coupling and facilitating for capability building.
+key_ideas:
+  - name: Conway's Law
+    explanation: >-
+      The structure of the delivered system tends to reflect the structure of communication among
+      the people and teams who created it.
+  - name: Inverse Conway manoeuvre
+    explanation: >-
+      Deliberately change team boundaries and collaboration paths to bias the software architecture
+      toward the desired modular shape.
+  - name: Cognitive load
+    explanation: >-
+      Team ownership should be sized so that teams can understand, change and operate their systems
+      without constant cross-team coordination.
+in_practice: >-
+  Map current software boundaries against team communication paths; identify where many teams must
+  coordinate for one user-visible change; split or realign ownership around value streams and
+  bounded contexts; build platform capabilities as products; and make collaboration temporary and
+  purposeful rather than the default for every change. Review team APIs, not only code APIs.
+complements:
+  - domain-driven-design
+  - continuous-delivery-lean
+  - information-hiding
+tensions_with:
+  - philosophy: conceptual-integrity
+    reason: >-
+      Strong team autonomy can fragment a product's conceptual integrity unless shared design
+      principles and architecture stewardship keep the user model coherent.
+  - philosophy: unix-philosophy
+    reason: >-
+      Unix-style technical decomposition can create many tiny components; Team Topologies asks
+      whether the resulting ownership and communication load is sustainable for real teams.
+associated_patterns:
+  - pattern: bounded-context
+    reason: >-
+      Provides a socio-technical boundary where model, code ownership and team responsibility can
+      align.
+  - pattern: microservices
+    reason: >-
+      Independent services can reinforce autonomous stream-aligned teams when boundaries match
+      business change streams.
+  - pattern: modular-monolith
+    reason: >-
+      Lets teams preserve clear module ownership and cognitive boundaries without paying the full
+      distributed-systems cost of microservices.
+  - pattern: backend-for-frontend
+    reason: >-
+      Aligns an API boundary with a consuming experience or channel team, reducing cross-team
+      negotiation for UI-specific needs.
+  - pattern: anti-corruption-layer
+    reason: >-
+      Protects a team's model from another team's or legacy system's semantics, reducing accidental
+      coupling across boundaries.
+  - pattern: published-language
+    reason: >-
+      Gives teams an explicit shared contract for integration without requiring constant direct
+      collaboration.
+at_odds_patterns:
+  - pattern: monolith
+    reason: >-
+      A single deployable owned through a central bottleneck can force unrelated streams of work to
+      coordinate, though a modular monolith can avoid this.
+  - pattern: service-locator
+    reason: >-
+      Hidden dependencies obscure the real communication and ownership paths that Team Topologies
+      tries to make explicit.
+successfully_applied:
+  - where: Organisations discussed in Team Topologies case studies
+    what: >-
+      Skelton and Pais report case-study experience from organisations using team types,
+      interaction modes and platform teams to improve flow while managing cognitive load.
+    evidence_strength: primary-source
+    source:
+      title: Team Topologies
+      year: 2019
+  - where: Inverse Conway manoeuvre adoption reports
+    what: >-
+      Industry reports describe organisations realigning teams around desired service and product
+      boundaries to reduce coordination and improve delivery flow; results are context-dependent.
+    evidence_strength: secondary-source
+    source:
+      title: Team Topologies case studies and adoption reports
+      year: 2019
+  - where: Domain-driven microservice organisations
+    what: >-
+      Microservices guidance commonly combines Conway's Law with DDD bounded contexts to explain why
+      service boundaries should follow team and domain boundaries.
+    evidence_strength: secondary-source
+    source:
+      title: Building Microservices
+      year: 2015
+best_for:
+  - microservices
+  - modular-monolith
+  - distributed-system
+  - backend-service
+  - web-api
+  - monolith
+criticisms:
+  - Organisation charts are slower and more political to change than code, so the inverse Conway
+    manoeuvre can be hard to execute in practice.
+  - Over-applying team autonomy can duplicate capabilities or create inconsistent user experiences
+    unless platform and design responsibilities are clear.
+  - The model can be misused as a taxonomy exercise; the value comes from improving flow and
+    cognitive load, not from labelling teams.
+references:
+  - title: How Do Committees Invent?
+    author: Melvin E. Conway
+    year: 1968
+  - title: Team Topologies
+    author: Matthew Skelton, Manuel Pais
+    year: 2019
+  - title: Building Microservices
+    author: Sam Newman
+    year: 2015

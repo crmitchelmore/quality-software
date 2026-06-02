@@ -1,0 +1,149 @@
+id: functional-core-type-driven
+title: Functional Core & Type-Driven Design
+aka:
+  - Functional core, imperative shell
+  - Make illegal states unrepresentable
+  - Parse, don't validate
+originators:
+  - ML and Haskell traditions
+  - Gary Bernhardt
+  - Yaron Minsky
+origin:
+  type: tradition
+  title: "ML/Haskell type-driven programming, Functional Core Imperative Shell, and Effective ML"
+  year: 2012
+short_description: >-
+  Put pure, total, immutable logic at the centre of the system, keep effects at the edges, and use
+  types and constructors so invalid states cannot be represented.
+description: >-
+  Functional Core & Type-Driven Design combines the functional-programming tradition of ML and
+  Haskell with Gary Bernhardt's "functional core, imperative shell" formulation and Yaron Minsky's
+  Effective ML advice to make illegal states unrepresentable. The system is split between a core
+  of pure, deterministic functions over immutable values and a thin shell that performs IO,
+  persistence, network calls and other effects. Inputs are parsed once at the boundary into rich
+  domain types; after that, the rest of the program should not repeatedly validate primitive data
+  or defend against impossible cases. The philosophy prizes total functions, explicit absence and
+  failure, algebraic data types, smart constructors and narrow effect boundaries as tools for
+  moving correctness from runtime convention into compile-time structure.
+core_tenets:
+  - Keep domain decisions in a pure functional core whose outputs depend only on its inputs, so it
+    is easy to reason about and test.
+  - Push IO, clocks, randomness, persistence, logging and external services into a thin imperative
+    shell around that core.
+  - Use domain-specific types, sum types and smart constructors to make illegal states
+    unrepresentable rather than merely documented.
+  - Parse, don't validate — convert untrusted input into precise types at the boundary, then pass
+    only valid values inward.
+  - Prefer total functions and explicit result types for absence and failure instead of nulls,
+    exceptions and partial assumptions.
+  - Treat immutability as the default so transformations are local, repeatable and free of hidden
+    temporal coupling.
+key_ideas:
+  - name: Functional core, imperative shell
+    explanation: >-
+      Pure business logic is isolated from the messy world; the shell gathers inputs, invokes the
+      core and performs effects with the core's results.
+  - name: Illegal states unrepresentable
+    explanation: >-
+      Types encode invariants such as non-empty lists, validated identifiers or allowed state
+      transitions, so many errors cannot be expressed by well-typed code.
+  - name: Parse, don't validate
+    explanation: >-
+      Validation should produce a richer value that carries proof of validity; repeatedly checking
+      raw strings and maps leaves the same uncertainty everywhere.
+in_practice: >-
+  Define small domain types before writing workflows; use smart constructors for values with
+  invariants; return Option/Maybe or Either/Result for expected absence and failure; keep command
+  handlers, controllers and adapters as shells that translate to and from the functional core.
+  Tests should concentrate on core behaviour with plain values, with fewer mocks because effects
+  are already pushed outward.
+complements:
+  - simple-made-easy
+  - design-by-contract
+  - information-hiding
+tensions_with:
+  - philosophy: data-oriented-design
+    reason: >-
+      Type-driven functional designs often favour abstraction, persistent data structures and
+      immutability; data-oriented design may reject those costs in hot loops where layout, mutation
+      and cache behaviour dominate.
+  - philosophy: unix-philosophy
+    reason: >-
+      Unix text-stream composition is intentionally weakly typed at process boundaries, whereas
+      type-driven design wants boundary parsing to produce precise internal types quickly.
+associated_patterns:
+  - pattern: pure-function
+    reason: >-
+      The basic unit of the functional core: deterministic logic with no hidden effects.
+  - pattern: immutability
+    reason: >-
+      Immutable values make core transformations easier to reason about and safe to share.
+  - pattern: option-maybe
+    reason: >-
+      Represents expected absence explicitly instead of smuggling it through null.
+  - pattern: either-result
+    reason: >-
+      Makes recoverable failure part of a function's type and return value.
+  - pattern: newtype-wrapper
+    reason: >-
+      Turns primitive strings and numbers into domain-specific types that cannot be accidentally
+      mixed.
+  - pattern: type-state
+    reason: >-
+      Encodes valid state transitions in types so operations are only available in legal states.
+  - pattern: smart-constructor
+    reason: >-
+      Centralises invariant checks at creation time and returns only values that satisfy them.
+at_odds_patterns:
+  - pattern: active-record
+    reason: >-
+      Mixing persistence, mutation and domain behaviour in one object tends to pull effects into
+      the core instead of keeping them at the shell.
+  - pattern: service-locator
+    reason: >-
+      Hidden global dependencies obscure effects that this philosophy wants explicit and isolated.
+successfully_applied:
+  - where: Gary Bernhardt's Destroy All Software examples
+    what: >-
+      Bernhardt popularised separating deterministic application logic from side-effecting shells
+      as a practical way to make tests fast and design clearer.
+    evidence_strength: primary-source
+    source:
+      title: "Functional Core, Imperative Shell"
+      year: 2012
+  - where: Jane Street OCaml systems
+    what: >-
+      Jane Street has publicly described using OCaml's type system and functional style to model
+      financial-domain invariants and reduce classes of runtime errors.
+    evidence_strength: secondary-source
+    source:
+      title: "Yaron Minsky, Effective ML and OCaml for the Masses talks/articles"
+      year: 2011
+  - where: Haskell and ML compiler/type-system practice
+    what: >-
+      Algebraic data types, pattern matching and explicit effects are longstanding practice in the
+      language families from which the philosophy draws.
+    evidence_strength: inferred
+    source:
+      title: "ML and Haskell language traditions"
+best_for:
+  - library
+  - backend-service
+  - web-api
+  - safety-critical
+criticisms:
+  - Strong type modelling can become ceremony if applied to throwaway or very simple code.
+  - Persistent immutable structures and abstraction may be inappropriate for performance-critical
+    inner loops without careful measurement.
+  - Teams unfamiliar with algebraic types can encode invariants awkwardly or hide complexity in
+    type machinery.
+references:
+  - title: "Functional Core, Imperative Shell"
+    author: Gary Bernhardt
+    year: 2012
+  - title: "Effective ML / Make illegal states unrepresentable"
+    author: Yaron Minsky
+    year: 2011
+  - title: "Parse, don't validate"
+    author: Alexis King
+    year: 2019
