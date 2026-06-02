@@ -1,0 +1,95 @@
+id: reflection-self-critique
+title: Reflection / Self-Critique Loop
+scale: design
+category: ai-ml
+maturity: emerging
+short_description: >-
+  Ask a model to critique, verify, or revise its own intermediate work under bounded rules before accepting the final output.
+description: >-
+  Reflection or Self-Critique introduces one or more deliberate review steps into an LLM workflow. The model may inspect its draft against a rubric, search for missing evidence, compare alternatives, or produce a revised answer. The pattern can improve reasoning and instruction following, but it is not magic: self-critique can reinforce confident mistakes unless it is grounded in external evidence, deterministic checks, or a separate critic prompt, and it must always have strict iteration limits.
+problem: >-
+  First-pass model outputs often miss constraints, overlook edge cases, or include unsupported claims, especially in complex multi-step tasks.
+context: >-
+  Use for high-value generation where a second pass can check explicit criteria. Avoid unbounded loops or purely introspective critique for factual questions without evidence.
+consequences:
+  - >-
+    Can improve completeness, consistency, and adherence to rubrics without involving a human every time.
+  - >-
+    Adds latency, cost, and potential over-editing.
+  - >-
+    A model may rationalise its own mistake unless critique is evidence-based.
+  - >-
+    Requires termination criteria so self-improvement does not become an infinite loop.
+synergies:
+  - pattern: agent-orchestration
+    reason: >-
+      Orchestrators can run reflection as a bounded step before finishing or escalating.
+  - pattern: llm-as-judge
+    reason: >-
+      A separate judge prompt can provide a rubric-based critique before revision.
+  - pattern: evaluation-harness
+    reason: >-
+      Reflection should be measured against baselines because it can improve some cases and degrade others.
+  - pattern: timeout
+    reason: >-
+      Timeouts and iteration budgets keep critique loops from consuming unbounded resources.
+alternatives:
+  - llm-as-judge
+  - human-in-the-loop
+  - prompt-chaining
+conflicts_with:
+  - fail-fast
+languages:
+  - language-agnostic
+  - python
+  - typescript
+frameworks:
+  - openai
+  - anthropic
+  - langchain
+  - semantic-kernel
+  - none
+project_types:
+  - ml-system
+  - backend-service
+  - prototype
+  - library
+tags:
+  - critique
+  - revision
+  - reasoning
+examples:
+  - language: python
+    title: Bound reflection with evidence and a rubric
+    negative: |
+      answer = llm.complete(question)
+      while "not good enough" in llm.complete(f"Critique this: {answer}"):
+          answer = llm.complete(f"Improve this answer: {answer}")
+    positive: |
+      answer = llm.complete(make_answer_prompt(question, sources))
+
+      for _ in range(2):
+          critique = llm.json_complete(
+              "Find unsupported claims using only the supplied sources. Return JSON.",
+              {"answer": answer, "sources": sources},
+              schema=Critique.model_json_schema(),
+          )
+          checked = Critique.model_validate(critique)
+          if not checked.unsupported_claims:
+              break
+          answer = llm.complete(make_revision_prompt(answer, checked, sources))
+    explanation: >-
+      The positive version limits iterations and grounds critique in sources and a schema, avoiding an unbounded self-referential loop.
+ratings:
+  small:
+    score: 2
+    notes: >-
+      Often unnecessary for small features unless output quality is visibly improved by a second pass.
+  medium:
+    score: 4
+    notes: >-
+      Good for high-value generation with explicit rubrics and measured regression tests.
+  large:
+    score: 4
+    notes: >-
+      Useful in large workflows, but should be selectively enabled because cost and latency compound quickly.

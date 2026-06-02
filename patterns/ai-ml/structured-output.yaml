@@ -1,0 +1,93 @@
+id: structured-output
+title: Structured Output (Schema-Constrained Generation)
+scale: implementation
+category: ai-ml
+maturity: cutting-edge
+short_description: >-
+  Make the model return data that conforms to a declared schema, such as JSON Schema or a typed object, instead of free-form prose.
+description: >-
+  Structured Output constrains generation to a machine-readable shape so downstream code can parse, validate, and act on results reliably. It may use provider-native JSON modes, function calling, grammar constraints, or post-generation validation and repair. The pattern is not just formatting: schema design should encode required fields, enums, numeric ranges, nullable values, and versioning so invalid states are rejected before they drive application behaviour.
+problem: >-
+  Free-form LLM responses are brittle to parse and often omit required fields, invent enum values, or mix explanation with data.
+context: >-
+  Use whenever model output is consumed by software, stored, evaluated, or passed to tools. Free-form prose is acceptable only when humans are the sole consumers.
+consequences:
+  - >-
+    Reduces parser fragility and makes model outputs testable with normal validation tools.
+  - >-
+    Complex schemas can reduce generation quality or increase retries if the model struggles to satisfy them.
+  - >-
+    Schema changes are API changes for prompts, clients, and stored outputs.
+  - >-
+    Deterministic validators are still needed because provider guarantees vary.
+synergies:
+  - pattern: tool-use-function-calling
+    reason: >-
+      Function calling is a common provider-native way to obtain schema-shaped arguments.
+  - pattern: guardrails-output-validation
+    reason: >-
+      Structured output gives guardrails concrete fields and enums to validate.
+  - pattern: contract-first-api
+    reason: >-
+      Output schemas should be designed and versioned like API contracts.
+  - pattern: prompt-chaining
+    reason: >-
+      Prompt chains are more reliable when each stage exchanges typed objects.
+alternatives:
+  - data-transfer-object
+  - contract-first-api
+  - command
+conflicts_with:
+  - fluent-interface
+languages:
+  - language-agnostic
+  - python
+  - typescript
+frameworks:
+  - openai
+  - anthropic
+  - langchain
+  - semantic-kernel
+  - none
+project_types:
+  - ml-system
+  - backend-service
+  - library
+  - web-api
+tags:
+  - json-schema
+  - parsing
+  - typed-output
+examples:
+  - language: python
+    title: Ask for typed JSON, then validate it
+    negative: |
+      text = llm.complete("Extract priority and owner from this ticket. Reply naturally.")
+      priority = text.split("priority:")[1].split()[0]
+    positive: |
+      class TicketFields(BaseModel):
+          priority: Literal["low", "medium", "high", "critical"]
+          owner_email: EmailStr | None
+          summary: str
+
+      raw = llm.complete_json(
+          prompt="Extract ticket fields. Return only JSON matching the schema.",
+          schema=TicketFields.model_json_schema(),
+          input=ticket_text,
+      )
+      fields = TicketFields.model_validate(raw)
+    explanation: >-
+      The positive version declares valid enum values and types, then validates the model response before application code depends on it.
+ratings:
+  small:
+    score: 5
+    notes: >-
+      Excellent even in small projects because it prevents brittle parsing with little overhead.
+  medium:
+    score: 5
+    notes: >-
+      Essential for reliable LLM integrations and testable workflows.
+  large:
+    score: 5
+    notes: >-
+      Foundational at scale; pair with schema versioning, contract tests, and telemetry on validation failures.

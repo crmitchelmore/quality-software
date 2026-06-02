@@ -1,6 +1,23 @@
 # Pattern Catalogue Index
 
-Total patterns: **263**
+Total patterns: **275**
+
+## ai-ml (12)
+
+| Pattern | Scale | Maturity | Small | Medium | Large |
+| --- | --- | --- | :-: | :-: | :-: |
+| [Agent Orchestration](patterns/ai-ml/agent-orchestration.md) | architectural | emerging | 2 | 4 | 5 |
+| [Guardrails & Output Validation](patterns/ai-ml/guardrails-output-validation.md) | design | cutting-edge | 4 | 5 | 5 |
+| [Human-in-the-Loop Approval](patterns/ai-ml/human-in-the-loop.md) | design | cutting-edge | 3 | 5 | 5 |
+| [LLM Evaluation Harness](patterns/ai-ml/evaluation-harness.md) | design | cutting-edge | 3 | 5 | 5 |
+| [LLM-as-Judge / Model-Graded Evaluation](patterns/ai-ml/llm-as-judge.md) | design | emerging | 3 | 4 | 5 |
+| [Memory & Context-Window Management](patterns/ai-ml/memory-context-window-management.md) | design | emerging | 3 | 5 | 5 |
+| [Prompt Chaining](patterns/ai-ml/prompt-chaining.md) | design | cutting-edge | 3 | 4 | 4 |
+| [Reflection / Self-Critique Loop](patterns/ai-ml/reflection-self-critique.md) | design | emerging | 2 | 4 | 4 |
+| [Retrieval-Augmented Generation (RAG)](patterns/ai-ml/retrieval-augmented-generation.md) | architectural | emerging | 3 | 5 | 5 |
+| [Semantic Caching](patterns/ai-ml/semantic-caching.md) | data | emerging | 2 | 4 | 5 |
+| [Structured Output (Schema-Constrained Generation)](patterns/ai-ml/structured-output.md) | implementation | cutting-edge | 5 | 5 | 5 |
+| [Tool Use / Function Calling](patterns/ai-ml/tool-use-function-calling.md) | integration | cutting-edge | 3 | 5 | 5 |
 
 ## api-design (11)
 

@@ -1,0 +1,91 @@
+id: evaluation-harness
+title: LLM Evaluation Harness
+scale: design
+category: ai-ml
+maturity: cutting-edge
+short_description: >-
+  Run repeatable test suites over prompts, models, tools, retrieval, and judges so LLM behaviour can be compared and regressed deliberately.
+description: >-
+  An LLM Evaluation Harness is the test infrastructure for probabilistic AI features. It stores cases, fixtures, expected behaviours, scoring functions, judge prompts, model settings, and trend reports, then runs them consistently across prompt, model, retrieval, and tool changes. A good harness mixes deterministic assertions, golden examples, human labels, LLM-as-judge scores, and production-derived edge cases, treating evaluation data as first-class source-controlled product knowledge.
+problem: >-
+  Prompt and model changes can silently improve demos while regressing important edge cases, safety behaviours, tool calls, or retrieval grounding.
+context: >-
+  Use for any LLM feature that will be maintained beyond a prototype. Avoid relying only on aggregate scores; keep case-level failures visible and actionable.
+consequences:
+  - >-
+    Makes model and prompt changes reviewable with evidence instead of anecdotes.
+  - >-
+    Requires ongoing investment in representative cases, fixtures, and scoring calibration.
+  - >-
+    Evaluation can overfit if the suite is too small or too visible to prompt authors.
+  - >-
+    Non-determinism means thresholds, variance, retries, and trend analysis matter.
+synergies:
+  - pattern: llm-as-judge
+    reason: >-
+      Model-graded evaluation is one scoring method the harness can run and trend.
+  - pattern: retrieval-augmented-generation
+    reason: >-
+      RAG needs case-level checks for retrieval recall, answer faithfulness, and citation quality.
+  - pattern: arrange-act-assert
+    reason: >-
+      Eval cases benefit from clear setup, invocation, and expected signals.
+  - pattern: golden-master
+    reason: >-
+      Golden outputs can catch unexpected drift, while judge and rubric scores handle acceptable variation.
+alternatives:
+  - golden-master
+  - property-based-testing
+  - contract-testing
+conflicts_with:
+  - mock-object
+languages:
+  - language-agnostic
+  - python
+  - typescript
+frameworks:
+  - openai
+  - anthropic
+  - huggingface
+  - langchain
+  - none
+project_types:
+  - ml-system
+  - library
+  - backend-service
+  - prototype
+tags:
+  - evaluation
+  - regression-testing
+  - prompt-quality
+examples:
+  - language: python
+    title: Track case-level regressions
+    negative: |
+      def test_prompt_once():
+          answer = assistant("How do I reset SSO?")
+          assert "SSO" in answer
+    positive: |
+      def run_eval(case: EvalCase) -> EvalResult:
+          output = assistant(case.input, fixtures=case.fixtures, model=case.model)
+          checks = [check(output, case) for check in case.deterministic_checks]
+          judge = faithfulness_judge.grade(output, case.sources) if case.sources else None
+          return EvalResult(case_id=case.id, checks=checks, judge=judge, output=output)
+
+      report = harness.run_suite("support-rag", changed_prompt="assistant-v7")
+      report.fail_if_regressed(required_checks=True, min_faithfulness=4.2)
+    explanation: >-
+      The positive version runs named cases with fixtures, deterministic checks, judge scores, and regression thresholds instead of one brittle smoke assertion.
+ratings:
+  small:
+    score: 3
+    notes: >-
+      Valuable once a prototype has users, but a tiny experiment may start with a spreadsheet of cases.
+  medium:
+    score: 5
+    notes: >-
+      Essential for maintaining prompt, model, retrieval, and tool changes with confidence.
+  large:
+    score: 5
+    notes: >-
+      Foundational for large AI systems; suites, trends, variance, and case ownership become release gates.

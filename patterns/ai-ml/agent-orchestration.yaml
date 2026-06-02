@@ -1,0 +1,106 @@
+id: agent-orchestration
+title: Agent Orchestration
+scale: architectural
+category: ai-ml
+maturity: emerging
+short_description: >-
+  Coordinate LLM-driven agents, tools, memory, approvals, and termination policies so autonomous workflows remain bounded and observable.
+description: >-
+  Agent Orchestration structures an AI workflow as one or more agents that plan, call tools, inspect results, and decide next steps under explicit control. A production orchestrator defines roles, allowed tools, budgets, retry and timeout rules, handoff points, memory access, human approval gates, and audit logs. The pattern is cutting-edge because the engineering surface is still changing quickly, but its core discipline is conventional distributed-systems design: bound loops, isolate capabilities, observe every action, and make unsafe transitions explicit.
+problem: >-
+  Naive agents loop indefinitely, call unsafe tools, lose track of state, or perform irreversible actions without review because the model is treated as the whole control plane.
+context: >-
+  Use for multi-step tasks where an LLM must choose actions based on intermediate results. Avoid for deterministic workflows that can be expressed as normal code or a simple pipeline.
+consequences:
+  - >-
+    Enables adaptive workflows that can inspect, decide, and recover from partial failures.
+  - >-
+    Increases safety burden: permissions, tool allow-lists, budgets, traces, and approvals become load-bearing.
+  - >-
+    Harder to test than straight-line code because model decisions vary across prompts, inputs, and versions.
+  - >-
+    Requires durable state for resumability, deduplication, and audit when actions mutate external systems.
+synergies:
+  - pattern: tool-use-function-calling
+    reason: >-
+      Function-calling is the controlled integration mechanism agents use to affect real systems.
+  - pattern: human-in-the-loop
+    reason: >-
+      Human approval gates bound high-impact actions such as deploys, refunds, or data deletion.
+  - pattern: reflection-self-critique
+    reason: >-
+      Reflection can improve plans when it is bounded by iteration limits and evidence.
+  - pattern: timeout
+    reason: >-
+      Per-step and whole-run timeouts prevent agent loops from consuming unbounded resources.
+alternatives:
+  - pipes-and-filters
+  - saga
+  - strategy
+conflicts_with:
+  - transaction-script
+languages:
+  - language-agnostic
+  - python
+  - typescript
+frameworks:
+  - langchain
+  - semantic-kernel
+  - openai
+  - anthropic
+  - none
+project_types:
+  - ml-system
+  - backend-service
+  - distributed-system
+  - prototype
+tags:
+  - agents
+  - orchestration
+  - autonomy
+diagram: |
+  flowchart TD
+    Goal[Goal] --> Plan[Plan]
+    Plan --> Agent[Agent]
+    Agent --> Tools[Tools]
+    Tools --> State[State]
+    State --> Agent
+    Agent --> Gate[Gate]
+    Gate --> Done[Done]
+    Agent --> Stop[Stop]
+examples:
+  - language: typescript
+    title: Bound agent loops and tool permissions
+    negative: |
+      while (true) {
+        const action = await model.nextAction(history);
+        const result = await tools[action.name](action.args);
+        history.push({ action, result });
+      }
+    positive: |
+      const allowedTools = pickTools([searchDocs, createDraftPullRequest, readIssue]);
+
+      for (let step = 0; step < 8; step++) {
+        const action = await model.nextAction(history, { allowedTools, remainingSteps: 8 - step });
+        if (action.name === "finish") break;
+        if (!allowedTools.has(action.name)) throw new ForbiddenTool(action.name);
+
+        const result = await withTimeout(() => allowedTools.call(action), 10_000);
+        auditLog.record(runId, step, action, result.summary);
+        history.push({ action, result });
+      }
+    explanation: >-
+      The positive version gives the agent a bounded step budget, allow-listed tools, timeouts, and audit logging, so autonomy is constrained by explicit controls.
+ratings:
+  small:
+    score: 2
+    notes: >-
+      Usually too much machinery for small deterministic tasks; direct code or a prompt chain is safer.
+  medium:
+    score: 4
+    notes: >-
+      Good fit for complex operational assistants once tools and approvals are well scoped.
+  large:
+    score: 5
+    notes: >-
+      Essential for enterprise agent platforms where many tools, users, policies, and audit requirements interact.

@@ -1,0 +1,96 @@
+id: human-in-the-loop
+title: Human-in-the-Loop Approval
+scale: design
+category: ai-ml
+maturity: cutting-edge
+short_description: >-
+  Route high-risk AI outputs or actions to a person for review, approval, correction, or escalation before they affect users or systems.
+description: >-
+  Human-in-the-Loop Approval treats human judgement as an explicit control point in an AI workflow rather than an informal fallback. The system defines which decisions require review, what evidence the reviewer sees, how approvals are recorded, what can be edited, and how the workflow resumes. This pattern is especially important when AI proposes irreversible, costly, sensitive, or reputation-affecting actions, and it should be designed as a product flow with queues, SLAs, audit trails, and override rules.
+problem: >-
+  Fully automated AI systems can take unsafe actions or publish poor outputs before uncertainty, policy risk, or missing context is noticed.
+context: >-
+  Use where model confidence, validation failures, legal exposure, data mutation, or customer impact exceeds an agreed risk threshold. Avoid routing every low-risk output to humans, or review queues become ignored bottlenecks.
+consequences:
+  - >-
+    Reduces blast radius by stopping high-risk outputs before they cross a trust boundary.
+  - >-
+    Adds latency and operational workload, so routing criteria must be selective and measurable.
+  - >-
+    Reviewer decisions become training and evaluation data if captured with reasons and outcomes.
+  - >-
+    Poor reviewer UX can lead to rubber-stamping, which creates an illusion of safety.
+synergies:
+  - pattern: guardrails-output-validation
+    reason: >-
+      Guardrail failures can trigger review with concrete reasons instead of silently blocking users.
+  - pattern: agent-orchestration
+    reason: >-
+      Orchestrators need approval gates before tools perform high-impact or irreversible actions.
+  - pattern: audit-logging
+    reason: >-
+      Human approvals should record who approved what evidence, when, and under which policy.
+  - pattern: rate-limiting
+    reason: >-
+      Review queues need rate controls so automation cannot overwhelm available reviewers.
+alternatives:
+  - guardrails-output-validation
+  - circuit-breaker
+  - feature-toggle
+conflicts_with:
+  - scheduler-agent-supervisor
+languages:
+  - language-agnostic
+  - python
+  - typescript
+frameworks:
+  - openai
+  - anthropic
+  - langchain
+  - none
+project_types:
+  - ml-system
+  - backend-service
+  - web-api
+  - safety-critical
+tags:
+  - approval
+  - review
+  - risk-control
+examples:
+  - language: typescript
+    title: Route risky actions to approval
+    negative: |
+      const action = await model.decide(customerComplaint);
+      await refunds.issue(action.orderId, action.amountCents);
+      await email.send(customer.email, action.message);
+    positive: |
+      const proposal = await model.proposeRefund(customerComplaint);
+      const risk = refundPolicy.evaluate(proposal);
+
+      if (risk.requiresApproval) {
+        await approvalQueue.enqueue({
+          proposal,
+          evidence: customerComplaint.attachments,
+          reasons: risk.reasons,
+          requestedBy: "refund-assistant"
+        });
+        return { status: "awaiting_approval" };
+      }
+
+      await refunds.issueDraft(proposal.orderId, proposal.amountCents, proposal.idempotencyKey);
+    explanation: >-
+      The positive version makes the model produce a proposal, evaluates risk deterministically, and sends high-impact actions to a review queue instead of executing them immediately.
+ratings:
+  small:
+    score: 3
+    notes: >-
+      Useful for risky prototypes, though manual ad hoc review may be enough for very low volume.
+  medium:
+    score: 5
+    notes: >-
+      Excellent for production AI features that affect customers, money, compliance, or durable state.
+  large:
+    score: 5
+    notes: >-
+      Essential at scale, with reviewer queues, SLAs, audit trails, sampling, and escalation policy.

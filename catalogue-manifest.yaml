@@ -298,3 +298,16 @@
 - {id: smart-constructor, title: Smart Constructor, category: implementation, scale: implementation}
 - {id: newtype-wrapper, title: Newtype / Wrapper Type, category: implementation, scale: implementation}
 - {id: dry, title: DRY (Don't Repeat Yourself), category: implementation, scale: implementation}
+# ai-ml (cutting-edge) — added post-bulk to honour the cutting-edge request
+- {id: retrieval-augmented-generation, title: Retrieval-Augmented Generation (RAG), category: ai-ml, scale: architectural}
+- {id: agent-orchestration, title: Agent Orchestration, category: ai-ml, scale: architectural}
+- {id: tool-use-function-calling, title: Tool Use / Function Calling, category: ai-ml, scale: integration}
+- {id: prompt-chaining, title: Prompt Chaining, category: ai-ml, scale: design}
+- {id: llm-as-judge, title: LLM-as-Judge / Model-Graded Evaluation, category: ai-ml, scale: design}
+- {id: semantic-caching, title: Semantic Caching, category: ai-ml, scale: data}
+- {id: guardrails-output-validation, title: Guardrails & Output Validation, category: ai-ml, scale: design}
+- {id: structured-output, title: Structured Output (Schema-Constrained Generation), category: ai-ml, scale: implementation}
+- {id: human-in-the-loop, title: Human-in-the-Loop Approval, category: ai-ml, scale: design}
+- {id: reflection-self-critique, title: Reflection / Self-Critique Loop, category: ai-ml, scale: design}
+- {id: memory-context-window-management, title: Memory & Context-Window Management, category: ai-ml, scale: design}
+- {id: evaluation-harness, title: LLM Evaluation Harness, category: ai-ml, scale: testing}

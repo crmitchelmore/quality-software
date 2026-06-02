@@ -1,0 +1,100 @@
+id: semantic-caching
+title: Semantic Caching
+scale: data
+category: ai-ml
+maturity: emerging
+short_description: >-
+  Cache model responses by semantic similarity rather than exact prompt text to reduce cost and latency for repeated intent.
+description: >-
+  Semantic Caching embeds incoming prompts or normalised request objects and looks for sufficiently similar previous requests with reusable responses. Unlike exact caches, it can hit when users phrase the same intent differently. Production semantic caches need careful scope, freshness, permission boundaries, answer provenance, similarity thresholds, and invalidation; otherwise they can serve plausible but wrong answers across tenants, time, or context.
+problem: >-
+  LLM calls are expensive and slow, while users often ask semantically equivalent questions that differ only in wording.
+context: >-
+  Use for high-volume read-like prompts where answers are stable for a corpus, model, policy, and user permission scope. Avoid for personalised, time-sensitive, or mutating operations unless keys include every relevant context dimension.
+consequences:
+  - >-
+    Can significantly reduce model spend and latency for repeated questions.
+  - >-
+    Similarity thresholds are product decisions: too low returns wrong answers, too high misses savings.
+  - >-
+    Cache entries must be scoped by tenant, permissions, model version, prompt template, and corpus version.
+  - >-
+    Observability needs hit quality, not just hit rate, because bad hits are silent correctness failures.
+synergies:
+  - pattern: retrieval-augmented-generation
+    reason: >-
+      RAG answers can be cached with source ids and corpus versions so freshness remains checkable.
+  - pattern: write-through-cache
+    reason: >-
+      Critical cached answers may be refreshed synchronously when canonical content changes.
+  - pattern: cache-aside
+    reason: >-
+      Semantic caching often wraps model calls as a cache-aside read path on misses.
+  - pattern: evaluation-harness
+    reason: >-
+      Similarity thresholds and cache-hit quality need regression tests over near-duplicate prompts.
+alternatives:
+  - cache-aside
+  - write-through-cache
+  - memoization
+conflicts_with:
+  - idempotency-key
+languages:
+  - language-agnostic
+  - python
+  - typescript
+frameworks:
+  - openai
+  - huggingface
+  - pgvector
+  - pinecone
+  - redis
+project_types:
+  - ml-system
+  - backend-service
+  - high-throughput
+  - web-api
+tags:
+  - caching
+  - embeddings
+  - cost-control
+examples:
+  - language: python
+    title: Scope semantic cache entries
+    negative: |
+      def answer(question: str) -> str:
+          hit = cache.nearest(embed(question), min_score=0.80)
+          if hit:
+              return hit.answer
+          answer = llm.complete(question)
+          cache.put(embed(question), answer)
+          return answer
+    positive: |
+      def answer(question: str, user: User, corpus_version: str) -> str:
+          key_scope = {
+              "tenant": user.tenant_id,
+              "role": user.role,
+              "model": MODEL_VERSION,
+              "corpus": corpus_version,
+          }
+          hit = cache.nearest(embed(normalise(question)), scope=key_scope, min_score=0.92)
+          if hit and still_fresh(hit.sources, corpus_version):
+              return hit.answer
+          generated = rag_answer(question, user)
+          cache.put(embed(normalise(question)), generated.answer, scope=key_scope, sources=generated.sources)
+          return generated.answer
+    explanation: >-
+      The positive version scopes and validates cache hits by tenant, role, model, corpus, and source freshness instead of sharing approximate answers globally.
+ratings:
+  small:
+    score: 2
+    notes: >-
+      Usually premature unless model cost is already material or prompts are highly repetitive.
+  medium:
+    score: 4
+    notes: >-
+      Good for support and RAG workloads with stable corpora and measurable repeated intent.
+  large:
+    score: 5
+    notes: >-
+      Excellent at high volume, but requires careful scoping, invalidation, and hit-quality evaluation.

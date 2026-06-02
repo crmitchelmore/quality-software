@@ -1,0 +1,94 @@
+id: llm-as-judge
+title: LLM-as-Judge / Model-Graded Evaluation
+scale: design
+category: ai-ml
+maturity: emerging
+short_description: >-
+  Use a model to grade outputs against a rubric, preferably with calibration, examples, and spot checks against human judgement.
+description: >-
+  LLM-as-Judge uses a language model as an evaluator for qualities that are hard to assert with exact tests, such as helpfulness, faithfulness, tone, instruction following, and completeness. A strong judge prompt includes a clear rubric, reference material, scoring anchors, required rationale, and sometimes pairwise comparison. It should be calibrated against human labels and deterministic checks because model judges can be biased toward verbosity, familiar phrasing, or their own model family.
+problem: >-
+  Many LLM behaviours cannot be evaluated reliably with string equality, yet relying only on manual review is too slow for regression testing.
+context: >-
+  Use as one signal in an evaluation suite, especially for qualitative outputs. Avoid treating judge scores as unquestionable truth for safety-critical, legal, or financial decisions.
+consequences:
+  - >-
+    Scales qualitative review across many prompts and model versions.
+  - >-
+    Judge models can be inconsistent, biased, or vulnerable to persuasive bad answers.
+  - >-
+    Rubrics and calibration datasets become test assets that need version control and review.
+  - >-
+    Numeric scores are useful for trends but should be interpreted with confidence intervals and human spot checks.
+synergies:
+  - pattern: evaluation-harness
+    reason: >-
+      A harness runs judge prompts consistently and tracks trends across model, prompt, and retrieval changes.
+  - pattern: arrange-act-assert
+    reason: >-
+      Judge cases still need clear setup, candidate output, and expected rubric assertions.
+  - pattern: guardrails-output-validation
+    reason: >-
+      Deterministic validation should catch schema and policy failures before subjective judging.
+  - pattern: contract-testing
+    reason: >-
+      Contract tests complement model grading for exact API and tool-call obligations.
+alternatives:
+  - property-based-testing
+  - golden-master
+  - arrange-act-assert
+conflicts_with:
+  - mock-object
+languages:
+  - language-agnostic
+  - python
+  - typescript
+frameworks:
+  - openai
+  - anthropic
+  - langchain
+  - huggingface
+  - none
+project_types:
+  - ml-system
+  - backend-service
+  - library
+  - prototype
+tags:
+  - evaluation
+  - model-grading
+  - rubric
+examples:
+  - language: python
+    title: Use a rubric instead of vibes
+    negative: |
+      def is_good(answer: str) -> bool:
+          verdict = llm.complete(f"Is this answer good? {answer}")
+          return "yes" in verdict.lower()
+    positive: |
+      RUBRIC = """
+      Score 1-5. Grade only factual support, not style.
+      1: unsupported or contradicts sources
+      3: mostly supported with minor omissions
+      5: every factual claim is supported by a cited source
+      Return JSON: {"score": number, "reason": string}
+      """
+
+      def grade(answer: str, sources: list[str]) -> JudgeResult:
+          result = llm.json_complete(RUBRIC, {"answer": answer, "sources": sources})
+          return JudgeResult.model_validate(result)
+    explanation: >-
+      The positive version constrains the judge to a specific criterion, scoring anchors, sources, and a typed result rather than accepting an uncalibrated yes/no opinion.
+ratings:
+  small:
+    score: 3
+    notes: >-
+      Useful for prototypes with subjective quality, but manual review may be cheaper for very small suites.
+  medium:
+    score: 4
+    notes: >-
+      Strong signal for regression testing when calibrated with human labels and deterministic checks.
+  large:
+    score: 5
+    notes: >-
+      Essential for large LLM products, though it must be monitored for judge drift and bias.

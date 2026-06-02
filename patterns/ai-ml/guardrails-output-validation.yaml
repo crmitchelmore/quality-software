@@ -1,0 +1,91 @@
+id: guardrails-output-validation
+title: Guardrails & Output Validation
+scale: design
+category: ai-ml
+maturity: cutting-edge
+short_description: >-
+  Validate, constrain, and sometimes repair model outputs before they reach users, tools, or durable state.
+description: >-
+  Guardrails and Output Validation put deterministic checks around probabilistic generation. They may enforce JSON schemas, enum values, policy rules, citation support, toxicity thresholds, PII handling, tool permissions, or business invariants. The model can draft or repair, but application code decides whether output is acceptable. This pattern is most valuable when model output crosses a trust boundary into user-visible content, automation, or persistence.
+problem: >-
+  LLMs can produce malformed, unsafe, unsupported, or policy-violating content even when prompts clearly request otherwise.
+context: >-
+  Use for any production LLM feature where output is consumed by software, shown to users, or used to make decisions. Avoid relying on guardrails as a substitute for least-privilege tools and domain validation.
+consequences:
+  - >-
+    Turns many model failures into explicit validation errors rather than silent bad outputs.
+  - >-
+    Adds latency and complexity when repair or regeneration loops are needed.
+  - >-
+    Rules can become brittle if they encode style preferences instead of safety and contract requirements.
+  - >-
+    High-severity failures may need escalation rather than automated repair.
+synergies:
+  - pattern: structured-output
+    reason: >-
+      Schema-constrained outputs are easier to validate and reject deterministically.
+  - pattern: human-in-the-loop
+    reason: >-
+      Failed or high-risk validations can route to human approval instead of automatic execution.
+  - pattern: guard-clause
+    reason: >-
+      Guardrails are guard clauses at the AI boundary, rejecting invalid outputs early.
+  - pattern: retrieval-augmented-generation
+    reason: >-
+      RAG guardrails can verify that cited claims are supported by retrieved passages.
+alternatives:
+  - input-validation
+  - output-encoding
+  - human-in-the-loop
+conflicts_with:
+  - lazy-initialization
+languages:
+  - language-agnostic
+  - python
+  - typescript
+frameworks:
+  - openai
+  - anthropic
+  - langchain
+  - llamaindex
+  - none
+project_types:
+  - ml-system
+  - web-api
+  - backend-service
+  - safety-critical
+tags:
+  - validation
+  - safety
+  - policy
+examples:
+  - language: typescript
+    title: Reject unsafe or malformed output
+    negative: |
+      const reply = await model.complete(prompt);
+      await email.send(user.email, reply);
+    positive: |
+      const draft = await model.complete(prompt);
+      const checked = await validators.run(draft, [validJson, noSecrets, citesKnownSources]);
+
+      if (!checked.ok) {
+        await reviewQueue.enqueue({ userId: user.id, draft, reasons: checked.errors });
+        return { status: "needs_review" };
+      }
+
+      await email.send(user.email, checked.value.safeText);
+    explanation: >-
+      The positive version treats the model output as untrusted, validates it against concrete rules, and routes failures to review instead of sending immediately.
+ratings:
+  small:
+    score: 4
+    notes: >-
+      Worth adding early for any user-visible or machine-consumed output.
+  medium:
+    score: 5
+    notes: >-
+      Essential for production LLM features that must maintain contracts and policy boundaries.
+  large:
+    score: 5
+    notes: >-
+      Load-bearing at scale, with central rule libraries, audit logs, and measured false-positive rates.

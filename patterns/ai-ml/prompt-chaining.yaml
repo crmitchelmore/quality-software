@@ -1,0 +1,93 @@
+id: prompt-chaining
+title: Prompt Chaining
+scale: design
+category: ai-ml
+maturity: cutting-edge
+short_description: >-
+  Decompose a complex LLM task into explicit, typed steps where each prompt consumes the previous step's checked output.
+description: >-
+  Prompt Chaining replaces one large, fragile prompt with a sequence of smaller prompts or model calls, each responsible for a clear subtask such as extract, classify, plan, draft, critique, and revise. Intermediate outputs should be structured and validated before they feed the next step. The design improves controllability and observability, but it raises latency and requires careful handling of error propagation when an early step is wrong.
+problem: >-
+  Monolithic prompts become hard to test, debug, and constrain because extraction, reasoning, generation, and validation are tangled together.
+context: >-
+  Use when a task naturally has stages with different instructions, models, tools, or quality gates. Avoid when a deterministic transformation or one simple prompt is enough.
+consequences:
+  - >-
+    Improves debuggability because each intermediate artefact can be logged, validated, and evaluated.
+  - >-
+    Increases latency and cost through multiple model calls.
+  - >-
+    Errors can cascade unless each stage has validation and fallback behaviour.
+  - >-
+    Enables mixing cheaper and stronger models according to the risk of each step.
+synergies:
+  - pattern: structured-output
+    reason: >-
+      Structured stage outputs let later prompts consume typed fields rather than brittle prose.
+  - pattern: guardrails-output-validation
+    reason: >-
+      Each chain step can reject invalid or unsafe intermediate results before they compound.
+  - pattern: strategy
+    reason: >-
+      Different chain strategies can be swapped for task types without rewriting orchestration code.
+  - pattern: pipes-and-filters
+    reason: >-
+      Prompt chains are an LLM-era form of staged processing with explicit filters.
+alternatives:
+  - agent-orchestration
+  - pipes-and-filters
+  - template-method
+conflicts_with:
+  - transaction-script
+languages:
+  - language-agnostic
+  - python
+  - typescript
+frameworks:
+  - langchain
+  - llamaindex
+  - openai
+  - anthropic
+  - none
+project_types:
+  - ml-system
+  - backend-service
+  - library
+  - prototype
+tags:
+  - prompting
+  - decomposition
+  - workflow
+examples:
+  - language: python
+    title: Validate each intermediate step
+    negative: |
+      def write_release_notes(diff: str) -> str:
+          return llm.complete(f"Summarise this diff and write release notes:\n{diff}")
+    positive: |
+      def write_release_notes(diff: str) -> str:
+          changes = llm.extract_json("Extract user-visible changes", diff, schema=Changes)
+          Changes.model_validate(changes)
+
+          risks = llm.extract_json("Classify migration and security risks", changes, schema=Risks)
+          Risks.model_validate(risks)
+
+          return llm.complete(
+              "Write concise release notes using only these checked fields:\n"
+              f"changes={changes}\nrisks={risks}"
+          )
+    explanation: >-
+      The positive version splits extraction, risk classification, and prose generation so each intermediate result can be validated and debugged.
+ratings:
+  small:
+    score: 3
+    notes: >-
+      Helpful for complex prompts, but excessive for one-off prototypes and simple rewrites.
+  medium:
+    score: 4
+    notes: >-
+      Good fit where reliability matters and individual stages can be tested.
+  large:
+    score: 4
+    notes: >-
+      Valuable inside large AI products, though agent orchestration or pipelines may be needed for dynamic branching.
