@@ -44,17 +44,23 @@ assigned to phases.
 8. [Core types (TypeScript)](08-types.md)
 9. [Project pattern profile (config)](09-config.md)
 10. [Maturity model & rollout](10-maturity-rollout.md)
+11. [Philosophy-first selection & bootstrap](11-philosophy-selection.md)
+12. [Runtime-agnostic integration contract](12-integration-contract.md)
 
 ## One-paragraph summary
 
-A repo declares a **pattern profile** (`patterns.config.yaml`) — the catalogue patterns
-it has adopted, banned, and the enforcement level of each. A shared **conformance engine**
+A repo declares a **pattern profile** (`patterns.config.yaml`) — **philosophy-first**: it
+selects the design philosophies it commits to, which *imply* (via the
+[knowledge graph](../../docs/graph/index.md)) the catalogue patterns it adopts, bans, and the
+enforcement level of each, and supply the LLM judge's north-star rubric (see
+[selection](11-philosophy-selection.md)). A shared **conformance engine**
 turns a *change set* into **findings** through a three-stage pipeline — **applicability**
 (which selected patterns are relevant here), **conformance** (is the relevant pattern
 applied correctly), and **reuse** (does an existing abstraction already do this) — using a
 **layered detector stack**: deterministic AST/lint rules first, then heuristic signals,
-then LLM judgement gated by confidence. The same engine is invoked by three thin adapters
-— a **write-time hook**, a **PR GitHub Action**, and a **batch CLI** — each configured for
-a different altitude and latency budget. Findings carry severity, confidence, a catalogue
-link, and a concrete suggested refactor, and can be advisory or blocking per the rollout
-maturity level.
+then LLM judgement gated by confidence. The same engine is invoked through one
+**runtime-agnostic event + verdict contract** ([integration](12-integration-contract.md)) by
+thin adapters — a **write-time hook**, a **PR GitHub Action**, and a **batch CLI** — across
+GitHub Copilot CLI (hooks/skill/MCP/plugin), Copilot cloud agent, and expandably Claude Code,
+Codex CLI and OpenCode. Findings carry severity, confidence, a **philosophy → pattern →
+suggestion** rationale chain, and can be advisory or blocking per the rollout maturity level.

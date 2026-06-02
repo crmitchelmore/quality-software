@@ -96,6 +96,10 @@ truth blocks; probabilistic judgement advises.
 
 ## 2.3 Knowledge sources
 
+- **Philosophies** — the project's adopted design philosophies are the **north star**. Their
+  catalogue text (tenets, `applies_when`, consequences) grounds the LLM judge's rubric, and
+  their graph edges (`associated_patterns`, `at_odds_patterns`) drive which patterns are in
+  scope. See [philosophy-first selection](11-philosophy-selection.md).
 - **Catalogue** — the pattern specs themselves are the rubric. The LLM judge is handed the
   exact `description`, `examples.negative/positive`, `consequences`, and `synergies` of the
   pattern being checked, so judgement is grounded in the catalogue, not the model's priors.
@@ -121,7 +125,7 @@ rules/
 ```
 
 A pattern with no rule pack is still usable for **LLM-only** checks (its catalogue spec is
-the rubric) and for documentation/onboarding; it simply cannot block. This lets all 263
+the rubric) and for documentation/onboarding; it simply cannot block. This lets all 275
 patterns participate at the advisory tier on day one, while deterministic packs are added
 for the highest-value adopted patterns over time.
 

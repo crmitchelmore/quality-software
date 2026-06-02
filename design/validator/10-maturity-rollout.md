@@ -71,6 +71,6 @@ and architectural judgement advises with strong suggestions; the batch phase pay
 - **Cross-repo / org patterns:** the profile is per-repo; shared org patterns (a company
   `RetryingHttpClient`) need a shared component registry the reuse check can consult — out of
   scope for v1 but anticipated by `CodeIndex.componentsImplementing`.
-- **Rule-pack authoring effort:** 263 catalogue patterns, far fewer deterministic rule packs at
+- **Rule-pack authoring effort:** 275 catalogue patterns, far fewer deterministic rule packs at
   first. LLM-only advisory coverage bridges the gap, but high-value adopted patterns need hand-
   written packs to ever block.

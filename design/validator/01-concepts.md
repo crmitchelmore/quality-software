@@ -23,7 +23,7 @@ These mirror the repo's engineering values and keep false positives low.
 
 1. **Selected patterns, not all patterns.** The validator only enforces what the project's
    profile adopts. The catalogue is a menu; the profile is the order. This prevents the
-   "lint everything against 263 patterns" noise that would make the tool ignorable.
+   "lint everything against 275 patterns" noise that would make the tool ignorable.
 
 2. **Right altitude, right phase.** Cheap local patterns are checked at write-time; design
    and architectural patterns need whole-change context and are checked at PR-time;
