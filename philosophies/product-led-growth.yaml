@@ -1,0 +1,96 @@
+id: product-led-growth
+title: Product-Led Growth
+discipline: product
+aka:
+  - PLG
+originators:
+  - Wes Bush
+  - OpenView Partners
+origin:
+  type: book
+  title: "Product-Led Growth"
+  year: 2019
+short_description: >-
+  Make the product itself the primary driver of acquisition, activation, conversion and expansion by letting users
+  experience value before or alongside sales contact.
+description: >-
+  Product-Led Growth is a go-to-market philosophy in which the product becomes the main channel for growth. OpenView
+  popularised and coined the term, and Wes Bush codified the approach for SaaS companies. Instead of relying only on
+  sales-led qualification and demos, PLG reduces time to value through self-serve onboarding, freemium or free-trial
+  access, activation loops, usage-based signals and in-product expansion paths. The product is not merely what is
+  sold; it performs marketing, sales, customer success and retention work by helping users reach an aha moment and
+  then broadening adoption.
+core_tenets:
+  - Let users experience product value quickly, ideally before a sales conversation is required.
+  - Optimise activation and time-to-value as core growth levers.
+  - Use product usage signals to guide conversion, expansion and customer-success action.
+  - Align pricing, packaging and onboarding with the value users realise in the product.
+  - Treat growth loops and retention as product design problems, not only marketing campaigns.
+key_ideas:
+  - name: Aha moment
+    explanation: >-
+      The early experience where a user understands and feels the product's core value, making continued use more
+      likely.
+  - name: Product-qualified lead
+    explanation: >-
+      A user or account whose in-product behaviour indicates readiness for sales, expansion or customer-success
+      engagement.
+  - name: Self-serve adoption
+    explanation: >-
+      Acquisition and activation paths designed so users can start, learn and reach value without bespoke human
+      assistance.
+in_practice: >-
+  Offer a low-friction trial, free tier or interactive demo; instrument the activation funnel; identify the aha
+  moment; remove onboarding friction; price around value and usage; trigger sales or success intervention from
+  product-qualified signals; and design expansion loops into collaboration, templates or usage growth.
+complements:
+  - north-star-framework
+  - outcome-over-output
+  - continuous-discovery
+tensions_with:
+  - philosophy: customer-development
+    reason: >-
+      PLG can over-rely on aggregate behavioural data, while Customer Development insists on direct qualitative
+      learning before scaling.
+associated_practice_patterns:
+  - pattern: product-led-growth-motion
+    reason: >-
+      This practice captures the cross-functional operating model for making the product the main growth engine.
+  - pattern: aha-moment-activation
+    reason: >-
+      PLG depends on deliberately designing the user's path to early value and measuring activation.
+  - pattern: freemium-design
+    reason: >-
+      Freemium packaging is a common PLG mechanism for letting users experience value before purchase.
+successfully_applied:
+  - where: SaaS companies such as Slack, Dropbox and Atlassian
+    what: >-
+      PLG literature commonly cites these companies for self-serve adoption, viral collaboration and product-driven
+      expansion patterns.
+    evidence_strength: secondary-source
+    source:
+      title: "Product-Led Growth"
+      year: 2019
+  - where: OpenView Partners market development
+    what: >-
+      OpenView popularised the PLG category and documented benchmarks and operating patterns for product-led SaaS
+      businesses.
+    evidence_strength: secondary-source
+    source:
+      title: "Product Led Growth: The End User Era"
+      year: 2016
+best_for:
+  - saas-products
+  - self-serve-growth
+  - collaborative-tools
+criticisms:
+  - PLG is harder for complex enterprise products that require procurement, integration or high-touch change management.
+  - Free tiers and trials can attract low-intent users and increase support cost if packaging is poor.
+  - Product data can reveal what users do but not always why they do it.
+references:
+  - title: "Product-Led Growth"
+    author: Wes Bush
+    year: 2019
+  - title: "Product Led Growth: The End User Era"
+    author: OpenView Partners
+    year: 2016

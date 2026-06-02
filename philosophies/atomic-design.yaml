@@ -1,0 +1,77 @@
+id: atomic-design
+title: Atomic Design
+discipline: ux
+originators:
+  - Brad Frost
+origin:
+  type: book
+  title: Atomic Design
+  year: 2016
+short_description: >-
+  Build interface systems from small reusable parts, composing atoms into molecules, organisms, templates and pages.
+description: >-
+  Atomic Design is Brad Frost's mental model for creating design systems. Borrowing a chemistry metaphor, it decomposes interfaces into atoms such as labels and buttons, molecules such as form fields, organisms such as headers, templates and finally pages. The philosophy shifts interface work from bespoke page production to systematic composition: teams design and implement durable components, document their variants and states, and assemble them into consistent experiences across products.
+core_tenets:
+  - Treat interfaces as systems of reusable components rather than isolated pages.
+  - Start with small elements and compose them into larger patterns with clear responsibilities.
+  - Document states, variants and usage guidance so components remain consistent in real products.
+  - Keep design and implementation close enough that the system can be tested in production contexts.
+  - Evolve the system continuously as product needs reveal missing or over-specific components.
+key_ideas:
+  - name: Atoms, molecules and organisms
+    explanation: >-
+      Small UI elements combine into progressively richer interface components, making composition and reuse explicit.
+  - name: Pattern Lab
+    explanation: >-
+      Frost's tooling popularised building and reviewing components outside individual pages while still composing realistic templates.
+  - name: System over page
+    explanation: >-
+      The unit of design work becomes a component system that can support many pages consistently.
+in_practice: >-
+  Inventory repeated UI, define tokens and primitives, create component variants and states, publish a pattern library, and require product teams to compose pages from documented components unless a deliberate new pattern is needed.
+complements:
+  - a-philosophy-of-software-design
+  - design-of-everyday-things
+associated_practice_patterns:
+  - pattern: atomic-design-components
+    reason: >-
+      The practice pattern directly operationalises Frost's atom-to-page component hierarchy.
+  - pattern: design-tokens
+    reason: >-
+      Tokens provide the reusable visual decisions that make atomic components coherent across themes and platforms.
+  - pattern: pattern-library-governance
+    reason: >-
+      Governance prevents a component system from fragmenting as teams add variants and exceptions.
+successfully_applied:
+  - where: Pattern Lab and web design systems
+    what: >-
+      Frost's Atomic Design and Pattern Lab became widely adopted references for component-driven web design systems.
+    evidence_strength: primary-source
+    source:
+      title: Atomic Design
+      year: 2016
+  - where: Enterprise design systems
+    what: >-
+      The atom-to-page vocabulary is commonly used by large organisations to structure component libraries and documentation.
+    evidence_strength: secondary-source
+    source:
+      title: Design Systems Handbook
+      year: 2017
+best_for:
+  - design systems
+  - multi-product UI consistency
+  - component-driven frontend teams
+criticisms:
+  - The chemistry metaphor can become rigid when real components do not fit neatly into levels.
+  - Component consistency can crowd out local optimisation if governance is too restrictive.
+  - Atomic inventories alone do not guarantee good user journeys or information architecture.
+references:
+  - title: Atomic Design
+    author: Brad Frost
+    year: 2016
+  - title: Pattern Lab
+    author: Brad Frost and Dave Olsen
+    year: 2013
+  - title: Design Systems Handbook
+    author: Marco Suarez, Jina Anne, Katie Sylor-Miller, Diana Mounter and Roy Stanfield
+    year: 2017

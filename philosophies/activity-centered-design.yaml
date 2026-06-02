@@ -1,0 +1,81 @@
+id: activity-centered-design
+title: Activity-Centred Design
+discipline: ux
+aka:
+  - Activity-Centered Design
+  - Activity-Centred Interaction Design
+originators:
+  - Don Norman
+  - Donald Schön
+origin:
+  type: essay
+  title: "Human-Centered Design Considered Harmful"
+  year: 2005
+short_description: >-
+  Design around the structure of activities and practices, not only around individual users' stated wants or preferences.
+description: >-
+  Activity-centred design argues that many durable products succeed because they support coherent activities rather than because they are tailored to every user preference. Don Norman used the idea to challenge an over-literal reading of human-centred design: people adapt, learn and participate in shared practices, while activities have constraints, sequences, artefacts and social meanings that persist across individuals. Influenced by reflective practice and activity theory, this philosophy asks designers to understand the work or play being accomplished, then shape tools that make that activity intelligible, learnable and powerful.
+core_tenets:
+  - Treat the activity, not the individual persona, as the primary unit of design analysis.
+  - Understand goals, sequences, constraints, artefacts and social rules that make the activity work.
+  - Preserve useful structure even when it requires users to learn a new tool or vocabulary.
+  - Design for skilled practice and adaptation, not only immediate first-use ease.
+  - Study breakdowns in real activity because they reveal where tools should support reflection and repair.
+key_ideas:
+  - name: Activity as organising structure
+    explanation: >-
+      The designer asks what practice the system participates in and what steps, objects and roles must be coordinated.
+  - name: Reflective conversation with materials
+    explanation: >-
+      Schön's account of professional practice emphasises iteration between action, feedback and reframing within an activity.
+  - name: Learnability over instant simplicity
+    explanation: >-
+      A design may be worthwhile if it supports expert activity well, even when mastery takes practice.
+in_practice: >-
+  Map the activity flow, tools, roles and failure points; design commands and representations that match the work; support shortcuts for skilled users; and evaluate whether the activity becomes more effective, not merely whether a first-time user likes the interface.
+complements:
+  - domain-driven-design
+tensions_with:
+  - philosophy: human-centered-design
+    reason: >-
+      Human-centred design can over-prioritise expressed user preferences, while activity-centred design protects the integrity of the activity itself.
+associated_practice_patterns:
+  - pattern: command-palette
+    reason: >-
+      Command palettes organise interaction around activities and actions, supporting skilled use across complex workflows.
+  - pattern: contextual-inquiry
+    reason: >-
+      Observing work in context reveals the activity structure, artefacts and breakdowns that should shape the design.
+successfully_applied:
+  - where: Complex professional tools
+    what: >-
+      Norman cites activity-centred products such as automobiles and expert tools as cases where durable activity structure matters more than individual preference.
+    evidence_strength: primary-source
+    source:
+      title: "Human-Centered Design Considered Harmful"
+      year: 2005
+  - where: Computer-supported cooperative work and HCI research
+    what: >-
+      Activity-oriented analysis has been used to understand collaborative work practices and design tools around situated activity.
+    evidence_strength: secondary-source
+    source:
+      title: "Context and Consciousness: Activity Theory and Human-Computer Interaction"
+      year: 1996
+best_for:
+  - expert tools
+  - professional workflows
+  - collaborative activities with durable structure
+criticisms:
+  - It can excuse difficult or exclusionary interfaces if teams dismiss user feedback too readily.
+  - Defining the activity too narrowly may preserve outdated practice rather than improving it.
+  - It needs careful field research; otherwise designers merely project their own model of the activity.
+references:
+  - title: "Human-Centered Design Considered Harmful"
+    author: Don Norman
+    year: 2005
+  - title: "The Reflective Practitioner"
+    author: Donald A. Schön
+    year: 1983
+  - title: "Context and Consciousness: Activity Theory and Human-Computer Interaction"
+    author: Bonnie A. Nardi
+    year: 1996

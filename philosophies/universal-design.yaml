@@ -1,0 +1,80 @@
+id: universal-design
+title: Universal Design
+discipline: ux
+aka:
+  - Design for All
+originators:
+  - Ronald Mace
+  - NC State Center for Universal Design
+origin:
+  type: principles
+  title: The 7 Principles of Universal Design
+  year: 1997
+short_description: >-
+  Design products and environments to be usable by as many people as possible without adaptation or specialised design.
+description: >-
+  Universal Design emerged from architecture and product design as a response to environments that required separate accommodations for disabled people. Ronald Mace and colleagues at NC State articulated seven principles: equitable use, flexibility, simple and intuitive use, perceptible information, tolerance for error, low physical effort, and appropriate size and space. In digital UX the philosophy pushes teams to make core experiences accessible and flexible by default, reducing the need for separate assistive versions.
+core_tenets:
+  - Make the same design useful and marketable to people with diverse abilities.
+  - Provide flexibility in use so people can choose methods that fit their preferences and capabilities.
+  - Keep operation simple and intuitive regardless of experience, language or concentration level.
+  - Communicate essential information through multiple perceptible channels.
+  - Tolerate error and minimise hazards from accidental or unintended actions.
+key_ideas:
+  - name: Equitable use
+    explanation: >-
+      The primary design should serve people with different abilities without segregating or stigmatising users.
+  - name: Perceptible information
+    explanation: >-
+      Essential information must be available through more than one sensory channel and remain legible in varied conditions.
+  - name: Tolerance for error
+    explanation: >-
+      Designs should reduce accidental harm through constraints, warnings, undo and forgiving interaction.
+in_practice: >-
+  Choose accessible defaults, maintain colour contrast, support keyboard operation, avoid relying on colour alone, make controls large enough and predictable, and test across assistive technologies, device sizes, input methods and environmental conditions.
+complements:
+  - inclusive-design
+  - design-of-everyday-things
+associated_practice_patterns:
+  - pattern: color-contrast
+    reason: >-
+      Perceptible information requires sufficient contrast for people with low vision and for difficult viewing conditions.
+  - pattern: keyboard-navigation
+    reason: >-
+      Equitable and flexible use requires core flows to work without a pointing device.
+  - pattern: focus-management
+    reason: >-
+      Predictable focus order and visibility make interfaces operable across input modes.
+successfully_applied:
+  - where: Built environment and public accommodation guidance
+    what: >-
+      The seven principles became a widely taught framework for accessible buildings, products and environments.
+    evidence_strength: primary-source
+    source:
+      title: The Principles of Universal Design
+      year: 1997
+  - where: Digital accessibility and design education
+    what: >-
+      Universal design principles are commonly used to frame accessibility in HCI, education technology and public-sector digital services.
+    evidence_strength: secondary-source
+    source:
+      title: Universal Design Handbook
+      year: 2001
+best_for:
+  - public-facing services
+  - education and civic technology
+  - interfaces with diverse devices and abilities
+criticisms:
+  - Truly universal use is aspirational; some users still need personalised assistive technologies or adaptations.
+  - Broad principles can be too abstract without concrete accessibility criteria and testing.
+  - A single universal solution may under-serve specialised expert workflows.
+references:
+  - title: The Principles of Universal Design
+    author: Ronald Mace and the Center for Universal Design
+    year: 1997
+  - title: Universal Design Handbook
+    author: Wolfgang F. E. Preiser and Elaine Ostroff
+    year: 2001
+  - title: "Universal Design: Barrier Free Environments for Everyone"
+    author: Ronald Mace
+    year: 1985

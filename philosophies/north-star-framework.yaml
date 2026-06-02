@@ -1,0 +1,96 @@
+id: north-star-framework
+title: The North Star Framework
+discipline: product
+aka:
+  - North Star Metric
+  - NSM Framework
+originators:
+  - Amplitude
+  - John Cutler
+  - Sean Ellis
+origin:
+  type: framework
+  title: "North Star Framework"
+  era: 2010s
+short_description: >-
+  Align product strategy around one guiding metric that captures delivered customer value and business value, then
+  manage the input metrics teams can influence.
+description: >-
+  The North Star Framework gives product organisations a shared measurement model: identify a single metric that
+  best represents the recurring value users receive from the product and that predicts sustainable business success.
+  Amplitude popularised the framework, with lineage through growth practice associated with Sean Ellis and product
+  strategy writing by John Cutler. The North Star is supported by input metrics that teams can influence through
+  product work. Used well, it creates focus across teams without collapsing strategy into a vanity metric.
+core_tenets:
+  - Choose a North Star Metric that reflects customer value delivered, not merely internal activity.
+  - Connect the metric to business health so improving it should matter commercially.
+  - Decompose the North Star into controllable input metrics owned by teams.
+  - Use guardrail metrics to prevent local optimisation that harms quality, trust or long-term retention.
+  - Revisit the metric as the product, market and strategy evolve.
+key_ideas:
+  - name: North Star Metric
+    explanation: >-
+      The primary measure of recurring customer value that aligns teams and predicts sustainable business impact.
+  - name: Input metrics
+    explanation: >-
+      Leading measures that product teams can influence and that collectively move the North Star.
+  - name: Guardrails
+    explanation: >-
+      Metrics that catch harmful side effects such as degraded quality, trust, accessibility, margin or retention.
+in_practice: >-
+  Define the product's value exchange; select a North Star that captures that value in repeated use; map the inputs
+  that drive it; assign teams to input metrics; instrument dashboards and cohorts; and review both progress and
+  guardrails before changing roadmap priorities.
+complements:
+  - outcome-over-output
+  - product-led-growth
+  - empowered-product-teams
+tensions_with:
+  - philosophy: jobs-to-be-done
+    reason: >-
+      A single aggregate metric can hide distinct jobs and contexts unless teams also preserve qualitative job
+      understanding.
+associated_practice_patterns:
+  - pattern: north-star-metric
+    reason: >-
+      The metric practice is the direct operational expression of the framework.
+  - pattern: leading-vs-lagging-indicators
+    reason: >-
+      Teams need leading input metrics that move before lagging revenue or retention effects are visible.
+  - pattern: guardrail-metrics
+    reason: >-
+      Guardrails protect against optimising the North Star at the expense of quality, trust or long-term health.
+successfully_applied:
+  - where: Growth-stage digital products
+    what: >-
+      Amplitude documents the framework through product analytics practice and case examples for aligning teams
+      around value and growth metrics.
+    evidence_strength: secondary-source
+    source:
+      title: "The North Star Playbook"
+      year: 2019
+  - where: Growth hacking and product analytics practice
+    what: >-
+      Sean Ellis's growth practice and related product analytics communities popularised focus metrics as a way to
+      align experimentation and product growth.
+    evidence_strength: secondary-source
+    source:
+      title: "Hacking Growth"
+      year: 2017
+best_for:
+  - product-strategy-alignment
+  - growth-stage-products
+  - metric-driven-product-teams
+criticisms:
+  - Choosing the wrong metric can focus the organisation on activity rather than real customer value.
+  - One metric can oversimplify multi-sided marketplaces, enterprise products or portfolios with several value loops.
+  - Metric focus can crowd out qualitative learning and long-term strategic bets if interpreted too narrowly.
+references:
+  - title: "The North Star Playbook"
+    author: Amplitude
+    year: 2019
+  - title: "Hacking Growth"
+    author: Sean Ellis and Morgan Brown
+    year: 2017
+  - title: "North Star Metric"
+    author: John Cutler

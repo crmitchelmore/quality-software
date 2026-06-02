@@ -1,0 +1,99 @@
+id: jobs-to-be-done
+title: Jobs to Be Done
+discipline: product
+aka:
+  - JTBD
+  - Outcome-Driven Innovation
+originators:
+  - Clayton Christensen
+  - Tony Ulwick
+origin:
+  type: book
+  title: "Competing Against Luck"
+  year: 2016
+short_description: >-
+  Understand demand by the progress customers are trying to make — the job they hire a product to do — and design
+  around desired outcomes rather than demographic segments or feature requests.
+description: >-
+  Jobs to Be Done reframes products as services customers hire to make progress in a circumstance. Christensen's
+  popular milkshake example showed that buyers who looked demographically similar could be hiring the product for
+  different jobs, while very different products could compete for the same job. Tony Ulwick's Outcome-Driven
+  Innovation adds a rigorous way to decompose jobs into desired outcomes and measure underserved needs. The
+  philosophy directs product teams away from persona averages and feature wish lists towards the causal forces that
+  create demand: the situation, struggle, desired progress, alternatives and success criteria in the customer's own
+  terms.
+core_tenets:
+  - Customers do not simply buy products; they hire solutions to make progress in a specific circumstance.
+  - Competition is defined by the job, so non-obvious substitutes may compete more directly than category peers.
+  - Segment by jobs, struggles and outcomes rather than demographics alone.
+  - Good discovery seeks causal mechanisms behind switching, not just stated preferences.
+  - Desired outcomes should guide prioritisation because they reveal where customers are underserved.
+key_ideas:
+  - name: Job
+    explanation: >-
+      The progress a customer is trying to make in a particular circumstance, including functional, social and
+      emotional dimensions.
+  - name: Forces of progress
+    explanation: >-
+      Pushes from the current situation, pulls of the new solution, anxieties and habits that shape whether a
+      customer switches.
+  - name: Desired outcomes
+    explanation: >-
+      Measurable criteria customers use to judge successful job execution, often phrased as minimising or
+      increasing a specific result.
+in_practice: >-
+  Interview recent switchers and non-switchers; reconstruct the timeline and forces behind the purchase; phrase the
+  job and desired outcomes in customer language; map alternatives that perform the same job; and prioritise product
+  changes that improve underserved outcomes rather than merely adding requested features.
+complements:
+  - customer-development
+  - outcome-over-output
+  - continuous-discovery
+tensions_with:
+  - philosophy: lean-startup
+    reason: >-
+      JTBD favours deeper causal understanding before solution bets, while Lean Startup teams can rush to experiments
+      before the job is well framed.
+associated_practice_patterns:
+  - pattern: jobs-to-be-done-interview
+    reason: >-
+      Switch interviews are the primary research mechanism for discovering jobs, alternatives and forces of progress.
+  - pattern: jobs-to-be-done-framing
+    reason: >-
+      Job statements and outcome framing turn interview evidence into product strategy and prioritisation language.
+  - pattern: opportunity-scoring
+    reason: >-
+      Ulwick's ODI prioritises opportunities by outcome importance and satisfaction, closely matching opportunity
+      scoring practice.
+successfully_applied:
+  - where: Milkshake demand research
+    what: >-
+      Christensen popularised the method with research showing commuters hired milkshakes for a progress-making job
+      different from the assumptions of demographic segmentation.
+    evidence_strength: secondary-source
+    source:
+      title: "Competing Against Luck"
+      year: 2016
+  - where: Outcome-Driven Innovation consulting cases
+    what: >-
+      Ulwick documents ODI applications across product categories, using outcome importance and satisfaction to find
+      underserved opportunities.
+    evidence_strength: primary-source
+    source:
+      title: "Jobs to Be Done"
+      year: 2016
+best_for:
+  - product-strategy
+  - market-segmentation
+  - innovation-discovery
+criticisms:
+  - The phrase is used inconsistently, with competing schools that can make implementation ambiguous.
+  - Poor JTBD work can reduce rich context to generic job statements that are no more actionable than personas.
+  - It is strongest for explaining demand and switching, but still needs design, delivery and business-model choices.
+references:
+  - title: "Competing Against Luck"
+    author: Clayton M. Christensen, Taddy Hall, Karen Dillon and David S. Duncan
+    year: 2016
+  - title: "Jobs to Be Done: Theory to Practice"
+    author: Anthony W. Ulwick
+    year: 2016

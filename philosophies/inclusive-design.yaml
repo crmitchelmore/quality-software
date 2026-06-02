@@ -1,0 +1,84 @@
+id: inclusive-design
+title: Inclusive Design
+discipline: ux
+aka:
+  - Design for Inclusion
+originators:
+  - Microsoft Inclusive Design
+  - Kat Holmes
+origin:
+  type: framework
+  title: Microsoft Inclusive Design Toolkit
+  year: 2015
+short_description: >-
+  Design with and for human diversity, treating exclusion as a design mismatch and using constraints to create better products for everyone.
+description: >-
+  Inclusive design starts from the observation that exclusion happens when products assume a narrow default user. Microsoft frames disability as a mismatch between people and their environment, while Kat Holmes shows that designing with people at the margins can reveal better solutions for many others. The philosophy is not merely compliance or broad demographic representation; it is a design stance that intentionally includes people with diverse abilities, contexts, identities and access needs in the process, then builds adaptable experiences that reduce mismatch.
+core_tenets:
+  - Recognise exclusion as a design failure caused by mismatches between people and environments.
+  - Learn from diversity by involving people with different abilities and contexts directly in design.
+  - Solve for one, extend to many by using constraints at the margins to reveal broadly useful improvements.
+  - Offer multiple ways to participate rather than assuming one default body, device, language or context.
+  - Treat accessibility as a foundation, not a late-stage checklist.
+key_ideas:
+  - name: Mismatch
+    explanation: >-
+      Disability and exclusion arise when an environment, product or service does not fit a person's situation or abilities.
+  - name: Persona spectrum
+    explanation: >-
+      Microsoft uses permanent, temporary and situational disability spectra to reveal how an inclusive solution can serve many contexts.
+  - name: Edge as source of innovation
+    explanation: >-
+      Designing with excluded communities exposes assumptions that conventional research often misses.
+in_practice: >-
+  Include disabled and otherwise marginalised participants in research, audit flows for exclusion, meet accessibility standards, provide semantic structure, keyboard access, captions and adaptable preferences, and keep testing with assistive technologies as the product evolves.
+complements:
+  - universal-design
+  - human-centered-design
+tensions_with:
+  - philosophy: worse-is-better
+    reason: >-
+      Shipping the smallest workable interface can leave exclusionary assumptions in place when inclusive alternatives require deliberate research and adaptation.
+associated_practice_patterns:
+  - pattern: wcag-conformance
+    reason: >-
+      WCAG gives concrete accessibility criteria that reduce common forms of digital exclusion.
+  - pattern: screen-reader-semantics
+    reason: >-
+      Semantic structure is essential for people using assistive technologies to perceive and operate interfaces.
+  - pattern: reduced-motion
+    reason: >-
+      Motion preferences demonstrate how accommodating specific access needs improves comfort for a wider range of users.
+successfully_applied:
+  - where: Microsoft product design guidance
+    what: >-
+      Microsoft's Inclusive Design Toolkit influenced internal and external product teams with persona spectra and inclusive design principles.
+    evidence_strength: primary-source
+    source:
+      title: Microsoft Inclusive Design Toolkit
+      year: 2015
+  - where: Xbox Adaptive Controller
+    what: >-
+      Microsoft developed an adaptive game controller with disabled players and accessibility organisations, often cited as inclusive design in hardware.
+    evidence_strength: secondary-source
+    source:
+      title: "Mismatch: How Inclusion Shapes Design"
+      year: 2018
+best_for:
+  - accessibility-critical products
+  - public services
+  - products serving diverse populations
+criticisms:
+  - The language can be adopted superficially while teams still exclude affected people from decisions.
+  - Inclusive design does not remove the need for measurable accessibility conformance.
+  - Some inclusive goals require organisational investment beyond the design team's control.
+references:
+  - title: Microsoft Inclusive Design Toolkit
+    author: Microsoft
+    year: 2015
+  - title: "Mismatch: How Inclusion Shapes Design"
+    author: Kat Holmes
+    year: 2018
+  - title: Inclusive Design Principles
+    author: The Paciello Group
+    year: 2017

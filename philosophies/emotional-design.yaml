@@ -1,0 +1,77 @@
+id: emotional-design
+title: Emotional Design
+discipline: ux
+originators:
+  - Don Norman
+origin:
+  type: book
+  title: Emotional Design
+  year: 2004
+short_description: >-
+  Design for how products make people feel across visceral appeal, behavioural use and reflective meaning, not only functional usability.
+description: >-
+  Emotional Design extends Don Norman's usability work by arguing that attractive, pleasurable and meaningful products can work better because emotion shapes attention, judgement and persistence. Norman describes three levels of processing: visceral reactions to appearance and sensation, behavioural satisfaction from effective use, and reflective meaning tied to identity, memory and values. The philosophy does not reject usability; it insists that product quality includes delight, trust, pride, comfort and attachment alongside task completion.
+core_tenets:
+  - Design for visceral, behavioural and reflective responses together.
+  - Treat emotion as part of cognition, not decoration applied after usability.
+  - Make products effective in use while also pleasurable, reassuring or meaningful.
+  - Use aesthetics and tone to support trust, confidence and motivation.
+  - Consider the stories and identities users associate with owning or using the product.
+key_ideas:
+  - name: Visceral level
+    explanation: >-
+      Immediate sensory reaction to look, sound, feel and form before conscious interpretation.
+  - name: Behavioural level
+    explanation: >-
+      The satisfaction or frustration that comes from accomplishing tasks smoothly and feeling in control.
+  - name: Reflective level
+    explanation: >-
+      The meaning people attach to a product through memory, self-image, values and social signalling.
+in_practice: >-
+  Pair usability work with tone, visual design, motion, empty states and recovery moments that communicate care. Evaluate whether users feel confident, respected and motivated, especially during onboarding, failure, waiting and completion states.
+complements:
+  - design-of-everyday-things
+  - human-centered-design
+associated_practice_patterns:
+  - pattern: empty-state-content
+    reason: >-
+      Empty states are emotional moments where tone and guidance can turn absence into reassurance or motivation.
+  - pattern: microcopy
+    reason: >-
+      Small words shape trust, confidence and perceived personality throughout an experience.
+  - pattern: visual-hierarchy
+    reason: >-
+      Visual composition contributes to visceral appeal while guiding behaviour.
+successfully_applied:
+  - where: Consumer product design and UX education
+    what: >-
+      Norman's three-level model became a common framework for discussing delight, attachment and product personality in design education.
+    evidence_strength: primary-source
+    source:
+      title: Emotional Design
+      year: 2004
+  - where: Consumer electronics and lifestyle products
+    what: >-
+      Norman uses examples such as enjoyable kitchen tools and consumer products to show how aesthetics and meaning affect perceived usability.
+    evidence_strength: primary-source
+    source:
+      title: Emotional Design
+      year: 2004
+best_for:
+  - consumer products
+  - onboarding and retention-sensitive experiences
+  - brand-sensitive interfaces
+criticisms:
+  - Delight can become superficial decoration if behavioural usability and accessibility are weak.
+  - Emotional responses vary across cultures, contexts and individuals, making them harder to standardise.
+  - Pursuing engagement or attachment can become manipulative when business goals override user welfare.
+references:
+  - title: Emotional Design
+    author: Don Norman
+    year: 2004
+  - title: "The Design of Everyday Things, revised and expanded edition"
+    author: Don Norman
+    year: 2013
+  - title: Designing for Emotion
+    author: Aarron Walter
+    year: 2011

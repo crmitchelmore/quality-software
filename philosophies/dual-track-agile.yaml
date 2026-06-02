@@ -1,0 +1,100 @@
+id: dual-track-agile
+title: Dual-Track Agile
+discipline: product
+aka:
+  - Discovery and Delivery Tracks
+  - Dual-Track Scrum
+originators:
+  - Jeff Patton
+  - Desiree Sy
+  - Marty Cagan
+origin:
+  type: method
+  title: "Dual-Track Discovery and Delivery"
+  era: 2000s-2010s
+short_description: >-
+  Run discovery and delivery as parallel, connected tracks so teams validate what should be built while reliably
+  building and shipping what has been learned.
+description: >-
+  Dual-Track Agile separates two kinds of work that often become muddled in one backlog: discovery, which reduces
+  uncertainty about value, usability and feasibility, and delivery, which turns validated ideas into reliable product
+  increments. Desiree Sy described dual-track Scrum, Jeff Patton popularised discovery practices around story
+  mapping, and Marty Cagan connected the model to modern product teams. The philosophy is not two isolated teams or a
+  mini-waterfall; it is a continuous flow where discovery feeds delivery, delivery creates new evidence, and product,
+  design and engineering collaborate across both tracks.
+core_tenets:
+  - Discovery and delivery are different work types with different outputs, cadences and risk profiles.
+  - Discovery should stay close enough to delivery to inform it, not become an upstream requirements silo.
+  - Engineers participate in discovery so feasibility and technical options shape product decisions early.
+  - Delivery should focus on building validated solutions reliably, not debating untested ideas mid-sprint.
+  - Learning from delivered software should feed the next discovery cycle.
+key_ideas:
+  - name: Discovery track
+    explanation: >-
+      Work that explores problems, opportunities, assumptions, prototypes and experiments to decide what is worth
+      building.
+  - name: Delivery track
+    explanation: >-
+      Work that designs, implements, tests, releases and operates product increments with production quality.
+  - name: Shared backlog boundary
+    explanation: >-
+      Items move towards delivery only when enough value, usability and feasibility risk has been reduced.
+in_practice: >-
+  Maintain a discovery backlog of opportunities and assumptions and a delivery backlog of validated work; involve the
+  product trio in both; prototype and test ahead of build commitment; keep discovery one or more learning cycles
+  ahead without freezing scope; and use delivery telemetry and feedback to refresh discovery.
+complements:
+  - continuous-discovery
+  - empowered-product-teams
+  - continuous-delivery-lean
+tensions_with:
+  - philosophy: extreme-programming-tdd
+    reason: >-
+      XP emphasises tight coding-feedback loops, while dual-track practice adds an explicit pre-delivery discovery
+      stream that can become a handoff if mishandled.
+associated_practice_patterns:
+  - pattern: dual-track-discovery-delivery
+    reason: >-
+      This practice directly implements the parallel discovery and delivery cadence.
+  - pattern: opportunity-solution-tree
+    reason: >-
+      Discovery-track work often uses opportunity mapping to decide which ideas deserve delivery investment.
+  - pattern: definition-of-ready-done
+    reason: >-
+      Explicit readiness and done criteria help maintain the boundary between validated discovery work and delivery
+      commitments.
+successfully_applied:
+  - where: Agile product teams and UX practice
+    what: >-
+      Desiree Sy's dual-track Scrum writing and later product practice describe using parallel discovery and delivery
+      to integrate UX research with agile delivery.
+    evidence_strength: primary-source
+    source:
+      title: "Adapting Usability Investigations for Agile User-centered Design"
+      year: 2007
+  - where: Modern product organisations
+    what: >-
+      Cagan and product-coaching literature present discovery-plus-delivery as a common operating model for empowered
+      technology product teams.
+    evidence_strength: secondary-source
+    source:
+      title: "Inspired"
+      year: 2017
+best_for:
+  - agile-product-teams
+  - product-discovery-and-delivery
+  - reducing-build-risk
+criticisms:
+  - If discovery and delivery are staffed separately, the model can reintroduce waterfall handoffs.
+  - Discovery can become an excuse for analysis paralysis if no explicit decisions move work forward.
+  - Delivery teams under high output pressure may starve discovery of engineering participation.
+references:
+  - title: "Adapting Usability Investigations for Agile User-centered Design"
+    author: Desiree Sy
+    year: 2007
+  - title: "User Story Mapping"
+    author: Jeff Patton
+    year: 2014
+  - title: "Inspired"
+    author: Marty Cagan
+    year: 2017

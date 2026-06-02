@@ -1,0 +1,80 @@
+id: service-design-thinking
+title: Service Design Thinking
+discipline: ux
+aka:
+  - Service Design
+originators:
+  - Marc Stickdorn
+  - Jakob Schneider
+origin:
+  type: book
+  title: "This is Service Design Thinking"
+  year: 2011
+short_description: >-
+  Design services as end-to-end, multi-channel experiences by aligning customer journeys with the frontstage and backstage systems that deliver them.
+description: >-
+  Service design thinking extends UX beyond a single interface to the whole service ecology: people, touchpoints, policies, channels, operations and supporting systems. Stickdorn and Schneider popularised a practical vocabulary for mapping the customer journey and the backstage work that makes it possible. The philosophy is holistic and co-creative: service quality depends on the visible experience and the invisible organisational capabilities being designed together, especially across hand-offs and channels.
+core_tenets:
+  - Design the service end to end, not isolated screens or touchpoints.
+  - Understand both the customer's journey and the organisation's backstage processes.
+  - Co-create with customers, employees and stakeholders who participate in the service.
+  - Treat services as sequences over time, including before, during and after the main interaction.
+  - Prototype and test service moments, hand-offs and recovery paths as deliberately as interfaces.
+key_ideas:
+  - name: Frontstage and backstage
+    explanation: >-
+      Frontstage interactions are visible to customers; backstage processes, tools and roles enable those interactions.
+  - name: Service blueprint
+    explanation: >-
+      A map that connects customer actions, touchpoints, employee actions, support processes and evidence across time.
+  - name: Touchpoint orchestration
+    explanation: >-
+      Service quality depends on coherent transitions across channels, artefacts and human interactions.
+in_practice: >-
+  Map the customer journey, identify emotional highs and lows, blueprint frontstage and backstage dependencies, invite service staff into design sessions, prototype critical moments, and measure whether hand-offs, recovery and channel transitions improve.
+complements:
+  - design-thinking
+  - human-centered-design
+associated_practice_patterns:
+  - pattern: service-blueprint
+    reason: >-
+      Blueprinting is the central artefact for aligning customer experience with operational delivery.
+  - pattern: customer-journey-map
+    reason: >-
+      Journey maps visualise service experience over time and reveal moments that individual screens miss.
+  - pattern: frontstage-backstage-alignment
+    reason: >-
+      Service design depends on coordinating what customers see with the processes that support it.
+successfully_applied:
+  - where: Public services and service innovation programmes
+    what: >-
+      Service design methods have been adopted by public-sector digital and service teams to redesign end-to-end citizen experiences.
+    evidence_strength: secondary-source
+    source:
+      title: "This is Service Design Doing"
+      year: 2018
+  - where: Service design education and consultancy practice
+    what: >-
+      Stickdorn and Schneider's books helped establish journey mapping, blueprinting and co-creation as common service design practice.
+    evidence_strength: primary-source
+    source:
+      title: "This is Service Design Thinking"
+      year: 2011
+best_for:
+  - omnichannel services
+  - public and healthcare services
+  - products with operational hand-offs
+criticisms:
+  - Journey maps and blueprints can become decorative artefacts if operational owners are not involved.
+  - The broad scope can make service design slow or politically difficult in siloed organisations.
+  - It may under-specify detailed interaction design unless paired with strong UX execution.
+references:
+  - title: "This is Service Design Thinking"
+    author: Marc Stickdorn and Jakob Schneider
+    year: 2011
+  - title: "This is Service Design Doing"
+    author: Marc Stickdorn, Markus Edgar Hormess, Adam Lawrence and Jakob Schneider
+    year: 2018
+  - title: "Service Design: From Insight to Implementation"
+    author: Andy Polaine, Lavrans Løvlie and Ben Reason
+    year: 2013

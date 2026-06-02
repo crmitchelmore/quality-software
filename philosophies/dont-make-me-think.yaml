@@ -1,0 +1,77 @@
+id: dont-make-me-think
+title: Don't Make Me Think
+discipline: ux
+originators:
+  - Steve Krug
+origin:
+  type: book
+  title: "Don't Make Me Think"
+  year: 2000
+short_description: >-
+  Make web and app experiences self-evident, reducing cognitive effort so people can scan, choose and recover without unnecessary thought.
+description: >-
+  Steve Krug's philosophy is a plain-spoken argument for obviousness. People do not read interfaces carefully, construct perfect mental models or follow the path designers expect; they scan, satisfice and muddle through. Good UX therefore removes needless cognitive work: labels are clear, navigation is conventional, pages have strong visual hierarchy, choices are limited, and help is available at the moment of need. Krug also made lightweight usability testing practical for ordinary teams by showing that watching a few users regularly beats debating opinions.
+core_tenets:
+  - Make each screen as self-evident as possible; when that is impossible, make it self-explanatory.
+  - Respect scanning behaviour with clear hierarchy, conventional navigation and obvious clickable targets.
+  - Remove needless words, choices and steps that force users to puzzle out intent.
+  - Support satisficing because users often choose the first plausible path rather than the optimal one.
+  - Test early and often with a small number of real users.
+key_ideas:
+  - name: Self-evident pages
+    explanation: >-
+      Users should be able to understand what a page is, what they can do and why it matters at a glance.
+  - name: Satisficing
+    explanation: >-
+      People often select the first reasonable option that appears to work, so interfaces should make reasonable options clear.
+  - name: Trunk test
+    explanation: >-
+      A navigation check that asks whether users dropped onto any page can tell where they are and where they can go.
+in_practice: >-
+  Use plain labels, conventional navigation, strong visual hierarchy, progressive disclosure for secondary detail, concise microcopy, and frequent low-cost usability tests. Remove or rewrite any element that makes users stop and interpret the interface unnecessarily.
+complements:
+  - design-of-everyday-things
+  - nielsen-usability-heuristics
+associated_practice_patterns:
+  - pattern: progressive-disclosure
+    reason: >-
+      Hiding secondary complexity until it is needed reduces the thinking required to make the next choice.
+  - pattern: microcopy
+    reason: >-
+      Clear, concise labels and helper text make intent obvious at the point of action.
+  - pattern: usability-testing-session
+    reason: >-
+      Krug strongly advocates simple recurring tests with real users to reveal where the design makes people think too hard.
+successfully_applied:
+  - where: Web usability practice
+    what: >-
+      The book became a widely used practical reference for web teams improving navigation, copy and task clarity.
+    evidence_strength: primary-source
+    source:
+      title: "Don't Make Me Think"
+      year: 2000
+  - where: Lightweight usability testing in product teams
+    what: >-
+      Krug's later guidance helped normalise small, regular usability tests outside specialist labs.
+    evidence_strength: primary-source
+    source:
+      title: "Rocket Surgery Made Easy"
+      year: 2009
+best_for:
+  - websites and web apps
+  - navigation-heavy experiences
+  - teams new to usability testing
+criticisms:
+  - Obviousness for novices can conflict with dense expert workflows that reward learning and shortcuts.
+  - The advice is intentionally pragmatic and may not cover deeper service, accessibility or organisational issues.
+  - Over-reliance on convention can make distinctive product concepts harder to express.
+references:
+  - title: "Don't Make Me Think"
+    author: Steve Krug
+    year: 2000
+  - title: "Don't Make Me Think, Revisited"
+    author: Steve Krug
+    year: 2014
+  - title: "Rocket Surgery Made Easy"
+    author: Steve Krug
+    year: 2009

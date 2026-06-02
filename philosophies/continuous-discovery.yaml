@@ -1,0 +1,88 @@
+id: continuous-discovery
+title: Continuous Discovery
+discipline: product
+aka:
+  - Continuous Discovery Habits
+originators:
+  - Teresa Torres
+origin:
+  type: book
+  title: "Continuous Discovery Habits"
+  year: 2021
+short_description: >-
+  Make customer learning a weekly team habit, connecting outcomes to opportunities, solutions and experiments so
+  product decisions are continuously informed by evidence.
+description: >-
+  Continuous Discovery, as articulated by Teresa Torres, is a product discovery philosophy for reducing the risk of
+  building the wrong thing. Rather than treating research as a phase before delivery, the product trio — product,
+  design and engineering — continuously engages customers, maps opportunities, compares solution bets and runs small
+  experiments. The Opportunity Solution Tree gives teams a visual structure from desired outcome to customer needs,
+  solution ideas and evidence. The aim is not endless research; it is a steady cadence of decision-quality learning
+  integrated with delivery.
+core_tenets:
+  - Discovery should be continuous, not a one-off phase before implementation.
+  - The product trio should learn together so decisions integrate viability, usability, feasibility and value.
+  - Start from a desired outcome, then map opportunities before committing to solutions.
+  - Talk to customers every week and use their stories to uncover needs, pain and context.
+  - Test assumptions with the smallest useful experiment before scaling investment.
+key_ideas:
+  - name: Opportunity Solution Tree
+    explanation: >-
+      A visual map connecting an outcome to customer opportunities, possible solutions and experiments that test
+      the assumptions behind them.
+  - name: Product trio
+    explanation: >-
+      Product manager, designer and engineer working jointly in discovery rather than handing off decisions.
+  - name: Continuous interviewing
+    explanation: >-
+      A regular cadence of customer conversations that keeps evidence fresh and grounded in real contexts.
+in_practice: >-
+  Define an outcome; recruit customers continuously; conduct weekly interviews; capture opportunities as needs,
+  pain points and desires; map them on an Opportunity Solution Tree; compare solutions against assumptions; and run
+  lightweight tests before committing delivery capacity.
+complements:
+  - outcome-over-output
+  - dual-track-agile
+  - jobs-to-be-done
+tensions_with:
+  - philosophy: conceptual-integrity
+    reason: >-
+      A high volume of local customer evidence can fragment product direction unless held against a coherent vision.
+associated_practice_patterns:
+  - pattern: opportunity-solution-tree
+    reason: >-
+      Torres's central artefact structures discovery from outcome through opportunity, solution and experiment.
+  - pattern: continuous-interviewing
+    reason: >-
+      Weekly customer conversations are the habit that keeps discovery continuous and evidence current.
+  - pattern: assumption-mapping
+    reason: >-
+      Discovery experiments target the riskiest assumptions behind solution ideas before delivery investment grows.
+successfully_applied:
+  - where: Product discovery coaching and product trios
+    what: >-
+      Torres documents the habits through consulting and coaching with product teams adopting weekly interviews and
+      opportunity mapping.
+    evidence_strength: primary-source
+    source:
+      title: "Continuous Discovery Habits"
+      year: 2021
+  - where: Modern product management practice
+    what: >-
+      Opportunity Solution Trees have become a common product-discovery artefact in outcome-based product teams.
+    evidence_strength: secondary-source
+    source:
+      title: "Continuous Discovery Habits"
+      year: 2021
+best_for:
+  - product-discovery
+  - outcome-based-teams
+  - reducing-solution-risk
+criticisms:
+  - Teams can mistake constant interviewing for progress if insights are not tied to decisions and experiments.
+  - Recruiting and maintaining weekly customer access is operationally difficult in some markets.
+  - The method assumes teams have enough autonomy to adjust solutions based on discovery evidence.
+references:
+  - title: "Continuous Discovery Habits"
+    author: Teresa Torres
+    year: 2021

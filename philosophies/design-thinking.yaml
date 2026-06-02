@@ -1,0 +1,86 @@
+id: design-thinking
+title: Design Thinking
+discipline: cross-cutting
+aka:
+  - Human-Centred Innovation
+originators:
+  - IDEO
+  - Tim Brown
+  - Stanford d.school
+origin:
+  type: method
+  title: Empathize, Define, Ideate, Prototype, Test
+  era: 1990s-2000s
+short_description: >-
+  A human-centred innovation method that cycles through empathy, framing, ideation, prototyping and testing to reduce uncertainty.
+description: >-
+  Design thinking packages design practice as a repeatable method for teams facing ambiguous problems. Popularised by IDEO, Tim Brown and the Stanford d.school, it asks teams to understand human needs, define the right problem, generate many possible solutions, prototype cheaply and test with users. Its cross-cutting appeal is that it gives non-designers a shared language for exploration before commitment. At its best, it combines empathy with disciplined experimentation; at its worst, it becomes a workshop ritual detached from delivery and power.
+core_tenets:
+  - Start with empathy for the people affected by the problem.
+  - Reframe ambiguous situations into clear, human-centred problem statements.
+  - Generate multiple possible solutions before converging too quickly.
+  - Prototype cheaply to make ideas tangible and testable.
+  - Iterate from evidence gathered with users and stakeholders.
+key_ideas:
+  - name: Divergence and convergence
+    explanation: >-
+      Teams deliberately broaden the solution space before narrowing to the most promising direction.
+  - name: How might we
+    explanation: >-
+      Problem statements are framed as opportunity questions that invite creativity without prescribing an answer.
+  - name: Bias toward prototyping
+    explanation: >-
+      Ideas are made tangible early so teams can learn from reactions and constraints.
+in_practice: >-
+  Conduct field research, synthesise insights, frame opportunities as how-might-we questions, ideate broadly, prototype low-fidelity alternatives, test them with users, and carry validated learning into product, service or software delivery.
+complements:
+  - human-centered-design
+  - lean-startup
+  - service-design-thinking
+tensions_with:
+  - philosophy: conceptual-integrity
+    reason: >-
+      Broad ideation and workshop-driven convergence can fragment a product unless a strong design owner preserves coherence.
+associated_practice_patterns:
+  - pattern: how-might-we
+    reason: >-
+      How-might-we framing is one of design thinking's standard ways to turn insights into generative opportunity statements.
+  - pattern: opportunity-solution-tree
+    reason: >-
+      Opportunity trees add product discovery structure to design thinking's divergent solution exploration.
+  - pattern: customer-journey-map
+    reason: >-
+      Journey mapping helps teams empathise with real experience over time and identify moments for intervention.
+successfully_applied:
+  - where: IDEO design and innovation practice
+    what: >-
+      IDEO popularised design thinking through client work, publications and toolkits for product, service and social innovation.
+    evidence_strength: primary-source
+    source:
+      title: "Change by Design"
+      year: 2009
+  - where: Stanford d.school education
+    what: >-
+      The d.school taught design thinking as a repeatable process for interdisciplinary innovation and prototyping.
+    evidence_strength: primary-source
+    source:
+      title: An Introduction to Design Thinking Process Guide
+      year: 2010
+best_for:
+  - ambiguous early-stage problems
+  - cross-functional innovation workshops
+  - product and service discovery
+criticisms:
+  - Workshop theatre can replace sustained research, delivery and accountability.
+  - The simplified five-step model can misrepresent the messy, expert nature of design practice.
+  - Empathy methods may be extractive when communities lack decision power.
+references:
+  - title: "Change by Design"
+    author: Tim Brown
+    year: 2009
+  - title: An Introduction to Design Thinking Process Guide
+    author: Stanford d.school
+    year: 2010
+  - title: "Design Thinking"
+    author: Tim Brown
+    year: 2008

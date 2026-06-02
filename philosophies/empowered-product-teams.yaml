@@ -1,0 +1,96 @@
+id: empowered-product-teams
+title: Empowered Product Teams
+discipline: product
+aka:
+  - Empowered Teams
+  - Product Model
+originators:
+  - Marty Cagan
+  - Chris Jones
+origin:
+  type: book
+  title: "EMPOWERED"
+  year: 2020
+short_description: >-
+  Give durable cross-functional product teams meaningful problems to solve, strategic context and accountability for
+  outcomes, rather than treating them as feature delivery squads.
+description: >-
+  Empowered Product Teams is the philosophy promoted by Marty Cagan and Chris Jones for strong technology product
+  organisations. It contrasts the product model with the feature-team model: leaders provide vision, strategy,
+  context and coaching, while product teams discover and deliver solutions that achieve outcomes. A team is composed
+  of product management, design and engineering, has durable ownership of a product area, and is trusted to make
+  product decisions within strategic guardrails. Empowerment is paired with competence and accountability; it is not
+  autonomy without direction.
+core_tenets:
+  - Teams should be assigned problems and outcomes, not handed feature lists to build.
+  - Product, design and engineering must collaborate as peers from discovery through delivery.
+  - Leaders set vision, strategy, principles and context, then coach teams rather than micromanaging solutions.
+  - Durable ownership builds product knowledge and accountability better than temporary project staffing.
+  - Empowerment requires capable people, clear strategic guardrails and responsibility for results.
+key_ideas:
+  - name: Product team
+    explanation: >-
+      A durable, cross-functional group with the skills and authority to discover, build and improve a product area.
+  - name: Product model
+    explanation: >-
+      An operating model where teams solve customer and business problems through discovery and delivery, replacing
+      project-oriented feature factories.
+  - name: Strategic context
+    explanation: >-
+      Vision, strategy, principles and business constraints that let teams make local decisions aligned with company
+      direction.
+in_practice: >-
+  Form durable teams around product areas; give each team outcome goals and strategic context; ensure product,
+  design and engineering work together in discovery; maintain high standards for product managers and leaders; and
+  review teams by customer and business impact rather than feature throughput alone.
+complements:
+  - outcome-over-output
+  - continuous-discovery
+  - dual-track-agile
+tensions_with:
+  - philosophy: conways-law-team-topologies
+    reason: >-
+      Team Topologies may optimise cognitive load and platform boundaries, while empowered product teams emphasise
+      product outcome ownership; the two need deliberate alignment.
+associated_practice_patterns:
+  - pattern: product-operating-model
+    reason: >-
+      The operating model formalises durable teams, product leadership, decision rights and outcome accountability.
+  - pattern: outcome-based-roadmap
+    reason: >-
+      Empowered teams need roadmaps that frame problems and outcomes rather than prescribing all outputs.
+  - pattern: dual-track-discovery-delivery
+    reason: >-
+      Empowered teams must own both discovery and delivery to make sound product decisions.
+successfully_applied:
+  - where: Strong technology product companies
+    what: >-
+      Cagan and Jones document patterns from companies including Amazon, Apple, Google and Netflix as exemplars of
+      empowered product teams and product leadership.
+    evidence_strength: secondary-source
+    source:
+      title: "EMPOWERED"
+      year: 2020
+  - where: Product-management community practice
+    what: >-
+      The empowered-team vocabulary from Inspired and EMPOWERED is widely used to contrast product organisations with
+      feature factories.
+    evidence_strength: secondary-source
+    source:
+      title: "Inspired"
+      year: 2017
+best_for:
+  - technology-product-organisations
+  - scaling-product-management
+  - feature-factory-transformation
+criticisms:
+  - Empowerment rhetoric can mask unclear strategy if leaders fail to provide context and hard choices.
+  - The model depends on highly capable product managers, designers, engineers and leaders that organisations may not yet have.
+  - Some regulated or contract-driven environments constrain team autonomy more than the model assumes.
+references:
+  - title: "EMPOWERED"
+    author: Marty Cagan and Chris Jones
+    year: 2020
+  - title: "Inspired"
+    author: Marty Cagan
+    year: 2017

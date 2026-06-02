@@ -1,0 +1,82 @@
+id: human-centered-design
+title: Human-Centred Design
+discipline: ux
+aka:
+  - Human-Centered Design
+  - HCD
+originators:
+  - IDEO
+  - ISO 9241-210
+origin:
+  type: framework
+  title: "ISO 9241-210: Human-centred design for interactive systems"
+  year: 2010
+short_description: >-
+  Design interactive systems by understanding people, contexts and needs, then iterating solutions with user involvement and evidence from use.
+description: >-
+  Human-centred design makes the people affected by a product the organising reference for design decisions. It starts from an explicit understanding of users, tasks, environments and organisational context, turns that understanding into requirements, and evaluates designs with users throughout an iterative process. In the IDEO and ISO traditions it is not simply being sympathetic to users; it is a disciplined loop of research, synthesis, prototyping and evaluation that keeps human needs, abilities and constraints visible while technical and business constraints are negotiated.
+core_tenets:
+  - Understand users, tasks and environments before committing to a solution.
+  - Involve users throughout design and development, not only at the end.
+  - Evaluate designs against observed use and iterate from evidence.
+  - Address the whole user experience, including accessibility, service context and emotional consequences.
+  - Work with multidisciplinary teams so human, technical and business constraints are considered together.
+key_ideas:
+  - name: Context of use
+    explanation: >-
+      A product is judged in the real situation where people use it, including their goals, skills, constraints, devices and environment.
+  - name: Iterative evaluation
+    explanation: >-
+      Designs are treated as hypotheses to be tested with representative users and improved across cycles.
+  - name: Human needs before artefacts
+    explanation: >-
+      Teams begin with the underlying need or activity, rather than assuming a specific interface or feature is the answer.
+in_practice: >-
+  Recruit representative users, observe their work through contextual inquiry, translate findings into needs and design requirements, prototype alternatives, and run usability tests before and after release. Keep research insights connected to product decisions rather than treating them as a one-off discovery phase.
+complements:
+  - design-of-everyday-things
+  - design-thinking
+tensions_with:
+  - philosophy: activity-centered-design
+    reason: >-
+      Activity-centred design argues that focusing too narrowly on expressed human needs can miss durable activity structures and system-level workflows.
+associated_practice_patterns:
+  - pattern: usability-testing-session
+    reason: >-
+      Direct observation of representative users performing tasks is the core feedback mechanism for iterative human-centred design.
+  - pattern: contextual-inquiry
+    reason: >-
+      Studying people in their real context grounds design requirements in observed work rather than assumptions.
+successfully_applied:
+  - where: ISO usability engineering and regulated interactive systems
+    what: >-
+      ISO 9241-210 codified human-centred design as a recognised process for interactive systems, influencing procurement, accessibility and usability practice.
+    evidence_strength: primary-source
+    source:
+      title: "ISO 9241-210:2010 Ergonomics of human-system interaction"
+      year: 2010
+  - where: IDEO product and service design practice
+    what: >-
+      IDEO popularised human-centred design methods across product, service and social-sector projects through its design kits and case studies.
+    evidence_strength: secondary-source
+    source:
+      title: "The Field Guide to Human-Centered Design"
+      year: 2015
+best_for:
+  - user-facing products with uncertain needs
+  - accessibility-sensitive services
+  - multidisciplinary product discovery
+criticisms:
+  - User involvement can become performative if research findings do not affect roadmap and trade-off decisions.
+  - Focusing on individual users may underweight systemic, organisational or environmental consequences.
+  - Iteration with users can be slow when teams lack access to representative participants.
+references:
+  - title: "ISO 9241-210: Human-centred design for interactive systems"
+    author: International Organization for Standardization
+    year: 2010
+  - title: "The Field Guide to Human-Centered Design"
+    author: IDEO.org
+    year: 2015
+  - title: "Human-Centered Design Toolkit"
+    author: IDEO
+    year: 2011

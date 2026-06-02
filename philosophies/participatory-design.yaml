@@ -1,0 +1,82 @@
+id: participatory-design
+title: Participatory Design
+discipline: ux
+aka:
+  - Cooperative Design
+  - Co-design
+originators:
+  - Kristen Nygaard
+  - Scandinavian cooperative design tradition
+origin:
+  type: tradition
+  title: Scandinavian Cooperative Design
+  era: 1970s-1980s
+short_description: >-
+  Design with the people affected by a system, giving workers and users real influence over goals, concepts and decisions.
+description: >-
+  Participatory design grew from Scandinavian workplace democracy projects in which computer systems were designed with trade unions and workers rather than imposed on them. It treats users and affected communities as co-designers with situated knowledge and legitimate power, not merely research subjects. The philosophy is both practical and political: better systems emerge when the people who will live with them help frame the problem, generate concepts, evaluate alternatives and negotiate trade-offs.
+core_tenets:
+  - Give affected people meaningful influence over design goals and decisions.
+  - Treat users' situated knowledge as expertise equal in importance to technical expertise.
+  - Use tangible artefacts, workshops and prototypes to make future systems discussable.
+  - Surface power, labour and organisational consequences rather than hiding them behind usability alone.
+  - Build mutual learning between designers, developers, workers and stakeholders.
+key_ideas:
+  - name: Cooperative design
+    explanation: >-
+      Designers and users jointly explore possibilities, constraints and consequences through workshops, mock-ups and prototypes.
+  - name: Workplace democracy
+    explanation: >-
+      The tradition emphasised workers' rights to shape technologies that would change their labour and autonomy.
+  - name: Mutual learning
+    explanation: >-
+      Participants learn enough about each other's domains to make informed design trade-offs together.
+in_practice: >-
+  Run co-design workshops with representative and affected participants, use card sorting, sketches, mock-ups and scenarios to externalise options, compensate participants where appropriate, and document how their input changed the resulting design.
+complements:
+  - inclusive-design
+  - human-centered-design
+tensions_with:
+  - philosophy: conceptual-integrity
+    reason: >-
+      Broad participation can create competing design directions unless a team deliberately synthesises input into a coherent whole.
+associated_practice_patterns:
+  - pattern: card-sorting
+    reason: >-
+      Card sorting gives participants direct influence over categories and information architecture rather than asking designers to infer it alone.
+  - pattern: customer-journey-map
+    reason: >-
+      Collaborative journey mapping helps affected people reveal lived experience, pain points and service consequences.
+successfully_applied:
+  - where: Scandinavian workplace computing projects
+    what: >-
+      Projects such as UTOPIA involved workers and unions in designing computer-based tools for skilled work.
+    evidence_strength: secondary-source
+    source:
+      title: "Design at Work: Cooperative Design of Computer Systems"
+      year: 1991
+  - where: Simula and Scandinavian computing tradition
+    what: >-
+      Kristen Nygaard's work connected computing, labour participation and democratic influence over system design.
+    evidence_strength: secondary-source
+    source:
+      title: "Computers and Democracy: A Scandinavian Challenge"
+      year: 1987
+best_for:
+  - civic technology
+  - workplace systems
+  - community services with affected stakeholders
+criticisms:
+  - Participation can be tokenistic if decision rights, compensation and feedback loops are unclear.
+  - Co-design takes time and may conflict with fast delivery schedules.
+  - Participants may not represent all affected groups, especially absent or marginalised people.
+references:
+  - title: "Computers and Democracy: A Scandinavian Challenge"
+    author: Gro Bjerknes, Pelle Ehn and Morten Kyng
+    year: 1987
+  - title: "Design at Work: Cooperative Design of Computer Systems"
+    author: Joan Greenbaum and Morten Kyng
+    year: 1991
+  - title: "Participatory Design: Principles and Practices"
+    author: Douglas Schuler and Aki Namioka
+    year: 1993
