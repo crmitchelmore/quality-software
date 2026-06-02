@@ -1,0 +1,45 @@
+# Provisions the GitHub Copilot cloud/coding agent environment with the conformance
+# binary so the SAME .github/hooks/conformance.json that runs locally also runs for
+# agent-authored changes in the cloud sandbox (design 12.7 — remote agent envs).
+#
+# Copy this file into the TARGET repository you want governed. The job name MUST be
+# `copilot-setup-steps`. After it runs, `conformance` is on PATH and
+# CONFORMANCE_CATALOGUE_ROOT is set for the agent session.
+
+name: Copilot Setup Steps
+
+on:
+  workflow_dispatch: {}
+  push:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+
+jobs:
+  copilot-setup-steps:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Check out the conformance catalogue
+        uses: actions/checkout@v4
+        with:
+          repository: crmitchelmore/quality-software
+          path: .conformance-catalogue
+          token: ${{ secrets.CONFORMANCE_CATALOGUE_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install + link the conformance binary
+        working-directory: .conformance-catalogue/integration
+        run: |
+          npm ci || npm install
+          npm link            # puts `conformance` and `conformance-mcp` on PATH
+
+      - name: Export the catalogue root for the agent session
+        run: |
+          echo "CONFORMANCE_CATALOGUE_ROOT=${{ github.workspace }}/.conformance-catalogue" >> "$GITHUB_ENV"
+
+      - name: Smoke-check the binary
+        run: conformance --help || true

@@ -1,0 +1,23 @@
+{
+  "_comment": "Claude Code conformance hooks. Place at .claude/settings.json in the target repo. Requires `conformance` on PATH and CONFORMANCE_CATALOGUE_ROOT exported. Advisory + fail-open.",
+  "hooks": {
+    "SessionStart": [
+      { "hooks": [{ "type": "command", "command": "conformance hook session-start --runtime claude" }] }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [{ "type": "command", "command": "conformance hook post-write --runtime claude" }]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [{ "type": "command", "command": "conformance hook guard-shell --runtime claude" }]
+      }
+    ],
+    "Stop": [
+      { "hooks": [{ "type": "command", "command": "conformance hook turn-end --runtime claude" }] }
+    ]
+  }
+}

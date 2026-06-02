@@ -1,12 +1,7 @@
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { isAbsolute, join } from "node:path";
 import { execSync } from "node:child_process";
-import {
-  handleSessionStart,
-  handlePostWrite,
-  handleGuardShell,
-  handleTurnEnd,
-} from "./adapters/copilot.js";
+import { runHook, type Phase, type Dialect } from "./adapters/runtimes.js";
 import { loadCatalogue } from "./catalogue.js";
 import { loadProfile, ProfileError } from "./profile.js";
 import { proposeProfile } from "./init.js";
@@ -20,7 +15,7 @@ async function readStdin(): Promise<string> {
   return Buffer.concat(chunks).toString("utf8");
 }
 
-async function cmdHook(which: string): Promise<void> {
+async function cmdHook(which: string, rest: string[]): Promise<void> {
   const raw = await readStdin();
   let payload: Record<string, unknown> = {};
   try {
@@ -28,24 +23,14 @@ async function cmdHook(which: string): Promise<void> {
   } catch {
     payload = {};
   }
-  let out = "{}";
-  switch (which) {
-    case "session-start":
-      out = handleSessionStart(payload);
-      break;
-    case "post-write":
-      out = await handlePostWrite(payload);
-      break;
-    case "guard-shell":
-      out = handleGuardShell(payload);
-      break;
-    case "turn-end":
-      out = handleTurnEnd(payload);
-      break;
-    default:
-      out = "{}";
+  const rIdx = rest.indexOf("--runtime");
+  const dialect = (rIdx >= 0 ? rest[rIdx + 1] : "copilot") as Dialect;
+  const phases: Phase[] = ["session-start", "post-write", "guard-shell", "turn-end"];
+  if (!phases.includes(which as Phase)) {
+    process.stdout.write("{}");
+    return;
   }
-  process.stdout.write(out);
+  process.stdout.write(await runHook(which as Phase, dialect, payload));
 }
 
 function cmdInit(write: boolean): void {
@@ -165,7 +150,7 @@ async function main(): Promise<void> {
   const [cmd, ...rest] = process.argv.slice(2);
   switch (cmd) {
     case "hook":
-      await cmdHook(rest[0] ?? "");
+      await cmdHook(rest[0] ?? "", rest.slice(1));
       break;
     case "init":
       cmdInit(rest.includes("--write"));
@@ -179,12 +164,13 @@ async function main(): Promise<void> {
     default:
       process.stderr.write(
         "Usage:\n" +
-          "  conformance hook <session-start|post-write|guard-shell|turn-end>   (reads hook JSON on stdin)\n" +
+          "  conformance hook <session-start|post-write|guard-shell|turn-end> [--runtime copilot|claude|codex|generic]\n" +
+          "                                                                    (reads hook JSON on stdin)\n" +
           "  conformance init [--write]                                          (propose a candidate profile)\n" +
           "  conformance check [--event PR_REVIEW|BATCH] [--base <ref>] [paths…] (run the engine; exit 1 on block)\n" +
           "  conformance profile                                                 (print the resolved profile)\n",
       );
-      process.exitCode = cmd ? 1 : 0;
+      process.exitCode = cmd && !["help", "-h", "--help"].includes(cmd) ? 1 : 0;
   }
 }
 
