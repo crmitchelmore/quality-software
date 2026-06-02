@@ -89,7 +89,9 @@ flowchart LR
   the change, the **pattern spec from the catalogue** (description, positive/negative
   examples, consequences), and **retrieved surrounding code**, it returns a *structured*
   verdict: `{applicable, conformance, confidence, evidence, suggestion}`. Confidence-gated;
-  advisory unless the profile + phase permit blocking.
+  advisory unless the profile + phase permit blocking. **In v1 the LLM judge is advisory-only
+  (never blocks), runs only on a candidate already raised by a deterministic/heuristic signal,
+  must return verifiable evidence spans, and may `abstain` — see [§13.4](13-mvp-and-trust.md).**
 
 This layering is the **strict-core / tolerant-boundary** principle in practice: deterministic
 truth blocks; probabilistic judgement advises.

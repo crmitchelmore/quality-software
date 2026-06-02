@@ -44,12 +44,17 @@ The engine understands exactly these events. The adapter maps native → canonic
 | Canonical event | Fires | Engine phase | Default action |
 | --- | --- | --- | --- |
 | `SESSION_START` | session begins | — (bootstrap) | inject profile summary + adopted philosophies as context |
-| `PRE_WRITE` | before a file-mutating tool | do-it-write | **block** on deterministic violation; else allow |
+| `PRE_WRITE` | before a file-mutating tool | do-it-write | **advise**, fail-open; deny only allowlisted guardrails/proven bans |
 | `POST_WRITE` | after a file-mutating tool | do-it-write | **advise** (inject finding as feedback) |
 | `PRE_SHELL` | before a shell/command tool | (guardrails) | block destructive/banned commands |
 | `TURN_END` | agent finishes a turn | do-it-write (sweep) | optionally **continue the loop** with unresolved findings |
-| `PR_REVIEW` | PR opened/updated | do-it-pr | review comments; fail CI on `block`-level |
+| `PR_REVIEW` | PR opened/updated | do-it-pr | review comments; **authoritative gate**, fail CI on `block`-level |
 | `BATCH` | on demand / scheduled | do-it-later | report + refactor branch |
+
+> **Write-time default is advisory + fail-open** (see [§13.3](13-mvp-and-trust.md)). `preToolUse`
+> deny is reserved for security/destructive-command guardrails and a small allowlist of proven
+> deterministic bans; everything else advises via `postToolUse.additionalContext`. **PR-time CI
+> is the only universal, authoritative enforcement boundary.**
 
 The engine's `requiresContext` ([§6.2](06-pattern-routing.md)) and altitude routing decide
 which patterns actually run for each event, so `PRE_WRITE` only ever runs file-local
@@ -107,11 +112,11 @@ MCP) or installed individually:
     "sessionStart": [
       { "type": "command", "bash": "conformance hook session-start", "timeoutSec": 10 }
     ],
-    "preToolUse": [
-      { "type": "command", "matcher": "edit|create", "bash": "conformance hook pre-write", "timeoutSec": 5 }
-    ],
     "postToolUse": [
       { "type": "command", "matcher": "edit|create", "bash": "conformance hook post-write", "timeoutSec": 5 }
+    ],
+    "preToolUse": [
+      { "type": "command", "matcher": "bash", "bash": "conformance hook guard-shell", "timeoutSec": 3 }
     ],
     "agentStop": [
       { "type": "command", "bash": "conformance hook turn-end", "timeoutSec": 10 }
@@ -120,15 +125,19 @@ MCP) or installed individually:
 }
 ```
 
-- `preToolUse` is **fail-closed** (a crash denies the write) — correct for a guardrail. The
-  adapter keeps it to *deterministic, file-local* checks only, honouring the write-time
-  latency budget ([§3](03-phase-do-it-write.md)); anything slower degrades to `postToolUse`
-  advice.
+- **Advisory by default.** File writes are reviewed in `postToolUse` and fed back via
+  `additionalContext`; they are **not** denied in `preToolUse` (see [§13.3](13-mvp-and-trust.md)).
+  The only `preToolUse` hook above matches `bash` for **security/destructive-command guardrails**.
+- Every hook is **fail-open**: it wraps its logic in a catch-all that emits explicit `allow`/empty
+  output on any internal error, so a validator bug never blocks the agent. (Note `preToolUse` is
+  fail-*closed* at the runtime level, so the guard-shell hook must be ultra-cheap and defensive.)
 - `sessionStart` injects the profile's adopted philosophies + top adopted patterns as
   `additionalContext`, so the agent is *primed* with the north star before it writes anything
-  (cheap, high-leverage prevention).
-- `agentStop` may return `decision:"block"` with a `reason` listing unresolved `block`-level
+  (cheap, high-leverage prevention — the strongest write-phase lever).
+- `agentStop` may return `decision:"block"` with a `reason` summarising unresolved advisory
   findings, giving the agent one bounded chance to self-correct before the turn ends.
+- Promoting any file-write rule to a `preToolUse` **deny** requires measured write-time precision
+  and p95 latency first ([§13.5/§13.10](13-mvp-and-trust.md)).
 
 ### b. Skill — `skills/conformance-review/SKILL.md`
 

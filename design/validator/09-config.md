@@ -88,8 +88,8 @@ ban:
 
 # Phase behaviour
 phases:
-  write: { enabled: true,  llm: false, maxFindings: 1 }   # one interruption max
-  pr:    { enabled: true,  llm: true,  failOn: block }    # block-level violations fail CI
+  write: { enabled: true, mode: advise, failMode: open, llm: false, block: false, maxFindings: 1 }  # advisory, fail-open (see doc 13)
+  pr:    { enabled: true,  llm: true,  failOn: block }    # PR CI = authoritative gate; LLM advisory-only in v1
   later: { enabled: true }
 
 budgets:
@@ -153,3 +153,9 @@ The validator first validates the **profile**:
 This makes the project's pattern strategy itself a checkable, version-controlled artefact —
 the same "one canonical pattern across all surfaces" consistency the catalogue promotes —
 and ties every enforced pattern back to a stated philosophy, so the *why* is never lost.
+
+> **Coherence is warn-not-block (review-incorporated, [§13.7](13-mvp-and-trust.md)):** only a
+> *direct contradiction* (same pattern adopted **and** banned) is a hard error. Philosophy
+> tensions and pattern↔philosophy `at_odds` are **warnings requiring a rationale**, since the
+> hand-authored graph is not context-free and hybrid architectures are legitimate; graph edges
+> carry `confidence`/`scope` metadata and support scoped exceptions.

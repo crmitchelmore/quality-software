@@ -46,6 +46,15 @@ assigned to phases.
 10. [Maturity model & rollout](10-maturity-rollout.md)
 11. [Philosophy-first selection & bootstrap](11-philosophy-selection.md)
 12. [Runtime-agnostic integration contract](12-integration-contract.md)
+13. [Enforcement tiers, MVP & trust (review-incorporated)](13-mvp-and-trust.md)
+
+> **Read [13](13-mvp-and-trust.md) for the current design stance.** Two independent reviews
+> reshaped the approach: a two-tier model (a small set of *certified enforceable rulepacks*
+> vs an *advisory knowledge catalogue* of philosophies + PM/UX + the long tail), write-time
+> **advisory/fail-open** by default, **PR CI as the authoritative gate**, LLM **advisory-only**
+> in v1, and enforcement implemented by **orchestrating existing tools** (ESLint,
+> dependency-cruiser, Semgrep, ArchUnit) rather than reimplementing them. Where docs 01–12
+> conflict with 13, doc 13 wins.
 
 ## One-paragraph summary
 

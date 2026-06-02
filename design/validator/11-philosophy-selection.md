@@ -60,6 +60,12 @@ flowchart TB
 
 ## 11.3 Decomposing a philosophy into checks
 
+> **Enforcement boundary (review-incorporated, see [§13.1](13-mvp-and-trust.md)):** philosophies
+> ground *selection, ranking and explanation* — they are **advisory** and **never block** on
+> their own. A philosophy tenet only gates a change once it has been projected into a **certified
+> pattern rule pack** with fixtures and measured precision. The table below is the *target*
+> decomposition; until a row ships fixtures + precision, it stays advisory (LLM rubric only).
+
 A philosophy is made enforceable by projecting it onto the three detector layers — the same
 "strict-core / tolerant-boundary" split as [architecture §2.2](02-architecture.md). This is
 the operational core of the system; the research survey
