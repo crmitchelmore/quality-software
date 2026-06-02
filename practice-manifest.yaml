@@ -1,0 +1,214 @@
+# Practice catalogue manifest — single source of truth for product & UX pattern IDs
+# and the new product/ux/cross-cutting philosophy IDs.
+#
+# Each id appears exactly once with its home discipline + category. Bulk-authoring
+# agents author ONLY to the ids assigned to them, and may cross-reference any id in
+# this file (practice patterns), any id in catalogue-manifest.yaml (software patterns),
+# or any philosophy id (existing 16 software ones + the new ones listed at the bottom).
+# Exemplars already authored are marked done:true.
+
+product_patterns:
+  # ----- product-strategy -----
+  - {id: product-vision-board, title: Product Vision Board, category: product-strategy}
+  - {id: product-strategy-stack, title: Product Strategy Stack, category: product-strategy}
+  - {id: value-proposition-canvas, title: Value Proposition Canvas, category: product-strategy}
+  - {id: business-model-canvas, title: Business Model Canvas, category: product-strategy}
+  - {id: product-principles, title: Product Principles, category: product-strategy}
+  - {id: build-vs-buy-vs-partner, title: Build vs Buy vs Partner, category: product-strategy}
+  - {id: platform-strategy, title: Platform Strategy, category: product-strategy}
+  - {id: moat-and-differentiation, title: Moat & Differentiation Analysis, category: product-strategy}
+  # ----- customer-discovery -----
+  - {id: opportunity-solution-tree, title: Opportunity Solution Tree, category: customer-discovery, done: true}
+  - {id: continuous-interviewing, title: Continuous Customer Interviewing, category: customer-discovery}
+  - {id: jobs-to-be-done-interview, title: Jobs-to-be-Done Interview, category: customer-discovery}
+  - {id: customer-advisory-board, title: Customer Advisory Board, category: customer-discovery}
+  - {id: proto-persona, title: Proto-Persona, category: customer-discovery}
+  - {id: assumption-mapping, title: Assumption Mapping, category: customer-discovery}
+  - {id: the-mom-test, title: The Mom Test Interviewing, category: customer-discovery}
+  # ----- problem-framing -----
+  - {id: problem-statement-framing, title: Problem Statement Framing, category: problem-framing}
+  - {id: five-whys-root-cause, title: Five Whys Root-Cause, category: problem-framing}
+  - {id: jobs-to-be-done-framing, title: Jobs-to-be-Done Framing, category: problem-framing}
+  - {id: hypothesis-statement, title: Hypothesis Statement, category: problem-framing}
+  - {id: how-might-we, title: How Might We Framing, category: problem-framing}
+  # ----- prioritization -----
+  - {id: rice-scoring, title: RICE Scoring, category: prioritization}
+  - {id: value-vs-effort-matrix, title: Value vs Effort Matrix, category: prioritization}
+  - {id: moscow-prioritization, title: MoSCoW Prioritization, category: prioritization}
+  - {id: kano-model, title: Kano Model, category: prioritization}
+  - {id: weighted-shortest-job-first, title: Weighted Shortest Job First, category: prioritization}
+  - {id: cost-of-delay, title: Cost of Delay, category: prioritization}
+  - {id: opportunity-scoring, title: Opportunity Scoring, category: prioritization}
+  # ----- roadmapping -----
+  - {id: now-next-later-roadmap, title: Now-Next-Later Roadmap, category: roadmapping}
+  - {id: outcome-based-roadmap, title: Outcome-Based Roadmap, category: roadmapping}
+  - {id: theme-based-roadmap, title: Theme-Based Roadmap, category: roadmapping}
+  - {id: release-train, title: Release Train, category: roadmapping}
+  # ----- experimentation -----
+  - {id: feature-flag-experimentation, title: Feature-Flag Experimentation, category: experimentation, done: true}
+  - {id: fake-door-test, title: Fake Door Test, category: experimentation}
+  - {id: concierge-mvp, title: Concierge MVP, category: experimentation}
+  - {id: wizard-of-oz-mvp, title: Wizard of Oz MVP, category: experimentation}
+  - {id: painted-door-test, title: Painted Door Test, category: experimentation}
+  - {id: ab-test-design, title: A/B Test Design, category: experimentation}
+  - {id: holdout-group, title: Holdout Group, category: experimentation}
+  # ----- metrics-analytics -----
+  - {id: north-star-metric, title: North Star Metric, category: metrics-analytics}
+  - {id: pirate-metrics-aarrr, title: Pirate Metrics (AARRR), category: metrics-analytics}
+  - {id: heart-framework, title: HEART Framework, category: metrics-analytics}
+  - {id: cohort-analysis, title: Cohort Analysis, category: metrics-analytics}
+  - {id: funnel-analysis, title: Funnel Analysis, category: metrics-analytics}
+  - {id: leading-vs-lagging-indicators, title: Leading vs Lagging Indicators, category: metrics-analytics}
+  - {id: guardrail-metrics, title: Guardrail Metrics, category: metrics-analytics}
+  # ----- growth -----
+  - {id: growth-loops, title: Growth Loops, category: growth}
+  - {id: product-led-growth-motion, title: Product-Led Growth Motion, category: growth}
+  - {id: viral-loop, title: Viral Loop, category: growth}
+  - {id: aha-moment-activation, title: Aha-Moment Activation, category: growth}
+  - {id: referral-program, title: Referral Program, category: growth}
+  # ----- go-to-market -----
+  - {id: go-to-market-launch-tiers, title: Go-to-Market Launch Tiers, category: go-to-market}
+  - {id: beta-program, title: Beta Program, category: go-to-market}
+  - {id: sales-product-feedback-loop, title: Sales-Product Feedback Loop, category: go-to-market}
+  # ----- pricing-packaging -----
+  - {id: value-based-pricing, title: Value-Based Pricing, category: pricing-packaging}
+  - {id: good-better-best-tiering, title: Good-Better-Best Tiering, category: pricing-packaging}
+  - {id: usage-based-pricing, title: Usage-Based Pricing, category: pricing-packaging}
+  - {id: freemium-design, title: Freemium Design, category: pricing-packaging}
+  # ----- stakeholder-alignment -----
+  - {id: working-backwards-prfaq, title: Working-Backwards PR/FAQ, category: stakeholder-alignment}
+  - {id: raci-for-product, title: RACI for Product Decisions, category: stakeholder-alignment}
+  - {id: stakeholder-mapping, title: Stakeholder Mapping, category: stakeholder-alignment}
+  - {id: narrative-memo, title: Narrative Memo (Six-Pager), category: stakeholder-alignment}
+  # ----- product-operations -----
+  - {id: product-operating-model, title: Product Operating Model, category: product-operations}
+  - {id: definition-of-ready-done, title: Definition of Ready & Done, category: product-operations}
+  - {id: dual-track-discovery-delivery, title: Dual-Track Discovery & Delivery, category: product-operations}
+  # ----- lifecycle-retention -----
+  - {id: retention-curve-analysis, title: Retention Curve Analysis, category: lifecycle-retention}
+  - {id: churn-prediction-intervention, title: Churn Prediction & Intervention, category: lifecycle-retention}
+  - {id: resurrection-winback, title: Resurrection & Win-Back, category: lifecycle-retention}
+  - {id: lifecycle-messaging, title: Lifecycle Messaging, category: lifecycle-retention}
+  - {id: sunset-deprecation, title: Feature Sunset & Deprecation, category: lifecycle-retention}
+
+ux_patterns:
+  # ----- user-research -----
+  - {id: usability-testing-session, title: Usability Testing Session, category: user-research}
+  - {id: contextual-inquiry, title: Contextual Inquiry, category: user-research}
+  - {id: diary-study, title: Diary Study, category: user-research}
+  - {id: card-sorting, title: Card Sorting, category: user-research}
+  - {id: tree-testing, title: Tree Testing, category: user-research}
+  - {id: five-second-test, title: Five-Second Test, category: user-research}
+  - {id: first-click-test, title: First-Click Test, category: user-research}
+  # ----- information-architecture -----
+  - {id: faceted-navigation, title: Faceted Navigation, category: information-architecture}
+  - {id: hub-and-spoke-ia, title: Hub-and-Spoke IA, category: information-architecture}
+  - {id: progressive-information-hierarchy, title: Progressive Information Hierarchy, category: information-architecture}
+  - {id: breadcrumb-trail, title: Breadcrumb Trail, category: information-architecture}
+  - {id: mega-menu, title: Mega Menu, category: information-architecture}
+  # ----- interaction-design -----
+  - {id: progressive-disclosure, title: Progressive Disclosure, category: interaction-design, done: true}
+  - {id: inline-editing, title: Inline Editing, category: interaction-design}
+  - {id: drag-and-drop, title: Drag and Drop, category: interaction-design}
+  - {id: undo-redo, title: Undo/Redo, category: interaction-design}
+  - {id: bulk-actions, title: Bulk Actions, category: interaction-design}
+  - {id: command-palette, title: Command Palette, category: interaction-design}
+  - {id: keyboard-shortcuts, title: Keyboard Shortcuts, category: interaction-design}
+  - {id: wizard-stepper, title: Wizard / Stepper, category: interaction-design}
+  # ----- content-design -----
+  - {id: microcopy, title: Microcopy, category: content-design}
+  - {id: error-message-design, title: Error Message Design, category: content-design}
+  - {id: empty-state-content, title: Empty State Content, category: content-design}
+  - {id: plain-language, title: Plain Language, category: content-design}
+  - {id: content-first-design, title: Content-First Design, category: content-design}
+  # ----- visual-interface-design -----
+  - {id: visual-hierarchy, title: Visual Hierarchy, category: visual-interface-design}
+  - {id: grid-system-layout, title: Grid System Layout, category: visual-interface-design}
+  - {id: responsive-layout, title: Responsive Layout, category: visual-interface-design}
+  - {id: gestalt-grouping, title: Gestalt Grouping, category: visual-interface-design}
+  - {id: data-visualization-design, title: Data Visualization Design, category: visual-interface-design}
+  - {id: dark-mode-theming, title: Dark Mode & Theming, category: visual-interface-design}
+  # ----- accessibility-inclusive-design -----
+  - {id: wcag-conformance, title: WCAG Conformance, category: accessibility-inclusive-design}
+  - {id: keyboard-navigation, title: Keyboard Navigation, category: accessibility-inclusive-design}
+  - {id: screen-reader-semantics, title: Screen Reader Semantics, category: accessibility-inclusive-design}
+  - {id: color-contrast, title: Colour Contrast, category: accessibility-inclusive-design}
+  - {id: focus-management, title: Focus Management, category: accessibility-inclusive-design}
+  - {id: reduced-motion, title: Reduced Motion, category: accessibility-inclusive-design}
+  # ----- usability-evaluation -----
+  - {id: heuristic-evaluation, title: Heuristic Evaluation, category: usability-evaluation}
+  - {id: cognitive-walkthrough, title: Cognitive Walkthrough, category: usability-evaluation}
+  - {id: system-usability-scale, title: System Usability Scale (SUS), category: usability-evaluation}
+  - {id: accessibility-audit, title: Accessibility Audit, category: usability-evaluation}
+  # ----- service-design -----
+  - {id: service-blueprint, title: Service Blueprint, category: service-design}
+  - {id: customer-journey-map, title: Customer Journey Map, category: service-design}
+  - {id: omnichannel-continuity, title: Omnichannel Continuity, category: service-design}
+  - {id: frontstage-backstage-alignment, title: Frontstage-Backstage Alignment, category: service-design}
+  # ----- design-systems -----
+  - {id: atomic-design-components, title: Atomic Design Components, category: design-systems}
+  - {id: design-tokens, title: Design Tokens, category: design-systems}
+  - {id: component-variants-states, title: Component Variants & States, category: design-systems}
+  - {id: pattern-library-governance, title: Pattern Library Governance, category: design-systems}
+  # ----- navigation-wayfinding -----
+  - {id: global-navigation, title: Global Navigation, category: navigation-wayfinding}
+  - {id: tab-bar-navigation, title: Tab Bar Navigation, category: navigation-wayfinding}
+  - {id: wayfinding-cues, title: Wayfinding Cues, category: navigation-wayfinding}
+  - {id: search-as-navigation, title: Search as Navigation, category: navigation-wayfinding}
+  - {id: pagination-vs-infinite-scroll, title: Pagination vs Infinite Scroll, category: navigation-wayfinding}
+  # ----- forms-input -----
+  - {id: inline-validation, title: Inline Validation, category: forms-input}
+  - {id: smart-defaults, title: Smart Defaults, category: forms-input}
+  - {id: input-masking, title: Input Masking, category: forms-input}
+  - {id: single-column-form, title: Single-Column Form, category: forms-input}
+  - {id: autosave, title: Autosave, category: forms-input}
+  - {id: multi-step-form, title: Multi-Step Form, category: forms-input}
+  # ----- feedback-status -----
+  - {id: optimistic-ui-feedback, title: Optimistic UI Feedback, category: feedback-status, done: true}
+  - {id: skeleton-loading, title: Skeleton Loading, category: feedback-status}
+  - {id: progress-indicator, title: Progress Indicator, category: feedback-status}
+  - {id: toast-notification, title: Toast Notification, category: feedback-status}
+  - {id: system-status-visibility, title: System Status Visibility, category: feedback-status}
+  - {id: confirmation-and-undo, title: Confirmation & Undo, category: feedback-status}
+  # ----- onboarding-education -----
+  - {id: product-tour, title: Product Tour, category: onboarding-education}
+  - {id: empty-state-onboarding, title: Empty State Onboarding, category: onboarding-education}
+  - {id: progressive-onboarding, title: Progressive Onboarding, category: onboarding-education}
+  - {id: contextual-tooltips, title: Contextual Tooltips, category: onboarding-education}
+  - {id: checklist-onboarding, title: Checklist Onboarding, category: onboarding-education}
+  # ----- trust-safety -----
+  - {id: permission-priming, title: Permission Priming, category: trust-safety}
+  - {id: privacy-by-default-ux, title: Privacy-by-Default UX, category: trust-safety}
+  - {id: consent-management, title: Consent Management, category: trust-safety}
+  - {id: destructive-action-confirmation, title: Destructive Action Confirmation, category: trust-safety}
+  - {id: transparency-disclosure, title: Transparency Disclosure, category: trust-safety}
+
+# New philosophy ids (authored into philosophies/ with a `discipline:` field).
+philosophies:
+  product:
+    - {id: lean-startup, title: The Lean Startup, done: true}
+    - {id: customer-development, title: Customer Development}
+    - {id: jobs-to-be-done, title: Jobs to Be Done}
+    - {id: outcome-over-output, title: Outcome Over Output}
+    - {id: product-led-growth, title: Product-Led Growth}
+    - {id: continuous-discovery, title: Continuous Discovery}
+    - {id: dual-track-agile, title: Dual-Track Agile}
+    - {id: empowered-product-teams, title: Empowered Product Teams}
+    - {id: working-backwards, title: Working Backwards}
+    - {id: north-star-framework, title: The North Star Framework}
+    - {id: hypothesis-driven-development, title: Hypothesis-Driven Development}
+  ux:
+    - {id: design-of-everyday-things, title: The Design of Everyday Things, done: true}
+    - {id: human-centered-design, title: Human-Centred Design}
+    - {id: nielsen-usability-heuristics, title: Nielsen's Usability Heuristics}
+    - {id: inclusive-design, title: Inclusive Design}
+    - {id: universal-design, title: Universal Design}
+    - {id: activity-centered-design, title: Activity-Centred Design}
+    - {id: service-design-thinking, title: Service Design Thinking}
+    - {id: participatory-design, title: Participatory Design}
+    - {id: atomic-design, title: Atomic Design}
+    - {id: calm-technology, title: Calm Technology}
+    - {id: dont-make-me-think, title: Don't Make Me Think}
+    - {id: emotional-design, title: Emotional Design}
+  cross-cutting:
+    - {id: design-thinking, title: Design Thinking}
