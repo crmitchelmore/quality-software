@@ -1,0 +1,135 @@
+id: a-philosophy-of-software-design
+title: A Philosophy of Software Design
+aka:
+  - APoSD
+  - Ousterhout's philosophy
+originators:
+  - John Ousterhout
+origin:
+  type: book
+  title: A Philosophy of Software Design
+  year: 2018
+short_description: >-
+  Treat complexity as the enemy and design deep modules with simple interfaces, so that the
+  cost of understanding and changing a system stays low as it grows.
+description: >-
+  John Ousterhout's philosophy frames software design as a continuous fight against complexity —
+  the accumulation of dependencies and obscurity that makes systems hard to understand and risky
+  to change. Its central prescription is the "deep module": a component whose interface is much
+  simpler than its implementation, so each module hides a large amount of complexity behind a
+  small surface. It argues for designing interfaces first, designing things twice, pulling
+  complexity downward into modules rather than exposing it to callers, defining errors out of
+  existence, and writing comments that capture design intent the code cannot. Crucially, it
+  reframes encapsulation around information hiding: a module's job is to know things its callers
+  should not have to.
+core_tenets:
+  - Complexity is incremental; it accumulates from dependencies and obscurity, so it must be
+    resisted continuously rather than fixed in one big cleanup.
+  - Modules should be deep — a simple interface hiding a substantial implementation — not shallow
+    pass-throughs that add interface cost without hiding complexity.
+  - Design it twice — generating multiple interface designs before committing yields markedly
+    better results than taking the first idea.
+  - Pull complexity downward — it is better for the implementer to suffer complexity than to
+    leak it to every caller through the interface.
+  - Define errors out of existence — design APIs so that exceptional cases simply do not arise,
+    reducing the number of special cases callers must handle.
+  - Comments should capture intent and rationale that the code cannot express; writing them early
+    is itself a design tool that exposes shallow abstractions.
+key_ideas:
+  - name: Deep vs shallow modules
+    explanation: >-
+      Module value is depth = benefit (functionality hidden) minus cost (interface complexity).
+      Maximise depth; a class with many tiny methods can be net-negative.
+  - name: Information leakage
+    explanation: >-
+      A design smell where the same knowledge (e.g. a file format) is spread across modules,
+      coupling them invisibly. Hide each design decision in one place.
+  - name: Tactical vs strategic programming
+    explanation: >-
+      Tactical programming optimises for getting the next feature working; strategic programming
+      invests continuously in a clean design, which pays back as the system grows.
+in_practice: >-
+  Prefer a few deep classes over many shallow ones; resist "classitis". When an interface forces
+  callers to handle many special cases or to understand internals, redesign it. Add design-intent
+  comments to interfaces before implementing. Review for information leakage and temporal
+  decomposition (structure code by knowledge, not by execution order).
+complements:
+  - information-hiding
+  - simple-made-easy
+  - domain-driven-design
+tensions_with:
+  - philosophy: clean-architecture-solid
+    reason: >-
+      APoSD warns that aggressive SOLID/"small classes and methods" advice can create classitis —
+      many shallow modules whose aggregate interface complexity exceeds what they hide.
+  - philosophy: worse-is-better
+    reason: >-
+      APoSD favours strategic investment in clean interfaces, whereas worse-is-better tolerates
+      a simpler, less complete implementation that ships sooner.
+associated_patterns:
+  - pattern: facade
+    reason: >-
+      The archetypal deep module — a small interface that hides a large, complex subsystem,
+      exactly the depth APoSD optimises for.
+  - pattern: hexagonal-architecture
+    reason: >-
+      Ports are narrow interfaces that hide whole categories of infrastructure complexity from
+      the domain, embodying pull-complexity-downward.
+  - pattern: repository
+    reason: >-
+      A deep abstraction: a simple collection-like interface conceals query, mapping and storage
+      complexity, and localises the persistence design decision.
+  - pattern: guard-clause
+    reason: >-
+      Supports defining errors out of existence and reducing special cases the body must handle.
+  - pattern: layered-architecture
+    reason: >-
+      Each layer should present a simpler interface upward than the complexity it manages,
+      a layered expression of module depth.
+at_odds_patterns:
+  - pattern: service-locator
+    reason: >-
+      Hides real dependencies behind a global lookup, increasing obscurity — a form of
+      complexity APoSD warns against.
+successfully_applied:
+  - where: Stanford CS190
+    what: >-
+      The book grew out of and is taught in Ousterhout's software design course, where students
+      iteratively redesign code to deepen modules and remove complexity.
+    evidence_strength: primary-source
+    source:
+      title: "A Philosophy of Software Design (book), and Stanford CS190 course materials"
+      year: 2018
+  - where: Tcl/Tk
+    what: >-
+      Ousterhout's earlier scripting language and toolkit are frequently cited as examples of
+      deep, widely-reused modules with small interfaces.
+    evidence_strength: secondary-source
+    source:
+      title: "A Philosophy of Software Design — author's worked examples and retrospectives"
+      year: 2018
+  - where: RAMCloud
+    what: >-
+      The Stanford low-latency storage system led by Ousterhout is used in the book as a source
+      of design examples and lessons on interface depth.
+    evidence_strength: secondary-source
+    source:
+      title: "A Philosophy of Software Design, case-study chapters"
+      year: 2018
+best_for:
+  - library
+  - backend-service
+  - modular-monolith
+  - microservices
+criticisms:
+  - Several principles (deep modules, comments-as-design) are qualitative and rely on judgement;
+    they are hard to enforce mechanically.
+  - Some advice (e.g. on comments and small-method scepticism) is contested by adherents of
+    Clean Code, who value many small, named methods.
+references:
+  - title: A Philosophy of Software Design
+    author: John Ousterhout
+    year: 2018
+  - title: "A Philosophy of Software Design (2nd edition)"
+    author: John Ousterhout
+    year: 2021

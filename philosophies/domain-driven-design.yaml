@@ -1,0 +1,140 @@
+id: domain-driven-design
+title: Domain-Driven Design
+aka:
+  - DDD
+originators:
+  - Eric Evans
+origin:
+  type: book
+  title: "Domain-Driven Design: Tackling Complexity in the Heart of Software"
+  year: 2003
+short_description: >-
+  Put a rich, shared model of the business domain at the centre of software, aligning code,
+  language and team boundaries so that complexity is tackled where it actually lives.
+description: >-
+  Domain-Driven Design holds that the primary complexity of most business software is in the
+  domain itself, and that the best leverage comes from a deep, continuously refined model shared
+  by engineers and domain experts. That model is expressed in a "ubiquitous language" used
+  identically in conversation, code and tests. DDD provides strategic tools for the large picture
+  — bounded contexts that delimit where a model and language apply, and context maps that describe
+  how contexts relate — and tactical building blocks for expressing the model in code: entities,
+  value objects, aggregates, domain events, repositories and services. Its deepest claim is that
+  software design and organisational/communication design are inseparable: model boundaries and
+  team boundaries should reinforce each other.
+core_tenets:
+  - The model is the design — cultivate a single model that is reflected directly in the code,
+    not a diagram that drifts from it.
+  - Use a ubiquitous language shared by developers and domain experts, consistently in speech,
+    code and tests.
+  - Bound the applicability of any model explicitly with bounded contexts; do not seek one model
+    for the whole enterprise.
+  - Distinguish entities (identity over time) from value objects (defined by their attributes)
+    and keep invariants inside aggregates.
+  - Protect a context from foreign models at its edges with translation, rather than letting
+    other models leak in.
+  - Focus the deepest design effort on the core domain — the part that differentiates the
+    business — not on generic subdomains.
+key_ideas:
+  - name: Bounded context
+    explanation: >-
+      An explicit boundary within which a particular model and language are consistent; the same
+      term may mean different things in different contexts.
+  - name: Aggregate
+    explanation: >-
+      A cluster of objects treated as a single unit for changes, with one root enforcing
+      invariants and controlling access.
+  - name: Anti-corruption layer
+    explanation: >-
+      A translation layer that protects a clean model from the semantics of a legacy or external
+      system it must integrate with.
+in_practice: >-
+  Model with domain experts and name code after the language they use; split a large system into
+  bounded contexts with explicit relationships; keep invariants inside aggregate roots; publish
+  domain events for cross-context communication; insulate from external models with
+  anti-corruption layers. Often realised on hexagonal or clean architectures.
+complements:
+  - conways-law-team-topologies
+  - clean-architecture-solid
+  - a-philosophy-of-software-design
+tensions_with:
+  - philosophy: unix-philosophy
+    reason: >-
+      DDD invests in rich, domain-specific models and language; Unix prefers small, generic,
+      context-free tools and uniform text interfaces.
+  - philosophy: worse-is-better
+    reason: >-
+      DDD's deep modelling of the core domain is costly up front, which the worse-is-better
+      preference for simpler, faster-to-ship designs resists.
+associated_patterns:
+  - pattern: bounded-context
+    reason: >-
+      The central strategic pattern delimiting where a model and ubiquitous language hold.
+  - pattern: ubiquitous-language
+    reason: >-
+      The practice that keeps model, conversation and code aligned — DDD's defining discipline.
+  - pattern: aggregate
+    reason: >-
+      The tactical unit of consistency that keeps domain invariants enforced in one place.
+  - pattern: anti-corruption-layer
+    reason: >-
+      Protects a context's model from external/legacy semantics, a core integration tactic.
+  - pattern: value-object
+    reason: >-
+      Models attribute-defined concepts immutably, sharpening the ubiquitous language.
+  - pattern: domain-event
+    reason: >-
+      Expresses meaningful occurrences in the domain and decouples bounded contexts.
+  - pattern: repository
+    reason: >-
+      Gives aggregates a collection-like persistence interface without leaking storage concerns
+      into the model.
+at_odds_patterns:
+  - pattern: active-record
+    reason: >-
+      Coupling domain objects to table rows tends to push persistence concerns into the model,
+      working against a persistence-ignorant domain.
+successfully_applied:
+  - where: Financial and insurance systems
+    what: >-
+      Evans developed DDD on complex trading and logistics domains; the book's case studies draw
+      on shipping/cargo and financial modelling.
+    evidence_strength: primary-source
+    source:
+      title: "Domain-Driven Design: Tackling Complexity in the Heart of Software"
+      year: 2003
+  - where: Microservices practice
+    what: >-
+      Bounded contexts are widely used to find service boundaries; major microservices guidance
+      adopts DDD context decomposition.
+    evidence_strength: secondary-source
+    source:
+      title: "Building Microservices, Sam Newman"
+      year: 2015
+  - where: ".NET reference applications (eShopOnContainers / eShop)"
+    what: >-
+      Microsoft's reference microservices application is structured around DDD bounded contexts,
+      aggregates and domain events.
+    evidence_strength: secondary-source
+    source:
+      title: ".NET microservices: Architecture for Containerized .NET Applications"
+      url: "https://learn.microsoft.com/en-us/dotnet/architecture/microservices/"
+best_for:
+  - microservices
+  - modular-monolith
+  - backend-service
+  - distributed-system
+criticisms:
+  - The full tactical/strategic apparatus is heavy for simple or CRUD-dominated domains where a
+    thin model suffices.
+  - Success depends on sustained access to domain experts and disciplined language, which many
+    teams cannot maintain.
+references:
+  - title: "Domain-Driven Design: Tackling Complexity in the Heart of Software"
+    author: Eric Evans
+    year: 2003
+  - title: Implementing Domain-Driven Design
+    author: Vaughn Vernon
+    year: 2013
+  - title: "Domain-Driven Design Reference"
+    author: Eric Evans
+    year: 2015

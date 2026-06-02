@@ -6,8 +6,10 @@
   "description": "Tooling for the software-engineering pattern catalogue: schema validation, cross-reference checking, and Markdown doc generation.",
   "scripts": {
     "validate": "tsx src/validate.ts",
+    "validate:phil": "tsx src/validate-philosophies.ts",
     "docs": "tsx src/generate-docs.ts",
-    "build": "npm run validate && npm run docs",
+    "docs:phil": "tsx src/generate-philosophy-docs.ts",
+    "build": "npm run validate && npm run validate:phil && npm run docs && npm run docs:phil",
     "stats": "tsx src/stats.ts"
   },
   "dependencies": {

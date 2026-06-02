@@ -1,0 +1,137 @@
+id: unix-philosophy
+title: The Unix Philosophy
+aka:
+  - Do one thing well
+  - McIlroy's tenets
+originators:
+  - Doug McIlroy
+  - Ken Thompson
+  - Dennis Ritchie
+  - Rob Pike
+origin:
+  type: tradition
+  title: The Bell System Technical Journal (Unix issue) and The Art of Unix Programming
+  year: 1978
+short_description: >-
+  Build small programs that each do one thing well and compose them through uniform text
+  interfaces, favouring simplicity, composability and clarity over monolithic features.
+description: >-
+  The Unix philosophy emerged from Bell Labs as a set of pragmatic design maxims for building
+  software out of small, sharp tools. McIlroy's summary — "write programs that do one thing and
+  do it well; write programs to work together; write programs to handle text streams, because
+  that is a universal interface" — captures its core. Programs are designed as composable filters
+  connected by pipes, so capability comes from combination rather than from monolithic feature
+  sets. The tradition prizes simplicity, transparency (favour readable text over binary),
+  building prototypes early, and using software leverage and automation rather than bespoke
+  effort. Eric Raymond later codified the broader rule-set (modularity, composition, separation,
+  least surprise, silence, repair, economy) in The Art of Unix Programming.
+core_tenets:
+  - Make each program do one thing well; if it grows, build a fresh tool rather than complicate
+    the old one.
+  - Expect the output of every program to become the input to another as yet unknown program —
+    design for composition.
+  - Prefer text streams as the universal interface, because they are inspectable and combine
+    with every other tool.
+  - Build a prototype as soon as possible and iterate; throw away clumsy parts without
+    hesitation.
+  - Use tools and automation to lighten programming, even if you must detour to build the tools.
+  - Rule of silence — programs should say nothing they don't have to, so they compose cleanly.
+key_ideas:
+  - name: Pipes and filters
+    explanation: >-
+      The pipe operator turns independent programs into a processing pipeline, the canonical
+      mechanism of Unix composition.
+  - name: Mechanism, not policy
+    explanation: >-
+      Tools should provide mechanism and leave policy to the caller, keeping them reusable across
+      contexts.
+  - name: Text as the narrow waist
+    explanation: >-
+      A single universal interface (lines of text) lets an open-ended set of tools interoperate
+      without prior agreement.
+in_practice: >-
+  Prefer composing existing commands over writing a new monolith; design CLIs that read stdin and
+  write stdout so they pipe; emit machine-friendly text; keep flags orthogonal; let the shell and
+  pipelines provide the glue. The same instincts shape good microservice and data-pipeline design.
+complements:
+  - worse-is-better
+  - simple-made-easy
+  - information-hiding
+tensions_with:
+  - philosophy: domain-driven-design
+    reason: >-
+      Unix favours generic, context-free text tools; DDD favours rich, domain-specific models and
+      a ubiquitous language tied to one bounded context.
+  - philosophy: design-by-contract
+    reason: >-
+      Text-stream composition relies on tolerant parsing and convention rather than the precise,
+      checked interface contracts DbC prescribes.
+associated_patterns:
+  - pattern: pipes-and-filters
+    reason: >-
+      The direct architectural embodiment of Unix composition — independent stages connected by a
+      uniform stream interface.
+  - pattern: middleware-pipeline
+    reason: >-
+      Applies the same compose-small-stages idea inside a process, each handler doing one thing.
+  - pattern: strategy
+    reason: >-
+      Mechanism-not-policy: a tool exposes a slot for pluggable behaviour rather than hard-coding
+      one policy.
+  - pattern: map-filter-reduce
+    reason: >-
+      Stream transformation composed from small, single-purpose operations mirrors filter
+      pipelines.
+  - pattern: microservices
+    reason: >-
+      "Do one thing well" and compose over clear interfaces is the small-services rationale,
+      scaled to the network.
+at_odds_patterns:
+  - pattern: monolith
+    reason: >-
+      A single large program bundling many responsibilities is the opposite of small, composable
+      tools.
+successfully_applied:
+  - where: Unix / Linux userland
+    what: >-
+      The coreutils and classic toolset (grep, sort, awk, sed, pipes) are the original and
+      enduring demonstration of composable single-purpose tools.
+    evidence_strength: primary-source
+    source:
+      title: "The Bell System Technical Journal, Unix Time-Sharing System issue"
+      year: 1978
+  - where: Git
+    what: >-
+      Git's plumbing-vs-porcelain split exposes small composable commands that scripts combine,
+      a deliberately Unix-style design.
+    evidence_strength: secondary-source
+    source:
+      title: "Pro Git — plumbing and porcelain"
+      url: "https://git-scm.com/book/en/v2/Git-Internals-Plumbing-and-Porcelain"
+  - where: Go toolchain and standard library
+    what: >-
+      Rob Pike (a Unix originator) carried the philosophy into Go's small orthogonal tools and
+      io.Reader/io.Writer composition.
+    evidence_strength: secondary-source
+    source:
+      title: "Rob Pike, Notes on Programming and Go design talks"
+best_for:
+  - cli-tool
+  - data-pipeline
+  - backend-service
+  - microservices
+criticisms:
+  - Text-stream interfaces push parsing and error handling onto every consumer and can lose type
+    safety and structure.
+  - Doing only one thing well can fragment a problem into many tools whose orchestration becomes
+    its own complexity.
+references:
+  - title: "The Unix Programming Environment"
+    author: Brian Kernighan, Rob Pike
+    year: 1984
+  - title: The Art of Unix Programming
+    author: Eric S. Raymond
+    year: 2003
+  - title: "Program Design in the UNIX Environment"
+    author: Rob Pike, Brian Kernighan
+    year: 1984
