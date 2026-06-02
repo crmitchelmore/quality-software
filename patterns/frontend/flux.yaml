@@ -1,0 +1,86 @@
+id: flux
+title: Flux
+scale: frontend
+category: frontend
+maturity: established
+short_description: >-
+  Organise UI state changes as a one-way flow from actions through a dispatcher into stores, with views observing store updates.
+description: >-
+  Flux is an architectural state-management pattern introduced to make complex client-side interactions predictable. User or network events become actions, actions are dispatched centrally, stores update their state, and views re-render from those stores. The important property is unidirectional flow: state changes have a single route through the system rather than arbitrary two-way mutation between views and models.
+problem: >-
+  Rich frontends with many dependent views can develop cyclic updates where one component mutates shared state and another reacts unpredictably.
+context: >-
+  Use when client state is shared by multiple views, updates must be auditable, and teams need a simple mental model for how UI changes propagate.
+consequences:
+  - Makes update paths explicit and easier to debug.
+  - Stores become the authoritative source for shared UI state.
+  - Boilerplate can be high compared with local component state.
+  - A single dispatcher is less common today, but the one-way flow remains influential.
+synergies:
+  - pattern: redux-pattern
+    reason: Redux is a disciplined Flux derivative with reducers, immutable updates and strong tooling.
+  - pattern: observer
+    reason: Views observe store changes and re-render when the store publishes a new snapshot.
+  - pattern: command
+    reason: Actions are command-like records of intended state changes.
+  - pattern: component-based-ui
+    reason: Components render snapshots and send actions rather than mutating peers directly.
+alternatives:
+  - model-view-viewmodel
+  - model-view-controller
+  - state-machine-ui
+languages:
+  - typescript
+  - javascript
+frameworks:
+  - react
+  - vue
+  - angular
+  - redux
+project_types:
+  - web-frontend
+  - mobile-app
+tags:
+  - unidirectional-data-flow
+  - shared-state
+  - stores
+examples:
+  - language: typescript
+    title: Replacing peer mutation with actions and a store
+    negative: |
+      function TodoItem({ todo }: { todo: Todo }) {
+        return <input checked={todo.done} onChange={() => {
+          todo.done = !todo.done;
+          window.dispatchEvent(new Event("todos-changed"));
+        }} />;
+      }
+    positive: |
+      type Action = { type: "todo/toggled"; id: string };
+
+      const todoStore = createTodoStore();
+      const dispatcher = createDispatcher<Action>();
+      dispatcher.register(action => {
+        if (action.type === "todo/toggled") todoStore.toggle(action.id);
+      });
+
+      function TodoItem({ todo }: { todo: Todo }) {
+        return <input checked={todo.done} onChange={() => dispatcher.dispatch({ type: "todo/toggled", id: todo.id })} />;
+      }
+    explanation: >-
+      The positive version routes changes through a named action and store, giving all views a consistent update path instead of mutating shared objects directly.
+ratings:
+  small:
+    score: 2
+    notes: >-
+      Usually too much structure for small apps with mostly local state.
+  medium:
+    score: 3
+    notes: >-
+      Helpful when several features share state, though Redux or framework stores are usually more practical than classic Flux.
+  large:
+    score: 4
+    notes: >-
+      The unidirectional model remains valuable for large clients, especially where auditability and debugging matter.
+references:
+  - title: Flux Application Architecture
+    url: https://facebookarchive.github.io/flux/docs/in-depth-overview

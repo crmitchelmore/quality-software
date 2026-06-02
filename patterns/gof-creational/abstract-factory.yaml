@@ -1,0 +1,107 @@
+id: abstract-factory
+title: Abstract Factory
+scale: design
+category: gof-creational
+maturity: time-tested
+short_description: >-
+  Create families of related objects through a common factory interface, ensuring clients receive compatible products without naming concrete classes.
+description: >-
+  Abstract Factory groups several creation methods behind an interface representing a product family. Each concrete factory builds a coherent set of related products, such as widgets for one platform, clients for one cloud provider, or test doubles for one environment. Clients depend on product abstractions and a factory abstraction, which keeps combinations valid and makes a whole family swappable at configuration time.
+problem: >-
+  Code creates related concrete objects independently, making invalid product combinations possible and spreading platform/provider decisions across the application.
+context: >-
+  Use when multiple products must vary together and clients need a consistent family rather than one isolated object.
+consequences:
+  - Keeps related products compatible by construction.
+  - Swaps whole provider/platform families through one dependency.
+  - Adding a new product kind changes every concrete factory, so the product family interface must be stable.
+  - Can be too heavy when only one product varies; Factory Method or Strategy may be simpler.
+synergies:
+  - pattern: factory-method
+    reason: Each abstract-factory operation is often implemented as a factory method for one product in the family.
+  - pattern: dependency-injection
+    reason: DI selects the concrete factory for the current environment at the composition root.
+  - pattern: bridge
+    reason: Bridge can use an abstract factory to supply compatible implementors for a chosen platform.
+  - pattern: adapter
+    reason: Concrete factories commonly return adapters that normalise provider-specific APIs behind family interfaces.
+alternatives:
+  - factory-method
+  - builder
+  - strategy
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - typescript
+  - python
+frameworks:
+  - none
+  - spring-boot
+  - dotnet
+  - nestjs
+project_types:
+  - library
+  - sdk
+  - backend-service
+  - desktop-app
+tags:
+  - creation
+  - product-family
+  - compatibility
+examples:
+  - language: typescript
+    title: Cloud storage family
+    negative: |
+      class BackupJob {
+        async run(cloud: "aws" | "azure", bytes: Buffer): Promise<void> {
+          const bucket = cloud === "aws" ? new S3Bucket() : new AzureBlobContainer();
+          const signer = cloud === "aws" ? new AzureSasSigner() : new AwsPresignedUrlSigner();
+
+          await bucket.put("backup.tar", bytes);
+          console.log(await signer.urlFor("backup.tar"));
+        }
+      }
+    positive: |
+      interface ObjectStore {
+        put(name: string, bytes: Buffer): Promise<void>;
+      }
+      interface DownloadSigner {
+        urlFor(name: string): Promise<string>;
+      }
+      interface CloudStorageFactory {
+        store(): ObjectStore;
+        signer(): DownloadSigner;
+      }
+
+      class AwsStorageFactory implements CloudStorageFactory {
+        store(): ObjectStore { return new S3Bucket(); }
+        signer(): DownloadSigner { return new AwsPresignedUrlSigner(); }
+      }
+
+      class BackupJob {
+        constructor(private readonly cloud: CloudStorageFactory) {}
+        async run(bytes: Buffer): Promise<void> {
+          await this.cloud.store().put("backup.tar", bytes);
+          console.log(await this.cloud.signer().urlFor("backup.tar"));
+        }
+      }
+    explanation: >-
+      The negative version can accidentally mix Azure storage with AWS signing. The positive version selects one coherent cloud family and exposes only compatible abstractions to BackupJob.
+ratings:
+  small:
+    score: 2
+    notes: >-
+      Rarely worth the ceremony unless a small library genuinely supports multiple platforms.
+  medium:
+    score: 4
+    notes: >-
+      Good for provider families, test/runtime environment swaps, and SDK abstractions with stable product sets.
+  large:
+    score: 4
+    notes: >-
+      Strong when many teams consume the same provider family contract, but costly if the family changes frequently.
+references:
+  - title: "Design Patterns: Elements of Reusable Object-Oriented Software"
+    author: Gamma, Helm, Johnson, Vlissides
+    year: 1994

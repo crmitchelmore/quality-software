@@ -1,0 +1,99 @@
+id: model-view-viewmodel
+title: Model-View-ViewModel (MVVM)
+aka:
+  - MVVM
+scale: frontend
+category: frontend
+maturity: time-tested
+short_description: >-
+  Bind a view to a view model that exposes display-ready state and commands while shielding the view from domain model and service details.
+description: >-
+  MVVM introduces a view model between the UI and the domain model. The view model adapts domain state into observable, display-ready properties and exposes commands for user intent. The view binds to those properties rather than querying services or mutating models directly. It is strongest in data-binding frameworks and rich forms where validation, derived fields and enablement rules need a testable home outside the template.
+problem: >-
+  Views become packed with formatting, validation and service calls, while domain models are distorted to carry screen-specific state.
+context: >-
+  Use in Angular, Vue, desktop-inspired web apps, mobile clients and complex forms where binding a stable view model to a view reduces template logic.
+consequences:
+  - Keeps templates declarative and domain models free of UI-only state.
+  - View models are easy to test without a browser.
+  - Two-way binding can obscure update origins if not constrained.
+  - Additional mapping is unnecessary for simple read-only components.
+synergies:
+  - pattern: observer
+    reason: View models typically notify bound views when display state changes.
+  - pattern: model-view-controller
+    reason: MVVM solves a similar separation problem but moves presentation state into a bindable model rather than a controller.
+  - pattern: command
+    reason: View-model commands represent user intent without exposing services to the view.
+  - pattern: container-presentational
+    reason: A container can build the view model consumed by a presentation component.
+alternatives:
+  - model-view-presenter
+  - model-view-controller
+  - redux-pattern
+languages:
+  - typescript
+  - javascript
+  - csharp
+  - swift
+frameworks:
+  - angular
+  - vue
+  - react
+  - rxjs
+project_types:
+  - web-frontend
+  - mobile-app
+  - desktop-app
+tags:
+  - view-model
+  - data-binding
+  - forms
+examples:
+  - language: typescript
+    title: Moving form rules into a view model
+    negative: |
+      @Component({ template: `
+        <input [value]="user.firstName" (input)="user.firstName = $any($event.target).value" />
+        <button [disabled]="!user.firstName || saving" (click)="save()">Save</button>
+      ` })
+      export class ProfileComponent {
+        user!: User;
+        saving = false;
+        constructor(private readonly api: ProfileApi) {}
+        save() { this.api.save(this.user); }
+      }
+    positive: |
+      class ProfileViewModel {
+        firstName = new BehaviorSubject("");
+        saving = new BehaviorSubject(false);
+        canSave = combineLatest([this.firstName, this.saving]).pipe(
+          map(([name, saving]) => name.trim().length > 0 && !saving),
+        );
+
+        constructor(private readonly api: ProfileApi) {}
+        async save() {
+          this.saving.next(true);
+          try { await this.api.save({ firstName: this.firstName.value.trim() }); }
+          finally { this.saving.next(false); }
+        }
+      }
+    explanation: >-
+      The view model owns validation, command enablement and service interaction, so the template binds to display-ready state instead of embedding business rules.
+ratings:
+  small:
+    score: 3
+    notes: >-
+      Useful for complex forms, but extra mapping is unnecessary for simple components.
+  medium:
+    score: 4
+    notes: >-
+      Strong fit for data-heavy frontends where view state deserves explicit tests.
+  large:
+    score: 4
+    notes: >-
+      Scales well with disciplined binding and view-model ownership; uncontrolled two-way binding can become difficult to trace.
+references:
+  - title: Introduction to Model/View/ViewModel pattern for building WPF apps
+    author: John Gossman
+    year: 2005

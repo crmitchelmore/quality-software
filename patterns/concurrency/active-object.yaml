@@ -1,0 +1,118 @@
+id: active-object
+title: Active Object
+aka:
+  - Serialized Method Invocation
+scale: concurrency
+category: concurrency
+maturity: time-tested
+short_description: >-
+  Give an object its own execution context and request queue so callers invoke methods asynchronously while the object's state is mutated serially.
+description: >-
+  Active Object combines encapsulated state, a request queue, a scheduler, and a worker thread or event loop. Public methods do not mutate state directly; they package method calls as commands, enqueue them, and often return Futures for results. The active object's private thread executes requests one at a time, preserving invariants without exposing locks to callers. It is a good fit for stateful components with slow operations or thread-affinity constraints, but it adds lifecycle and queue-management responsibilities and can become a bottleneck if all operations are forced through one serial lane.
+problem: >-
+  Multiple callers need to interact with a stateful object concurrently, but direct locking scatters synchronisation through clients or allows races in the object's invariants.
+context: >-
+  Use for stateful services, device/session controllers, GUI models, or actors-in-miniature where serialising access behind an asynchronous API is simpler than exposing locks.
+consequences:
+  - Object invariants are protected because only the worker touches private mutable state.
+  - Callers are decoupled from slow work and receive explicit futures for results.
+  - Queue growth, shutdown, ordering, and error propagation become part of the object's contract.
+  - A single active object can bottleneck; shard or partition when independent state exists.
+synergies:
+  - pattern: future-promise
+    reason: Asynchronous method calls usually return Futures completed by the active object's worker.
+  - pattern: command
+    reason: Each enqueued method request is naturally represented as a Command.
+  - pattern: actor-model
+    reason: Active Object is a local object-oriented cousin of an actor with a mailbox and serial state.
+  - pattern: monitor-object
+    reason: Monitor Object is a synchronous alternative when callers should block rather than enqueue.
+alternatives:
+  - actor-model
+  - monitor-object
+  - thread-pool
+conflicts_with:
+  - read-write-lock
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - cpp
+  - python
+  - go
+frameworks:
+  - none
+  - akka
+  - dotnet
+project_types:
+  - desktop-app
+  - backend-service
+  - realtime-system
+  - embedded
+tags:
+  - mailbox
+  - serialisation
+  - asynchronous-method
+examples:
+  - language: java
+    title: Serialising account mutations
+    negative: |
+      class Account {
+        private int balance;
+
+        void deposit(int amount) { balance += amount; }
+        void withdraw(int amount) {
+          if (balance < amount) throw new IllegalStateException("insufficient");
+          balance -= amount;              // races with other deposits/withdrawals
+        }
+        int balance() { return balance; }
+      }
+    positive: |
+      import java.util.concurrent.*;
+      import java.util.function.Supplier;
+
+      class ActiveAccount implements AutoCloseable {
+        private int balance;
+        private final ExecutorService lane = Executors.newSingleThreadExecutor();
+
+        CompletableFuture<Void> deposit(int amount) {
+          return call(() -> { balance += amount; return null; });
+        }
+
+        CompletableFuture<Void> withdraw(int amount) {
+          return call(() -> {
+            if (balance < amount) throw new IllegalStateException("insufficient");
+            balance -= amount;
+            return null;
+          });
+        }
+
+        CompletableFuture<Integer> balance() {
+          return call(() -> balance);
+        }
+
+        private <T> CompletableFuture<T> call(Supplier<T> action) {
+          return CompletableFuture.supplyAsync(action, lane);
+        }
+
+        public void close() { lane.shutdown(); }
+      }
+    explanation: >-
+      The positive version ensures every balance read and write happens on the same serial executor. Callers compose futures instead of taking locks or observing torn invariants.
+ratings:
+  small:
+    score: 2
+    notes: >-
+      Often too much machinery for small code unless there is clear state affinity or slow operations that must not block callers.
+  medium:
+    score: 4
+    notes: >-
+      Good for stateful components with complex invariants; the asynchronous API keeps callers honest about latency.
+  large:
+    score: 3
+    notes: >-
+      Useful as a building block, but large systems usually need actor supervision, partitioning, and observability around mailboxes.
+references:
+  - title: Pattern-Oriented Software Architecture Volume 2
+    author: Schmidt, Stal, Rohnert, Buschmann
+    year: 2000

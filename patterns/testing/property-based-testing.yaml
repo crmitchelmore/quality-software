@@ -1,0 +1,91 @@
+id: property-based-testing
+title: Property-Based Testing
+aka:
+  - Generative testing
+  - QuickCheck-style testing
+scale: implementation
+category: testing
+maturity: established
+short_description: >-
+  Generate many inputs and assert general properties that must always hold, revealing edge cases example-based tests miss.
+description: >-
+  Property-Based Testing describes invariants rather than individual examples: sorting preserves length and order, serialise/parse round-trips, debits never create money, encoders never emit unsafe output. A generator produces many inputs, and the framework shrinks failures to a minimal counterexample. The pattern is strongest for pure, deterministic logic with clear algebraic or domain invariants; it is weaker for workflow-heavy code with costly setup.
+problem: >-
+  Example tests cover the cases engineers remembered, leaving boundary conditions and surprising combinations untested.
+context: >-
+  Use for parsers, validators, pricing rules, transformations, state machines, and security-sensitive encoders where invariants are known.
+consequences:
+  - >-
+    Finds edge cases and minimal counterexamples beyond hand-written examples.
+  - >-
+    Encourages clearer invariants and more deterministic design.
+  - >-
+    Generators and properties require skill; poor properties only restate the implementation.
+synergies:
+  - pattern: pure-function
+    reason: >-
+      Pure functions are ideal because generated inputs produce repeatable results without fixture noise.
+  - pattern: input-validation
+    reason: >-
+      Generated invalid inputs pressure-test allow-list validators and boundary handling.
+  - pattern: arrange-act-assert
+    reason: >-
+      Each generated case still benefits from clear arrange, act, and property assertion structure.
+alternatives:
+  - golden-master
+  - arrange-act-assert
+languages:
+  - language-agnostic
+  - javascript
+  - typescript
+  - python
+  - java
+  - haskell
+  - scala
+frameworks:
+  - none
+  - nodejs
+  - spring-boot
+  - fastapi
+project_types:
+  - library
+  - web-api
+  - backend-service
+  - data-pipeline
+  - safety-critical
+tags:
+  - generative-testing
+  - invariants
+  - edge-cases
+examples:
+  - language: python
+    title: Pytest round-trip property
+    negative: |-
+      def test_slug_examples():
+          assert slugify("Hello World") == "hello-world"
+          assert slugify("  A+B  ") == "a-b"
+    positive: |-
+      from hypothesis import given, strategies as st
+      
+      @given(st.text())
+      def test_slug_is_safe_and_idempotent(value):
+          slug = slugify(value)
+      
+          assert slug == slugify(slug)
+          assert all(ch.islower() or ch.isdigit() or ch == "-" for ch in slug)
+          assert "--" not in slug
+    explanation: >-
+      The positive test checks durable properties across many generated strings and shrinks failures to a minimal counterexample, rather than relying on two remembered examples.
+ratings:
+  small:
+    score: 3
+    notes: >-
+      Situational but powerful for small libraries with pure logic.
+  medium:
+    score: 4
+    notes: >-
+      Good fit for validators, parsers, and business rules once teams learn generator design.
+  large:
+    score: 5
+    notes: >-
+      Excellent for large critical systems where rare combinations and boundary cases are costly.

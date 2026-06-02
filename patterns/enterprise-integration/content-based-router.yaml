@@ -1,0 +1,94 @@
+id: content-based-router
+title: Content-Based Router
+scale: integration
+category: enterprise-integration
+maturity: time-tested
+short_description: >-
+  Route each message to an output channel by evaluating fields in the message content or headers against explicit business predicates.
+description: >-
+  A Content-Based Router is a Message Router whose decisions come from message data rather than static channel topology. It can route by order type, tenant, jurisdiction, risk score, schema version, or capability flags. The pattern is powerful because producers send a single message and the integration layer selects the correct path, but it also puts pressure on message contracts: routing predicates must use stable, well-defined fields. When those fields vary across systems, introduce a Message Translator or Canonical Data Model before routing.
+problem: >-
+  Different consumers need messages that satisfy different business conditions, but asking every producer to know those conditions duplicates routing rules and causes inconsistent delivery.
+context: >-
+  Use when integration flows branch on message attributes and those attributes are available reliably at routing time, ideally after validation and normalisation.
+consequences:
+  - Keeps business routing policy central and testable.
+  - Reduces producer coupling to downstream consumer eligibility rules.
+  - Requires stable payload/header fields; schema drift can silently misroute messages.
+  - Complex predicates can hide business process decisions that belong in a Process Manager.
+synergies:
+  - pattern: message-router
+    reason: Content-Based Router specialises Message Router with explicit predicates over message fields.
+  - pattern: canonical-data-model
+    reason: Canonical fields make route predicates stable across heterogeneous producers.
+  - pattern: message-translator
+    reason: Translators normalise source-specific payloads before the router evaluates predicates.
+  - pattern: message-filter
+    reason: Filters can reject messages that match no useful path before they reach expensive consumers.
+alternatives:
+  - routing-slip
+  - process-manager
+  - choreography
+conflicts_with:
+  - transaction-script
+languages:
+  - language-agnostic
+  - java
+  - typescript
+frameworks:
+  - spring-boot
+  - kafka
+  - rabbitmq
+project_types:
+  - microservices
+  - distributed-system
+  - backend-service
+  - etl
+tags:
+  - eip
+  - routing
+  - predicates
+  - messaging
+diagram: |-
+  flowchart LR
+    Orders[(orders.normalised)] --> CBR{country and risk}
+    CBR -->|EU and low risk| Eu[(orders.eu.auto)]
+    CBR -->|high risk| Review[(orders.risk-review)]
+    CBR -->|other| Global[(orders.global)]
+examples:
+  - language: java
+    title: Routing by stable canonical fields
+    negative: |
+      void publish(SourceOrder order) {
+        String destination = order.getPayload().contains("GDPR")
+          ? "orders.eu.auto"
+          : "orders.global";
+        kafka.send(destination, order);
+      }
+    positive: |
+      from("kafka:orders.normalised")
+        .routeId("jurisdiction-router")
+        .choice()
+          .when(simple("${body.country} in 'DE,FR,ES' && ${body.riskScore} < 50"))
+            .to("kafka:orders.eu.auto")
+          .when(simple("${body.riskScore} >= 50"))
+            .to("kafka:orders.risk-review")
+          .otherwise()
+            .to("kafka:orders.global");
+    explanation: >-
+      The positive route uses explicit canonical fields and named predicates. It avoids brittle text inspection and keeps changing routing policy in one integration component.
+ratings:
+  small:
+    score: 2
+    notes: Often overkill when a small app has one path or can use ordinary in-process branching.
+  medium:
+    score: 4
+    notes: Strong fit when several message categories require different processing and contracts are stable.
+  large:
+    score: 5
+    notes: High value in large integration estates, but predicate governance and schema evolution are mandatory.
+references:
+  - title: Enterprise Integration Patterns
+    author: Gregor Hohpe and Bobby Woolf
+    year: 2003
+    url: https://www.enterpriseintegrationpatterns.com/patterns/messaging/ContentBasedRouter.html

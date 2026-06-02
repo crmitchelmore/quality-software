@@ -1,0 +1,90 @@
+id: event-driven-consumer
+title: Event-Driven Consumer
+scale: integration
+category: enterprise-integration
+maturity: time-tested
+aka:
+  - Message-Driven Consumer
+short_description: >-
+  Register a consumer that is invoked when messages arrive, reducing latency and letting the messaging infrastructure drive delivery.
+description: >-
+  An Event-Driven Consumer subscribes to a channel and reacts as messages arrive instead of repeatedly polling for work. The broker, framework or runtime calls the handler, often with acknowledgement, retry and concurrency controls. This improves responsiveness and resource efficiency for continuous event streams, but shifts more responsibility to the delivery infrastructure: handlers must be fast, idempotent, observable and prepared for concurrent execution. It is the default shape for broker-backed microservices, webhooks and event-driven architecture.
+problem: >-
+  Polling introduces latency and empty work when messages arrive unpredictably or require near-real-time reaction.
+context: >-
+  Use for asynchronous events, commands or notifications delivered by Kafka, RabbitMQ, NATS, webhooks or serverless event sources where the channel can wake the consumer.
+consequences:
+  - Low latency and efficient resource use because work starts when messages arrive.
+  - Scales naturally with broker partitions, consumer groups or concurrent subscribers.
+  - Handler failures can cause redelivery storms unless retries, dead-lettering and idempotency are deliberate.
+  - Push-style delivery can overwhelm downstream services without concurrency limits and backpressure.
+synergies:
+  - pattern: publish-subscribe
+    reason: Subscribers are often event-driven consumers reacting independently to the same published event.
+  - pattern: idempotent-receiver
+    reason: At-least-once event delivery means the handler must tolerate duplicate messages.
+  - pattern: dead-letter-channel
+    reason: Poison messages need somewhere observable to go after retries are exhausted.
+  - pattern: event-driven-architecture
+    reason: Event-driven systems rely on handlers that react to published facts quickly and independently.
+alternatives:
+  - polling-consumer
+  - webhook
+conflicts_with:
+  - polling-consumer
+languages:
+  - language-agnostic
+  - java
+  - typescript
+  - csharp
+frameworks:
+  - kafka
+  - rabbitmq
+  - nats
+  - spring-boot
+project_types:
+  - microservices
+  - backend-service
+  - distributed-system
+  - realtime-system
+tags:
+  - messaging
+  - event-driven
+  - push
+examples:
+  - language: typescript
+    title: Handling Kafka events with explicit acknowledgement semantics
+    negative: |
+      consumer.on("message", async (message) => {
+        // Fire-and-forget side effects; offset is auto-committed even if this fails.
+        chargeCard(JSON.parse(message.value.toString()));
+      });
+    positive: |
+      await consumer.run({
+        autoCommit: false,
+        eachMessage: async ({ topic, partition, message }) => {
+          const event = JSON.parse(message.value!.toString());
+          await handlePaymentAuthorised(event);
+          await consumer.commitOffsets([{ 
+            topic,
+            partition,
+            offset: (Number(message.offset) + 1).toString()
+          }]);
+        }
+      });
+    explanation: >-
+      The positive version treats the handler as the delivery boundary: it awaits the side effect and commits the offset only after successful processing, avoiding silent loss.
+ratings:
+  small:
+    score: 3
+    notes: Useful for small event integrations but can add broker/runtime complexity.
+  medium:
+    score: 5
+    notes: Excellent for responsive services consuming brokered events or webhooks.
+  large:
+    score: 5
+    notes: Essential for high-throughput event-driven architectures, with strong operational controls.
+references:
+  - title: Enterprise Integration Patterns
+    author: Gregor Hohpe and Bobby Woolf
+    year: 2003

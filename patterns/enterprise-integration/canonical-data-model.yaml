@@ -1,0 +1,112 @@
+id: canonical-data-model
+title: Canonical Data Model
+scale: integration
+category: enterprise-integration
+maturity: time-tested
+aka:
+  - Canonical Message Model
+  - Enterprise Canonical Model
+short_description: >-
+  Define a stable enterprise message shape so integrations translate once at the boundary instead of every system learning every other system's private schema.
+description: >-
+  A Canonical Data Model establishes a shared representation for messages that cross application or bounded-context boundaries. Producers translate their native records into the canonical form, consumers translate from that form into their local model, and the integration layer owns versioning and compatibility rules. It is most valuable when many systems exchange the same business concepts and pairwise mappings would otherwise grow quadratically. It is not a global domain model: local systems still keep their own vocabulary and invariants, while the canonical model is a deliberately narrow interchange contract.
+problem: >-
+  Without a common interchange shape, every new integration adds bespoke mappings, field semantics drift, and teams accidentally couple to each other's internal database or API structures.
+context: >-
+  Multiple applications exchange recurring business messages such as orders, customers, shipments or payments, especially during enterprise integration, mergers, legacy modernisation or message-bus adoption.
+consequences:
+  - Reduces pairwise translators and makes integration contracts easier to test and govern.
+  - Centralises semantic decisions such as identifiers, currencies, timestamps, nullability and versioning.
+  - Can become a lowest-common-denominator enterprise schema if treated as the domain model for every system.
+  - Requires explicit ownership, change control and compatibility policy; otherwise it slows delivery.
+synergies:
+  - pattern: message-translator
+    reason: Translators adapt each endpoint's native model to and from the canonical interchange shape.
+  - pattern: anti-corruption-layer
+    reason: An ACL protects a domain from canonical or legacy compromises leaking into its internal model.
+  - pattern: published-language
+    reason: A published language gives the canonical model documented vocabulary and versioned semantics.
+  - pattern: message-bus
+    reason: A bus benefits from canonical messages because participants do not need pairwise schema knowledge.
+alternatives:
+  - message-translator
+  - anti-corruption-layer
+  - published-language
+languages:
+  - language-agnostic
+  - java
+  - typescript
+  - csharp
+frameworks:
+  - kafka
+  - rabbitmq
+  - nats
+  - spring-boot
+project_types:
+  - microservices
+  - distributed-system
+  - backend-service
+  - data-pipeline
+tags:
+  - integration
+  - schema
+  - messaging
+examples:
+  - language: typescript
+    title: Publishing an order with a canonical envelope
+    negative: |
+      // Billing must understand Checkout's private database/API shape.
+      await kafka.send({
+        topic: "billing.orders",
+        messages: [{
+          value: JSON.stringify({
+            order_tbl_id: row.id,
+            cust_ref: row.customer_id,
+            total_cents: row.gross_total,
+            curr: row.currency_code,
+            ts: row.created_at,
+            internal_status: row.state
+          })
+        }]
+      });
+    positive: |
+      type CanonicalOrderAccepted = {
+        messageType: "OrderAccepted";
+        messageVersion: 2;
+        orderId: string;
+        customerId: string;
+        acceptedAt: string;
+        amount: { currency: string; minorUnits: number };
+      };
+
+      function toCanonical(row: CheckoutOrder): CanonicalOrderAccepted {
+        return {
+          messageType: "OrderAccepted",
+          messageVersion: 2,
+          orderId: row.id,
+          customerId: row.customerId,
+          acceptedAt: row.createdAt.toISOString(),
+          amount: { currency: row.currency, minorUnits: row.totalMinorUnits }
+        };
+      }
+
+      await kafka.send({
+        topic: "enterprise.order.accepted.v2",
+        messages: [{ key: row.id, value: JSON.stringify(toCanonical(row)) }]
+      });
+    explanation: >-
+      The positive version publishes a stable integration contract with explicit versioning and domain names. Consumers depend on the canonical message, not Checkout's storage names or accidental status fields.
+ratings:
+  small:
+    score: 2
+    notes: Usually unnecessary overhead when only one or two systems integrate; direct translation is cheaper.
+  medium:
+    score: 4
+    notes: Useful once repeated business concepts are exchanged across several services or vendors.
+  large:
+    score: 5
+    notes: Excellent fit for large enterprises, provided ownership and versioning prevent the model becoming a bottleneck.
+references:
+  - title: Enterprise Integration Patterns
+    author: Gregor Hohpe and Bobby Woolf
+    year: 2003

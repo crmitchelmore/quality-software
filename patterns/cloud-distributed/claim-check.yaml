@@ -1,0 +1,97 @@
+id: claim-check
+title: Claim Check
+scale: integration
+category: cloud-distributed
+maturity: time-tested
+short_description: >-
+  Store a large payload externally and send only a lightweight reference through
+  the message channel, letting receivers retrieve the payload when needed.
+description: >-
+  Claim Check keeps messaging infrastructure fast and reliable by separating
+  routing metadata from bulky content. The sender writes the full payload to a
+  durable store, then publishes a message containing a secure reference, checksum,
+  content type, and lifecycle metadata. Consumers use that reference to fetch the
+  payload, process it, and optionally delete or expire it. This avoids broker size
+  limits and repeated large-message copies, but requires careful access control and
+  cleanup of orphaned payloads.
+problem: >-
+  Large messages exceed broker limits, slow routing, increase memory pressure, and
+  make retries expensive even when consumers only need metadata to decide routing.
+context: >-
+  Use for documents, images, batch files, event attachments, and partner payloads
+  when a broker should carry coordination signals rather than the full data body.
+consequences:
+  - Keeps queues and topics lightweight, improving broker throughput and reliability.
+  - Allows payload storage to use appropriate retention, encryption, and access controls.
+  - "Introduces a second resource lifecycle: references can become stale or orphaned."
+  - Consumers need permission and error handling for both message and payload store.
+synergies:
+  - pattern: valet-key
+    reason: The claim can be a short-lived signed URL that allows one consumer to fetch the payload.
+  - pattern: dead-letter-channel
+    reason: Failed claim retrievals should move to a DLQ with enough metadata for repair.
+  - pattern: outbox
+    reason: Writing the payload reference and publishing the message atomically prevents lost claims.
+  - pattern: message-translator
+    reason: Translators can turn large inbound messages into claim checks before routing.
+alternatives:
+  - message-channel
+  - guaranteed-delivery
+languages:
+  - language-agnostic
+  - typescript
+  - java
+  - csharp
+  - go
+  - python
+frameworks:
+  - kafka
+  - rabbitmq
+  - nats
+  - nodejs
+  - spring-boot
+project_types:
+  - microservices
+  - distributed-system
+  - data-pipeline
+  - backend-service
+tags:
+  - large-payload
+  - messaging
+  - object-storage
+examples:
+  - language: typescript
+    title: Sending references instead of large payloads
+    negative: |
+      // A multi-megabyte PDF is copied through the broker on every retry and route.
+      await broker.publish("documents.received", {
+        documentId,
+        customerId,
+        pdfBytes: pdf.toString("base64"),
+      });
+    positive: |
+      const objectKey = `documents/${documentId}.pdf`;
+      await storage.putObject(objectKey, pdf, { contentType: "application/pdf" });
+      await broker.publish("documents.received", {
+        documentId,
+        customerId,
+        claim: { objectKey, sha256: digest(pdf), expiresAt: addDays(new Date(), 7).toISOString() },
+      });
+    explanation: >-
+      The positive version keeps the broker message small and durable while placing
+      the large payload in storage designed for size, retention, and encryption.
+ratings:
+  small:
+    score: 2
+    notes: Avoid unless payloads are already hitting broker or API limits.
+  medium:
+    score: 3
+    notes: Useful for document and media workflows, with cleanup and permissions designed up front.
+  large:
+    score: 5
+    notes: Essential when high-volume messaging carries large or regulated payloads.
+references:
+  - title: Enterprise Integration Patterns; Claim Check
+    author: Gregor Hohpe and Bobby Woolf
+    year: 2003
+    url: https://www.enterpriseintegrationpatterns.com/patterns/messaging/StoreInLibrary.html

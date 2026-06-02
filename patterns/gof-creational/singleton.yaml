@@ -1,0 +1,110 @@
+id: singleton
+title: Singleton
+aka:
+  - Single Instance
+scale: design
+category: gof-creational
+maturity: time-tested
+short_description: >-
+  Ensure a type has exactly one process-local instance and provide a controlled access point to it, usually for coordinating shared infrastructure.
+description: >-
+  Singleton constrains construction so all callers use the same instance of a class or module-level object. It is most defensible for process-wide infrastructure with real identity, such as a configuration snapshot, metric registry, or hardware handle, where duplicate instances would be incorrect. In modern application code it is often implemented through the composition root or dependency-injection container rather than a hard-coded global accessor, so lifetime is explicit and tests can replace the dependency.
+problem: >-
+  Some resources must be unique within a process, but ad-hoc globals and repeated construction make ownership, lifetime, and test replacement unclear.
+context: >-
+  Use when uniqueness is part of the domain or infrastructure invariant, not merely because constructing the object is inconvenient. Prefer explicit injection when consumers need the object.
+consequences:
+  - Enforces one coordinated process-local instance for resources that cannot safely be duplicated.
+  - Gives a single place to initialise and tear down expensive shared infrastructure.
+  - Easily degenerates into hidden global state, order-dependent tests, and tight coupling.
+  - Does not solve distributed uniqueness; multiple processes still get multiple instances.
+synergies:
+  - pattern: dependency-injection
+    reason: DI can own singleton lifetime while keeping consumers dependent on interfaces rather than static accessors.
+  - pattern: lazy-initialization
+    reason: Lazy creation avoids paying startup cost for expensive singleton resources until they are first needed.
+  - pattern: registry
+    reason: A registry may expose named singleton-like services, though it must avoid becoming a service locator.
+  - pattern: facade
+    reason: A singleton facade can centralise access to a process-wide subsystem while hiding its internal collaborators.
+alternatives:
+  - dependency-injection
+  - registry
+conflicts_with:
+  - service-locator
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - typescript
+  - python
+frameworks:
+  - none
+  - spring-boot
+  - dotnet
+  - nestjs
+project_types:
+  - library
+  - backend-service
+  - cli-tool
+  - desktop-app
+tags:
+  - lifetime
+  - global-state
+  - identity
+examples:
+  - language: typescript
+    title: Process metrics registry
+    negative: |
+      class MetricsRegistry {
+        private counters = new Map<string, number>();
+        increment(name: string): void {
+          this.counters.set(name, (this.counters.get(name) ?? 0) + 1);
+        }
+      }
+
+      export function recordCheckout(): void {
+        const metrics = new MetricsRegistry();
+        metrics.increment("checkout.started");
+      }
+
+      export function recordPayment(): void {
+        const metrics = new MetricsRegistry();
+        metrics.increment("payment.started");
+      }
+    positive: |
+      class MetricsRegistry {
+        private counters = new Map<string, number>();
+        increment(name: string): void {
+          this.counters.set(name, (this.counters.get(name) ?? 0) + 1);
+        }
+      }
+
+      const sharedMetrics = new MetricsRegistry();
+
+      export function recordCheckout(metrics = sharedMetrics): void {
+        metrics.increment("checkout.started");
+      }
+
+      export function recordPayment(metrics = sharedMetrics): void {
+        metrics.increment("payment.started");
+      }
+    explanation: >-
+      The negative version accidentally fragments process metrics across multiple registries. The positive version has a single process-local registry but still accepts an injected replacement in tests instead of forcing every caller through a static global.
+ratings:
+  small:
+    score: 2
+    notes: >-
+      Usually avoid; simple module instances or constructor parameters are clearer. Use only for real process-wide resources.
+  medium:
+    score: 3
+    notes: >-
+      Situational for infrastructure lifetimes when backed by DI. Static singleton accessors become painful as tests and modules multiply.
+  large:
+    score: 2
+    notes: >-
+      Risky in large systems because hidden global state creates coupling across teams. Prefer DI-managed singleton scope with explicit interfaces.
+references:
+  - title: "Design Patterns: Elements of Reusable Object-Oriented Software"
+    author: Gamma, Helm, Johnson, Vlissides
+    year: 1994

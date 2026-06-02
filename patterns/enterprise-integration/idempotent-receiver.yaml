@@ -1,0 +1,94 @@
+id: idempotent-receiver
+title: Idempotent Receiver
+scale: integration
+category: enterprise-integration
+maturity: time-tested
+short_description: >-
+  Make message handling safe under duplicate delivery by detecting repeated message or operation identifiers before applying side effects.
+description: >-
+  An Idempotent Receiver accepts that brokers, webhooks, retries and crashes often deliver the same logical message more than once. The receiver records a stable message id or operation key in durable storage, applies the business change inside the same transaction where possible, and returns the same logical outcome for repeats. This is stronger than simply ignoring duplicate payloads: the key must represent the intended operation, survive restarts, and be checked at the boundary where irreversible side effects occur.
+problem: >-
+  At-least-once delivery, retry with backoff and consumer crashes can repeat messages, causing duplicate orders, payments, emails or state transitions.
+context: >-
+  Use on any receiver that processes messages from a broker, webhook, outbox, scheduler or API client where the sender may retry and exactly-once delivery is unavailable or too expensive.
+consequences:
+  - Prevents duplicate side effects and makes retries operationally safe.
+  - Requires durable deduplication state with appropriate retention and uniqueness constraints.
+  - Must choose keys carefully; payload hashes or broker offsets often do not match the business operation.
+  - Adds read/write overhead to the hot path and may need cleanup of old keys.
+synergies:
+  - pattern: idempotency
+    reason: The receiver is the messaging-specific application of idempotent operation design.
+  - pattern: outbox
+    reason: Outbox publishers often redeliver during recovery; receivers need stable deduplication keys.
+  - pattern: guaranteed-delivery
+    reason: Durable delivery avoids loss but increases the chance of duplicates after restart.
+  - pattern: retry
+    reason: Retrying becomes safe only when repeated processing has the same logical result.
+alternatives:
+  - idempotency-key
+  - optimistic-concurrency-control
+languages:
+  - language-agnostic
+  - java
+  - typescript
+  - csharp
+frameworks:
+  - kafka
+  - rabbitmq
+  - nodejs
+  - spring-boot
+project_types:
+  - microservices
+  - backend-service
+  - distributed-system
+  - high-throughput
+tags:
+  - messaging
+  - idempotency
+  - reliability
+examples:
+  - language: typescript
+    title: Deduplicating payment events with a durable key
+    negative: |
+      async function onPaymentCaptured(message: Message) {
+        const event = JSON.parse(message.value.toString());
+        await ledger.insert({
+          paymentId: event.paymentId,
+          amount: event.amount,
+          type: "CAPTURED"
+        });
+      }
+    positive: |
+      async function onPaymentCaptured(message: Message) {
+        const event = JSON.parse(message.value.toString());
+        await db.transaction(async (tx) => {
+          const inserted = await tx.processedMessages.insertIgnore({
+            consumer: "ledger",
+            messageId: event.messageId
+          });
+          if (!inserted) return;
+
+          await tx.ledger.insert({
+            paymentId: event.paymentId,
+            amount: event.amount,
+            type: "CAPTURED"
+          });
+        });
+      }
+    explanation: >-
+      The positive version stores the deduplication key and ledger write in one transaction, so a redelivered message cannot create a second ledger entry.
+ratings:
+  small:
+    score: 4
+    notes: Worth using even in small systems when external retries can trigger money, inventory or email side effects.
+  medium:
+    score: 5
+    notes: Core reliability pattern for brokered services and webhooks.
+  large:
+    score: 5
+    notes: Non-negotiable in large at-least-once messaging topologies; enforce with database uniqueness where possible.
+references:
+  - title: Enterprise Integration Patterns
+    author: Gregor Hohpe and Bobby Woolf
+    year: 2003

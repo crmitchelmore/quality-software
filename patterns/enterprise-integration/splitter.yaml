@@ -1,0 +1,92 @@
+id: splitter
+title: Splitter
+scale: integration
+category: enterprise-integration
+maturity: time-tested
+short_description: >-
+  Break a composite message into a sequence of smaller messages so each part can be processed independently and, if needed, correlated back to the original.
+description: >-
+  A Splitter takes a message containing multiple logical items and emits one message per item, usually adding correlation metadata such as parent id, sequence number, and expected count. It is common for batch files, orders with line items, multi-record API payloads, or documents with independent sections. The splitter should define whether all child messages must succeed, whether order matters, and how downstream failures are reconciled. Without correlation metadata, later aggregation, audit, and error handling are fragile.
+problem: >-
+  Downstream processors often work on one logical item at a time, but upstream systems send batches or documents. Processing the whole composite message in one consumer limits parallelism and makes partial failure handling crude.
+context: >-
+  Use when a composite message contains independently processable elements and each element should be routed, transformed, retried, or scaled separately.
+consequences:
+  - Enables parallel processing, item-level retries, and more precise error reporting.
+  - Requires correlation identifiers and sequence metadata if results must be reconstructed.
+  - Can multiply message volume dramatically; downstream channels must handle the fan-out.
+  - "Partial failures need explicit policy: compensate, aggregate errors, or continue with accepted items."
+synergies:
+  - pattern: aggregator
+    reason: Aggregator is the natural counterpart when split results must be recombined.
+  - pattern: correlation-identifier
+    reason: Split children need a parent correlation id so results can be tracked and grouped.
+  - pattern: message-router
+    reason: Each split child can be routed independently according to type or content.
+  - pattern: message-filter
+    reason: Invalid child items can be rejected without discarding the whole composite message.
+alternatives:
+  - pipes-and-filters
+  - message-filter
+conflicts_with:
+  - transaction-script
+languages:
+  - language-agnostic
+  - java
+  - typescript
+frameworks:
+  - spring-boot
+  - kafka
+  - rabbitmq
+project_types:
+  - data-pipeline
+  - etl
+  - microservices
+  - high-throughput
+tags:
+  - eip
+  - fan-out
+  - batch
+  - correlation
+diagram: |-
+  flowchart LR
+    Batch[Order batch] --> Splitter
+    Splitter --> Item1[Line item 1]
+    Splitter --> Item2[Line item 2]
+    Splitter --> Item3[Line item 3]
+examples:
+  - language: java
+    title: Splitting a submitted order into line-item work messages
+    negative: |
+      void handle(OrderSubmitted order) {
+        for (LineItem item : order.items()) {
+          inventory.reserve(item.sku(), item.quantity());
+          pricing.price(item);
+          warehouse.pick(item);
+        }
+      }
+    positive: |
+      from("kafka:orders.submitted")
+        .routeId("order-line-splitter")
+        .split(simple("${body.items}"))
+          .setHeader("correlationId", simple("${exchangeProperty.CamelSplitCorrelationId}"))
+          .setHeader("sequenceNumber", simple("${exchangeProperty.CamelSplitIndex}"))
+          .setHeader("sequenceSize", simple("${exchangeProperty.CamelSplitSize}"))
+          .to("kafka:order.line-items");
+    explanation: >-
+      The positive route emits independently processable line-item messages and carries correlation metadata so downstream processing can be retried, routed, and aggregated safely.
+ratings:
+  small:
+    score: 2
+    notes: Usually unnecessary unless the small system already has batch/document integrations.
+  medium:
+    score: 4
+    notes: Useful for item-level scaling and failure handling in batch-heavy services.
+  large:
+    score: 5
+    notes: Excellent fit for large integration flows, but message amplification and correlation must be engineered deliberately.
+references:
+  - title: Enterprise Integration Patterns
+    author: Gregor Hohpe and Bobby Woolf
+    year: 2003
+    url: https://www.enterpriseintegrationpatterns.com/patterns/messaging/Sequencer.html

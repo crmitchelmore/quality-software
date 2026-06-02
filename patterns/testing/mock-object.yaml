@@ -1,0 +1,101 @@
+id: mock-object
+title: Mock Object
+aka:
+  - Mock
+scale: implementation
+category: testing
+maturity: time-tested
+short_description: >-
+  Use a test double with explicit interaction expectations when the behaviour is the collaboration itself rather than a returned state.
+description: >-
+  A mock object verifies that the system under test sends the right command to a collaborator: for example publishing an event, charging a gateway, or invalidating a cache. It is strongest for command-style ports where there is no local state to inspect. Mocks should specify behaviourally significant interactions only; asserting every internal call couples the test to implementation and makes refactoring painful.
+problem: >-
+  Some behaviours are observable only through calls to another component, but verifying every internal call makes tests brittle.
+context: >-
+  Use for outbound commands and side-effect boundaries whose contract is a call, not for ordinary query collaborators where returned state can be asserted.
+consequences:
+  - >-
+    Makes side-effect contracts explicit and fast to verify.
+  - >-
+    Can precisely check security-sensitive or money-moving commands.
+  - >-
+    Over-specified mocks break during harmless refactors; prefer stubs/fakes when state assertions are clearer.
+synergies:
+  - pattern: test-double
+    reason: >-
+      Mock Object is a specialised test double focused on interaction verification.
+  - pattern: arrange-act-assert
+    reason: >-
+      Expectations are arranged before the act and verified in the assert phase.
+  - pattern: contract-testing
+    reason: >-
+      Provider or consumer contracts ensure mocked remote interactions still match reality.
+conflicts_with:
+  - fake-object
+alternatives:
+  - stub
+  - fake-object
+languages:
+  - language-agnostic
+  - javascript
+  - typescript
+  - python
+  - java
+frameworks:
+  - none
+  - nodejs
+  - spring-boot
+  - django
+  - fastapi
+project_types:
+  - library
+  - web-api
+  - backend-service
+  - microservices
+  - modular-monolith
+tags:
+  - interaction-testing
+  - side-effects
+  - collaboration
+examples:
+  - language: java
+    title: JUnit payment command
+    negative: |-
+      @Test
+      void chargesCustomer() {
+        PaymentGateway gateway = mock(PaymentGateway.class);
+        Checkout checkout = new Checkout(gateway);
+      
+        checkout.pay(new Order("o1", Money.usd(42)));
+      
+        verify(gateway).connect();
+        verify(gateway).setCurrency("USD");
+        verify(gateway).charge("o1", 4200);
+        verify(gateway).disconnect();
+      }
+    positive: |-
+      @Test
+      void chargesCustomer() {
+        PaymentGateway gateway = mock(PaymentGateway.class);
+        Checkout checkout = new Checkout(gateway);
+      
+        checkout.pay(new Order("o1", Money.usd(42)));
+      
+        verify(gateway).charge("o1", Money.usd(42));
+        verifyNoMoreInteractions(gateway);
+      }
+    explanation: >-
+      The positive mock verifies the business interaction only: the gateway is asked to charge the order. It avoids coupling the test to connection-management details that may legitimately change.
+ratings:
+  small:
+    score: 3
+    notes: >-
+      Useful for side effects but easy to overuse in small codebases where state assertions are simpler.
+  medium:
+    score: 4
+    notes: >-
+      Good fit around ports, queues, email, and payment boundaries with clear interaction contracts.
+  large:
+    score: 3
+    notes: >-
+      Still useful, but large systems need contract tests and fakes to prevent mock-driven fantasy integrations.

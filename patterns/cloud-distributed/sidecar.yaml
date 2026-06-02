@@ -1,0 +1,119 @@
+id: sidecar
+title: Sidecar
+scale: architectural
+category: cloud-distributed
+maturity: established
+short_description: >-
+  Attach a helper process or container to an application instance so cross-cutting
+  capabilities such as proxying, telemetry, configuration, or secret refresh can
+  be added without changing the application code.
+description: >-
+  Sidecar places an auxiliary runtime next to each service instance, usually in
+  the same pod, task, or VM boundary. The application talks to localhost or a
+  shared volume/socket while the sidecar handles concerns that should be uniform
+  across many services: mTLS, service discovery, log shipping, policy checks,
+  dynamic configuration, or protocol translation. Because the sidecar shares the
+  deployment lifecycle and failure domain of the primary workload, it can be
+  managed as infrastructure while still observing and influencing per-instance
+  traffic and state.
+problem: >-
+  Cross-cutting distributed-system behaviour is often duplicated in every
+  service. That creates inconsistent retries, telemetry, policy enforcement, and
+  upgrade cadence, especially in polyglot fleets.
+context: >-
+  Use when many independently deployed services need the same operational
+  capabilities and the platform can reliably co-schedule a helper beside each
+  workload, such as Kubernetes pods or service-mesh data planes.
+consequences:
+  - Centralises operational behaviour without forcing every service to import the same libraries.
+  - Keeps language runtimes lean and lets platform teams upgrade sidecar capabilities independently.
+  - Adds another process to every instance, increasing resource use and local failure modes.
+  - Debugging must include app, sidecar, and control-plane configuration, not just application code.
+synergies:
+  - pattern: service-mesh
+    reason: A service mesh commonly implements its data plane as sidecars that enforce mTLS, routing, and telemetry per workload.
+  - pattern: circuit-breaker
+    reason: Sidecar proxies can apply circuit breaking consistently at each instance boundary without application-specific libraries.
+  - pattern: bulkhead
+    reason: Resource limits for the sidecar and app keep proxy failures from exhausting the primary workload.
+  - pattern: health-endpoint-monitoring
+    reason: Separate health checks for app and sidecar prevent routing traffic to half-initialised or degraded pods.
+conflicts_with:
+  - monolith
+alternatives:
+  - api-gateway
+  - gateway-offloading
+  - middleware-pipeline
+languages:
+  - language-agnostic
+  - go
+  - java
+  - typescript
+  - python
+frameworks:
+  - kubernetes
+  - istio
+  - grpc
+  - nodejs
+  - spring-boot
+project_types:
+  - microservices
+  - distributed-system
+  - backend-service
+  - web-api
+tags:
+  - platform
+  - proxy
+  - observability
+  - zero-trust
+diagram: |-
+  flowchart LR
+    Client[Client] --> Pod
+    subgraph Pod[Workload Pod]
+      App[App]
+      Sidecar[Sidecar]
+      App <--> Sidecar
+    end
+    Sidecar --> Service[Remote Service]
+    Sidecar --> Telemetry[Telemetry]
+    Control[Control Plane] --> Sidecar
+examples:
+  - language: typescript
+    title: Keeping mesh concerns out of handlers
+    negative: |
+      // Every service repeats proxy concerns and must be redeployed for policy changes.
+      app.get("/orders/:id", async (req, res) => {
+        const token = await mintServiceToken("orders-api");
+        const response = await fetch(`https://inventory.internal/${req.params.id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "x-trace-id": req.header("x-trace-id") ?? crypto.randomUUID(),
+          },
+        });
+        if (!response.ok) throw new Error("inventory unavailable");
+        res.json(await response.json());
+      });
+    positive: |
+      // The app talks to localhost; the sidecar owns mTLS, tracing, retries, and routing.
+      app.get("/orders/:id", async (req, res) => {
+        const response = await fetch(`http://127.0.0.1:15001/inventory/${req.params.id}`);
+        if (!response.ok) throw new Error("inventory unavailable");
+        res.json(await response.json());
+      });
+    explanation: >-
+      The positive version removes security and routing policy from business code,
+      allowing the platform sidecar to enforce those behaviours consistently across
+      all services and languages.
+ratings:
+  small:
+    score: 2
+    notes: Usually too much operational overhead for a small service or single application.
+  medium:
+    score: 3
+    notes: Useful when several services need common proxying or telemetry, but watch resource cost.
+  large:
+    score: 5
+    notes: Excellent for large polyglot fleets where consistent policy and observability outweigh added runtime complexity.
+references:
+  - title: Microsoft Azure Architecture Center; Sidecar pattern
+    url: https://learn.microsoft.com/azure/architecture/patterns/sidecar

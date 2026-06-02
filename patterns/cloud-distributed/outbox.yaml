@@ -1,0 +1,113 @@
+id: outbox
+title: Transactional Outbox
+aka:
+  - Outbox Pattern
+scale: data
+category: cloud-distributed
+maturity: established
+short_description: >-
+  Store messages in the same transaction as domain state, then publish them
+  asynchronously so state changes and integration events cannot be lost independently.
+description: >-
+  Transactional Outbox writes outbound messages to an outbox table or collection in
+  the same local transaction that changes business state. A relay process later reads
+  unpublished rows and delivers them to a broker, marking or deleting them only after
+  successful publication. This avoids the dual-write bug where the database commit
+  succeeds but event publication fails, or the event publishes while the database rolls
+  back. Consumers must still be idempotent because relay crashes can publish a message
+  more than once.
+problem: >-
+  Updating a database and publishing a message are two separate side effects; without
+  atomicity, failures create missing events or events for state that did not commit.
+context: >-
+  Event-driven services, sagas, CQRS projections, and microservices that publish facts
+  derived from local transactional state.
+consequences:
+  - Eliminates lost events caused by the database and broker being updated separately.
+  - Keeps the service autonomous because it only relies on its local transaction.
+  - Adds relay lag, outbox storage growth, and ordering decisions to operate.
+  - At-least-once publication means consumers and downstream commands must be idempotent.
+synergies:
+  - pattern: event-driven-consumer
+    reason: Consumers receive outbox-published messages reliably and should process them asynchronously.
+  - pattern: idempotent-receiver
+    reason: Outbox relays can republish after crashes, so receivers must deduplicate by message id.
+  - pattern: saga
+    reason: Saga state transitions and commands should be committed atomically with outgoing messages.
+  - pattern: change-data-capture
+    reason: CDC can implement the relay by streaming committed outbox rows from the database log.
+alternatives:
+  - change-data-capture
+  - guaranteed-delivery
+conflicts_with:
+  - request-reply
+diagram: |-
+  sequenceDiagram
+    participant A as App
+    participant D as Database
+    participant R as Relay
+    participant B as Broker
+    A->>D: Save order and outbox row
+    R->>D: Read unpublished rows
+    R->>B: Publish event
+    B-->>R: Ack
+    R->>D: Mark published
+languages:
+  - language-agnostic
+  - sql
+  - typescript
+  - java
+  - csharp
+  - go
+frameworks:
+  - kafka
+  - rabbitmq
+  - nats
+  - spring-boot
+  - dotnet
+  - sqlalchemy
+project_types:
+  - microservices
+  - distributed-system
+  - backend-service
+  - data-pipeline
+  - high-throughput
+tags:
+  - dual-write
+  - reliable-messaging
+  - events
+  - eventual-consistency
+examples:
+  - language: typescript
+    title: Publishing an order event safely
+    negative: |
+      await db.query("INSERT INTO orders(id, status) VALUES($1, 'placed')", [order.id]);
+      await broker.publish("OrderPlaced", { orderId: order.id }); // may fail after commit
+    positive: |
+      await db.transaction(async tx => {
+        await tx.query("INSERT INTO orders(id, status) VALUES($1, 'placed')", [order.id]);
+        await tx.query(
+          "INSERT INTO outbox(id, topic, payload) VALUES($1, $2, $3)",
+          [messageId, "OrderPlaced", JSON.stringify({ orderId: order.id })],
+        );
+      });
+
+      // A relay publishes unpublished outbox rows and marks them sent after broker ack.
+    explanation: >-
+      The positive version commits state and event intent atomically in one database
+      transaction, so a relay can safely retry publication without losing the event.
+ratings:
+  small:
+    score: 2
+    notes: Usually unnecessary without a broker or integration events.
+  medium:
+    score: 5
+    notes: Excellent default for services that publish events from transactional state.
+  large:
+    score: 5
+    notes: Essential for reliable event-driven systems; pair with idempotent consumers and relay monitoring.
+references:
+  - title: Microservices Patterns; Transactional Outbox
+    author: Chris Richardson
+    year: 2018
+    url: https://microservices.io/patterns/data/transactional-outbox.html

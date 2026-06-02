@@ -1,0 +1,101 @@
+id: defense-in-depth
+title: Defense in Depth
+aka:
+  - Layered security
+scale: architectural
+category: security
+maturity: time-tested
+short_description: >-
+  Protect important assets with multiple independent controls so one failed or bypassed defence does not expose the whole system.
+description: >-
+  Defense in Depth layers preventive, detective, and responsive controls across the request path, runtime, data store, and operations. No single control is assumed perfect: input validation may miss a case, authentication may be misconfigured, a dependency may be vulnerable, or credentials may leak. Independent layers such as network segmentation, identity checks, least privilege, output encoding, encryption, monitoring, and incident response reduce the chance that one flaw becomes a breach.
+problem: >-
+  Systems that rely on one perimeter, one validator, or one identity check fail catastrophically when that control is bypassed.
+context: >-
+  Use for internet-facing, regulated, multi-tenant, or business-critical systems where compromise impact is high.
+consequences:
+  - >-
+    Reduces single points of security failure and limits blast radius.
+  - >-
+    Combines prevention with detection and response.
+  - >-
+    Adds operational complexity; overlapping controls must be intentional rather than contradictory or purely ceremonial.
+synergies:
+  - pattern: least-privilege
+    reason: >-
+      Privilege boundaries are a core inner layer that limits damage after an outer layer fails.
+  - pattern: input-validation
+    reason: >-
+      Allow-list validation is an early application-layer defence against malformed or hostile input.
+  - pattern: output-encoding
+    reason: >-
+      Encoding protects rendering sinks even when unsafe data reaches them.
+  - pattern: audit-logging
+    reason: >-
+      Detective controls show when preventive layers fail or are probed.
+alternatives:
+  - secure-by-default
+languages:
+  - language-agnostic
+  - javascript
+  - typescript
+  - python
+  - java
+frameworks:
+  - none
+  - nodejs
+  - express
+  - spring-boot
+  - kubernetes
+  - istio
+project_types:
+  - web-api
+  - backend-service
+  - microservices
+  - distributed-system
+  - high-throughput
+tags:
+  - layered-security
+  - blast-radius
+  - architecture
+diagram: |-
+  flowchart LR
+    User[User] --> Edge[Edge TLS WAF Rate Limit]
+    Edge --> Gateway[API Gateway AuthN]
+    Gateway --> App[Service Input Validation]
+    App --> Policy[Authorisation Least Privilege]
+    Policy --> Data[(Encrypted Data Store)]
+    App --> Logs[Audit Logs Alerts]
+    Data --> Backup[Backups Recovery]
+examples:
+  - language: java
+    title: Layering controls in a Spring endpoint
+    negative: |-
+      @GetMapping("/admin/users/{id}")
+      UserDto adminUser(@PathVariable String id) {
+        // Assumes the firewall only allows administrators to reach this route.
+        return users.findDto(id);
+      }
+    positive: |-
+      @PreAuthorize("hasAuthority('users:admin:read')")
+      @GetMapping("/admin/users/{id}")
+      UserDto adminUser(@PathVariable @Pattern(regexp = "[a-zA-Z0-9-]{1,64}") String id,
+                        Authentication auth) {
+        audit.info("admin_user_read", Map.of("actor", auth.getName(), "target", id));
+        return users.findDto(id);
+      }
+    explanation: >-
+      The positive endpoint does not trust the network layer alone. It adds route-level authorisation, input validation, and audit logging so bypassing one control is not enough.
+ratings:
+  small:
+    score: 2
+    notes: >-
+      Often too much architecture for tiny internal tools, though basic layering still matters.
+  medium:
+    score: 4
+    notes: >-
+      Strong fit for exposed or sensitive services; keep controls simple and observable.
+  large:
+    score: 5
+    notes: >-
+      Essential for large, regulated, or multi-tenant systems where single-control failure is expected.

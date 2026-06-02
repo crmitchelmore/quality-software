@@ -1,0 +1,154 @@
+id: mediator
+title: Mediator
+aka:
+  - Coordinator
+  - Controller Object
+scale: design
+category: gof-behavioural
+maturity: time-tested
+short_description: >-
+  Centralise complex collaboration between peer objects in a mediator so peers do
+  not depend on each other directly.
+description: >-
+  Mediator introduces a coordinating object that knows how colleagues interact,
+  while each colleague knows only the mediator interface. It is most useful when a
+  set of components has many-to-many communication, ordering rules, or consistency
+  checks that would otherwise be duplicated across peers. The mediator should
+  express a real workflow or policy; if it merely forwards every method call it
+  becomes a god object and hides dependencies rather than simplifying them.
+problem: >-
+  Peer components call and update each other directly, creating a dense dependency
+  graph where a small change in one component ripples through many others.
+context: >-
+  Use in UI forms, domain workflows, module coordination, or in-process messaging
+  where several collaborators must react consistently to each other without
+  knowing concrete peer types.
+consequences:
+  - Reduces many-to-many coupling between peers to many-to-one coupling to the mediator.
+  - Centralises workflow policy and ordering, making it easier to test the collaboration as a whole.
+  - Can become an unbounded god object if it accumulates unrelated responsibilities.
+  - Colleagues may become passive if all behaviour is moved into the mediator; keep local invariants local.
+synergies:
+  - pattern: observer
+    reason: Colleagues can notify the mediator via events while the mediator decides coordinated reactions.
+  - pattern: command
+    reason: Mediators often dispatch commands to collaborators after validating workflow state.
+  - pattern: event-emitter
+    reason: An event emitter is a lightweight mediator for in-process publish/subscribe coordination.
+  - pattern: application-controller
+    reason: Application controllers mediate screen or use-case flow at an application boundary.
+alternatives:
+  - observer
+  - publish-subscribe
+  - message-bus
+conflicts_with:
+  - service-locator
+languages:
+  - language-agnostic
+  - typescript
+  - java
+  - csharp
+  - python
+frameworks:
+  - none
+  - react
+  - angular
+  - dotnet
+  - spring-boot
+project_types:
+  - web-frontend
+  - desktop-app
+  - backend-service
+  - modular-monolith
+tags:
+  - coordination
+  - decoupling
+  - workflow
+  - collaboration
+examples:
+  - language: typescript
+    title: Checkout form coordination
+    negative: |
+      class ShippingForm {
+        constructor(private readonly payment: PaymentForm, private readonly totals: TotalsPanel) {}
+
+        setCountry(country: string): void {
+          this.totals.recalculateForCountry(country);
+          this.payment.requirePostalCode(country !== "IE");
+        }
+      }
+
+      class PaymentForm {
+        constructor(private readonly shipping: ShippingForm, private readonly totals: TotalsPanel) {}
+
+        setCardType(cardType: string): void {
+          this.totals.applyCardFee(cardType);
+        }
+      }
+
+      class TotalsPanel {
+        recalculateForCountry(country: string): void {}
+        applyCardFee(cardType: string): void {}
+      }
+    positive: |
+      interface CheckoutMediator {
+        shippingCountryChanged(country: string): void;
+        cardTypeChanged(cardType: string): void;
+      }
+
+      class ShippingForm {
+        constructor(private readonly mediator: CheckoutMediator) {}
+        setCountry(country: string): void {
+          this.mediator.shippingCountryChanged(country);
+        }
+      }
+
+      class PaymentForm {
+        constructor(private readonly mediator: CheckoutMediator) {}
+        requirePostalCode(required: boolean): void {}
+        setCardType(cardType: string): void {
+          this.mediator.cardTypeChanged(cardType);
+        }
+      }
+
+      class TotalsPanel {
+        recalculateForCountry(country: string): void {}
+        applyCardFee(cardType: string): void {}
+      }
+
+      class CheckoutCoordinator implements CheckoutMediator {
+        constructor(private readonly payment: PaymentForm, private readonly totals: TotalsPanel) {}
+
+        shippingCountryChanged(country: string): void {
+          this.totals.recalculateForCountry(country);
+          this.payment.requirePostalCode(country !== "IE");
+        }
+
+        cardTypeChanged(cardType: string): void {
+          this.totals.applyCardFee(cardType);
+        }
+      }
+    explanation: >-
+      The positive version removes direct dependencies between form widgets and
+      centralises checkout coordination in one object with a workflow-shaped
+      interface.
+ratings:
+  small:
+    score: 2
+    notes: >-
+      Often unnecessary in small code; direct collaboration or callbacks are
+      clearer until dependencies become genuinely tangled.
+  medium:
+    score: 4
+    notes: >-
+      Good fit for UI and application workflows with several peers and explicit
+      coordination rules.
+  large:
+    score: 4
+    notes: >-
+      Useful for reducing coupling across modules, but large systems need bounded
+      mediators per workflow to avoid creating central god objects.
+references:
+  - title: "Design Patterns: Elements of Reusable Object-Oriented Software"
+    author: Gamma, Helm, Johnson, Vlissides
+    year: 1994

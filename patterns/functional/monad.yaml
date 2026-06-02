@@ -1,0 +1,94 @@
+id: monad
+title: Monad
+aka:
+  - Bind
+  - FlatMap
+scale: design
+category: functional
+maturity: time-tested
+short_description: >-
+  Sequence computations wrapped in a context, where each step can depend on the previous unwrapped value while preserving the context.
+description: >-
+  A Monad is a type constructor with operations to put a value into a context and chain context-returning functions. Option carries possible absence, Either carries failure, Future carries asynchrony, and State carries evolving state. The practical value is uniform sequencing: flatMap/bind handles the plumbing while code focuses on the next domain step.
+problem: >-
+  Contextual computations such as absence, failure, async work, or state transitions create nested conditionals and unwrapping boilerplate when composed manually.
+context: >-
+  Use when a language or library provides lawful monadic types and multiple dependent steps share the same context, especially parsing, validation, asynchronous workflows, and error-aware domain pipelines.
+consequences:
+  - Flattens nested contextual operations into a linear pipeline.
+  - Makes effect or failure context explicit in types.
+  - >-
+    Requires team familiarity; abstract monad vocabulary can obscure simple business code.
+  - >-
+    Different monads compose imperfectly without transformers or explicit boundary conversion.
+synergies:
+  - pattern: functor
+    reason: >-
+      Every monad is also a functor; map handles pure transformations inside the context.
+  - pattern: either-result
+    reason: Either/Result is a common monad for fail-fast typed error pipelines.
+  - pattern: option-maybe
+    reason: >-
+      Option/Maybe is a common monad for absence-aware pipelines without null checks.
+  - pattern: function-composition
+    reason: Kleisli composition chains functions that return monadic values.
+alternatives:
+  - guard-clause
+  - fail-fast
+  - chain-of-responsibility
+languages:
+  - haskell
+  - scala
+  - rust
+  - typescript
+  - clojure
+frameworks:
+  - none
+project_types:
+  - library
+  - sdk
+  - backend-service
+  - data-pipeline
+tags:
+  - abstraction
+  - sequencing
+  - effects
+examples:
+  - language: scala
+    title: Sequencing optional lookups
+    negative: |
+      def cityFor(userId: UserId): Option[String] = {
+        findUser(userId) match {
+          case Some(user) =>
+            findAddress(user.addressId) match {
+              case Some(address) => Some(address.city)
+              case None => None
+            }
+          case None => None
+        }
+      }
+    positive: |
+      def cityFor(userId: UserId): Option[String] =
+        for {
+          user <- findUser(userId)
+          address <- findAddress(user.addressId)
+        } yield address.city
+    explanation: >-
+      The positive version lets Option handle absence at each step, keeping the dependent lookup flow linear and eliminating repeated None plumbing.
+ratings:
+  small:
+    score: 2
+    notes: >-
+      Usually unnecessary as a named abstraction unless the language makes it idiomatic.
+  medium:
+    score: 4
+    notes: >-
+      Powerful for typed error, async, and parser pipelines in teams fluent with the style.
+  large:
+    score: 4
+    notes: >-
+      Valuable in strongly typed functional systems, but standardise on a small set of monads and naming conventions.
+references:
+  - title: Monads for functional programming
+    author: Philip Wadler
+    year: 1995

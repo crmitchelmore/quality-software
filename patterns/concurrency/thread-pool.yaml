@@ -1,0 +1,121 @@
+id: thread-pool
+title: Thread Pool
+aka:
+  - Worker Pool
+scale: concurrency
+category: concurrency
+maturity: time-tested
+short_description: >-
+  Execute many independent tasks using a bounded set of reusable worker threads rather than creating one thread per task.
+description: >-
+  Thread Pool keeps a managed group of worker threads alive and feeds them tasks from a queue. It amortises thread creation, caps CPU and memory pressure, and centralises lifecycle, naming, metrics, rejection, and shutdown. A good pool is deliberately sized for the dominant bottleneck: CPU-bound pools near core count, I/O-bound pools according to blocking time and latency budget. The pattern fails when treated as an infinite dumping ground; queues must be bounded or paired with rejection/backpressure, and blocking inside a shared pool can starve unrelated work.
+problem: >-
+  Creating a thread per request or job is expensive and unbounded, while uncontrolled concurrency causes context-switch storms, memory exhaustion, and resource contention.
+context: >-
+  Use for large numbers of independent tasks that can be scheduled onto a limited number of OS threads, especially server request handling, background jobs, and blocking I/O wrappers.
+consequences:
+  - Reuses threads and caps concurrent execution, improving predictability under load.
+  - Requires explicit queue, sizing, rejection, and shutdown policies; defaults are often unsafe.
+  - Task starvation and deadlocks can occur when tasks wait for other tasks scheduled to the same saturated pool.
+  - Long blocking work should have a separate pool from short latency-sensitive work.
+synergies:
+  - pattern: producer-consumer
+    reason: The pool's task queue is a producer-consumer handoff where submitters produce and workers consume.
+  - pattern: future-promise
+    reason: Submitting to a pool commonly returns a Future that represents the eventual result or failure.
+  - pattern: bulkhead
+    reason: Separate pools per dependency or workload isolate saturation instead of sharing one exhausted executor.
+  - pattern: backpressure
+    reason: Bounded queues and rejection handlers turn pool saturation into a caller-visible pressure signal.
+alternatives:
+  - fork-join
+  - reactor
+  - actor-model
+conflicts_with:
+  - thread-specific-storage
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - go
+  - python
+  - cpp
+frameworks:
+  - none
+  - spring
+  - dotnet
+  - tokio
+project_types:
+  - backend-service
+  - web-api
+  - high-throughput
+  - desktop-app
+tags:
+  - executor
+  - worker-pool
+  - resource-control
+examples:
+  - language: csharp
+    title: Bounded executor for blocking thumbnail generation
+    negative: |
+      using System.Threading;
+
+      class Thumbnailer {
+          public void Enqueue(string path) {
+              new Thread(() => Generate(path)).Start(); // unbounded threads under bursts
+          }
+
+          private void Generate(string path) { /* CPU and disk work */ }
+      }
+    positive: |
+      using System;
+      using System.Collections.Concurrent;
+      using System.Threading;
+      using System.Threading.Tasks;
+
+      class Thumbnailer : IDisposable {
+          private readonly BlockingCollection<string> queue = new(capacity: 500);
+          private readonly Task[] workers;
+          private readonly CancellationTokenSource stop = new();
+
+          public Thumbnailer(int degreeOfParallelism) {
+              workers = new Task[degreeOfParallelism];
+              for (int i = 0; i < workers.Length; i++) {
+                  workers[i] = Task.Run(() => {
+                      foreach (var path in queue.GetConsumingEnumerable(stop.Token)) {
+                          Generate(path);
+                      }
+                  });
+              }
+          }
+
+          public bool Enqueue(string path) => queue.TryAdd(path, millisecondsTimeout: 100);
+          private void Generate(string path) { /* CPU and disk work */ }
+
+          public void Dispose() {
+              queue.CompleteAdding();
+              Task.WaitAll(workers, TimeSpan.FromSeconds(10));
+              stop.Cancel();
+              queue.Dispose();
+              stop.Dispose();
+          }
+      }
+    explanation: >-
+      The positive version bounds both queued work and active workers, so a burst cannot create unlimited threads. Reuse, shutdown, and rejection are explicit.
+ratings:
+  small:
+    score: 3
+    notes: >-
+      Situational: use a library executor when you have repeated concurrent jobs, but do not introduce a pool for a handful of simple async operations.
+  medium:
+    score: 5
+    notes: >-
+      Excellent default for services doing blocking work; correct sizing and separation of pools are high-leverage design choices.
+  large:
+    score: 4
+    notes: >-
+      Essential but dangerous if global; large systems need multiple bulkheaded pools, tracing, saturation alerts, and sometimes event-loop alternatives.
+references:
+  - title: Java Concurrency in Practice
+    author: Brian Goetz et al.
+    year: 2006

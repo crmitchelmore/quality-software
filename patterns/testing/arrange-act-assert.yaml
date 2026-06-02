@@ -1,0 +1,97 @@
+id: arrange-act-assert
+title: Arrange-Act-Assert
+aka:
+  - Given-When-Then at test level
+scale: implementation
+category: testing
+maturity: time-tested
+short_description: >-
+  Structure each test into setup, one behaviour trigger, and observable assertions so the reader can see cause and effect immediately.
+description: >-
+  Arrange-Act-Assert divides a test into three explicit phases: arrange the fixture and collaborators, act by invoking exactly the behaviour under test, then assert the externally visible outcome. The pattern is not just formatting; it disciplines tests to have one reason to fail, discourages incidental assertions during setup, and makes later refactoring safer because failures point to the behaviour being exercised rather than to hidden test wiring.
+problem: >-
+  Tests that mix fixture construction, behaviour execution, and checks become hard to scan and fail for ambiguous reasons.
+context: >-
+  Use for unit, component, and integration tests where a single behaviour or contract should be demonstrated clearly.
+consequences:
+  - >-
+    Improves readability and reviewability by making the tested behaviour explicit.
+  - >-
+    Encourages one meaningful act per test and reduces mystery failures from setup code.
+  - >-
+    Can feel artificial for long scenario tests; combine with Given-When-Then when business language matters.
+synergies:
+  - pattern: test-data-builder
+    reason: >-
+      Builders keep Arrange concise without hiding the values relevant to the assertion.
+  - pattern: mock-object
+    reason: >-
+      Mocks fit naturally in Arrange and should be verified only in Assert.
+  - pattern: given-when-then
+    reason: >-
+      BDD scenario wording maps directly to the same three-phase test flow.
+alternatives:
+  - given-when-then
+languages:
+  - language-agnostic
+  - javascript
+  - typescript
+  - python
+  - java
+frameworks:
+  - none
+  - nodejs
+  - spring-boot
+  - django
+  - fastapi
+project_types:
+  - library
+  - web-api
+  - backend-service
+  - microservices
+  - modular-monolith
+tags:
+  - test-structure
+  - readability
+  - unit-testing
+examples:
+  - language: javascript
+    title: Jest service test with one act
+    negative: |-
+      test("activates a user", async () => {
+        const repo = new InMemoryUserRepository();
+        const user = await repo.save({ email: "a@example.com", active: false });
+        expect(user.active).toBe(false);
+        await new ActivateUser(repo).run(user.id);
+        const saved = await repo.find(user.id);
+        expect(saved.active).toBe(true);
+        expect(await repo.count()).toBe(1);
+      });
+    positive: |-
+      test("activates a user", async () => {
+        // arrange
+        const repo = new InMemoryUserRepository();
+        const user = await repo.save({ email: "a@example.com", active: false });
+        const service = new ActivateUser(repo);
+      
+        // act
+        await service.run(user.id);
+      
+        // assert
+        await expect(repo.find(user.id)).resolves.toMatchObject({ active: true });
+      });
+    explanation: >-
+      The positive test separates fixture setup from the single behaviour trigger and the outcome check; it does not assert incidental setup details that would make the failure less diagnostic.
+ratings:
+  small:
+    score: 5
+    notes: >-
+      Cheap and valuable even for tiny libraries; it is mostly naming and ordering discipline.
+  medium:
+    score: 5
+    notes: >-
+      A default testing convention that keeps growing suites readable across contributors.
+  large:
+    score: 4
+    notes: >-
+      Still useful, but large suites also need higher-level scenario organisation and good fixtures.

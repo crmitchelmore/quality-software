@@ -1,0 +1,130 @@
+id: onion-architecture
+title: Onion Architecture
+aka:
+  - Domain-Centred Architecture
+scale: architectural
+category: architecture
+maturity: established
+short_description: >-
+  Structure the application as concentric rings around a domain model, with dependencies pointing inward and infrastructure pushed to the outer shell.
+description: >-
+  Onion Architecture puts the domain model at the centre, surrounds it with domain services and application services, and keeps infrastructure, UI, and persistence on the outside. Inner rings define contracts; outer rings implement them. It is close to Hexagonal and Clean Architecture, but its language emphasises preserving a rich domain core from outward technical pressure.
+problem: >-
+  Domain concepts get distorted by persistence schemas, controllers, and integration formats when infrastructure is allowed to shape the model directly.
+context: >-
+  Domain-heavy systems where modelling behaviour and invariants is more important than mirroring database tables or web endpoints.
+consequences:
+  - >-
+    Protects domain invariants from framework and database coupling.
+  - >-
+    Encourages persistence ignorance and meaningful domain services.
+  - >-
+    Needs mapping code at boundaries, especially when ORM entities differ from domain entities.
+  - >-
+    Teams can mistake rings for folders and still allow outward dependencies unless imports are checked.
+synergies:
+  - pattern: domain-model
+    reason: >-
+      The rich domain model is the innermost ring and the main asset being protected.
+  - pattern: repository
+    reason: >-
+      Repository interfaces belong inside while persistence implementations remain outside.
+  - pattern: hexagonal-architecture
+    reason: >-
+      Ports and adapters provide a practical implementation style for the outer ring.
+  - pattern: data-mapper
+    reason: >-
+      Data Mapper keeps database records separate from domain objects.
+conflicts_with:
+  - active-record
+alternatives:
+  - clean-architecture
+  - hexagonal-architecture
+  - layered-architecture
+languages:
+  - language-agnostic
+  - csharp
+  - java
+  - typescript
+  - python
+frameworks:
+  - dotnet
+  - spring-boot
+  - nestjs
+  - django
+  - hibernate
+project_types:
+  - backend-service
+  - web-api
+  - modular-monolith
+  - monolith
+tags:
+  - domain-centric
+  - dependency-inversion
+  - persistence-ignorance
+  - rings
+diagram: |-
+  flowchart TB
+    UI[UI] --> APP[App Ring]
+    INF[Infra] --> APP
+    APP --> DS[Domain Services]
+    DS --> DM[Domain Model]
+    APP --> PORTS[Domain Ports]
+    INF --> PORTS
+    INF --> DB[(Store)]
+examples:
+  - language: csharp
+    title: Keep persistence attributes out of the domain core
+    negative: |
+      [Table("orders")]
+      public class OrderRecord
+      {
+          [Key] public Guid Id { get; set; }
+          public string Status { get; set; } = "NEW";
+          public decimal Total { get; set; }
+      
+          public void Ship()
+          {
+              Status = "SHIPPED";
+          }
+      }
+    positive: |
+      public sealed class Order
+      {
+          public OrderId Id { get; }
+          public Money Total { get; }
+          public OrderStatus Status { get; private set; }
+      
+          public void Ship()
+          {
+              if (Status != OrderStatus.Paid) throw new InvalidOperationException("Order must be paid");
+              Status = OrderStatus.Shipped;
+          }
+      }
+      
+      public interface Orders
+      {
+          Task Save(Order order);
+      }
+      
+      // Entity Framework records and mappings live in the infrastructure ring.
+    explanation: >-
+      The positive version lets the domain express valid state transitions without ORM annotations or database strings. Persistence is an adapter, not the model owner.
+ratings:
+  small:
+    score: 2
+    notes: >-
+      Rarely worth it unless the small system has unusually complex domain rules.
+  medium:
+    score: 4
+    notes: >-
+      Strong fit for domain-heavy medium systems, especially with modular monoliths.
+  large:
+    score: 5
+    notes: >-
+      Excellent when teams need a stable domain core protected from many adapters and persistence choices.
+references:
+  - title: The Onion Architecture
+    author: Jeffrey Palermo
+    year: 2008
+    url: https://jeffreypalermo.com/2008/07/the-onion-architecture-part-1/

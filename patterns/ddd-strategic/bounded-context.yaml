@@ -1,0 +1,114 @@
+id: bounded-context
+title: Bounded Context
+scale: architectural
+category: ddd-strategic
+maturity: time-tested
+short_description: >-
+  Draw an explicit boundary around a model, language, codebase, and team ownership so terms and rules are consistent inside and deliberately translated outside.
+description: >-
+  A Bounded Context is the strategic DDD boundary within which a domain model is defined and consistent. The same word may mean different things in different contexts: Customer in Sales, Support, and Billing often has different lifecycle, identifiers, and rules. A bounded context owns its ubiquitous language, code, data model, APIs, and team decisions. Integration between contexts is explicit through relationships such as customer-supplier, conformist, shared kernel, anti-corruption layer, open host service, or published language. Bounded contexts are not automatically microservices, but good service boundaries frequently align with them.
+problem: >-
+  Enterprise systems often force one canonical model across departments that use the same words differently. The result is ambiguous terminology, bloated shared schemas, and teams changing each other's rules accidentally.
+context: >-
+  Use bounded contexts when multiple teams, capabilities, or subdomains need autonomy and when the language or invariants differ across parts of the business. They are most valuable in complex domains with organisational boundaries.
+consequences:
+  - Preserves model integrity by keeping meanings consistent inside the boundary.
+  - Enables team autonomy and independent evolution when ownership is clear.
+  - Forces integration contracts and translations to be explicit.
+  - Adds coordination cost; splitting too early creates distributed complexity and duplicate concepts.
+synergies:
+  - pattern: ubiquitous-language
+    reason: A bounded context is the scope within which a ubiquitous language has one precise meaning.
+  - pattern: context-map
+    reason: Context maps show how bounded contexts depend on, conform to, or translate between each other.
+  - pattern: anti-corruption-layer
+    reason: ACLs protect a context's model when integrating with a legacy or upstream model that should not leak inside.
+  - pattern: microservices
+    reason: Microservice boundaries are strongest when they align to bounded contexts rather than technical layers.
+alternatives:
+  - modular-monolith
+  - layered-architecture
+  - service-oriented-architecture
+conflicts_with:
+  - shared-kernel
+languages:
+  - language-agnostic
+  - csharp
+  - java
+  - typescript
+frameworks:
+  - none
+  - spring-boot
+  - dotnet
+  - nestjs
+  - kafka
+project_types:
+  - backend-service
+  - microservices
+  - modular-monolith
+  - distributed-system
+tags:
+  - ddd
+  - strategic-design
+  - boundaries
+  - team-topology
+diagram: |-
+  flowchart LR
+    Sales[Sales Context]
+    Billing[Billing Context]
+    Fulfilment[Fulfilment Context]
+    Support[Support Context]
+    Sales -- Published Language --> Billing
+    Billing -- Customer-Supplier --> Fulfilment
+    Support -- Anti-Corruption Layer --> Sales
+    Sales -. Different Customer meaning .- Support
+examples:
+  - language: typescript
+    title: Separate customer meanings by context
+    negative: |
+      export interface Customer {
+        id: string;
+        email: string;
+        creditLimit: number;
+        supportTier: string;
+        salesStage: string;
+        invoiceAccountId: string;
+      }
+
+      // Sales, Billing, and Support all import this shared type and add nullable fields.
+    positive: |
+      // sales/customer.ts
+      export class SalesCustomer {
+        constructor(readonly id: SalesCustomerId, readonly email: Email, readonly stage: SalesStage) {}
+        qualify(opportunityValue: Money): QualifiedLead { /* sales language */ throw new Error("not implemented"); }
+      }
+
+      // billing/customer.ts
+      export class BillingAccount {
+        constructor(readonly id: BillingAccountId, readonly payer: Email, readonly creditLimit: Money) {}
+        placeOnHold(reason: HoldReason): void { /* billing language */ }
+      }
+
+      // integration/customer-translator.ts maps published sales events into billing commands.
+    explanation: >-
+      The positive version allows Sales and Billing to use different models and terms. Translation is explicit at the boundary rather than hidden in a bloated shared Customer type.
+ratings:
+  small:
+    score: 2
+    notes: >-
+      Usually overkill for tiny apps with one team and one model; modules or packages may be enough.
+  medium:
+    score: 4
+    notes: >-
+      Useful for modular monoliths and growing products where capabilities and vocabulary begin to diverge.
+  large:
+    score: 5
+    notes: >-
+      Excellent for large organisations: it anchors ownership, language, data boundaries, and service decomposition.
+references:
+  - title: Domain-Driven Design
+    author: Eric Evans
+    year: 2003
+  - title: Implementing Domain-Driven Design
+    author: Vaughn Vernon
+    year: 2013

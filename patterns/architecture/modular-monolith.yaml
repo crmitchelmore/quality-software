@@ -1,0 +1,122 @@
+id: modular-monolith
+title: Modular Monolith
+aka:
+  - Well-Structured Monolith
+scale: architectural
+category: architecture
+maturity: established
+short_description: >-
+  Keep one deployable application while enforcing strong internal module boundaries around business capabilities, so teams get simpler operations without a tangled codebase.
+description: >-
+  A Modular Monolith deliberately chooses a single runtime and deployment unit but refuses a single ball of mud. Modules encapsulate domain capabilities, own their internal data access, expose narrow APIs or events to other modules, and can often be extracted later if independent deployment becomes necessary. It trades distributed-systems complexity for strict in-process boundary discipline.
+problem: >-
+  Teams often jump to microservices to solve codebase coupling, when the immediate problem is actually weak modularity inside one deployable.
+context: >-
+  Products that need coherent deployment, strong consistency, and fast local development, but have enough domain complexity that a flat monolith is becoming risky.
+consequences:
+  - >-
+    Retains simple deployment, transactions, debugging, and local development.
+  - >-
+    Creates extraction seams for future services without paying network costs now.
+  - >-
+    Requires architecture tests or dependency rules to stop modules reaching into each other.
+  - >-
+    Can become a disguised monolith if shared tables and shared internals are tolerated.
+synergies:
+  - pattern: bounded-context
+    reason: >-
+      Bounded contexts provide the business language for module seams.
+  - pattern: domain-event
+    reason: >-
+      In-process domain events decouple modules without forcing network distribution.
+  - pattern: repository
+    reason: >-
+      Repositories keep each module data access hidden behind module-owned behaviour.
+  - pattern: clean-architecture
+    reason: >-
+      Clean inner use cases help each module stay independently comprehensible.
+conflicts_with:
+  - microservices
+alternatives:
+  - monolith
+  - microservices
+  - layered-architecture
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - typescript
+  - python
+frameworks:
+  - spring-boot
+  - dotnet
+  - nestjs
+  - django
+  - rails
+project_types:
+  - modular-monolith
+  - web-api
+  - backend-service
+  - monolith
+tags:
+  - modularity
+  - single-deployable
+  - bounded-contexts
+  - evolutionary-architecture
+diagram: |-
+  flowchart TB
+    App[Single App] --> Sales[Sales Module]
+    App --> Billing[Billing Module]
+    App --> Stock[Stock Module]
+    Sales -. domain events .-> Billing
+    Sales -. domain events .-> Stock
+    Sales --> SDB[(Sales Tables)]
+    Billing --> BDB[(Billing Tables)]
+    Stock --> IDB[(Stock Tables)]
+examples:
+  - language: typescript
+    title: Use module APIs instead of importing internals
+    negative: |
+      // billing module reaches into sales persistence internals
+      import { salesDb } from "../sales/internal/db";
+      
+      export async function invoice(orderId: string) {
+        const order = await salesDb.orders.find(orderId);
+        return createInvoice(order.customerId, order.total);
+      }
+    positive: |
+      // sales/public.ts
+      export interface SalesQueries {
+        orderSummary(orderId: string): Promise<OrderSummary | null>;
+      }
+      
+      // billing/invoice.ts
+      export class InvoiceOrder {
+        constructor(private readonly sales: SalesQueries) {}
+      
+        async execute(orderId: string) {
+          const order = await this.sales.orderSummary(orderId);
+          if (!order) throw new Error("order not found");
+          return createInvoice(order.customerId, order.total);
+        }
+      }
+    explanation: >-
+      The positive version lets Billing depend only on Sales public capability, not its internal tables or ORM. That keeps module ownership real and preserves a future extraction path.
+ratings:
+  small:
+    score: 2
+    notes: >-
+      Too structured for tiny apps, though lightweight modules are still useful.
+  medium:
+    score: 5
+    notes: >-
+      Excellent default for medium products because it delays distribution while controlling coupling.
+  large:
+    score: 4
+    notes: >-
+      Strong when domains are cohesive and deployment independence is not yet required; some large organisations will eventually split selected modules into services.
+references:
+  - title: Monolith First
+    author: Martin Fowler
+    year: 2015
+    url: https://martinfowler.com/bliki/MonolithFirst.html

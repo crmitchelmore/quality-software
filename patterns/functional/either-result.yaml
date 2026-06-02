@@ -1,0 +1,108 @@
+id: either-result
+title: Either / Result
+aka:
+  - Result Type
+  - Either Type
+  - Expected
+scale: design
+category: functional
+maturity: time-tested
+short_description: >-
+  Represent success or failure as a value, carrying either the successful result or typed error information.
+description: >-
+  Either/Result makes recoverable failure explicit in the return type. Instead of throwing through invisible control flow, a function returns Ok(value) or Err(error), and callers compose or pattern-match on the result. It is strongest when errors are expected domain outcomes, not programmer defects or truly exceptional infrastructure failure.
+problem: >-
+  Exceptions and sentinel values make recoverable failure paths implicit, easy to forget, and hard to document in function signatures.
+context: >-
+  Use for validation, parsing, command handling, service boundaries, and domain operations where callers are expected to branch on known failure reasons.
+consequences:
+  - >-
+    Documents failure modes in the type signature and supports exhaustive handling.
+  - Composes with map/flatMap so success paths remain linear.
+  - Can become noisy in languages without ergonomic syntax or union types.
+  - >-
+    Do not replace all exceptions: bugs, cancellation, and unrecoverable infrastructure failures may still be better as exceptions or process-level failures.
+synergies:
+  - pattern: option-maybe
+    reason: >-
+      Option handles missing values; Result handles missing or invalid values with a reason.
+  - pattern: smart-constructor
+    reason: >-
+      Smart constructors can return Result to explain invariant violations.
+  - pattern: pattern-matching
+    reason: Pattern matching makes Ok and Err handling exhaustive and readable.
+  - pattern: problem-details
+    reason: >-
+      Result errors can map cleanly to RFC 7807 API responses at the boundary.
+alternatives:
+  - guard-clause
+  - problem-details
+  - fail-fast
+conflicts_with:
+  - active-record
+languages:
+  - rust
+  - scala
+  - typescript
+  - haskell
+  - csharp
+frameworks:
+  - none
+  - actix
+  - nodejs
+project_types:
+  - library
+  - web-api
+  - backend-service
+  - sdk
+  - safety-critical
+tags:
+  - errors
+  - validation
+  - typed-failure
+examples:
+  - language: typescript
+    title: Parsing a payment amount
+    negative: |
+      function parseCents(input: string): number {
+        const value = Number(input);
+        if (!Number.isInteger(value) || value <= 0) {
+          throw new Error("amount must be a positive integer");
+        }
+        return value;
+      }
+      
+      const cents = parseCents(form.amount); // failure is invisible in the type
+    positive: |
+      type Result<T, E> = { ok: true; value: T } | { ok: false; error: E };
+      
+      type AmountError = "not-an-integer" | "not-positive";
+      
+      function parseCents(input: string): Result<number, AmountError> {
+        const value = Number(input);
+        if (!Number.isInteger(value)) return { ok: false, error: "not-an-integer" };
+        if (value <= 0) return { ok: false, error: "not-positive" };
+        return { ok: true, value };
+      }
+      
+      const parsed = parseCents(form.amount);
+      const response = parsed.ok ? charge(parsed.value) : showAmountError(parsed.error);
+    explanation: >-
+      The positive version makes expected validation failures explicit and typed; the caller cannot use the amount until it handles the Err case.
+ratings:
+  small:
+    score: 3
+    notes: >-
+      Useful for libraries and parsing, but may feel heavy for throwaway scripts.
+  medium:
+    score: 5
+    notes: >-
+      Excellent for domain validation and API command flows with known recoverable failures.
+  large:
+    score: 5
+    notes: >-
+      Strong fit for public contracts and safety-critical code because failure modes are reviewable and typed.
+references:
+  - title: Railway Oriented Programming
+    author: Scott Wlaschin
+    year: 2013

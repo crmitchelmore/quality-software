@@ -1,0 +1,88 @@
+id: change-data-capture
+title: Change Data Capture (CDC)
+scale: data
+category: data-persistence
+maturity: established
+short_description: >-
+  Capture committed database changes and publish them as a stream for projections, integration, auditing, or replication.
+description: >-
+  Change Data Capture reads the database transaction log, triggers, or versioned tables to produce an ordered stream of inserts, updates, and deletes. It is useful when downstream systems need a reliable feed of committed facts, especially for search indexes, data warehouses, cache invalidation, or service integration. Good CDC designs treat schemas as contracts: they version events, handle snapshots and backfills, preserve ordering where needed, and avoid exposing sensitive columns by default.
+problem: >-
+  Applications often need to notify other systems after a database commit, but hand-coded dual writes are easy to miss, reorder, or partially fail.
+context: >-
+  Use when the database is already the source of truth and consumers need asynchronous, replayable changes. Avoid using raw table changes as a public domain event stream without curation.
+consequences:
+  - Reduces application changes needed to feed analytics, search, or integration pipelines.
+  - Can leak internal schema churn and sensitive columns if the capture stream is not curated.
+  - Consumers must handle replays, snapshots, tombstones, and at-least-once delivery.
+  - Operational correctness depends on log retention, connector lag, schema registry discipline, and alerting.
+synergies:
+  - pattern: outbox
+    reason: >-
+      Outbox records can be captured by CDC to publish domain events after the same database commit.
+  - pattern: materialized-view
+    reason: >-
+      CDC streams are a common input to read models and denormalised projections.
+  - pattern: publish-subscribe
+    reason: >-
+      Captured changes are distributed to multiple consumers without point-to-point coupling.
+  - pattern: idempotent-receiver
+    reason: >-
+      Consumers must de-duplicate because CDC delivery and reprocessing are commonly at least once.
+alternatives:
+  - outbox
+  - event-sourcing
+  - polling-consumer
+conflicts_with:
+  - active-record
+languages:
+  - language-agnostic
+  - sql
+  - java
+  - go
+frameworks:
+  - kafka
+  - none
+  - spring-boot
+  - kubernetes
+project_types:
+  - data-pipeline
+  - etl
+  - microservices
+  - distributed-system
+tags:
+  - cdc
+  - event-streaming
+  - replication
+examples:
+  - language: typescript
+    title: Publish only after commit
+    negative: |
+      async function shipOrder(orderId: string) {
+        await bus.publish("order-shipped", { orderId });
+        await db.query("UPDATE orders SET status='shipped' WHERE id=$1", [orderId]);
+      }
+    positive: |
+      async function shipOrder(orderId: string) {
+        await db.tx(async t => {
+          await t.query("UPDATE orders SET status='shipped' WHERE id=$1", [orderId]);
+          await t.query("INSERT INTO outbox(topic, payload) VALUES($1,$2)",
+            ["order-shipped", JSON.stringify({ orderId })]);
+        });
+      }
+      // CDC reads the committed outbox row and publishes it to Kafka.
+    explanation: >-
+      The positive version makes the state change and publication record part of one transaction; CDC publishes only committed facts.
+ratings:
+  small:
+    score: 2
+    notes: >-
+      Usually unnecessary for small systems; direct application events or simple jobs are easier.
+  medium:
+    score: 4
+    notes: >-
+      Strong fit when projections and integrations multiply, provided schemas are curated.
+  large:
+    score: 5
+    notes: >-
+      Essential for large data platforms and service ecosystems that need replayable committed change streams.

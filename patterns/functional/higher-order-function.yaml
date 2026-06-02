@@ -1,0 +1,112 @@
+id: higher-order-function
+title: Higher-Order Function
+aka:
+  - Function as Argument
+  - Function Factory
+scale: implementation
+category: functional
+maturity: time-tested
+short_description: >-
+  Accept functions as inputs or return functions as outputs to parameterise behaviour without inheritance or conditionals.
+description: >-
+  A Higher-Order Function treats behaviour as a first-class value. It can abstract traversal, resource handling, retry policy, validation, or transformation while the caller supplies the varying operation. This is the functional counterpart to many small strategy objects, and it is often simpler when no mutable strategy state is required.
+problem: >-
+  Reusable control flow becomes duplicated because only one step varies, or classes are introduced merely to pass a single method around.
+context: >-
+  Use in languages with first-class functions for callbacks, collection operations, decorators, middleware, resource scopes, and small policy seams.
+consequences:
+  - Removes boilerplate classes for behaviour that fits in a function.
+  - >-
+    Centralises control flow while leaving the variable step explicit at the call site.
+  - Can become hard to read if anonymous functions are deeply nested.
+  - Captured variables need the same care as any closure over mutable state.
+synergies:
+  - pattern: strategy
+    reason: >-
+      A higher-order function is often a lightweight strategy when behaviour has no identity or lifecycle.
+  - pattern: function-composition
+    reason: >-
+      Functions returned by higher-order helpers can be composed into larger behaviours.
+  - pattern: currying
+    reason: >-
+      Curried functions are higher-order functions that return the next argument stage.
+  - pattern: middleware-pipeline
+    reason: >-
+      Middleware chains are higher-order functions around request handlers.
+alternatives:
+  - strategy
+  - template-method
+  - command
+languages:
+  - language-agnostic
+  - typescript
+  - javascript
+  - python
+  - scala
+  - haskell
+  - clojure
+frameworks:
+  - none
+  - react
+  - rxjs
+  - express
+project_types:
+  - library
+  - web-frontend
+  - web-api
+  - backend-service
+tags:
+  - first-class-functions
+  - callbacks
+  - behaviour-parameterisation
+examples:
+  - language: typescript
+    title: Retrying an operation
+    negative: |
+      async function fetchUser(id: string): Promise<User> {
+        for (let attempt = 0; attempt < 3; attempt++) {
+          try {
+            return await httpUser(id);
+          } catch (error) {
+            if (attempt === 2) throw error;
+          }
+        }
+        throw new Error("unreachable");
+      }
+      
+      async function fetchOrder(id: string): Promise<Order> {
+        // same retry loop copied again
+        return httpOrder(id);
+      }
+    positive: |
+      async function withRetry<T>(operation: () => Promise<T>, attempts = 3): Promise<T> {
+        for (let attempt = 0; attempt < attempts; attempt++) {
+          try {
+            return await operation();
+          } catch (error) {
+            if (attempt === attempts - 1) throw error;
+          }
+        }
+        throw new Error("unreachable");
+      }
+      
+      const user = await withRetry(() => httpUser(id));
+      const order = await withRetry(() => httpOrder(id));
+    explanation: >-
+      The positive version abstracts the invariant retry control flow and supplies only the operation that varies, avoiding duplicated loops or one-method classes.
+ratings:
+  small:
+    score: 5
+    notes: >-
+      A core idiom in modern languages; usually the simplest abstraction for small behaviour seams.
+  medium:
+    score: 5
+    notes: Excellent for libraries, callbacks, and policy injection.
+  large:
+    score: 4
+    notes: >-
+      Still strong, but name important functions; avoid anonymous callback mazes in critical flows.
+references:
+  - title: Higher-order functions
+    author: John Hughes
+    year: 1989

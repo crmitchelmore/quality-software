@@ -1,0 +1,98 @@
+id: scheduler-agent-supervisor
+title: Scheduler-Agent-Supervisor
+scale: integration
+category: cloud-distributed
+maturity: established
+short_description: >-
+  Split distributed work into a scheduler that assigns jobs, agents that execute them,
+  and a supervisor that monitors progress and recovery.
+description: >-
+  Scheduler-Agent-Supervisor separates coordination from execution. The scheduler
+  decides what work should run and where, agents perform isolated units of work, and
+  the supervisor tracks heartbeats, deadlines, retries, cancellation, and escalation.
+  The pattern is useful when long-running or resource-specific jobs need visibility
+  and recovery beyond a simple queue consumer. Clear leases, idempotent job effects,
+  and durable state prevent lost or duplicated work.
+problem: >-
+  Background work spread across machines becomes hard to assign, observe, cancel, and
+  recover when workers disappear or jobs exceed expected duration.
+context: >-
+  Build farms, data processing, media transcoding, provisioning, scheduled operations,
+  and any distributed job system requiring explicit supervision.
+consequences:
+  - Gives clear ownership of assignment, execution, and recovery responsibilities.
+  - Improves observability for long-running work through heartbeats and job state.
+  - Adds coordination state and leases that must be kept consistent under failures.
+  - Requires idempotent agents because retries and reassignments are normal.
+synergies:
+  - pattern: leader-election
+    reason: Only one scheduler should often make global assignment decisions for a queue or partition.
+  - pattern: competing-consumers
+    reason: Agents may consume independent jobs concurrently once the scheduler has partitioned work.
+  - pattern: idempotency
+    reason: Reassigned jobs can repeat after agent loss and must not duplicate side effects.
+  - pattern: timeout
+    reason: Supervisors rely on deadlines to detect stuck or lost agents.
+alternatives:
+  - queue-based-load-leveling
+  - competing-consumers
+  - actor-model
+languages:
+  - language-agnostic
+  - go
+  - java
+  - csharp
+  - typescript
+  - python
+frameworks:
+  - kubernetes
+  - celery
+  - akka
+  - rabbitmq
+  - kafka
+project_types:
+  - backend-service
+  - distributed-system
+  - data-pipeline
+  - etl
+  - high-throughput
+tags:
+  - jobs
+  - supervision
+  - scheduling
+  - worker-pool
+examples:
+  - language: python
+    title: Supervising export jobs
+    negative: |
+      def run_exports():
+          for job in db.pending_exports():
+              export_customer_file(job.customer_id)  # no lease, heartbeat, or recovery
+              db.mark_done(job.id)
+    positive: |
+      def agent_loop(agent_id: str):
+          job = scheduler.claim_next(agent_id, lease_seconds=60)
+          if not job:
+              return
+          try:
+              supervisor.heartbeat(job.id, agent_id)
+              export_customer_file(job.customer_id, idempotency_key=job.id)
+              supervisor.complete(job.id, agent_id)
+          except Exception as exc:
+              supervisor.fail_or_requeue(job.id, agent_id, str(exc))
+    explanation: >-
+      The positive version gives jobs a lease, heartbeat, completion, and requeue path,
+      allowing the supervisor to recover work when agents fail mid-job.
+ratings:
+  small:
+    score: 2
+    notes: Too much machinery for simple cron jobs or one-process queues.
+  medium:
+    score: 4
+    notes: Good fit for visible, retryable background work that outgrows basic queue consumers.
+  large:
+    score: 5
+    notes: Excellent for large job platforms where assignment, supervision, and recovery are core capabilities.
+references:
+  - title: Microsoft Azure Architecture Center; Scheduler Agent Supervisor pattern
+    url: https://learn.microsoft.com/azure/architecture/patterns/scheduler-agent-supervisor

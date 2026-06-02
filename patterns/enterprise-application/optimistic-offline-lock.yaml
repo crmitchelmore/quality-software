@@ -1,0 +1,85 @@
+id: optimistic-offline-lock
+title: Optimistic Offline Lock
+scale: data
+category: enterprise-application
+maturity: time-tested
+short_description: >-
+  Detect conflicting business transactions by checking a version or timestamp at commit time instead of holding locks while users think or work offline.
+description: >-
+  Optimistic Offline Lock protects long-running business transactions that span multiple requests, screens, or disconnected edits. Each record carries a version. A user reads version N, edits locally, and the update succeeds only if the stored version is still N; the write then advances the version. Conflicts are surfaced for merge, retry, or rejection. The pattern assumes conflicts are possible but uncommon enough that detection is cheaper than prevention.
+problem: >-
+  Holding database locks across user think time is impractical, yet lost updates occur when two users load the same data and save changes in sequence.
+context: >-
+  Use for collaborative enterprise data where edits are long-lived and conflict frequency is low to moderate. Choose pessimistic locking for scarce resources or high-conflict workflows that cannot tolerate retries.
+consequences:
+  - Avoids holding database locks across requests, tabs, mobile sessions, or offline edits.
+  - Detects lost updates reliably when every write checks the version.
+  - Pushes conflict handling into the application and user experience.
+  - Performs poorly when conflicts are frequent because users repeatedly retry or merge.
+synergies:
+  - pattern: unit-of-work
+    reason: Unit of Work can include original versions in the commit and verify all changed objects together.
+  - pattern: layer-supertype
+    reason: A layer supertype can provide a consistent version field across persistent entities.
+  - pattern: repository
+    reason: Repositories can enforce version-aware saves instead of letting callers forget the check.
+  - pattern: etag-conditional-request
+    reason: HTTP ETags expose the same optimistic version check at API boundaries.
+alternatives:
+  - pessimistic-offline-lock
+  - optimistic-concurrency-control
+conflicts_with:
+  - pessimistic-offline-lock
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - typescript
+  - sql
+frameworks:
+  - spring-boot
+  - dotnet
+  - entity-framework
+  - hibernate
+  - sqlalchemy
+project_types:
+  - web-api
+  - backend-service
+  - modular-monolith
+  - monolith
+tags:
+  - concurrency
+  - versioning
+  - lost-update
+examples:
+  - language: sql
+    title: Version-checked update
+    negative: |
+      -- Last writer wins; Alice can overwrite Bob's change silently.
+      UPDATE orders
+         SET status = 'APPROVED', approved_by = 'alice'
+       WHERE id = 'ord_123';
+    positive: |
+      -- Alice loaded version 7. The update succeeds only if nobody saved version 8 first.
+      UPDATE orders
+         SET status = 'APPROVED', approved_by = 'alice', version = version + 1
+       WHERE id = 'ord_123'
+         AND version = 7;
+
+      -- If row_count is 0, reload and report a concurrency conflict instead of overwriting.
+    explanation: >-
+      The positive version makes the lost-update check part of the write, so stale edits are detected without holding a database lock across user think time.
+ratings:
+  small:
+    score: 3
+    notes: Worth adding when users edit the same records; otherwise simple transactions may suffice.
+  medium:
+    score: 5
+    notes: Excellent default for web applications with long-running edits and moderate conflict rates.
+  large:
+    score: 5
+    notes: Essential in large enterprise systems, but requires consistent conflict UX and API semantics.
+references:
+  - title: Patterns of Enterprise Application Architecture
+    author: Martin Fowler
+    year: 2002

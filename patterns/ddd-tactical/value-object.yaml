@@ -1,0 +1,109 @@
+id: value-object
+title: Value Object
+scale: design
+category: ddd-tactical
+maturity: time-tested
+short_description: >-
+  Model a descriptive domain concept by its value, making it immutable, validated, and equality-by-contents rather than equality-by-identity.
+description: >-
+  A Value Object captures a concept such as Money, DateRange, EmailAddress, Address, SKU, or Quantity where identity is irrelevant: two instances with the same values are interchangeable. It validates its invariants at construction, exposes behaviour that belongs to the concept, and is usually immutable so it can be freely shared. Value objects reduce primitive obsession by replacing scattered strings, decimals, and tuples with domain-specific types that make invalid states harder to represent.
+problem: >-
+  Primitive values let invalid or semantically confused data flow through the system: dollars and cents are added as decimals, dates are passed in the wrong order, and email strings are repeatedly revalidated at every boundary.
+context: >-
+  Use value objects whenever a small cluster of attributes has domain meaning, validation rules, or operations, but no independent lifecycle. They are especially effective inside entities and aggregates.
+consequences:
+  - Encapsulates validation and domain operations close to the data.
+  - Improves equality semantics and test readability.
+  - Encourages immutability and safer sharing across threads and layers.
+  - Can add mapping overhead with ORMs and serializers that prefer primitives.
+synergies:
+  - pattern: entity
+    reason: Entities stay focused on lifecycle while value objects handle descriptive details such as Money or Address.
+  - pattern: aggregate
+    reason: Aggregates use value objects to enforce invariants without proliferating child entity identities.
+  - pattern: specification
+    reason: Specifications can compose richer predicates over value-object behaviour instead of raw primitive comparisons.
+  - pattern: smart-constructor
+    reason: Smart constructors are a natural way to create validated value objects without exposing invalid states.
+alternatives:
+  - parameter-object
+  - newtype-wrapper
+  - data-transfer-object
+conflicts_with:
+  - active-record
+languages:
+  - language-agnostic
+  - csharp
+  - java
+  - typescript
+  - kotlin
+frameworks:
+  - none
+  - dotnet
+  - spring-boot
+  - hibernate
+  - entity-framework
+project_types:
+  - backend-service
+  - modular-monolith
+  - microservices
+  - web-api
+  - library
+tags:
+  - ddd
+  - immutability
+  - validation
+  - primitive-obsession
+examples:
+  - language: typescript
+    title: Money as a value object
+    negative: |
+      function applyDiscount(total: number, discount: number): number {
+        return total - discount;
+      }
+
+      const payable = applyDiscount(10, 25); // negative money now exists
+    positive: |
+      class Money {
+        private constructor(readonly cents: number, readonly currency: string) {}
+
+        static of(cents: number, currency: string): Money {
+          if (!Number.isInteger(cents) || cents < 0) throw new Error("money must be non-negative cents");
+          if (!/^[A-Z]{3}$/.test(currency)) throw new Error("currency must be ISO-4217");
+          return new Money(cents, currency);
+        }
+
+        subtract(other: Money): Money {
+          if (this.currency !== other.currency) throw new Error("currency mismatch");
+          if (other.cents > this.cents) throw new Error("discount exceeds total");
+          return Money.of(this.cents - other.cents, this.currency);
+        }
+
+        equals(other: Money): boolean {
+          return this.cents === other.cents && this.currency === other.currency;
+        }
+      }
+
+      const payable = Money.of(1000, "GBP").subtract(Money.of(250, "GBP"));
+    explanation: >-
+      The positive version makes currency and non-negative amount part of the type's invariant. Invalid arithmetic fails at the operation that would create the bad value.
+ratings:
+  small:
+    score: 3
+    notes: >-
+      Worth using for high-risk values such as money or identifiers; avoid modelling every trivial string in tiny prototypes.
+  medium:
+    score: 5
+    notes: >-
+      Excellent default for domain-rich services because it removes repeated validation and primitive confusion.
+  large:
+    score: 5
+    notes: >-
+      Critical at scale: value objects carry ubiquitous language through code and prevent subtle cross-team semantic drift.
+references:
+  - title: Domain-Driven Design
+    author: Eric Evans
+    year: 2003
+  - title: Implementing Domain-Driven Design
+    author: Vaughn Vernon
+    year: 2013

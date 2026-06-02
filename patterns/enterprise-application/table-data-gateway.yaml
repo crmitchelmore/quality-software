@@ -1,0 +1,116 @@
+id: table-data-gateway
+title: Table Data Gateway
+scale: data
+category: enterprise-application
+maturity: time-tested
+aka:
+  - Table gateway
+short_description: >-
+  Provide one object that contains all SQL operations for a table or view and returns records or DTOs.
+description: >-
+  Table Data Gateway centralises persistence operations for a database table. Callers ask the gateway for rows, inserts, updates, and deletes rather than writing SQL throughout the application. Unlike Active Record, returned data is usually passive; unlike Data Mapper, the gateway often exposes table-shaped operations rather than reconstructing a rich object graph.
+problem: >-
+  Scattered SQL leads to inconsistent predicates, duplicated mapping, missing parameterisation, and hard-to-change table access. Full object mapping may be unnecessary for reporting, simple CRUD, or table-oriented legacy systems.
+context: >-
+  Use when a table or view is the natural boundary, when business logic sits in services or table modules, or when wrapping a legacy schema behind a narrow access point.
+consequences:
+  - >-
+    Centralises SQL and makes access paths auditable and parameterised.
+  - >-
+    Simple to test with integration tests and easy to replace behind an interface.
+  - >-
+    Can leak table shape into application code and encourage procedural transaction scripts.
+  - >-
+    Less suitable for rich Domain Models where behaviour belongs on objects rather than records.
+synergies:
+  - pattern: transaction-script
+    reason: >-
+      Transaction Scripts can call gateways for persistence while keeping SQL out of use-case orchestration.
+  - pattern: table-module
+    reason: >-
+      Table Module often uses a gateway as the data access boundary for the table it operates on.
+  - pattern: query-object
+    reason: >-
+      Complex search criteria can be factored into Query Objects rather than expanding gateway methods endlessly.
+  - pattern: gateway
+    reason: >-
+      The broader Gateway pattern describes the same boundary idea when the data source is external rather than a local table.
+alternatives:
+  - data-mapper
+  - active-record
+  - row-data-gateway
+  - data-access-object
+conflicts_with:
+  - active-record
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - typescript
+  - python
+  - php
+frameworks:
+  - spring-boot
+  - dotnet
+  - nodejs
+  - django
+  - laravel
+project_types:
+  - backend-service
+  - web-api
+  - modular-monolith
+  - monolith
+  - data-pipeline
+tags:
+  - sql
+  - data-access
+  - table-oriented
+  - gateway
+examples:
+  - language: typescript
+    title: Centralising account SQL
+    negative: |
+      async function suspendAccount(id: string) {
+        await db.query("update accounts set status = 'suspended' where id = $1", [id]);
+      }
+      
+      async function activeAccounts() {
+        return db.query("select * from accounts where status = 'active'");
+      }
+    positive: |
+      class AccountTableGateway {
+        constructor(private readonly db: Pool) {}
+      
+        async findActive(): Promise<AccountRow[]> {
+          return (await this.db.query(
+            "select id, email, status from accounts where status = $1",
+            ["active"]
+          )).rows;
+        }
+      
+        async markSuspended(id: string): Promise<void> {
+          await this.db.query(
+            "update accounts set status = $1 where id = $2",
+            ["suspended", id]
+          );
+        }
+      }
+    explanation: >-
+      The gateway gives one parameterised place for account table access. Callers no longer duplicate SQL strings or accidentally diverge on selected columns and predicates.
+ratings:
+  small:
+    score: 4
+    notes: >-
+      Good fit for small services that need explicit SQL without a full ORM.
+  medium:
+    score: 4
+    notes: >-
+      Works well for table-oriented modules, legacy schemas, and reporting paths.
+  large:
+    score: 3
+    notes: >-
+      Still useful at boundaries, but core domains often need Data Mapper, Repository, or richer domain abstractions to avoid table leakage.
+references:
+  - title: Patterns of Enterprise Application Architecture
+    author: Martin Fowler
+    year: 2002

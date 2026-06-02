@@ -1,0 +1,83 @@
+id: wire-tap
+title: Wire Tap
+scale: integration
+category: enterprise-integration
+maturity: time-tested
+short_description: >-
+  Copy messages from a channel to a secondary destination for observation, audit or analytics without changing the primary route.
+description: >-
+  A Wire Tap adds a passive branch to an integration flow. The original message continues to its intended consumer, while a copy is sent to monitoring, audit, analytics, testing or compliance infrastructure. The tap should not participate in the business transaction or delay the critical path; it must preserve privacy boundaries and avoid mutating the message. It is useful when teams need production visibility without coupling operational consumers to the main endpoint.
+problem: >-
+  Teams need to observe or audit integration traffic, but adding observers directly to the primary consumer changes delivery semantics and risks breaking business flow.
+context: >-
+  Use when messages on a channel need independent inspection, replay capture, metrics, compliance evidence or shadow processing.
+consequences:
+  - Enables observability and secondary processing without altering the main route.
+  - Reduces invasive logging inside business consumers.
+  - Can leak sensitive data if the tapped channel has broader access than the original flow.
+  - Adds extra traffic and storage; taps must fail independently from the main path.
+synergies:
+  - pattern: message-channel
+    reason: A tap attaches to a channel and creates an additional branch without changing producers.
+  - pattern: audit-logging
+    reason: Tapped copies can form an immutable audit trail when retention and access are controlled.
+  - pattern: publish-subscribe
+    reason: Pub-sub can implement a wire tap as an additional subscriber to the same event.
+  - pattern: claim-check
+    reason: Large or sensitive payloads can be replaced by controlled references before being tapped.
+alternatives:
+  - audit-logging
+  - publish-subscribe
+  - event-sourcing
+languages:
+  - language-agnostic
+  - java
+  - typescript
+  - go
+frameworks:
+  - kafka
+  - rabbitmq
+  - nats
+  - nodejs
+project_types:
+  - microservices
+  - distributed-system
+  - data-pipeline
+  - backend-service
+tags:
+  - messaging
+  - observability
+  - audit
+examples:
+  - language: typescript
+    title: Tapping Kafka events without blocking the primary publish
+    negative: |
+      async function publishShipment(event: ShipmentEvent) {
+        await analytics.send(event); // analytics outage blocks shipping
+        await kafka.send({ topic: "shipments", messages: [{ value: JSON.stringify(event) }] });
+      }
+    positive: |
+      async function publishShipment(event: ShipmentEvent) {
+        const value = JSON.stringify(event);
+        await kafka.send({ topic: "shipments", messages: [{ key: event.shipmentId, value }] });
+        void kafka.send({
+          topic: "shipments.tap.audit",
+          messages: [{ key: event.shipmentId, value: redactForAudit(value) }]
+        }).catch((err) => logger.warn({ err }, "wire tap publish failed"));
+      }
+    explanation: >-
+      The positive version keeps the primary shipment publication independent and sends a redacted copy to the tap, so analytics or audit failures do not stop the business event.
+ratings:
+  small:
+    score: 2
+    notes: Usually simple logging is enough unless messages need formal audit or replay capture.
+  medium:
+    score: 4
+    notes: Good fit for production observability and shadow consumers.
+  large:
+    score: 5
+    notes: Excellent for regulated or high-volume integrations, with strict privacy controls.
+references:
+  - title: Enterprise Integration Patterns
+    author: Gregor Hohpe and Bobby Woolf
+    year: 2003

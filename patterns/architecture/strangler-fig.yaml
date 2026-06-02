@@ -1,0 +1,130 @@
+id: strangler-fig
+title: Strangler Fig
+aka:
+  - Strangler application
+  - Incremental replacement
+scale: architectural
+category: architecture
+maturity: established
+short_description: >-
+  Replace a legacy system incrementally by routing selected capabilities to new
+  components until the old system is safely surrounded and retired.
+description: >-
+  The Strangler Fig pattern modernises a system by placing a routing or facade
+  layer in front of the legacy application and gradually diverting individual
+  flows to new implementations. Each slice is selected, built, verified, and
+  switched over while the remaining behaviour continues to run in the old system.
+  The pattern reduces big-bang migration risk and allows teams to learn from real
+  traffic, but it requires disciplined boundary discovery, data ownership,
+  reconciliation, and rollback planning. The legacy and replacement systems often
+  coexist for a long time, so operational transparency and clear retirement
+  criteria are essential.
+problem: >-
+  Large legacy replacements frequently fail because teams attempt a single
+  cut-over after reimplementing years of behaviour without enough production
+  feedback.
+context: >-
+  Use when a valuable but hard-to-change system must be modernised without
+  stopping business operations. It works best when capabilities can be sliced by
+  route, domain, tenant, workflow, or data ownership boundary.
+consequences:
+  - Migration risk is reduced because each capability can be released, observed, and rolled back independently.
+  - Teams can prioritise high-value or high-change areas instead of rewriting everything first.
+  - Coexistence creates duplicate integrations, data synchronisation challenges, and temporary complexity.
+  - Legacy behaviour must be characterised with tests, logs, or production traces before replacement.
+  - The strangling layer needs clear ownership so it does not become the next permanent monolith.
+synergies:
+  - pattern: api-gateway
+    reason: Gateway route rules are a practical mechanism for diverting endpoints from legacy to new services.
+  - pattern: anti-corruption-layer
+    reason: New components need ACLs to avoid inheriting legacy data shapes and semantics.
+  - pattern: microservices
+    reason: Replacement slices are often extracted as independently deployable services around business capabilities.
+  - pattern: circuit-breaker
+    reason: During coexistence, calls between old and new systems need fast failure and rollback protection.
+alternatives:
+  - modular-monolith
+  - layered-architecture
+  - clean-architecture
+conflicts_with:
+  - layered-architecture
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - typescript
+  - python
+frameworks:
+  - spring-boot
+  - dotnet
+  - nodejs
+  - express
+  - kubernetes
+project_types:
+  - backend-service
+  - web-api
+  - modular-monolith
+  - microservices
+tags:
+  - migration
+  - legacy-modernisation
+  - incremental-delivery
+  - routing
+  - coexistence
+diagram: |-
+  flowchart LR
+    Client[Client] --> Router[Router]
+    Router --> Legacy[Legacy]
+    Router --> NewA[New Slice]
+    NewA --> Acl[ACL]
+    Acl --> LegacyDb[(Legacy DB)]
+    Legacy --> LegacyDb
+examples:
+  - language: typescript
+    title: Routing one capability away from a legacy app
+    negative: |
+      export async function replaceLegacy() {
+        await deployNewSystem();
+        await migrateAllData();
+        await switchDnsToNewSystem();
+        await shutDownLegacy();
+      }
+    positive: |
+      export async function routeRequest(req: Request, legacy: App, modern: App) {
+        if (req.path.startsWith("/checkout")) {
+          return modern.handle(req);
+        }
+        return legacy.handle(req);
+      }
+
+      export async function modernCheckout(cmd: CheckoutCommand, legacy: LegacyClient) {
+        const customer = await legacy.lookupCustomer(cmd.customerId);
+        return placeOrder(toModernCustomer(customer), cmd.items);
+      }
+    explanation: >-
+      The negative version assumes a risky all-at-once cut-over. The positive
+      version diverts one capability and uses a translation boundary while the
+      rest of the system continues to run.
+ratings:
+  small:
+    score: 2
+    notes: >-
+      Usually unnecessary for small systems unless the legacy code is business
+      critical and cannot be paused for replacement.
+  medium:
+    score: 4
+    notes: >-
+      Good fit for meaningful modernisation where capability slices and rollback
+      paths can be defined.
+  large:
+    score: 5
+    notes: >-
+      Excellent for large legacy estates because it turns risky replacement into
+      measurable migration increments with production feedback.
+references:
+  - title: Strangler Fig Application
+    author: Martin Fowler
+    year: 2004
+  - title: Working Effectively with Legacy Code
+    author: Michael Feathers
+    year: 2004

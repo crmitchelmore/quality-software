@@ -1,0 +1,89 @@
+id: read-replica
+title: Read Replica
+scale: data
+category: data-persistence
+maturity: time-tested
+short_description: >-
+  Serve read-only traffic from replicated database copies while writes continue on the primary, improving read scale at the cost of replica lag.
+description: >-
+  A read replica continuously receives changes from a primary database and answers queries that do not need the latest committed write. The pattern separates read capacity, protects the primary from expensive reporting queries, and can place data closer to users. Correct designs make staleness visible: write-after-read paths use the primary, clients tolerate lag, and monitoring treats replication delay as an application-level failure mode.
+problem: >-
+  Read-heavy workloads, dashboards, and search-like screens can saturate the primary database even though they do not modify state.
+context: >-
+  Use when reads dominate writes, queries can tolerate bounded staleness, and the database engine or platform provides reliable replication and lag metrics. Avoid for invariants that require current state.
+consequences:
+  - Improves read throughput and isolates analytical or expensive queries from write traffic.
+  - Replica lag can break read-your-writes expectations unless routing is deliberate.
+  - Failure modes multiply because replicas can be reachable but behind.
+  - Security controls must be duplicated; read-only access can still expose sensitive data at scale.
+synergies:
+  - pattern: cqrs
+    reason: >-
+      Read replicas are a low-friction read side when full materialised projections are not yet needed.
+  - pattern: pagination
+    reason: >-
+      Large list endpoints should still page results so replicas are not turned into unbounded scan engines.
+  - pattern: connection-pool
+    reason: >-
+      Separate pools for primary and replica traffic prevent slow reads from starving writes.
+  - pattern: health-endpoint-monitoring
+    reason: >-
+      Health checks should include replication lag, not just TCP reachability.
+alternatives:
+  - materialized-view
+  - cache-aside
+  - cqrs
+conflicts_with:
+  - optimistic-concurrency-control
+languages:
+  - language-agnostic
+  - sql
+  - python
+  - java
+frameworks:
+  - none
+  - spring-boot
+  - django
+  - rails
+  - kubernetes
+project_types:
+  - web-api
+  - backend-service
+  - high-throughput
+  - data-pipeline
+tags:
+  - replication
+  - read-scale
+  - staleness
+examples:
+  - language: typescript
+    title: Route consistent reads deliberately
+    negative: |
+      async function updateEmail(userId: string, email: string) {
+        await primary.query("UPDATE users SET email=$1 WHERE id=$2", [email, userId]);
+        return replica.query("SELECT id,email FROM users WHERE id=$1", [userId]);
+      }
+    positive: |
+      async function updateEmail(userId: string, email: string) {
+        await primary.query("UPDATE users SET email=$1 WHERE id=$2", [email, userId]);
+        return primary.query("SELECT id,email FROM users WHERE id=$1", [userId]);
+      }
+
+      async function listUsers(page: Page) {
+        return replica.query("SELECT id,email FROM users ORDER BY id LIMIT $1", [page.limit]);
+      }
+    explanation: >-
+      The positive version uses the primary for read-your-writes behaviour and keeps eventually consistent listing traffic on the replica.
+ratings:
+  small:
+    score: 2
+    notes: >-
+      Rarely necessary for small apps; indexes and query limits usually buy enough headroom.
+  medium:
+    score: 4
+    notes: >-
+      Good fit for read-heavy products once lag-aware routing is built.
+  large:
+    score: 5
+    notes: >-
+      Often essential at large scale, but only with lag alerts, failover runbooks, and read/write pool isolation.

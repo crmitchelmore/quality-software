@@ -1,0 +1,98 @@
+id: function-composition
+title: Function Composition
+aka:
+  - Compose
+  - Pipe
+scale: implementation
+category: functional
+maturity: time-tested
+short_description: >-
+  Build larger behaviours by connecting small functions where each output becomes the next input.
+description: >-
+  Function Composition creates a pipeline of transformations without naming every intermediate variable or nesting calls. It works best with small, pure, single-purpose functions whose input and output types line up. Composition can be mathematical right-to-left compose or pragmatic left-to-right pipe; the important property is explicit data flow.
+problem: >-
+  Nested calls and temporary variables obscure the transformation path, while large functions mix steps that would be clearer and more testable separately.
+context: >-
+  Use for validation, parsing, formatting, request mapping, data cleanup, and UI state derivation where the flow is a sequence of deterministic transformations.
+consequences:
+  - Encourages small reusable functions and visible data flow.
+  - Makes pipelines easy to test step by step or as a whole.
+  - Type mismatches surface at composition boundaries.
+  - >-
+    Excessive point-free style can become unreadable; name important intermediate concepts.
+synergies:
+  - pattern: currying
+    reason: >-
+      Currying turns multi-argument functions into unary functions that compose naturally.
+  - pattern: partial-application
+    reason: >-
+      Partial application adapts general functions to the input shape required by a composition.
+  - pattern: pure-function
+    reason: >-
+      Pure functions compose safely because there are no hidden effects between stages.
+  - pattern: map-filter-reduce
+    reason: >-
+      Map/filter/reduce pipelines are a collection-oriented form of composition.
+alternatives:
+  - pipes-and-filters
+  - template-method
+  - strategy
+languages:
+  - language-agnostic
+  - typescript
+  - haskell
+  - scala
+  - clojure
+  - elixir
+frameworks:
+  - none
+  - rxjs
+  - redux
+project_types:
+  - library
+  - web-frontend
+  - backend-service
+  - data-pipeline
+tags:
+  - pipe
+  - compose
+  - data-flow
+examples:
+  - language: typescript
+    title: Normalising a username
+    negative: |
+      function normaliseUsername(input: string): string {
+        const trimmed = input.trim();
+        const lower = trimmed.toLowerCase();
+        const collapsed = lower.replace(/\s+/g, "-");
+        return collapsed.replace(/[^a-z0-9-]/g, "");
+      }
+    positive: |
+      const trim = (s: string) => s.trim();
+      const lower = (s: string) => s.toLowerCase();
+      const collapseWhitespace = (s: string) => s.replace(/\s+/g, "-");
+      const removeUnsafe = (s: string) => s.replace(/[^a-z0-9-]/g, "");
+      
+      const pipe = <A>(value: A, ...steps: Array<(value: A) => A>): A =>
+        steps.reduce((current, step) => step(current), value);
+      
+      const normaliseUsername = (input: string): string =>
+        pipe(input, trim, lower, collapseWhitespace, removeUnsafe);
+    explanation: >-
+      The positive version exposes the transformation sequence and gives each rule a reusable name while keeping the overall flow linear.
+ratings:
+  small:
+    score: 4
+    notes: >-
+      Good for concise transformations; avoid abstract pipe helpers if a direct expression is clearer.
+  medium:
+    score: 5
+    notes: Excellent for validation, mapping, and formatting pipelines.
+  large:
+    score: 4
+    notes: >-
+      Strong with naming discipline; overly clever point-free chains can reduce maintainability.
+references:
+  - title: Can Programming Be Liberated from the von Neumann Style?
+    author: John Backus
+    year: 1978

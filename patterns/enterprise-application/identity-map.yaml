@@ -1,0 +1,113 @@
+id: identity-map
+title: Identity Map
+scale: data
+category: enterprise-application
+maturity: time-tested
+aka:
+  - Session cache
+  - First-level cache
+short_description: >-
+  Keep exactly one in-memory object instance for each database identity within a business transaction.
+description: >-
+  Identity Map stores objects by their persistent identity as they are loaded. Subsequent requests for the same row return the same object instance, so changes and relationship navigation are coherent until the unit of work ends. It is a consistency pattern, not a general cache: its lifetime should be short and scoped to one request, command, or ORM session.
+problem: >-
+  Without an identity map, a use case can load the same row twice, mutate two different objects, overwrite changes in an arbitrary order, or compare object references that should represent the same entity. Lazy loading and graph traversal amplify the risk.
+context: >-
+  Use inside Data Mapper, Unit of Work, and rich Domain Model persistence where object identity matters and where repeated loads may occur during one transaction.
+consequences:
+  - >-
+    Preserves object identity and prevents conflicting in-memory copies of the same row.
+  - >-
+    Reduces repeated database reads during one use case without pretending to be a cross-request cache.
+  - >-
+    Requires clear scoping and eviction; a long-lived identity map leaks memory and serves stale data.
+  - >-
+    Needs careful key design for tenant-scoped ids and composite keys.
+synergies:
+  - pattern: unit-of-work
+    reason: >-
+      The Unit of Work uses the Identity Map to know which instance should be checked for dirty changes and written once.
+  - pattern: data-mapper
+    reason: >-
+      Data Mapper consults the Identity Map before hydrating a row, preventing duplicate domain objects.
+  - pattern: lazy-load
+    reason: >-
+      Lazy Load should resolve through Identity Map so relationship navigation reuses already-loaded entities.
+  - pattern: repository
+    reason: >-
+      Repositories can be the public access point while the identity map stays hidden inside the persistence implementation.
+alternatives:
+  - cache-aside
+  - repository
+conflicts_with:
+  - active-record
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - typescript
+  - python
+  - ruby
+frameworks:
+  - hibernate
+  - entity-framework
+  - typeorm
+  - sqlalchemy
+  - rails
+project_types:
+  - backend-service
+  - web-api
+  - modular-monolith
+  - monolith
+tags:
+  - identity
+  - session-cache
+  - orm
+  - consistency
+examples:
+  - language: java
+    title: Avoiding duplicate entity instances
+    negative: |
+      Customer a = mapper.find(customerId);
+      Order order = orderMapper.find(orderId);
+      Customer b = mapper.find(order.customerId());
+      
+      a.rename("Acme Ltd");
+      b.suspend();
+      mapper.update(a);
+      mapper.update(b); // later update may overwrite the first instance's state
+    positive: |
+      final class Session {
+          private final Map<CustomerId, Customer> customers = new HashMap<>();
+      
+          Customer customer(CustomerId id, Supplier<Customer> load) {
+              return customers.computeIfAbsent(id, ignored -> load.get());
+          }
+      }
+      
+      Customer a = session.customer(customerId, () -> mapper.find(customerId));
+      Order order = orderMapper.find(orderId);
+      Customer b = session.customer(order.customerId(), () -> mapper.find(order.customerId()));
+      
+      assert a == b;
+      a.rename("Acme Ltd");
+      a.suspend();
+    explanation: >-
+      Both access paths return the same Customer object, so mutations compose on one instance and the unit of work can write one coherent final state.
+ratings:
+  small:
+    score: 2
+    notes: >-
+      Usually unnecessary unless an ORM already provides it; a small script can reload explicitly.
+  medium:
+    score: 4
+    notes: >-
+      Good fit for ORM-backed services with relationship traversal and multiple repositories per request.
+  large:
+    score: 5
+    notes: >-
+      Excellent fit for complex object graphs, multi-tenant domains, and high-concurrency systems where duplicate in-memory identities cause subtle data loss.
+references:
+  - title: Patterns of Enterprise Application Architecture
+    author: Martin Fowler
+    year: 2002

@@ -1,0 +1,111 @@
+id: transaction-script
+title: Transaction Script
+scale: design
+category: enterprise-application
+maturity: time-tested
+aka:
+  - Procedure script
+  - Use-case script
+short_description: >-
+  Organise business logic as one procedure per request or use case, usually with straightforward database access.
+description: >-
+  Transaction Script handles a business transaction in a linear procedure: validate input, read state, make decisions, write changes, and return a result. It is intentionally simple and works best when rules are uncomplicated and mostly independent. The script owns orchestration; data may be passive records or Active Records.
+problem: >-
+  For simple CRUD and workflow steps, building a rich object model can obscure the actual business procedure. Teams need a direct place to implement the few rules that exist without scattering logic in controllers.
+context: >-
+  Use for small applications, admin workflows, simple integrations, and early-stage systems where each use case is mostly independent and domain rules do not need extensive reuse.
+consequences:
+  - >-
+    Fast to write and easy to trace from request to database update.
+  - >-
+    Works well with explicit transactions, gateways, and simple record models.
+  - >-
+    Duplicates rules as the domain grows and scripts start sharing partial logic.
+  - >-
+    Can become a procedural blob with hidden coupling, especially when scripts call each other.
+synergies:
+  - pattern: table-data-gateway
+    reason: >-
+      Gateways keep SQL out of the script while preserving straightforward procedural flow.
+  - pattern: active-record
+    reason: >-
+      Active Record gives scripts a quick row-oriented way to load, validate, and save simple objects.
+  - pattern: service-layer
+    reason: >-
+      A service layer can expose transaction scripts as application operations with consistent transaction and authorisation boundaries.
+  - pattern: idempotency
+    reason: >-
+      Scripts that are triggered by retries should use idempotency to avoid duplicate writes.
+alternatives:
+  - domain-model
+  - table-module
+  - service-layer
+conflicts_with:
+  - domain-model
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - typescript
+  - python
+  - ruby
+frameworks:
+  - spring-boot
+  - dotnet
+  - express
+  - django
+  - rails
+  - laravel
+project_types:
+  - prototype
+  - web-api
+  - backend-service
+  - monolith
+tags:
+  - procedural
+  - use-case
+  - crud
+  - orchestration
+examples:
+  - language: python
+    title: Simple refund use case
+    negative: |
+      class Refund:
+          def __init__(self, order):
+              self.order = order
+      
+          def amount(self):
+              return sum(line.price for line in self.order.lines)
+      
+          def apply(self):
+              self.order.status = "refunded"
+              PaymentGateway().refund(self.order.payment_id, self.amount())
+    positive: |
+      def refund_order(order_id, actor, db, payments):
+          order = db.orders.find(order_id)
+          if order.status != "paid":
+              raise ValueError("only paid orders can be refunded")
+      
+          amount = db.order_lines.total_for_order(order_id)
+          payments.refund(order.payment_id, amount)
+          db.orders.mark_refunded(order_id, actor.id)
+          db.audit.record("order_refunded", order_id, actor.id)
+    explanation: >-
+      For a simple workflow the positive version is clearer as a use-case procedure. It makes the read, external call, write, and audit steps visible without inventing domain objects that add little behaviour.
+ratings:
+  small:
+    score: 5
+    notes: >-
+      Excellent for small CRUD and workflow applications because the control flow is obvious.
+  medium:
+    score: 3
+    notes: >-
+      Still useful for simple use cases, but shared business rules need refactoring before duplication spreads.
+  large:
+    score: 2
+    notes: >-
+      Rarely suitable as the main organising pattern; large domains usually need Domain Model or Table Module boundaries.
+references:
+  - title: Patterns of Enterprise Application Architecture
+    author: Martin Fowler
+    year: 2002

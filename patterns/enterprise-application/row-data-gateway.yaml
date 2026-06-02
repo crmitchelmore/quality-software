@@ -1,0 +1,113 @@
+id: row-data-gateway
+title: Row Data Gateway
+scale: data
+category: enterprise-application
+maturity: time-tested
+aka:
+  - Row gateway
+short_description: >-
+  Represent one database row with an object that exposes finder-independent persistence operations for that row.
+description: >-
+  Row Data Gateway wraps a single row and gives it methods to insert, update, or delete that row. It is thinner than Active Record because business logic usually lives elsewhere; the object is mainly a persistence-aware data holder. It can be useful when each row needs procedural access but a full mapper is unjustified.
+problem: >-
+  Callers working with row-shaped data need a consistent way to persist individual rows without embedding SQL everywhere, but the application may not warrant rich domain objects or Active Record-style business methods.
+context: >-
+  Use for legacy applications, generated data access layers, or simple table-driven modules where one object per row improves organisation but domain behaviour remains in services or table modules.
+consequences:
+  - >-
+    Makes per-row persistence operations explicit and colocated with row fields.
+  - >-
+    Simpler than a mapper for straightforward record editing workflows.
+  - >-
+    Can become an anaemic Active Record if business logic slowly migrates into row objects.
+  - >-
+    Less efficient for bulk operations unless paired with table-level gateways or batching.
+synergies:
+  - pattern: table-data-gateway
+    reason: >-
+      A table gateway can create Row Data Gateway instances and handle set-oriented finder operations.
+  - pattern: transaction-script
+    reason: >-
+      Transaction Scripts can orchestrate row gateways for simple business procedures.
+  - pattern: table-module
+    reason: >-
+      Table Module keeps business logic table-oriented while row gateways handle persistence mechanics.
+alternatives:
+  - active-record
+  - data-mapper
+  - table-data-gateway
+conflicts_with:
+  - domain-model
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - typescript
+  - python
+  - php
+frameworks:
+  - none
+  - spring-boot
+  - dotnet
+  - nodejs
+  - django
+project_types:
+  - web-api
+  - backend-service
+  - monolith
+  - modular-monolith
+tags:
+  - row-object
+  - data-access
+  - legacy
+  - crud
+examples:
+  - language: java
+    title: Editing one customer row
+    negative: |
+      void changeEmail(Connection c, long id, String email) throws SQLException {
+          try (PreparedStatement s = c.prepareStatement(
+              "update customers set email = ? where id = ?")) {
+              s.setString(1, email);
+              s.setLong(2, id);
+              s.executeUpdate();
+          }
+      }
+    positive: |
+      final class CustomerRow {
+          private final Connection connection;
+          long id;
+          String email;
+      
+          void update() throws SQLException {
+              try (PreparedStatement s = connection.prepareStatement(
+                  "update customers set email = ? where id = ?")) {
+                  s.setString(1, email);
+                  s.setLong(2, id);
+                  s.executeUpdate();
+              }
+          }
+      }
+      
+      CustomerRow row = customers.find(id);
+      row.email = newEmail;
+      row.update();
+    explanation: >-
+      The SQL for updating a customer row is no longer scattered through callers. The object remains row-oriented; richer validation or cross-row rules should still live outside it.
+ratings:
+  small:
+    score: 3
+    notes: >-
+      Useful for simple row editing, though Active Record or a table gateway is often more convenient.
+  medium:
+    score: 3
+    notes: >-
+      Situational for legacy and generated access layers; set-oriented operations may need companion gateways.
+  large:
+    score: 2
+    notes: >-
+      Rarely ideal as a main pattern because it exposes row shape widely and handles complex invariants poorly.
+references:
+  - title: Patterns of Enterprise Application Architecture
+    author: Martin Fowler
+    year: 2002

@@ -1,0 +1,101 @@
+id: conformist
+title: Conformist
+scale: organisational
+category: ddd-strategic
+maturity: time-tested
+short_description: >-
+  Deliberately adopt an upstream model as-is when the downstream team has little influence and translation would cost more than conformity.
+description: >-
+  Conformist is a context-map relationship where a downstream bounded context accepts the upstream model, language, and quirks rather than translating or negotiating changes. This is not failure by default; it can be pragmatic when the upstream model is stable, the downstream context is not strategically differentiating, or the cost of an anti-corruption layer is unjustified. The danger is unexamined conformity: the upstream model may silently distort downstream language and rules.
+problem: >-
+  Teams often build elaborate translation layers around stable commodity systems, or accidentally conform to an upstream model while pretending their own model is independent. Both waste effort or hide coupling.
+context: >-
+  Use conformist when the downstream context has low strategic value, little power over the upstream, and can safely align its model to the upstream contract.
+consequences:
+  - Minimises integration cost and avoids needless translation layers.
+  - Makes lack of downstream influence explicit, enabling honest planning.
+  - Couples downstream language and design to the upstream model.
+  - Becomes harmful when the downstream domain needs concepts the upstream model cannot express cleanly.
+synergies:
+  - pattern: context-map
+    reason: Conformist is a relationship type that should be visible so hidden coupling is acknowledged.
+  - pattern: bounded-context
+    reason: It documents one bounded context choosing to adopt another context's model at the boundary.
+  - pattern: open-host-service
+    reason: Downstream conformists often integrate through a provider's open host service.
+  - pattern: published-language
+    reason: A published language reduces the risk of conforming to unstable internal structures.
+alternatives:
+  - anti-corruption-layer
+  - customer-supplier
+  - shared-kernel
+conflicts_with:
+  - ubiquitous-language
+languages:
+  - language-agnostic
+  - csharp
+  - java
+  - typescript
+frameworks:
+  - none
+  - spring-boot
+  - dotnet
+  - nodejs
+project_types:
+  - microservices
+  - modular-monolith
+  - backend-service
+  - distributed-system
+tags:
+  - ddd
+  - strategic-design
+  - integration
+  - upstream-downstream
+examples:
+  - language: java
+    title: Pragmatic conformity to a payment provider
+    negative: |
+      final class PaymentStatusTranslator {
+          LocalPaymentStatus translate(String providerStatus) {
+              if (providerStatus.equals("authorized")) return LocalPaymentStatus.AUTHORISED;
+              if (providerStatus.equals("requires_capture")) return LocalPaymentStatus.AUTHORISED;
+              if (providerStatus.equals("succeeded")) return LocalPaymentStatus.SETTLED;
+              throw new IllegalArgumentException(providerStatus);
+          }
+      }
+
+      // The local model only renames provider states and adds confusion.
+    positive: |
+      enum ProviderPaymentStatus {
+          AUTHORIZED,
+          REQUIRES_CAPTURE,
+          SUCCEEDED,
+          FAILED
+      }
+
+      final class PaymentRecord {
+          private ProviderPaymentStatus status;
+
+          boolean canCapture() {
+              return status == ProviderPaymentStatus.AUTHORIZED || status == ProviderPaymentStatus.REQUIRES_CAPTURE;
+          }
+      }
+    explanation: >-
+      The positive version is honest that this context conforms to the provider's payment lifecycle. It avoids a fake local language that merely aliases upstream concepts.
+ratings:
+  small:
+    score: 2
+    notes: >-
+      Occasionally useful for a small app integrating a commodity provider, but often not worth naming formally.
+  medium:
+    score: 3
+    notes: >-
+      Situational when a downstream team has low strategic differentiation and a stable upstream API.
+  large:
+    score: 4
+    notes: >-
+      Valuable at scale when made explicit on a context map; dangerous if applied to core differentiating domains.
+references:
+  - title: Domain-Driven Design
+    author: Eric Evans
+    year: 2003

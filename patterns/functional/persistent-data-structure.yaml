@@ -1,0 +1,95 @@
+id: persistent-data-structure
+title: Persistent Data Structure
+aka:
+  - Structurally Shared Data Structure
+scale: design
+category: functional
+maturity: time-tested
+short_description: >-
+  Preserve previous versions of a collection after updates by sharing unchanged structure between versions.
+description: >-
+  A Persistent Data Structure is immutable yet efficient: update operations return a new version while reusing most nodes from the old version. Hash-array mapped tries, ropes, persistent vectors, and red-black trees make value-oriented state practical without full deep copies. Persistence here means version preservation, not database durability.
+problem: >-
+  Naively copying whole immutable collections on every update is too expensive, while mutable collections lose history and are unsafe to share.
+context: >-
+  Use for editor/document models, undo/redo history, compiler ASTs, concurrent snapshots, reducer state, and systems needing cheap immutable versions of large collections.
+consequences:
+  - >-
+    Old versions remain valid for history, rollback, snapshots, and concurrent readers.
+  - Structural sharing gives efficient updates without in-place mutation.
+  - >-
+    Data structures are more complex than built-in mutable arrays/maps and may have different performance constants.
+  - >-
+    Interoperability with mutable APIs requires careful conversion at boundaries.
+synergies:
+  - pattern: immutability
+    reason: >-
+      Persistent structures are the implementation technique that makes pervasive immutability efficient.
+  - pattern: copy-on-write
+    reason: >-
+      Both preserve readers from mutation; persistent structures do it through path copying and structural sharing.
+  - pattern: memento
+    reason: Cheap previous versions make undo/redo and snapshots practical.
+  - pattern: event-sourcing
+    reason: >-
+      Snapshots built from persistent structures can complement event replay without mutating history.
+alternatives:
+  - copy-on-write
+  - memento
+  - event-sourcing
+languages:
+  - clojure
+  - scala
+  - haskell
+  - rust
+  - typescript
+frameworks:
+  - none
+  - redux
+project_types:
+  - library
+  - web-frontend
+  - data-pipeline
+  - backend-service
+  - desktop-app
+tags:
+  - structural-sharing
+  - history
+  - immutable-collections
+examples:
+  - language: clojure
+    title: Keeping an old cart version
+    negative: |
+      (def cart (atom {:items []}))
+      (def before @cart)
+      
+      (swap! cart update :items conj {:sku "A-1" :qty 1})
+      
+      ;; before and after depend on when the atom is dereferenced;
+      ;; callers coordinate around mutable identity.
+    positive: |
+      (def before {:items []})
+      (def after (update before :items conj {:sku "A-1" :qty 1}))
+      
+      (:items before) ;; []
+      (:items after)  ;; [{:sku "A-1" :qty 1}]
+      
+      ;; Clojure maps/vectors share unchanged structure between versions.
+    explanation: >-
+      The positive version keeps both cart versions as values. The update is cheap because unchanged structure is shared rather than deeply copied.
+ratings:
+  small:
+    score: 3
+    notes: >-
+      Useful in UI state and libraries, but built-in immutable copies are often enough for tiny data.
+  medium:
+    score: 4
+    notes: Strong for reducers, undo history, ASTs, and concurrent snapshots.
+  large:
+    score: 5
+    notes: >-
+      Excellent for large stateful systems needing versioning, safe sharing, and predictable rollback.
+references:
+  - title: Purely Functional Data Structures
+    author: Chris Okasaki
+    year: 1998

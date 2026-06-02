@@ -1,0 +1,132 @@
+id: producer-consumer
+title: Producer-Consumer
+aka:
+  - Bounded Buffer
+  - Work Queue
+scale: concurrency
+category: concurrency
+maturity: time-tested
+short_description: >-
+  Decouple work creation from work execution by passing items through a thread-safe queue, often bounded so producers cannot outrun consumers indefinitely.
+description: >-
+  Producer-Consumer separates the rate and responsibility of creating work from the rate and responsibility of processing it. Producers enqueue immutable or safely-owned work items; one or more consumers dequeue and execute them. The queue is the synchronisation boundary: it serialises handoff, provides visibility guarantees, and, when bounded, turns overload into waiting, rejection, or backpressure rather than memory growth. The pattern is not merely "use a queue"; it requires clear ownership of item state, explicit shutdown semantics, error handling for failed items, and capacity choices aligned with latency and throughput goals.
+problem: >-
+  Directly invoking slow work from producing threads couples lifetimes and rates, while sharing an unsynchronised list between producers and workers causes races, lost work, busy waiting, and unbounded memory use under bursts.
+context: >-
+  Use when work arrives from one context (requests, file watchers, sockets, sensors) but should be processed by a controlled set of workers, especially when producers and consumers have different throughput profiles.
+consequences:
+  - Smooths short bursts and lets producers remain responsive while consumers process at sustainable throughput.
+  - "A bounded queue makes overload explicit but forces a policy: block, drop, shed, or reject."
+  - The queue becomes an operational boundary that must be observed for depth, age, failures, and shutdown drain.
+  - Mutable work items shared after enqueue can still race; ownership must transfer or the item must be immutable.
+synergies:
+  - pattern: thread-pool
+    reason: Consumers are commonly fixed pool workers pulling from the queue, which caps concurrency and amortises thread creation.
+  - pattern: semaphore
+    reason: Semaphores can represent queue slots or external resource permits when capacity must be coordinated outside the queue implementation.
+  - pattern: backpressure
+    reason: A bounded queue is the concrete signal that producers must slow down or be rejected before memory is exhausted.
+  - pattern: competing-consumers
+    reason: Multiple consumers can safely compete for independent messages when horizontal scaling is needed.
+alternatives:
+  - reactor
+  - actor-model
+conflicts_with:
+  - thread-specific-storage
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - go
+  - python
+  - cpp
+frameworks:
+  - none
+  - spring-boot
+  - dotnet
+  - celery
+  - kafka
+  - rabbitmq
+project_types:
+  - backend-service
+  - data-pipeline
+  - high-throughput
+  - realtime-system
+tags:
+  - queue
+  - bounded-buffer
+  - workload-smoothing
+  - handoff
+examples:
+  - language: java
+    title: Bounded handoff between request threads and workers
+    negative: |
+      import java.util.*;
+
+      class UnsafeJobs {
+        private final List<Runnable> jobs = new ArrayList<>();
+
+        void submit(Runnable job) {
+          jobs.add(job);              // races with worker iteration; ArrayList is not safe
+        }
+
+        void workerLoop() {
+          while (true) {
+            if (!jobs.isEmpty()) {     // check-then-act race
+              Runnable job = jobs.remove(0);
+              job.run();
+            }
+          }
+        }
+      }
+    positive: |
+      import java.util.concurrent.*;
+
+      class JobQueue implements AutoCloseable {
+        private final BlockingQueue<Runnable> queue = new ArrayBlockingQueue<>(1_000);
+        private final ExecutorService workers = Executors.newFixedThreadPool(8);
+        private volatile boolean accepting = true;
+
+        JobQueue() {
+          for (int i = 0; i < 8; i++) {
+            workers.submit(() -> {
+              while (!Thread.currentThread().isInterrupted()) {
+                queue.take().run();     // atomic wait + remove with visibility guarantees
+              }
+              return null;
+            });
+          }
+        }
+
+        boolean submit(Runnable job) throws InterruptedException {
+          if (!accepting) return false;
+          return queue.offer(job, 200, TimeUnit.MILLISECONDS); // bounded backpressure
+        }
+
+        public void close() {
+          accepting = false;
+          workers.shutdownNow();
+        }
+      }
+    explanation: >-
+      The positive version uses a bounded BlockingQueue as the only handoff point. It removes the data race, avoids busy waiting, caps memory, and makes overload visible through a timed offer result.
+ratings:
+  small:
+    score: 3
+    notes: >-
+      Useful for small tools with background work, but often unnecessary if direct synchronous execution is simpler and latency is acceptable.
+  medium:
+    score: 5
+    notes: >-
+      Excellent for services and pipelines with bursty ingress; it gives a clear concurrency boundary and pairs naturally with metrics.
+  large:
+    score: 4
+    notes: >-
+      Still valuable, but large systems often need distributed queues, partitioning, and explicit backpressure policies beyond an in-process queue.
+references:
+  - title: Java Concurrency in Practice
+    author: Brian Goetz et al.
+    year: 2006
+  - title: Pattern-Oriented Software Architecture Volume 2
+    author: Schmidt, Stal, Rohnert, Buschmann
+    year: 2000

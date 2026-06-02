@@ -1,0 +1,90 @@
+id: connection-pool
+title: Connection Pool
+scale: data
+category: data-persistence
+maturity: time-tested
+short_description: >-
+  Reuse a bounded set of database connections to avoid per-request setup and protect the database from unbounded concurrency.
+description: >-
+  A connection pool keeps a limited number of open database sessions and leases them to requests for short periods. It improves latency by reusing connections and, more importantly, applies backpressure before callers overwhelm the database. Expert use treats pool sizing as a safety control: set acquisition timeouts, avoid holding connections during external calls, separate read/write or automation pools, and expose pool wait time as a production signal.
+problem: >-
+  Opening a database connection for every request is slow, while allowing unlimited concurrent connections can exhaust database memory, locks, and worker processes.
+context: >-
+  Use for any service that makes repeated database calls. Tune per workload and database capacity rather than blindly using framework defaults.
+consequences:
+  - Reduces connection setup overhead and caps database concurrency.
+  - A pool can hide slow queries until callers queue and time out far from the root cause.
+  - Too large a pool overloads the database; too small a pool causes artificial contention.
+  - Connections must be released promptly, especially around transactions and error paths.
+synergies:
+  - pattern: bulkhead
+    reason: >-
+      Separate pools isolate traffic classes so slow reports or agents do not starve critical writes.
+  - pattern: timeout
+    reason: >-
+      Acquisition and statement timeouts turn pool exhaustion into a fast, observable failure.
+  - pattern: read-replica
+    reason: >-
+      Separate primary and replica pools prevent stale or slow read traffic from consuming write capacity.
+  - pattern: repository
+    reason: >-
+      Repositories should acquire connections briefly and hide pooling mechanics from domain code.
+alternatives:
+  - object-pool
+  - thread-pool
+  - bulkhead
+conflicts_with:
+  - lazy-load
+languages:
+  - language-agnostic
+  - java
+  - typescript
+  - python
+  - go
+frameworks:
+  - spring-boot
+  - nodejs
+  - django
+  - dotnet
+  - sqlalchemy
+project_types:
+  - web-api
+  - backend-service
+  - high-throughput
+  - microservices
+tags:
+  - resource-management
+  - database-connections
+  - backpressure
+examples:
+  - language: typescript
+    title: Keep leases short
+    negative: |
+      async function enrichAccount(id: string) {
+        const client = await pool.connect();
+        const account = await client.query("SELECT * FROM accounts WHERE id=$1", [id]);
+        const risk = await riskApi.score(account.rows[0]); // connection held during HTTP call
+        await client.query("UPDATE accounts SET risk=$1 WHERE id=$2", [risk, id]);
+        client.release();
+      }
+    positive: |
+      async function enrichAccount(id: string) {
+        const account = await pool.query("SELECT id,balance FROM accounts WHERE id=$1", [id]);
+        const risk = await riskApi.score(account.rows[0]);
+        await pool.query("UPDATE accounts SET risk=$1 WHERE id=$2", [risk, id]);
+      }
+    explanation: >-
+      The positive version does not hold a database session while waiting on an external service, reducing pool starvation and idle transaction risk.
+ratings:
+  small:
+    score: 4
+    notes: >-
+      Even small services benefit from bounded reuse, though defaults may be enough.
+  medium:
+    score: 5
+    notes: >-
+      Critical for predictable latency and database protection in medium services.
+  large:
+    score: 5
+    notes: >-
+      Load-bearing at large scale; requires per-workload pools, metrics, and timeouts.

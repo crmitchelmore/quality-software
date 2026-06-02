@@ -1,0 +1,113 @@
+id: page-controller
+title: Page Controller
+scale: design
+category: enterprise-application
+maturity: time-tested
+aka:
+  - Action controller
+  - Page handler
+short_description: >-
+  Handle each logical page or route with its own controller action that prepares model data and selects a view.
+description: >-
+  Page Controller assigns a controller to a page, route, or small group of related actions. The controller receives request input, invokes application logic, chooses the view, and supplies the view model. It favours local clarity for page-specific behaviour and is common in server-rendered frameworks.
+problem: >-
+  A single central controller can become too abstract or crowded when most behaviour is page-specific. Teams need an obvious file or method to edit for a particular screen without duplicating low-level plumbing.
+context: >-
+  Use for server-rendered applications, CRUD screens, and route-oriented web apps where each page has modest unique logic and shared concerns are already handled by framework filters or middleware.
+consequences:
+  - >-
+    Easy to navigate: the controller for a page is the place to understand that page flow.
+  - >-
+    Works well with Template View and Active Record for small server-rendered applications.
+  - >-
+    Cross-cutting behaviour can be duplicated unless filters, middleware, or a Front Controller handle it.
+  - >-
+    Can accumulate business logic in controllers if services or domain objects are absent.
+synergies:
+  - pattern: template-view
+    reason: >-
+      Page Controller prepares the model that a Template View renders.
+  - pattern: active-record
+    reason: >-
+      Small page controllers can load and save Active Records directly for simple CRUD flows.
+  - pattern: service-layer
+    reason: >-
+      For richer applications, page controllers should delegate use cases to the service layer.
+  - pattern: model-view-controller
+    reason: >-
+      Page Controller is a route/page-oriented way to realise the controller role in MVC applications.
+alternatives:
+  - front-controller
+  - application-controller
+  - model-view-controller
+conflicts_with:
+  - front-controller
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - typescript
+  - python
+  - ruby
+  - php
+frameworks:
+  - rails
+  - django
+  - aspnet
+  - spring-boot
+  - laravel
+  - express
+project_types:
+  - web-api
+  - monolith
+  - modular-monolith
+  - web-frontend
+tags:
+  - web
+  - controller
+  - server-rendered
+  - page-flow
+examples:
+  - language: ruby
+    title: Page-specific order action
+    negative: |
+      class Router
+        def call(env)
+          if env.path == "/orders"
+            # parse, load, authorise, render, and handle errors for every page here
+          elsif env.path == "/customers"
+            # more page-specific logic in the same central method
+          end
+        end
+      end
+    positive: |
+      class OrdersController < ApplicationController
+        def index
+          @orders = Order.visible_to(current_user).recent
+          render :index
+        end
+      
+        def create
+          order = PlaceOrder.call(order_params, current_user)
+          redirect_to order_path(order)
+        end
+      end
+    explanation: >-
+      The positive version gives the Orders page a clear controller while inherited framework behaviour handles common request plumbing. Business-heavy creation is delegated rather than embedded in the action.
+ratings:
+  small:
+    score: 5
+    notes: >-
+      Excellent for simple server-rendered pages and CRUD screens.
+  medium:
+    score: 4
+    notes: >-
+      Good fit if controllers remain thin and shared concerns live in filters or services.
+  large:
+    score: 3
+    notes: >-
+      Still useful at the edge, but large systems need service layers and consistent front-controller/middleware conventions to prevent drift.
+references:
+  - title: Patterns of Enterprise Application Architecture
+    author: Martin Fowler
+    year: 2002

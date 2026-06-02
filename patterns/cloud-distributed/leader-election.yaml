@@ -1,0 +1,114 @@
+id: leader-election
+title: Leader Election
+scale: architectural
+category: cloud-distributed
+maturity: time-tested
+short_description: >-
+  Coordinate a cluster so exactly one healthy instance owns singleton work at a time,
+  with automatic handover when the leader fails or loses its lease.
+description: >-
+  Leader Election lets a set of equivalent processes choose one temporary coordinator
+  for tasks that must not run concurrently, such as scheduling, shard ownership, schema
+  migration, or compaction. Production implementations use a consensus-backed lock,
+  lease, or membership service rather than local clocks or ad hoc database flags. The
+  leader must renew ownership, fence stale leaders, and make every operation safe to
+  retry because failover can happen at inconvenient boundaries.
+problem: >-
+  Multiple replicas are needed for availability, but some responsibilities are unsafe
+  when every replica performs them independently.
+context: >-
+  Replicated services, controllers, workers, and schedulers where one active owner is
+  required for a partition or global responsibility.
+consequences:
+  - Enables highly available singleton control loops without pinning work to one host.
+  - Simplifies coordination for scheduled jobs, shard assignment, and cluster controllers.
+  - Requires a reliable lease store and fencing to avoid split-brain side effects.
+  - Leader changes create duplicate attempts; downstream operations must be idempotent.
+synergies:
+  - pattern: scheduler-agent-supervisor
+    reason: The scheduler role often uses leader election so only one scheduler assigns work.
+  - pattern: idempotency
+    reason: New leaders may repeat partially completed work after a failover.
+  - pattern: health-endpoint-monitoring
+    reason: Health and readiness checks should reflect whether an instance is leader, follower, or unable to renew leases.
+  - pattern: state
+    reason: Candidate, leader, follower, and fenced modes are cleanly modelled as explicit states.
+alternatives:
+  - competing-consumers
+  - queue-based-load-leveling
+  - actor-model
+conflicts_with:
+  - singleton
+diagram: |-
+  stateDiagram-v2
+    [*] --> Follower
+    Follower --> Candidate: lease expires
+    Candidate --> Leader: lease acquired
+    Candidate --> Follower: another wins
+    Leader --> Leader: renew lease
+    Leader --> Follower: lease lost
+    Leader --> Fenced: stale token
+    Fenced --> Follower: restart
+languages:
+  - language-agnostic
+  - go
+  - java
+  - csharp
+  - typescript
+  - python
+frameworks:
+  - kubernetes
+  - akka
+  - spring-boot
+  - dotnet
+  - redis
+project_types:
+  - distributed-system
+  - backend-service
+  - microservices
+  - high-throughput
+  - realtime-system
+tags:
+  - coordination
+  - consensus
+  - lease
+  - split-brain
+examples:
+  - language: go
+    title: Running one scheduler in a replica set
+    negative: |
+      // Every replica schedules the same invoice run.
+      func tick() {
+        for _, account := range accountsDueToday() {
+          enqueueInvoiceJob(account.ID)
+        }
+      }
+    positive: |
+      func tick(nodeID string, leases LeaseStore) error {
+        lease, ok := leases.TryAcquire("invoice-scheduler", nodeID, 30*time.Second)
+        if !ok {
+          return nil
+        }
+        defer lease.RenewUntilDone()
+
+        for _, account := range accountsDueToday() {
+          enqueueInvoiceJob(IdempotencyKey("invoice:" + account.ID + ":" + today()))
+        }
+        return nil
+      }
+    explanation: >-
+      The positive version gates singleton scheduling behind a renewable lease and uses
+      idempotent job keys so a failover cannot safely double-charge customers.
+ratings:
+  small:
+    score: 2
+    notes: Rarely needed unless even a small app runs multiple replicas with singleton jobs.
+  medium:
+    score: 4
+    notes: Good fit for clustered schedulers and controllers; prefer proven platform primitives.
+  large:
+    score: 5
+    notes: Essential for large distributed control planes, but fencing and observability are non-negotiable.
+references:
+  - title: Microsoft Azure Architecture Center; Leader Election pattern
+    url: https://learn.microsoft.com/azure/architecture/patterns/leader-election

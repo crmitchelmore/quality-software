@@ -1,0 +1,126 @@
+id: saga
+title: Saga
+scale: integration
+category: cloud-distributed
+maturity: time-tested
+short_description: >-
+  Manage a long-running distributed transaction as a sequence of local transactions,
+  with compensating actions that restore business consistency after failure.
+description: >-
+  A Saga decomposes one business transaction into ordered local transactions owned by
+  separate services. Each step commits locally and either triggers the next step or,
+  on failure, runs compensating actions for previously completed steps. Sagas can be
+  orchestrated by a process manager or choreographed through events. They trade atomic
+  isolation for availability and autonomy, so invariants must be expressed as state
+  machines, reservations, idempotent commands, and visible recovery policies rather
+  than database locks across services.
+problem: >-
+  Business workflows span multiple services and data stores, but two-phase commit is
+  unavailable, too slow, or too coupling-heavy for the operational environment.
+context: >-
+  Order fulfilment, travel booking, onboarding, provisioning, and payment flows where
+  each participant owns its data and can expose compensating operations.
+consequences:
+  - Avoids global locks and lets each service keep local transactional ownership.
+  - Makes failure handling explicit through compensations and durable saga state.
+  - Exposes intermediate states to users and other services; isolation is not automatic.
+  - Requires idempotent participants, correlation, timeouts, and operational tooling for stuck sagas.
+synergies:
+  - pattern: choreography
+    reason: Choreographed sagas use events instead of a central coordinator for step progression.
+  - pattern: process-manager
+    reason: Orchestrated sagas use a process manager to persist state and command participants.
+  - pattern: compensating-transaction
+    reason: Each completed saga step needs a business-specific compensation when a later step fails.
+  - pattern: outbox
+    reason: Saga commands and events should be published atomically with local state changes.
+  - pattern: event-driven-architecture
+    reason: Saga progress is often represented as domain events and asynchronous commands.
+alternatives:
+  - process-manager
+  - routing-slip
+  - choreography
+conflicts_with:
+  - pessimistic-offline-lock
+diagram: |-
+  sequenceDiagram
+    participant C as Coordinator
+    participant O as Orders
+    participant P as Payments
+    participant I as Inventory
+    participant S as Shipping
+    C->>O: Create order
+    O-->>C: Order pending
+    C->>P: Capture payment
+    P-->>C: Payment captured
+    C->>I: Reserve stock
+    I-->>C: Reservation failed
+    C->>P: Refund payment
+    C->>O: Cancel order
+languages:
+  - language-agnostic
+  - typescript
+  - java
+  - csharp
+  - go
+  - python
+frameworks:
+  - kafka
+  - rabbitmq
+  - nats
+  - spring-boot
+  - dotnet
+project_types:
+  - microservices
+  - distributed-system
+  - backend-service
+  - web-api
+  - high-throughput
+tags:
+  - distributed-transaction
+  - workflow
+  - compensation
+  - eventual-consistency
+examples:
+  - language: typescript
+    title: Durable order saga
+    negative: |
+      // Pretends remote calls are one atomic transaction; partial commits leak on failure.
+      await db.transaction(async tx => {
+        await orders.create(tx, order);
+        await payments.capture(order.id, card);
+        await inventory.reserve(order.id, sku);
+        await shipping.create(order.id);
+      });
+    positive: |
+      await sagaStore.save({ id: order.id, state: "Started" });
+      await orders.createPending(order);
+
+      await saga.step(order.id, "CapturePayment", () => payments.capture(order.id, card),
+        () => payments.refund(order.id));
+      await saga.step(order.id, "ReserveStock", () => inventory.reserve(order.id, sku),
+        () => inventory.release(order.id, sku));
+      await saga.step(order.id, "CreateShipment", () => shipping.create(order.id),
+        () => shipping.cancel(order.id));
+
+      await orders.markConfirmed(order.id);
+    explanation: >-
+      The positive version persists saga progress and pairs each local transaction with
+      a compensation, so recovery can continue after partial failure instead of relying on impossible atomicity.
+ratings:
+  small:
+    score: 2
+    notes: Overhead is high unless a small service already coordinates real external side effects.
+  medium:
+    score: 4
+    notes: Good fit for multi-service business workflows with clear compensations.
+  large:
+    score: 5
+    notes: Essential for large microservice estates that need consistency without distributed locking.
+references:
+  - title: Sagas
+    author: Hector Garcia-Molina and Kenneth Salem
+    year: 1987
+  - title: Microservices Patterns
+    author: Chris Richardson
+    year: 2018

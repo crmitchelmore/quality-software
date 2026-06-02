@@ -1,0 +1,91 @@
+id: output-encoding
+title: Output Encoding
+aka:
+  - Contextual escaping
+  - Output escaping
+scale: implementation
+category: security
+maturity: time-tested
+short_description: >-
+  Encode untrusted data for the exact output context before rendering it, preventing valid data from becoming executable code.
+description: >-
+  Output Encoding treats every rendering sink as context-specific: HTML body, HTML attribute, JavaScript string, URL, SQL, shell, and log formats all have different escaping rules. The pattern is especially important for XSS because input can be valid business data yet dangerous in a browser context. Encoding should happen as close to the sink as possible using framework or vetted library encoders; do not pre-escape data at storage time because the correct encoding depends on where it is later used.
+problem: >-
+  Data that is harmless in storage can become executable script, markup, commands, or broken structure when inserted into an output context unencoded.
+context: >-
+  Use whenever user-controlled or external data is rendered into HTML, templates, logs, CSV, URLs, shell commands, or other interpreters.
+consequences:
+  - >-
+    Prevents XSS and context-confusion bugs even for data that passed validation.
+  - >-
+    Keeps stored data canonical and encodes only for the target sink.
+  - >-
+    Requires developers to understand context; one generic escape function is not enough.
+synergies:
+  - pattern: input-validation
+    reason: >-
+      Validation limits accepted data, while output encoding protects each sink from valid-but-dangerous strings.
+  - pattern: defense-in-depth
+    reason: >-
+      Encoding is an inner layer that still works if validation misses a payload.
+  - pattern: secure-by-default
+    reason: >-
+      Framework auto-escaping makes correct encoding the default path.
+alternatives:
+  - input-validation
+languages:
+  - language-agnostic
+  - javascript
+  - typescript
+  - python
+  - java
+frameworks:
+  - react
+  - angular
+  - vue
+  - express
+  - django
+  - spring-boot
+project_types:
+  - web-frontend
+  - web-api
+  - backend-service
+  - monolith
+  - microservices
+tags:
+  - xss
+  - escaping
+  - rendering
+examples:
+  - language: javascript
+    title: HTML context encoding
+    negative: |-
+      app.get("/profile", async (req, res) => {
+        const user = await users.find(req.user.id);
+        res.send(`<h1>${user.displayName}</h1><p>${user.bio}</p>`);
+      });
+    positive: |-
+      import escapeHtml from "escape-html";
+      
+      app.get("/profile", async (req, res) => {
+        const user = await users.find(req.user.id);
+        res.send(
+          `<h1>${escapeHtml(user.displayName)}</h1>` +
+          `<p>${escapeHtml(user.bio)}</p>`
+        );
+      });
+    explanation: >-
+      The positive code encodes user-controlled fields for HTML body context at the rendering sink, so a stored script tag is displayed as text rather than executed.
+ratings:
+  small:
+    score: 5
+    notes: >-
+      Essential for any small app that renders external data.
+  medium:
+    score: 5
+    notes: >-
+      A standard secure coding practice across web and API surfaces.
+  large:
+    score: 5
+    notes: >-
+      Critical at scale; enforce with safe templating defaults and review of unsafe sinks.

@@ -1,0 +1,107 @@
+id: sharding
+title: Sharding
+scale: data
+category: cloud-distributed
+maturity: time-tested
+short_description: >-
+  Split one logical dataset across multiple storage partitions by a stable shard key,
+  so write load, storage volume, and tenant isolation scale beyond a single database.
+description: >-
+  Sharding distributes records across independently owned physical partitions while
+  preserving a single logical model for callers. A shard map, hash ring, tenant
+  catalogue, or range router chooses the partition from a shard key such as tenantId,
+  accountId, region, or aggregateId. The pattern works only when most reads and
+  writes are scoped by that key; cross-shard joins, global uniqueness, migrations,
+  and rebalancing become explicit distributed-system concerns rather than hidden
+  database features.
+problem: >-
+  A single primary database becomes a throughput, storage, lock-contention, or blast
+  radius bottleneck, but simply adding replicas does not scale writes or tenant growth.
+context: >-
+  Multi-tenant SaaS, high-write event stores, large account-based domains, or regional
+  systems where access patterns naturally include a stable partition key.
+consequences:
+  - Scales writes and storage horizontally when requests are shard-key aligned.
+  - Reduces blast radius because a hot tenant or corrupt partition need not affect all data.
+  - Cross-shard queries, uniqueness, transactions, and analytics become harder and slower.
+  - Resharding and hot-shard mitigation require operational tooling and careful rollout.
+synergies:
+  - pattern: database-per-service
+    reason: Each service can own its shard map and avoid shared-database coupling while still scaling its data.
+  - pattern: materialized-view
+    reason: Global read models can precompute cross-shard views that would be expensive to query live.
+  - pattern: cache-aside
+    reason: Caches absorb hot-key reads while the shard key still routes authoritative writes.
+  - pattern: idempotency
+    reason: Retried cross-shard workflows need stable request identity to avoid duplicate writes.
+alternatives:
+  - read-replica
+  - cache-aside
+  - polyglot-persistence
+conflicts_with:
+  - monolith
+languages:
+  - language-agnostic
+  - sql
+  - java
+  - go
+  - typescript
+frameworks:
+  - none
+  - spring-boot
+  - dotnet
+  - nodejs
+  - sqlalchemy
+project_types:
+  - backend-service
+  - microservices
+  - distributed-system
+  - high-throughput
+  - data-pipeline
+tags:
+  - partitioning
+  - multi-tenancy
+  - scalability
+  - data-placement
+examples:
+  - language: typescript
+    title: Routing tenant data to a shard
+    negative: |
+      // Every tenant shares one write bottleneck and one failure domain.
+      async function recordInvoice(tenantId: string, invoice: Invoice) {
+        await defaultDb.query(
+          "INSERT INTO invoices(tenant_id, invoice_id, amount) VALUES($1,$2,$3)",
+          [tenantId, invoice.id, invoice.amount],
+        );
+      }
+    positive: |
+      interface ShardDirectory {
+        forTenant(tenantId: string): Promise<Database>;
+      }
+
+      async function recordInvoice(tenantId: string, invoice: Invoice) {
+        const db = await shardDirectory.forTenant(tenantId);
+        await db.query(
+          "INSERT INTO invoices(tenant_id, invoice_id, amount) VALUES($1,$2,$3)",
+          [tenantId, invoice.id, invoice.amount],
+        );
+      }
+    explanation: >-
+      The positive version makes placement explicit and routes by tenant before writing,
+      allowing tenants to be moved, isolated, or scaled without changing business code.
+ratings:
+  small:
+    score: 1
+    notes: Avoid until a single database is measurably limiting you; it adds significant operational cost.
+  medium:
+    score: 3
+    notes: Situational for fast-growing SaaS or high-write services with clean tenant or aggregate keys.
+  large:
+    score: 5
+    notes: Excellent fit for very large multi-tenant or high-throughput systems where write scale and blast radius dominate.
+references:
+  - title: Microsoft Azure Architecture Center; Sharding pattern
+    url: https://learn.microsoft.com/azure/architecture/patterns/sharding
+  - title: Designing Data-Intensive Applications
+    author: Martin Kleppmann
+    year: 2017

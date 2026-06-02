@@ -1,0 +1,101 @@
+id: immutable-object
+title: Immutable Object
+aka:
+  - Immutable value
+  - Read-only object
+scale: design
+category: concurrency
+maturity: time-tested
+short_description: >-
+  Represent state with objects whose observable values cannot change after construction, making them inherently safe to share between concurrent readers.
+description: >-
+  An Immutable Object is fully initialised at creation time and never changes afterwards. Fields are private and final/readonly, contained collections are defensively copied or persistent, and operations that appear to change state return a new object instead. In concurrent programs this removes entire classes of races because readers never need to coordinate over changing state. The pattern is strongest for values, configuration, messages, snapshots, and domain concepts with identity by value rather than by mutable lifecycle.
+problem: >-
+  Shared mutable objects require locks or careful ownership rules; missing one mutation path creates data races, visibility bugs, and surprising action at a distance.
+context: >-
+  Use for values passed between threads, actors, goroutines, or asynchronous callbacks; configuration snapshots; request/response DTOs; money, time ranges, identifiers, and other domain values.
+consequences:
+  - Safe to share freely across threads without locks, defensive copying by callers, or ownership transfer protocols.
+  - Easier reasoning and testing because methods cannot secretly alter existing instances.
+  - Updates allocate new objects; large structures may need structural sharing or Copy-on-Write to control cost.
+  - Construction must validate all invariants up front because invalid state cannot be repaired by later mutation.
+synergies:
+  - pattern: copy-on-write
+    reason: Copy-on-Write provides efficient update mechanics for immutable-looking collections or snapshots.
+  - pattern: value-object
+    reason: Value Objects are often immutable so equality, hashing, and domain invariants remain stable.
+  - pattern: pure-function
+    reason: Pure functions compose naturally with immutable inputs and outputs because there is no hidden mutation.
+  - pattern: actor-model
+    reason: Immutable messages between actors avoid accidental sharing of mutable state across actor boundaries.
+alternatives:
+  - monitor-object
+  - copy-on-write
+  - persistent-data-structure
+conflicts_with:
+  - active-record
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - typescript
+  - scala
+  - rust
+frameworks:
+  - none
+project_types:
+  - library
+  - backend-service
+  - web-api
+  - distributed-system
+tags:
+  - immutability
+  - value-semantics
+  - thread-safety
+examples:
+  - language: java
+    title: Sharing configuration safely
+    negative: |
+      final class RetryPolicy {
+        int maxAttempts;
+        List<Integer> delaysMs;
+
+        RetryPolicy(int maxAttempts, List<Integer> delaysMs) {
+          this.maxAttempts = maxAttempts;
+          this.delaysMs = delaysMs; // caller can mutate after construction
+        }
+      }
+    positive: |
+      public final class RetryPolicy {
+        private final int maxAttempts;
+        private final List<Integer> delaysMs;
+
+        public RetryPolicy(int maxAttempts, List<Integer> delaysMs) {
+          if (maxAttempts < 1) throw new IllegalArgumentException("maxAttempts");
+          this.maxAttempts = maxAttempts;
+          this.delaysMs = List.copyOf(delaysMs);
+        }
+
+        public int maxAttempts() { return maxAttempts; }
+        public List<Integer> delaysMs() { return delaysMs; }
+
+        public RetryPolicy withMaxAttempts(int attempts) {
+          return new RetryPolicy(attempts, delaysMs);
+        }
+      }
+    explanation: >-
+      The positive version validates once, stores final fields, and defensively copies the list. Threads can share the policy safely, and changes produce a new instance instead of mutating the one already in use.
+ratings:
+  small:
+    score: 5
+    notes: Excellent default for value types and configuration; usually simpler than locks even in small codebases.
+  medium:
+    score: 5
+    notes: Strong default for DTOs, domain values, and messages crossing asynchronous boundaries.
+  large:
+    score: 5
+    notes: Essential baseline for large concurrent systems; combine with structural sharing where allocation cost matters.
+references:
+  - title: Effective Java
+    author: Joshua Bloch
+    year: 2001

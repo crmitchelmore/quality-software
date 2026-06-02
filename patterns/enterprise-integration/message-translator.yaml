@@ -1,0 +1,96 @@
+id: message-translator
+title: Message Translator
+scale: integration
+category: enterprise-integration
+maturity: time-tested
+short_description: >-
+  Convert messages between the data model, schema, protocol, or vocabulary expected by different applications while preserving business meaning.
+description: >-
+  A Message Translator sits at an integration boundary and maps one message representation to another. It may rename fields, split or combine structures, enrich values, convert units, adapt schema versions, or translate from a partner vocabulary into a canonical model. Its purpose is not to hide semantic disagreements; it should make them explicit and testable. Translators are most maintainable when they are small, version-aware, and owned near the boundary whose contract they protect.
+problem: >-
+  Independent applications rarely share the same field names, identifiers, units, schema versions, or business vocabulary. Directly sharing internal models couples release cycles and leaks local concepts across boundaries.
+context: >-
+  Use when messages cross application, bounded-context, partner, or protocol boundaries and the sender's representation is not the receiver's stable contract.
+consequences:
+  - Protects each system's internal model and release cadence.
+  - Creates an explicit place to test mapping rules, defaults, identifier conversion, and schema version handling.
+  - Mapping logic can become a hidden domain model if semantic decisions are not owned by the right team.
+  - Data loss is easy when fields are dropped; translation should be monitored and versioned.
+synergies:
+  - pattern: canonical-data-model
+    reason: Translators map source-specific messages into and out of the canonical model.
+  - pattern: message-endpoint
+    reason: Endpoints often include boundary translation between broker messages and local application commands.
+  - pattern: content-based-router
+    reason: Routers should evaluate normalised fields after translation rather than source-specific formats.
+  - pattern: anti-corruption-layer
+    reason: A translator is one of the concrete mechanisms used to keep foreign models out of a domain.
+alternatives:
+  - adapter
+  - mapper
+  - data-transfer-object
+conflicts_with:
+  - shared-kernel
+languages:
+  - language-agnostic
+  - java
+  - typescript
+  - csharp
+frameworks:
+  - spring-boot
+  - nodejs
+  - dotnet
+  - kafka
+project_types:
+  - microservices
+  - distributed-system
+  - backend-service
+  - etl
+tags:
+  - eip
+  - transformation
+  - schema
+  - anti-corruption
+examples:
+  - language: java
+    title: Translating partner order messages into a canonical event
+    negative: |
+      void handle(PartnerOrderMessage message) {
+        Order order = new Order();
+        order.setId(message.orderNo());
+        order.setTotal(message.amountCents()); // local code now depends on partner units
+        order.setCountry(message.shipTo().countryCode());
+        orderService.place(order);
+      }
+    positive: |
+      final class PartnerOrderTranslator {
+        CanonicalOrderSubmitted translate(PartnerOrderMessage source) {
+          return new CanonicalOrderSubmitted(
+            OrderId.of(source.orderNo()),
+            Money.ofMinorUnits(source.currency(), source.amountCents()),
+            CountryCode.of(source.shipTo().countryCode()),
+            source.schemaVersion()
+          );
+        }
+      }
+
+      void handle(PartnerOrderMessage message) {
+        orderService.place(translator.translate(message));
+      }
+    explanation: >-
+      The positive version confines partner-specific names, units, and versions to a boundary translator. The core service receives a stable canonical command with domain-specific types.
+ratings:
+  small:
+    score: 3
+    notes: Useful when integrating with an external API, but unnecessary if one codebase owns both sides.
+  medium:
+    score: 4
+    notes: Strong fit once several systems or schema versions exchange data.
+  large:
+    score: 5
+    notes: Essential for large estates with many vendors, bounded contexts, and long-lived contracts.
+references:
+  - title: Enterprise Integration Patterns
+    author: Gregor Hohpe and Bobby Woolf
+    year: 2003
+    url: https://www.enterpriseintegrationpatterns.com/patterns/messaging/MessageTranslator.html

@@ -1,0 +1,116 @@
+id: context-map
+title: Context Map
+scale: architectural
+category: ddd-strategic
+maturity: time-tested
+short_description: >-
+  Document bounded contexts and their relationships so teams can reason about upstream/downstream influence, translation, and integration risk.
+description: >-
+  A Context Map is a strategic DDD diagram and narrative that shows the bounded contexts in a system and the relationship between them. It captures organisational and integration reality: who is upstream, who conforms, where a shared kernel exists, which contexts publish stable contracts, and where an anti-corruption layer protects a model. The map is most useful when paired with explicit ownership and decision records; it is not an architecture vanity diagram but a tool for integration planning, team negotiation, and migration strategy.
+problem: >-
+  Large systems accumulate hidden dependencies between teams and models. Without a map, teams discover too late that they depend on an upstream schema, duplicate a concept, or are forced to conform to a model that damages their own language.
+context: >-
+  Use context maps when several bounded contexts, teams, or systems collaborate and the integration relationships differ in power, ownership, or translation cost.
+consequences:
+  - Makes socio-technical dependencies visible and discussable.
+  - Helps choose relationship patterns such as shared kernel, conformist, or anti-corruption layer intentionally.
+  - Supports migration planning by showing seams around legacy systems.
+  - Becomes stale quickly unless maintained as ownership, APIs, and team boundaries change.
+synergies:
+  - pattern: bounded-context
+    reason: A context map is built from bounded contexts and records how their models meet.
+  - pattern: shared-kernel
+    reason: Shared kernel is one relationship type shown on the map where teams co-own a small model subset.
+  - pattern: customer-supplier
+    reason: Customer-supplier captures upstream planning commitments and downstream needs on the map.
+  - pattern: conformist
+    reason: Conformist relationships identify downstream contexts that deliberately adopt an upstream model.
+  - pattern: anti-corruption-layer
+    reason: ACL marks boundaries where translation protects a context from external model pollution.
+alternatives:
+  - service-oriented-architecture
+  - microservices
+  - canonical-data-model
+conflicts_with:
+  - layered-architecture
+languages:
+  - language-agnostic
+  - csharp
+  - java
+  - typescript
+frameworks:
+  - none
+  - spring-boot
+  - dotnet
+  - kafka
+  - grpc
+project_types:
+  - microservices
+  - modular-monolith
+  - distributed-system
+  - backend-service
+tags:
+  - ddd
+  - strategic-design
+  - context-map
+  - integration
+diagram: |-
+  flowchart LR
+    Identity[Identity]
+    Ordering[Ordering]
+    Billing[Billing]
+    Shipping[Shipping]
+    Legacy[Legacy ERP]
+    Reporting[Reporting]
+    Identity -- OHS and Published Language --> Ordering
+    Ordering -- Customer-Supplier --> Billing
+    Billing -- Customer-Supplier --> Shipping
+    Ordering -- ACL --> Legacy
+    Reporting -- Conformist --> Billing
+    Ordering ---|Shared Kernel: Product Codes| Billing
+examples:
+  - language: typescript
+    title: Integration relationship made explicit
+    negative: |
+      import { ErpCustomer, ErpOrder } from "legacy-erp-sdk";
+
+      export function priceOrder(customer: ErpCustomer, order: ErpOrder): Money {
+        if (customer.customer_type === "G") return Money.gbp(order.total * 0.9);
+        return Money.gbp(order.total);
+      }
+    positive: |
+      // Context map decision: Ordering integrates to Legacy ERP through an ACL.
+      class ErpCustomerTranslator {
+        toOrderingCustomer(record: LegacyErpCustomer): OrderingCustomerSnapshot {
+          return new OrderingCustomerSnapshot(
+            CustomerId.fromLegacy(record.CUST_NO),
+            record.customer_type === "G" ? CustomerSegment.Gold : CustomerSegment.Standard,
+          );
+        }
+      }
+
+      export function priceOrder(customer: OrderingCustomerSnapshot, order: DraftOrder): Money {
+        return customer.segment === CustomerSegment.Gold ? order.total().discountBy(10) : order.total();
+      }
+    explanation: >-
+      The positive version follows the context-map relationship: Ordering does not import the Legacy ERP model directly, so the integration choice is reflected in code rather than only in a diagram.
+ratings:
+  small:
+    score: 1
+    notes: >-
+      Avoid for tiny single-context apps; a module diagram or README is enough.
+  medium:
+    score: 4
+    notes: >-
+      Good fit once several modules, teams, or external systems interact and relationship choices matter.
+  large:
+    score: 5
+    notes: >-
+      Excellent for large organisations because it exposes ownership, upstream influence, translation costs, and integration strategy.
+references:
+  - title: Domain-Driven Design
+    author: Eric Evans
+    year: 2003
+  - title: Implementing Domain-Driven Design
+    author: Vaughn Vernon
+    year: 2013

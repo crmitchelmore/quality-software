@@ -1,0 +1,100 @@
+id: valet-key
+title: Valet Key
+scale: integration
+category: cloud-distributed
+maturity: established
+short_description: >-
+  Give a client a short-lived, tightly scoped token or URL so it can access a
+  specific resource directly without receiving broad service credentials.
+description: >-
+  Valet Key delegates limited access to a resource by minting a constrained
+  credential, commonly a pre-signed object-storage URL or scoped access token.
+  The application authorises the user and decides the permitted operation, object,
+  expiry, and constraints, then lets the client interact directly with storage or
+  another service. This removes the application from high-volume data transfer
+  while preserving least privilege and auditability when credentials are narrow and
+  short lived.
+problem: >-
+  Proxying every upload or download through the application wastes compute and
+  bandwidth, but handing clients long-lived storage credentials is dangerous.
+context: >-
+  Use for direct browser or mobile access to object storage, media uploads,
+  partner file exchange, and any operation where the resource provider can enforce
+  scope and expiry on delegated credentials.
+consequences:
+  - Reduces application bandwidth and avoids buffering large payloads in API servers.
+  - Limits blast radius through object-specific permissions and short expiry.
+  - Requires careful validation of object names, content type, size, and expiry.
+  - Revocation is hard once a signed URL is issued unless the backing service supports it.
+synergies:
+  - pattern: token-based-auth
+    reason: The application first authenticates the user before minting a delegated token.
+  - pattern: least-privilege
+    reason: The issued key should allow exactly one action on one resource for a short period.
+  - pattern: gatekeeper
+    reason: A gatekeeper can centralise the policy for which clients may request valet keys.
+  - pattern: audit-logging
+    reason: Recording key issuance and resource identifiers preserves traceability when clients access storage directly.
+alternatives:
+  - gateway-offloading
+  - api-gateway
+  - backend-for-frontend
+languages:
+  - language-agnostic
+  - typescript
+  - java
+  - csharp
+  - go
+  - python
+frameworks:
+  - nodejs
+  - spring-boot
+  - dotnet
+  - fastapi
+  - aws-lambda
+project_types:
+  - web-api
+  - backend-service
+  - mobile-app
+  - serverless
+tags:
+  - delegated-access
+  - object-storage
+  - least-privilege
+examples:
+  - language: typescript
+    title: Direct upload without broad credentials
+    negative: |
+      // The API handles the whole file and uses broad storage credentials for every request.
+      app.post("/uploads", requireUser, upload.single("file"), async (req, res) => {
+        await storage.putObject({ bucket: "media", key: req.file.originalname, body: req.file.buffer });
+        res.sendStatus(201);
+      });
+    positive: |
+      app.post("/upload-requests", requireUser, async (req, res) => {
+        const key = `users/${req.user.id}/${crypto.randomUUID()}.jpg`;
+        const url = await storage.createSignedPutUrl({
+          bucket: "media",
+          key,
+          expiresInSeconds: 300,
+          contentType: "image/jpeg",
+          maxBytes: 5_000_000,
+        });
+        res.json({ key, uploadUrl: url });
+      });
+    explanation: >-
+      The positive version authorises the user once and returns a narrow, expiring
+      upload URL, so the client transfers directly to storage without broad credentials.
+ratings:
+  small:
+    score: 2
+    notes: Not worth it for tiny files or internal-only tools.
+  medium:
+    score: 4
+    notes: Strong fit for user uploads and downloads once API bandwidth or credential exposure matters.
+  large:
+    score: 5
+    notes: Essential for high-volume media and document systems using object storage.
+references:
+  - title: Microsoft Azure Architecture Center; Valet Key pattern
+    url: https://learn.microsoft.com/azure/architecture/patterns/valet-key

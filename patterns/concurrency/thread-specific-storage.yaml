@@ -1,0 +1,97 @@
+id: thread-specific-storage
+title: Thread-Specific Storage
+aka:
+  - Thread-local storage
+  - TLS
+scale: concurrency
+category: concurrency
+maturity: time-tested
+short_description: >-
+  Give each thread its own instance of otherwise global-looking state so code can access per-thread context without sharing mutable data across threads.
+description: >-
+  Thread-Specific Storage binds a value to the current thread. Callers retrieve it through a stable accessor, but each thread sees a distinct instance: a formatter, scratch buffer, request context, database session, or legacy library handle. This removes lock contention for state that is naturally scoped to one thread and helps adapt non-thread-safe components. The pattern is powerful but dangerous in pooled, asynchronous, or coroutine-based systems because logical work may move between threads while thread-local state stays behind.
+problem: >-
+  Some state must be convenient to access from many call sites, yet sharing one mutable instance across threads creates races or serialises all callers behind a lock.
+context: >-
+  Use for values genuinely tied to an operating-system thread or a fixed worker thread, especially when adapting legacy APIs, maintaining per-thread buffers, or keeping per-thread statistics.
+consequences:
+  - Avoids locks for per-thread state and can reduce allocations for reusable scratch objects.
+  - Makes implicit dependencies harder to see, test, and clear correctly.
+  - Leaks context across tasks if thread-pool workers are reused and values are not reset.
+  - Breaks down when logical execution hops threads under async/await, work stealing, or green-thread schedulers.
+synergies:
+  - pattern: thread-pool
+    reason: Thread pools often combine well with per-worker caches, but they also make cleanup mandatory between logical tasks.
+  - pattern: immutable-object
+    reason: Immutable context values reduce the damage when thread-local values are accidentally observed by later work on the same worker.
+  - pattern: monitor-object
+    reason: Monitor Object is an alternative for truly shared mutable state; TLS should be reserved for state that should not be shared.
+alternatives:
+  - immutable-object
+  - monitor-object
+  - active-object
+conflicts_with:
+  - reactor
+  - actor-model
+languages:
+  - language-agnostic
+  - java
+  - cpp
+  - csharp
+  - go
+  - python
+frameworks:
+  - spring-boot
+  - dotnet
+  - none
+project_types:
+  - backend-service
+  - library
+  - high-throughput
+  - low-latency
+tags:
+  - thread-local
+  - context
+  - implicit-state
+examples:
+  - language: java
+    title: Clearing thread-local request context in a pool
+    negative: |
+      final class RequestContext {
+        static final ThreadLocal<String> USER_ID = new ThreadLocal<>();
+      }
+
+      void handle(Request request) {
+        RequestContext.USER_ID.set(request.userId());
+        service.process(request);
+        // BUG: pooled worker keeps USER_ID for the next request on this thread.
+      }
+    positive: |
+      final class RequestContext {
+        static final ThreadLocal<String> USER_ID = new ThreadLocal<>();
+      }
+
+      void handle(Request request) {
+        try {
+          RequestContext.USER_ID.set(request.userId());
+          service.process(request);
+        } finally {
+          RequestContext.USER_ID.remove();
+        }
+      }
+    explanation: >-
+      The positive version treats thread-local state as a scoped resource. Removing it in finally prevents one logical request from inheriting another request's identity when the same worker thread is reused.
+ratings:
+  small:
+    score: 2
+    notes: Useful for narrow library internals, but usually an unnecessary hidden dependency in small applications.
+  medium:
+    score: 3
+    notes: Situational for per-thread caches or legacy integration; prefer explicit context passing for request data.
+  large:
+    score: 3
+    notes: Can be valuable in infrastructure, but large async systems need strict scoping rules and tests to prevent context leaks.
+references:
+  - title: Pattern-Oriented Software Architecture Volume 2
+    author: Schmidt, Stal, Rohnert, Buschmann
+    year: 2000

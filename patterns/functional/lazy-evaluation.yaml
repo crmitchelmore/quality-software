@@ -1,0 +1,97 @@
+id: lazy-evaluation
+title: Lazy Evaluation
+aka:
+  - Call by Need
+  - Deferred Evaluation
+scale: implementation
+category: functional
+maturity: time-tested
+short_description: >-
+  Delay computing a value until it is demanded, and often compute it at most once.
+description: >-
+  Lazy Evaluation represents work as a suspended computation. The program can describe potentially expensive, infinite, or conditional data without paying the cost until a consumer asks for it. It is useful for streams, short-circuiting, expensive derived values, and separating production from consumption, but it must be monitored because deferred work can also defer failures and resource use.
+problem: >-
+  Eager code computes values that may never be used or materialises large intermediate collections before consumers know how much they need.
+context: >-
+  Use for streaming data, infinite sequences, expensive derived values, conditional branches, parser input, and producer/consumer boundaries with backpressure.
+consequences:
+  - Avoids unnecessary work and supports infinite or very large sequences.
+  - Pairs well with short-circuiting consumers such as take/find/any.
+  - Can make performance and failure timing less obvious.
+  - Careless laziness may retain references and cause space leaks.
+synergies:
+  - pattern: map-filter-reduce
+    reason: >-
+      Lazy map/filter/reduce pipelines avoid intermediate collections and stop when consumers stop.
+  - pattern: memoization
+    reason: A memoized thunk is lazy work computed at most once.
+  - pattern: backpressure
+    reason: >-
+      Lazy producers can respect consumer demand instead of flooding downstream.
+  - pattern: iterator
+    reason: >-
+      Iterators are the imperative interface most languages use for lazy traversal.
+alternatives:
+  - lazy-initialization
+  - iterator
+  - producer-consumer
+languages:
+  - haskell
+  - scala
+  - clojure
+  - typescript
+  - python
+  - rust
+frameworks:
+  - none
+  - rxjs
+project_types:
+  - data-pipeline
+  - etl
+  - backend-service
+  - high-throughput
+  - library
+tags:
+  - deferred-work
+  - streaming
+  - performance
+examples:
+  - language: typescript
+    title: Finding the first expensive match
+    negative: |
+      const values = readLines(file)
+        .map(parseRecord)
+        .filter((record) => record.score > 90)
+        .map(enrichRecord);
+      
+      const first = values[0]; // parsed and enriched every matching record first
+    positive: |
+      function* matchingRecords(lines: Iterable<string>): Iterable<Record> {
+        for (const line of lines) {
+          const record = parseRecord(line);
+          if (record.score > 90) {
+            yield enrichRecord(record);
+          }
+        }
+      }
+      
+      const first = matchingRecords(readLines(file))[Symbol.iterator]().next().value;
+    explanation: >-
+      The positive version produces records only as demanded; finding the first match stops parsing and enriching the rest of the file.
+ratings:
+  small:
+    score: 3
+    notes: >-
+      Useful for streams and expensive branches, but eager evaluation is simpler for small finite data.
+  medium:
+    score: 4
+    notes: >-
+      Good for APIs that process large inputs or optional expensive values.
+  large:
+    score: 5
+    notes: >-
+      Excellent in high-throughput pipelines when paired with observability and bounded resource handling.
+references:
+  - title: The Implementation of Functional Programming Languages
+    author: Simon Peyton Jones
+    year: 1987

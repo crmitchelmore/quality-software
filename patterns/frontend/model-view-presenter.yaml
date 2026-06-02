@@ -1,0 +1,96 @@
+id: model-view-presenter
+title: Model-View-Presenter (MVP)
+aka:
+  - MVP
+scale: frontend
+category: frontend
+maturity: time-tested
+short_description: >-
+  Keep a passive view thin by routing user events to a presenter that coordinates model access and updates the view through an interface.
+description: >-
+  Model-View-Presenter separates UI rendering from interaction logic by making the presenter the mediator between a view interface and the model or services. The view forwards events and exposes simple rendering methods; the presenter decides what to load, validate, enable or show. MVP is useful when views are hard to test directly or when UI technology should be replaceable behind a narrow view contract.
+problem: >-
+  Screens mix event handling, service calls and rendering state, making logic difficult to test without a browser or native UI harness.
+context: >-
+  Use for complex screens, legacy UI frameworks, test-heavy frontends or places where presentation logic should be framework-independent.
+consequences:
+  - Presenter logic is testable with a fake view.
+  - The view becomes deliberately passive and technology-specific.
+  - View interfaces can become chatty if not designed around user outcomes.
+  - Less idiomatic in modern declarative frameworks than MVVM, hooks or state stores.
+synergies:
+  - pattern: observer
+    reason: Presenters often observe models and push updates to view interfaces.
+  - pattern: model-view-controller
+    reason: MVP is a stricter variant that moves more presentation decisions out of the view/controller boundary.
+  - pattern: command
+    reason: Presenter methods expose user intent as explicit operations rather than letting the view call services directly.
+  - pattern: adapter
+    reason: A concrete UI view adapts framework events and widgets to the presenter-facing interface.
+alternatives:
+  - model-view-viewmodel
+  - model-view-controller
+  - container-presentational
+languages:
+  - typescript
+  - javascript
+  - csharp
+  - java
+frameworks:
+  - angular
+  - react
+  - vue
+  - none
+project_types:
+  - web-frontend
+  - mobile-app
+  - desktop-app
+tags:
+  - passive-view
+  - presenter
+  - testability
+examples:
+  - language: typescript
+    title: Presenter behind a passive checkout view
+    negative: |
+      class CheckoutPage {
+        async onSubmit() {
+          this.error.textContent = "";
+          const result = await checkoutApi.pay(this.form.card.value, this.cart.total);
+          if (!result.ok) this.error.textContent = result.message;
+          else router.navigate("/thanks");
+        }
+      }
+    positive: |
+      interface CheckoutView {
+        cardNumber(): string;
+        showError(message: string): void;
+        showSuccess(): void;
+      }
+
+      class CheckoutPresenter {
+        constructor(private readonly view: CheckoutView, private readonly payments: PaymentService) {}
+        async submit(total: Money) {
+          const result = await this.payments.pay(this.view.cardNumber(), total);
+          result.ok ? this.view.showSuccess() : this.view.showError(result.message);
+        }
+      }
+    explanation: >-
+      Payment decisions move into a presenter that can be tested with a fake view and fake payment service; the concrete page only adapts DOM events to the interface.
+ratings:
+  small:
+    score: 2
+    notes: >-
+      Usually too formal for small declarative frontends unless a screen has complex presentation logic.
+  medium:
+    score: 3
+    notes: >-
+      Situational for legacy or highly tested screens where passive views pay off.
+  large:
+    score: 3
+    notes: >-
+      Useful in long-lived UI platforms, but many large web apps prefer MVVM, Redux or hooks for idiomatic framework integration.
+references:
+  - title: GUI Architectures
+    author: Martin Fowler
+    year: 2006

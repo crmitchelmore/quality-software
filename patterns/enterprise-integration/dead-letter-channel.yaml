@@ -1,0 +1,91 @@
+id: dead-letter-channel
+title: Dead Letter Channel
+scale: integration
+category: enterprise-integration
+maturity: time-tested
+short_description: >-
+  Route messages that cannot be delivered or processed after bounded attempts to a separate, observable channel for diagnosis and recovery.
+description: >-
+  A Dead Letter Channel prevents poison messages from blocking normal processing indefinitely. When delivery fails because of malformed payloads, missing dependencies, expired retries or business validation errors, the broker or consumer moves the message to a dedicated channel with failure metadata. Operators can inspect, alert, repair, replay or discard from there without hiding the failure or repeatedly harming the main flow. The pattern works only when retry limits, classification and replay procedures are explicit.
+problem: >-
+  A single bad message can be retried forever, clog a queue, hide data quality defects or cause repeated side effects in downstream services.
+context: >-
+  Use with queues, topics, event streams and integration pipelines where messages may be malformed, out of order, unsupported, expired or repeatedly rejected by consumers.
+consequences:
+  - Keeps the main channel moving when individual messages are poisonous.
+  - Creates an operational audit trail for failed messages and their causes.
+  - Requires secure handling because dead-letter payloads may contain sensitive data.
+  - Can become a graveyard unless alerts, ownership and replay tooling are defined.
+synergies:
+  - pattern: retry
+    reason: Retry should be bounded; the dead-letter channel receives messages after the retry budget is exhausted.
+  - pattern: guaranteed-delivery
+    reason: Durable messaging needs a durable failure path when delivery cannot complete.
+  - pattern: idempotent-receiver
+    reason: Replaying repaired dead letters is safer when receivers tolerate duplicates.
+  - pattern: audit-logging
+    reason: Dead-letter metadata should explain who replayed or discarded a failed message and why.
+alternatives:
+  - message-filter
+  - fallback
+languages:
+  - language-agnostic
+  - java
+  - typescript
+  - python
+frameworks:
+  - rabbitmq
+  - kafka
+  - nats
+  - nodejs
+project_types:
+  - backend-service
+  - microservices
+  - distributed-system
+  - data-pipeline
+tags:
+  - messaging
+  - failure-handling
+  - operations
+examples:
+  - language: typescript
+    title: Sending poison messages to a RabbitMQ dead-letter exchange
+    negative: |
+      channel.consume("orders", async (msg) => {
+        try {
+          await processOrder(JSON.parse(msg!.content.toString()));
+          channel.ack(msg!);
+        } catch {
+          channel.nack(msg!, false, true); // retries forever and blocks progress
+        }
+      });
+    positive: |
+      channel.consume("orders", async (msg) => {
+        const attempts = Number(msg!.properties.headers?.["x-attempts"] ?? 0);
+        try {
+          await processOrder(JSON.parse(msg!.content.toString()));
+          channel.ack(msg!);
+        } catch (error) {
+          channel.ack(msg!);
+          await channel.publish("orders.dlx", "orders.failed", msg!.content, {
+            headers: { attempts: attempts + 1, reason: String(error) },
+            persistent: true
+          });
+        }
+      });
+    explanation: >-
+      The positive version moves irrecoverable messages out of the main queue with failure metadata, allowing the normal flow to continue and operators to investigate.
+ratings:
+  small:
+    score: 3
+    notes: Useful when messages matter, but manual inspection may be enough for tiny systems.
+  medium:
+    score: 5
+    notes: Excellent fit for production queues where poison messages would otherwise halt work.
+  large:
+    score: 5
+    notes: Essential at scale, with alerting, replay controls and privacy-aware access.
+references:
+  - title: Enterprise Integration Patterns
+    author: Gregor Hohpe and Bobby Woolf
+    year: 2003

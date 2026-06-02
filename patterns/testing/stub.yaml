@@ -1,0 +1,89 @@
+id: stub
+title: Stub
+aka:
+  - Canned response
+scale: implementation
+category: testing
+maturity: time-tested
+short_description: >-
+  Use a simple double that returns predetermined values so the test can drive a branch or scenario deterministically.
+description: >-
+  A stub supplies controlled answers to the system under test. Unlike a mock, it does not assert that it was called in a particular way; the test asserts the resulting behaviour. Stubs work best for query-style dependencies such as feature flags, exchange rates, permissions, or clocks, where the dependency answers a question and the unit under test decides what to do next.
+problem: >-
+  Tests need to exercise branches that depend on external data without relying on live systems or complex fake implementations.
+context: >-
+  Use when a collaborator is read-only from the test perspective and a small set of canned responses is enough.
+consequences:
+  - >-
+    Makes branch-driving inputs explicit and deterministic.
+  - >-
+    Keeps tests simpler than mocks when interactions are not the behaviour under test.
+  - >-
+    Canned answers can be unrealistic; upgrade to a fake or contract test when rules grow.
+synergies:
+  - pattern: test-double
+    reason: >-
+      Stub is one of the simplest concrete test doubles.
+  - pattern: arrange-act-assert
+    reason: >-
+      Stub data belongs in Arrange so the Act remains a single behaviour trigger.
+  - pattern: test-data-builder
+    reason: >-
+      Builders can create rich stub return values without noisy literals.
+alternatives:
+  - mock-object
+  - fake-object
+languages:
+  - language-agnostic
+  - javascript
+  - typescript
+  - python
+  - java
+frameworks:
+  - none
+  - nodejs
+  - spring-boot
+  - django
+  - fastapi
+project_types:
+  - library
+  - web-api
+  - backend-service
+  - microservices
+  - modular-monolith
+tags:
+  - canned-response
+  - determinism
+  - unit-testing
+examples:
+  - language: typescript
+    title: Feature flag branch
+    negative: |-
+      test("uses new pricing", async () => {
+        const flags = new RemoteFlagClient(process.env.FLAG_URL!);
+        const total = await priceBasket(cart, flags);
+        expect(total).toBe(900);
+      });
+    positive: |-
+      test("uses new pricing", async () => {
+        const flags = { enabled: async (name: string) => name === "new-pricing" };
+      
+        const total = await priceBasket(cart, flags);
+      
+        expect(total).toBe(900);
+      });
+    explanation: >-
+      The positive test stubs the feature flag answer directly, so the branch is deterministic and the assertion remains about pricing behaviour rather than remote flag availability.
+ratings:
+  small:
+    score: 5
+    notes: >-
+      Excellent for small tests that need deterministic query answers.
+  medium:
+    score: 5
+    notes: >-
+      A workhorse for service tests; prefer explicit local stubs over shared global fixtures.
+  large:
+    score: 4
+    notes: >-
+      Useful but should be balanced with integration coverage for the real data sources being stubbed.

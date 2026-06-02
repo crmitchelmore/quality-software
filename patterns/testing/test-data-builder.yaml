@@ -1,0 +1,95 @@
+id: test-data-builder
+title: Test Data Builder
+aka:
+  - Fixture builder
+  - Object builder
+scale: implementation
+category: testing
+maturity: time-tested
+short_description: >-
+  Create test fixtures with intention-revealing defaults and fluent overrides so each test states only the data that matters.
+description: >-
+  A Test Data Builder creates valid default objects and lets each test override the fields relevant to the scenario. It keeps tests resilient to constructor growth, avoids copy-pasted object literals, and makes the important variation visible. Builders are strongest when domain objects have invariants: the builder knows how to produce a valid object, while tests communicate the exceptional detail.
+problem: >-
+  Large fixture literals obscure the reason for a test and break whenever constructors or required fields change.
+context: >-
+  Use when many tests need similar domain objects, API payloads, or database records with small scenario-specific differences.
+consequences:
+  - >-
+    Reduces noisy fixture setup and makes relevant data stand out.
+  - >-
+    Protects tests from unrelated constructor and schema changes.
+  - >-
+    Can hide important defaults; name builders and overrides clearly and keep generated data realistic.
+synergies:
+  - pattern: arrange-act-assert
+    reason: >-
+      Builders make the Arrange phase concise without burying the Act or Assert.
+  - pattern: object-mother
+    reason: >-
+      Object Mother can delegate to builders for named common cases instead of returning rigid fixtures.
+  - pattern: stub
+    reason: >-
+      Builder-created return values make stubs more readable and realistic.
+conflicts_with:
+  - object-mother
+alternatives:
+  - object-mother
+  - builder
+languages:
+  - language-agnostic
+  - javascript
+  - typescript
+  - python
+  - java
+frameworks:
+  - none
+  - nodejs
+  - spring-boot
+  - django
+  - fastapi
+project_types:
+  - library
+  - web-api
+  - backend-service
+  - microservices
+  - modular-monolith
+tags:
+  - fixtures
+  - test-data
+  - readability
+examples:
+  - language: java
+    title: JUnit order fixture
+    negative: |-
+      @Test
+      void premiumCustomersGetFreeShipping() {
+        Customer customer = new Customer("c1", "Ada", "ada@example.com", true, 12, "GB");
+        Order order = new Order("o1", customer, List.of(new Line("sku", 2, 500)), "GBP", false);
+        assertEquals(Money.zero("GBP"), shippingFor(order));
+      }
+    positive: |-
+      @Test
+      void premiumCustomersGetFreeShipping() {
+        Order order = anOrder()
+            .forCustomer(aCustomer().premium().build())
+            .withCurrency("GBP")
+            .build();
+      
+        assertEquals(Money.zero("GBP"), shippingFor(order));
+      }
+    explanation: >-
+      The positive test names only the facts that matter to the behaviour: premium customer and currency. Valid defaults live in the builders and can evolve with the domain model.
+ratings:
+  small:
+    score: 4
+    notes: >-
+      Valuable as soon as fixtures have more than a handful of fields.
+  medium:
+    score: 5
+    notes: >-
+      Excellent default for domain and API tests with repeated valid objects.
+  large:
+    score: 5
+    notes: >-
+      Essential for large suites to avoid fixture drift and broad rewrite churn.

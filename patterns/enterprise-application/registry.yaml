@@ -1,0 +1,98 @@
+id: registry
+title: Registry
+scale: design
+category: enterprise-application
+maturity: time-tested
+short_description: >-
+  Provide a well-known object for locating shared services or configuration when passing every dependency explicitly is impractical.
+description: >-
+  A Registry is a process-wide or context-wide directory of objects such as configuration, connection factories, mappers, or application services. Unlike arbitrary globals, a disciplined registry has a small purpose, typed accessors, controlled initialisation, and clear lifecycle rules. It is often a pragmatic escape hatch for legacy frameworks, plugins, and code paths that cannot participate in constructor injection.
+problem: >-
+  Deep framework callbacks, legacy entry points, or plugin mechanisms sometimes need access to shared services without a practical way to pass dependencies through every call.
+context: >-
+  Use sparingly where dependency injection cannot reach, or for immutable application context assembled at startup. Prefer explicit dependencies for normal business code.
+consequences:
+  - Gives awkward framework or legacy code a single controlled access point for shared collaborators.
+  - Can simplify bootstrapping when many integrations need common configuration.
+  - Risks hidden dependencies, global mutable state, and order-dependent tests if overused.
+  - Needs reset or scoping support for tests and multi-tenant applications.
+synergies:
+  - pattern: service-locator
+    reason: Registry is often implemented as a constrained Service Locator; the same cautions about hidden dependencies apply.
+  - pattern: dependency-injection
+    reason: DI should populate the registry at composition time when explicit injection is impossible downstream.
+  - pattern: metadata-mapping
+    reason: Mapper metadata can be registered once at startup and reused by persistence components.
+  - pattern: singleton
+    reason: A singleton registry is common, though a scoped registry is safer for tests and tenants.
+alternatives:
+  - dependency-injection
+  - service-locator
+conflicts_with:
+  - dependency-injection
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - typescript
+frameworks:
+  - none
+  - spring-boot
+  - dotnet
+  - nestjs
+project_types:
+  - backend-service
+  - modular-monolith
+  - monolith
+  - desktop-app
+tags:
+  - global-context
+  - bootstrapping
+  - legacy
+examples:
+  - language: typescript
+    title: Controlled application registry
+    negative: |
+      export const globals: Record<string, unknown> = {};
+
+      export function renderInvoice(id: string) {
+        const db = globals['db'] as Database;
+        const tax = globals['taxService'] as TaxService;
+        return new InvoiceRenderer(db, tax).render(id);
+      }
+    positive: |
+      class ApplicationRegistry {
+        private static current?: ApplicationRegistry;
+
+        private constructor(
+          readonly invoices: InvoiceRepository,
+          readonly tax: TaxService
+        ) {}
+
+        static initialise(registry: ApplicationRegistry) { this.current = registry; }
+        static get(): ApplicationRegistry {
+          if (!this.current) throw new Error('registry not initialised');
+          return this.current;
+        }
+      }
+
+      export function renderInvoice(id: string) {
+        const registry = ApplicationRegistry.get();
+        return new InvoiceRenderer(registry.invoices, registry.tax).render(id);
+      }
+    explanation: >-
+      The positive version is still globally reachable, but it is typed, initialised deliberately, and narrow enough that hidden dependencies can be audited.
+ratings:
+  small:
+    score: 2
+    notes: Usually worse than explicit construction or simple DI in small codebases.
+  medium:
+    score: 3
+    notes: Situational for framework callbacks and legacy seams; keep it read-only after startup.
+  large:
+    score: 3
+    notes: Useful as a constrained escape hatch, but dangerous if it becomes the default dependency mechanism.
+references:
+  - title: Patterns of Enterprise Application Architecture
+    author: Martin Fowler
+    year: 2002

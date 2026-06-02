@@ -1,0 +1,89 @@
+id: request-reply
+title: Request-Reply
+scale: integration
+category: enterprise-integration
+maturity: time-tested
+aka:
+  - Request-Response Messaging
+short_description: >-
+  Send a request message and receive a corresponding reply message, preserving synchronous semantics over asynchronous infrastructure.
+description: >-
+  Request-Reply models a conversation where a requester sends a message to a service and waits for, or later retrieves, the matching response. The reply may return on a temporary queue, a named reply channel or a topic partition, and it must carry enough correlation information to match the original request. The pattern is useful when messaging infrastructure is required for routing, buffering or protocol bridging, but the business interaction still needs a result. It should not be used to hide slow distributed calls as if they were local method invocations.
+problem: >-
+  Some integrations need a definite answer, but direct synchronous calls are unsuitable because routing, buffering, transport mediation or broker-based decoupling is required.
+context: >-
+  Use where a message-based service must return quotes, validations, enrichment results or command outcomes to the original requester.
+consequences:
+  - Enables response semantics across queues and brokers while retaining loose transport coupling.
+  - Requires correlation identifiers, reply channels, timeouts and cleanup of pending requests.
+  - Can recreate synchronous coupling and resource exhaustion if callers block indefinitely.
+  - More complex than fire-and-forget events; use only when a reply is truly required.
+synergies:
+  - pattern: correlation-identifier
+    reason: The requester needs a stable id to match each reply to its outstanding request.
+  - pattern: timeout
+    reason: Pending requests must expire so callers do not wait forever for missing replies.
+  - pattern: message-channel
+    reason: Request and reply messages travel over explicit channels with distinct responsibilities.
+  - pattern: message-translator
+    reason: Request/reply endpoints often translate between broker messages and local service contracts.
+alternatives:
+  - grpc-rpc
+  - rest
+  - publish-subscribe
+languages:
+  - language-agnostic
+  - java
+  - typescript
+  - csharp
+frameworks:
+  - rabbitmq
+  - nats
+  - kafka
+  - nodejs
+project_types:
+  - backend-service
+  - microservices
+  - distributed-system
+  - web-api
+tags:
+  - messaging
+  - request-reply
+  - correlation
+examples:
+  - language: typescript
+    title: Correlating replies on a RabbitMQ callback queue
+    negative: |
+      // The first response wins, even if it belongs to another in-flight request.
+      channel.sendToQueue("credit-check", Buffer.from(JSON.stringify(request)));
+      const response = await nextMessage("credit-replies");
+      return JSON.parse(response.content.toString());
+    positive: |
+      async function requestCreditCheck(request: CreditRequest): Promise<CreditReply> {
+        const correlationId = crypto.randomUUID();
+        const pending = waitForReply(correlationId, 5_000);
+
+        channel.sendToQueue("credit-check", Buffer.from(JSON.stringify(request)), {
+          replyTo: "credit-replies",
+          correlationId,
+          persistent: true
+        });
+
+        return pending;
+      }
+    explanation: >-
+      The positive version supplies a reply channel, correlation id and timeout so concurrent requests cannot consume each other's replies or wait forever.
+ratings:
+  small:
+    score: 2
+    notes: Direct HTTP/RPC is often simpler for small systems that do not need broker mediation.
+  medium:
+    score: 4
+    notes: Useful for asynchronous transport with bounded response expectations.
+  large:
+    score: 3
+    notes: Valuable in selected integration flows, but excessive use creates hidden synchronous coupling.
+references:
+  - title: Enterprise Integration Patterns
+    author: Gregor Hohpe and Bobby Woolf
+    year: 2003

@@ -1,0 +1,91 @@
+id: debounce-throttle-ui
+title: Debounce / Throttle (UI)
+scale: frontend
+category: frontend
+maturity: time-tested
+short_description: >-
+  Limit how often high-frequency UI events trigger expensive work by waiting for quiet time or enforcing a maximum call rate.
+description: >-
+  Debouncing delays work until events stop for a configured interval; throttling runs work at most once per interval while events continue. In UI code they protect search, resize, scroll, pointer and validation handlers from overwhelming rendering, network calls or analytics. The interval and edge behaviour are part of the UX contract: choose them based on user intent, not arbitrary magic numbers.
+problem: >-
+  Input, scroll and resize events can fire dozens of times per second, causing janky rendering, duplicate requests and race-prone state updates.
+context: >-
+  Use for typeahead search, autosave, resize measurement, scroll tracking and pointer-heavy interactions where every event does not need immediate expensive processing.
+consequences:
+  - Reduces unnecessary rendering, network traffic and battery usage.
+  - Makes async interactions less noisy and more predictable.
+  - Adds latency when debounce windows are too long.
+  - Requires cleanup on unmount and cancellation of stale async results.
+synergies:
+  - pattern: hooks
+    reason: Custom hooks package timer setup and cleanup safely for component lifecycles.
+  - pattern: rate-limiting
+    reason: Client-side throttling complements, but does not replace, server-side rate limits.
+  - pattern: observer
+    reason: Event streams can be transformed with debouncing and throttling before observers update UI.
+  - pattern: backpressure
+    reason: Throttling is a UI-level backpressure mechanism for fast producers and slower consumers.
+alternatives:
+  - backpressure
+  - cache-aside
+  - memoization
+languages:
+  - typescript
+  - javascript
+frameworks:
+  - react
+  - vue
+  - angular
+  - svelte
+  - rxjs
+project_types:
+  - web-frontend
+  - mobile-app
+  - realtime-system
+tags:
+  - performance
+  - event-handling
+  - timers
+examples:
+  - language: typescript
+    title: Debouncing typeahead requests
+    negative: |
+      function SearchBox() {
+        const [results, setResults] = useState<Result[]>([]);
+        return <input onChange={async event => {
+          setResults(await api.search(event.currentTarget.value));
+        }} />;
+      }
+    positive: |
+      function SearchBox() {
+        const [query, setQuery] = useState("");
+        const debouncedQuery = useDebouncedValue(query, 250);
+        const [results, setResults] = useState<Result[]>([]);
+
+        useEffect(() => {
+          if (!debouncedQuery) return setResults([]);
+          const controller = new AbortController();
+          api.search(debouncedQuery, { signal: controller.signal }).then(setResults);
+          return () => controller.abort();
+        }, [debouncedQuery]);
+
+        return <input value={query} onChange={event => setQuery(event.currentTarget.value)} />;
+      }
+    explanation: >-
+      The positive version waits for typing to pause and aborts stale requests, reducing server load and preventing older responses from replacing newer results.
+ratings:
+  small:
+    score: 4
+    notes: >-
+      Easy and valuable for common search and resize cases, as long as the delay is user-tested.
+  medium:
+    score: 4
+    notes: >-
+      Strong fit for performance-sensitive UI flows with frequent events.
+  large:
+    score: 3
+    notes: >-
+      Still useful, but large systems should pair it with request cancellation, telemetry and server-side protections.
+references:
+  - title: Debounce and Throttle
+    url: https://css-tricks.com/debouncing-throttling-explained-examples/

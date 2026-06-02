@@ -1,0 +1,103 @@
+id: message-channel
+title: Message Channel
+scale: integration
+category: enterprise-integration
+maturity: time-tested
+short_description: >-
+  Connect applications through a named logical conduit so senders and receivers can exchange messages without knowing each other's location, protocol details, or runtime availability.
+description: >-
+  A Message Channel is the addressable path over which messages flow between integration participants. It may be implemented by a queue, topic, stream, mailbox, HTTP endpoint, or broker route, but the important design decision is logical: choose explicit channels for the kinds of conversations the system supports. A well-named channel expresses intent, ownership, delivery expectations, ordering assumptions, and payload contract. It decouples producers from consumers while still making coupling visible at the channel boundary.
+problem: >-
+  Direct point-to-point calls hard-code addresses, timing, and protocols into each participant. As integrations grow, every producer needs to know every consumer and operational changes ripple through code rather than configuration.
+context: >-
+  Use when two or more applications, services, or bounded contexts exchange asynchronous messages, especially when producers and consumers are owned independently or need buffering, fan-out, routing, or replay.
+consequences:
+  - Decouples participants in space and time; either side can be deployed or scaled independently.
+  - Makes integration contracts visible through channel names, schemas, retention, ordering, and access rules.
+  - Introduces operational responsibilities for brokers, dead letters, retention, permissions, monitoring, and back-pressure.
+  - Channel sprawl becomes a governance problem unless ownership and naming conventions are explicit.
+synergies:
+  - pattern: message-endpoint
+    reason: Endpoints hide broker-specific APIs from business code while reading from and writing to channels.
+  - pattern: message-router
+    reason: Routers consume from one channel and publish to other channels based on routing policy.
+  - pattern: publish-subscribe
+    reason: A publish-subscribe channel lets many subscribers independently observe the same event stream.
+  - pattern: dead-letter-channel
+    reason: Failed messages need a separate failure channel with clear ownership and replay procedures.
+alternatives:
+  - rest
+  - grpc-rpc
+  - webhook
+conflicts_with:
+  - transaction-script
+languages:
+  - language-agnostic
+  - java
+  - typescript
+frameworks:
+  - kafka
+  - rabbitmq
+  - nats
+  - spring-boot
+  - nodejs
+project_types:
+  - microservices
+  - distributed-system
+  - backend-service
+  - data-pipeline
+tags:
+  - eip
+  - messaging
+  - decoupling
+  - asynchronous
+diagram: |-
+  flowchart LR
+    Producer -->|OrderSubmitted| Channel[(orders.submitted)]
+    Channel --> ConsumerA[Billing endpoint]
+    Channel --> ConsumerB[Fulfilment endpoint]
+examples:
+  - language: java
+    title: Naming a durable integration channel instead of embedding destinations
+    negative: |
+      class CheckoutService {
+        void complete(Order order) {
+          http.post("https://billing.internal/v1/orders", order);
+          http.post("https://warehouse.internal/v1/reserve", order);
+          http.post("https://crm.internal/v1/events", order);
+        }
+      }
+    positive: |
+      @Component
+      class CheckoutService {
+        private final StreamBridge bridge;
+
+        CheckoutService(StreamBridge bridge) {
+          this.bridge = bridge;
+        }
+
+        void complete(Order order) {
+          OrderSubmitted event = OrderSubmitted.from(order);
+          bridge.send("ordersSubmitted-out-0", event);
+        }
+      }
+
+      // application.yml
+      // spring.cloud.stream.bindings.ordersSubmitted-out-0.destination=orders.submitted.v1
+    explanation: >-
+      The positive version publishes a business event to a logical channel. Billing, warehouse, and CRM can subscribe independently, and the checkout service no longer embeds their locations or call timing.
+ratings:
+  small:
+    score: 2
+    notes: Usually unnecessary for a small single-process application unless it already uses a broker.
+  medium:
+    score: 4
+    notes: Valuable once several services exchange events and need buffering or independent deployment.
+  large:
+    score: 5
+    notes: Foundational for integration-heavy estates; channel governance becomes a core architecture concern.
+references:
+  - title: Enterprise Integration Patterns
+    author: Gregor Hohpe and Bobby Woolf
+    year: 2003
+    url: https://www.enterpriseintegrationpatterns.com/patterns/messaging/MessageChannel.html

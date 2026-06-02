@@ -1,0 +1,97 @@
+id: semaphore
+title: Semaphore
+aka:
+  - Permit counter
+  - Counting semaphore
+scale: concurrency
+category: concurrency
+maturity: time-tested
+short_description: >-
+  Control access to a finite set of permits so only a bounded number of concurrent operations can enter a critical or resource-limited section.
+description: >-
+  A Semaphore is a concurrency primitive built around a counter of available permits. Acquiring a permit decrements the counter or waits/fails when none are available; releasing a permit increments it and may wake a waiter. Binary semaphores can act like simple mutexes, but counting semaphores are most valuable for bounding concurrency around scarce resources such as database connections, external API calls, file descriptors, GPU slots, or in-flight jobs. Correct use requires release in all paths and clear ownership of each acquired permit.
+problem: >-
+  Without an explicit concurrency bound, bursts of work can overwhelm a shared resource even when each individual operation is correct.
+context: >-
+  Use when a resource has a known capacity or when a subsystem must be protected from too many concurrent callers. Prefer higher-level pools or rate limiters when they directly model the resource.
+consequences:
+  - Provides a simple, local concurrency limit independent of the caller count.
+  - Can protect downstream resources and make overload visible as waiting, timeout, or rejection.
+  - Missing releases leak permits and eventually deadlock the workload.
+  - Semaphores do not provide fairness, cancellation, or ownership tracking unless the implementation explicitly supports them.
+synergies:
+  - pattern: producer-consumer
+    reason: Semaphores can bound the number of in-flight jobs between producers and consumers when a queue alone is not enough.
+  - pattern: bulkhead
+    reason: A semaphore is a common implementation mechanism for bulkheads that cap concurrent calls to one dependency.
+  - pattern: rate-limiting
+    reason: Rate limits bound work over time; semaphores bound simultaneous work, and robust systems often need both.
+  - pattern: guarded-suspension
+    reason: Semaphore acquisition is a guard that suspends callers until a permit-backed condition is true.
+alternatives:
+  - thread-pool
+  - rate-limiting
+  - bulkhead
+conflicts_with:
+  - reactor
+languages:
+  - language-agnostic
+  - java
+  - cpp
+  - csharp
+  - go
+  - python
+frameworks:
+  - none
+  - spring-boot
+  - dotnet
+project_types:
+  - backend-service
+  - web-api
+  - high-throughput
+  - distributed-system
+tags:
+  - permits
+  - resource-bounds
+  - throttling
+examples:
+  - language: java
+    title: Bounding concurrent calls and releasing permits reliably
+    negative: |
+      final class ThumbnailService {
+        Image render(Path path) throws IOException {
+          // Hundreds of requests can enter native image decoding at once.
+          return decoder.decode(path);
+        }
+      }
+    positive: |
+      final class ThumbnailService {
+        private final Semaphore decodePermits = new Semaphore(8, true);
+
+        Image render(Path path) throws IOException, InterruptedException {
+          if (!decodePermits.tryAcquire(250, TimeUnit.MILLISECONDS)) {
+            throw new RejectedExecutionException("too many concurrent decodes");
+          }
+          try {
+            return decoder.decode(path);
+          } finally {
+            decodePermits.release();
+          }
+        }
+      }
+    explanation: >-
+      The positive version caps native decodes at the capacity the process can sustain, times out rather than queueing forever, and releases the permit in finally so exceptions do not leak capacity.
+ratings:
+  small:
+    score: 3
+    notes: Useful for protecting a single scarce resource, but higher-level queues or pools are often clearer.
+  medium:
+    score: 4
+    notes: Good fit for service hotspots such as external calls, decoders, and limited worker slots when releases are well scoped.
+  large:
+    score: 4
+    notes: Important building block for bulkheads and overload control, though observability and cancellation semantics become mandatory.
+references:
+  - title: The Little Book of Semaphores
+    author: Allen B. Downey
+    year: 2008

@@ -1,0 +1,133 @@
+id: model-view-controller
+title: Model-View-Controller (MVC)
+aka:
+  - MVC
+scale: architectural
+category: architecture
+maturity: time-tested
+short_description: >-
+  Separate user interaction into models, views, and controllers so presentation,
+  input handling, and application state can evolve with clearer responsibilities.
+description: >-
+  Model-View-Controller structures an interactive application around three roles.
+  The model represents application state and domain behaviour, the view renders a
+  representation of that state, and the controller interprets user input and
+  coordinates changes. In web frameworks the controller often maps HTTP requests
+  to model operations and selects a view or response; in desktop and mobile
+  systems the same idea separates widgets from state and commands. MVC is most
+  effective when the model contains meaningful behaviour and the controller stays
+  thin. It deteriorates when controllers become transaction scripts or views reach
+  directly into persistence.
+problem: >-
+  User interface code, input handling, domain state, and persistence logic easily
+  collapse into one tangled module that is hard to test, reuse, or change.
+context: >-
+  Use for web, desktop, and mobile applications where presentation and input
+  concerns should be separated from application state. Adapt the details to the
+  framework's interpretation of MVC rather than forcing a historical variant.
+consequences:
+  - Views can change without rewriting domain behaviour or request coordination.
+  - Controllers provide a clear place for input validation, flow coordination, and response selection.
+  - An anaemic model pushes business rules into controllers and undermines the pattern.
+  - Strict MVC can be awkward for highly reactive frontend architectures without adaptation.
+  - Framework conventions help consistency but can hide coupling if models are active records tied to persistence.
+synergies:
+  - pattern: repository
+    reason: Repositories keep persistence access out of controllers and views when the model should remain clean.
+  - pattern: domain-model
+    reason: A behavioural model prevents controllers from becoming the only place business rules live.
+  - pattern: observer
+    reason: Views in interactive MVC variants can observe model changes without direct controller refresh logic.
+  - pattern: layered-architecture
+    reason: MVC often forms the presentation layer above application and persistence layers.
+alternatives:
+  - model-view-viewmodel
+  - hexagonal-architecture
+  - transaction-script
+conflicts_with:
+  - peer-to-peer
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - ruby
+  - php
+  - typescript
+frameworks:
+  - rails
+  - spring
+  - aspnet
+  - django
+  - laravel
+project_types:
+  - web-api
+  - web-frontend
+  - monolith
+  - desktop-app
+tags:
+  - presentation
+  - separation-of-concerns
+  - controllers
+  - views
+  - user-interface
+diagram: |-
+  flowchart LR
+    User[User] --> Controller[Controller]
+    Controller --> Model[Model]
+    Model --> View[View]
+    View --> User
+    Controller --> View
+examples:
+  - language: typescript
+    title: Keeping controller flow separate from model rules
+    negative: |
+      app.post("/discount", async (req, res) => {
+        const order = await db.orders.find(req.body.orderId);
+        const total = order.items.reduce((sum, item) => sum + item.price, 0);
+        const discounted = total > 100 ? total * 0.9 : total;
+        await db.orders.update(order.id, { total: discounted });
+        res.render("order", { order, total: discounted });
+      });
+    positive: |
+      class OrderModel {
+        constructor(private readonly order: Order) {}
+
+        discountedTotal() {
+          const total = this.order.items.reduce((sum, item) => sum + item.price, 0);
+          return total > 100 ? total * 0.9 : total;
+        }
+      }
+
+      app.post("/discount", async (req, res) => {
+        const order = await orders.find(req.body.orderId);
+        const model = new OrderModel(order);
+        await orders.saveTotal(order.id, model.discountedTotal());
+        res.render("order", { order, total: model.discountedTotal() });
+      });
+    explanation: >-
+      The negative controller mixes persistence, business calculation, and view
+      selection. The positive version leaves the controller coordinating request
+      flow while the model owns the discount rule.
+ratings:
+  small:
+    score: 4
+    notes: >-
+      Good fit for small UI-backed applications because the vocabulary is simple
+      and framework support is strong.
+  medium:
+    score: 4
+    notes: >-
+      Strong fit when controllers remain thin and models or services hold rules.
+      Watch for controller bloat as features accumulate.
+  large:
+    score: 3
+    notes: >-
+      Useful as a presentation pattern, but large systems usually need additional
+      architectural boundaries such as hexagonal or layered architecture.
+references:
+  - title: Applications Programming in Smalltalk-80
+    author: Trygve Reenskaug
+    year: 1979
+  - title: Patterns of Enterprise Application Architecture
+    author: Martin Fowler
+    year: 2002

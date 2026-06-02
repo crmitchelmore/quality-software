@@ -1,0 +1,105 @@
+id: builder
+title: Builder
+scale: design
+category: gof-creational
+maturity: time-tested
+short_description: >-
+  Construct complex objects step by step through a focused builder API, separating validation and assembly from the final immutable product.
+description: >-
+  Builder is useful when an object has many optional parts, construction order matters, or invariants should be checked before the product becomes visible. Instead of passing long constructor argument lists or mutating a partially valid object, callers configure a builder and call build to receive a complete product. A good builder makes required data explicit, applies defaults consistently, and rejects invalid combinations at the boundary.
+problem: >-
+  Constructors with many primitive parameters and optional flags are hard to read, easy to misorder, and often create partially valid objects.
+context: >-
+  Use for complex value objects, requests, test data, or immutable aggregates where construction needs readable options and centralised validation.
+consequences:
+  - Makes call sites intention-revealing and avoids telescoping constructors.
+  - Centralises defaults and invariant checks before producing the object.
+  - Can hide required fields if the builder is too permissive; type-state or smart constructors can strengthen this.
+  - Adds an extra type that is wasteful for simple data structures.
+synergies:
+  - pattern: fluent-interface
+    reason: Builders often expose fluent methods to make step-by-step configuration readable.
+  - pattern: parameter-object
+    reason: A builder may assemble a parameter object for APIs with many named options.
+  - pattern: test-data-builder
+    reason: Test data builders are specialised builders that keep behavioural tests concise.
+  - pattern: type-state
+    reason: Type State can encode required build steps so incomplete objects cannot be built.
+alternatives:
+  - factory-method
+  - smart-constructor
+  - options-object
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - typescript
+  - kotlin
+  - python
+frameworks:
+  - none
+  - spring-boot
+  - dotnet
+project_types:
+  - library
+  - sdk
+  - backend-service
+  - web-api
+tags:
+  - construction
+  - readability
+  - invariants
+examples:
+  - language: typescript
+    title: Building an HTTP client configuration
+    negative: |
+      const client = new HttpClient(
+        "https://api.example.com",
+        5000,
+        true,
+        undefined,
+        3,
+        "bearer",
+      );
+    positive: |
+      class HttpClientBuilder {
+        private timeoutMs = 2_000;
+        private retries = 0;
+        private auth: "none" | "bearer" = "none";
+
+        constructor(private readonly baseUrl: string) {}
+        withTimeout(ms: number): this { this.timeoutMs = ms; return this; }
+        withRetries(count: number): this { this.retries = count; return this; }
+        withBearerAuth(): this { this.auth = "bearer"; return this; }
+
+        build(): HttpClient {
+          if (!this.baseUrl.startsWith("https://")) throw new Error("HTTPS required");
+          if (this.retries > 0 && this.timeoutMs > 10_000) throw new Error("retry budget too high");
+          return new HttpClient({ baseUrl: this.baseUrl, timeoutMs: this.timeoutMs, retries: this.retries, auth: this.auth });
+        }
+      }
+
+      const client = new HttpClientBuilder("https://api.example.com")
+        .withTimeout(5_000)
+        .withRetries(3)
+        .withBearerAuth()
+        .build();
+    explanation: >-
+      The positive version names each option, applies defaults, and validates cross-field constraints before the HttpClient exists. The negative version relies on remembering parameter order and permits invalid combinations.
+ratings:
+  small:
+    score: 3
+    notes: >-
+      Situational; useful for complex test data or configuration, but excessive for simple constructors.
+  medium:
+    score: 4
+    notes: >-
+      Good fit for immutable objects, SDK clients, and request construction where readability matters.
+  large:
+    score: 4
+    notes: >-
+      Valuable for stable APIs and tests across teams, though generated or typed builders may be preferable for very large models.
+references:
+  - title: "Design Patterns: Elements of Reusable Object-Oriented Software"
+    author: Gamma, Helm, Johnson, Vlissides
+    year: 1994

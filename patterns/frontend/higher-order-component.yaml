@@ -1,0 +1,92 @@
+id: higher-order-component
+title: Higher-Order Component
+aka:
+  - HOC
+scale: frontend
+category: frontend
+maturity: established
+short_description: >-
+  Reuse component behaviour by wrapping a component in a function that returns an enhanced component with additional props or lifecycle wiring.
+description: >-
+  A Higher-Order Component is a function from component to component. It centralises cross-cutting UI behaviour such as authorisation gates, analytics, subscriptions or feature flags without modifying the wrapped component. HOCs pre-date hooks in React and remain useful where APIs must decorate components declaratively, but they should preserve prop types, display names and refs carefully to avoid obscuring ownership.
+problem: >-
+  Multiple components need the same subscription or policy logic, and copy-pasting that logic leaks infrastructure concerns into otherwise focused views.
+context: >-
+  Use in React codebases with class components, decorator-style framework APIs, or integration layers that must enhance arbitrary components while leaving their rendering contract intact.
+consequences:
+  - Encapsulates cross-cutting concerns without inheritance.
+  - Can compose policy, data or telemetry around components uniformly.
+  - Wrapper nesting makes React DevTools and prop flow harder to read.
+  - Ref forwarding, static hoisting and generic props require care in TypeScript.
+synergies:
+  - pattern: component-based-ui
+    reason: HOCs preserve component contracts while adding reusable behaviour outside the component body.
+  - pattern: hooks
+    reason: Hooks now implement many behaviours that HOCs used to wrap, and can live inside a small HOC adapter for legacy consumers.
+  - pattern: decorator
+    reason: Both add responsibilities around an object/component without changing its public rendering role.
+  - pattern: proxy
+    reason: Access-control HOCs behave like UI-level proxies that guard rendering and interaction.
+alternatives:
+  - hooks
+  - render-props
+  - container-presentational
+languages:
+  - typescript
+  - javascript
+frameworks:
+  - react
+project_types:
+  - web-frontend
+  - mobile-app
+tags:
+  - reuse
+  - cross-cutting
+  - wrapping
+examples:
+  - language: typescript
+    title: Feature flag guard without leaking policy into the view
+    negative: |
+      function BillingPanel({ account }: { account: Account }) {
+        const flags = useFlags();
+        if (!flags.newBilling) return null;
+        return <section>{account.planName}</section>;
+      }
+
+      function InvoicePanel({ invoice }: { invoice: Invoice }) {
+        const flags = useFlags();
+        if (!flags.newBilling) return null;
+        return <section>{invoice.reference}</section>;
+      }
+    positive: |
+      function withFeature<P>(flag: string, Component: React.ComponentType<P>) {
+        return function FeatureGuard(props: P) {
+          const flags = useFlags();
+          if (!flags[flag]) return null;
+          return <Component {...props} />;
+        };
+      }
+
+      function BillingPanel({ account }: { account: Account }) {
+        return <section>{account.planName}</section>;
+      }
+
+      export const NewBillingPanel = withFeature("newBilling", BillingPanel);
+    explanation: >-
+      The positive version isolates the feature-flag policy in one wrapper, so BillingPanel remains a normal presentational component and future guarded panels reuse the same behaviour.
+ratings:
+  small:
+    score: 2
+    notes: >-
+      Rarely needed in modern small React apps; a hook or explicit component is usually clearer.
+  medium:
+    score: 3
+    notes: >-
+      Situational for shared policies, legacy class components or framework adapters, but avoid blanket wrapping.
+  large:
+    score: 3
+    notes: >-
+      Useful for platform teams exposing decorators, yet wrapper depth and typing complexity make hooks or composition preferable for feature code.
+references:
+  - title: Higher-Order Components
+    url: https://legacy.reactjs.org/docs/higher-order-components.html

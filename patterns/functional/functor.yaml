@@ -1,0 +1,86 @@
+id: functor
+title: Functor
+aka:
+  - Mappable Context
+scale: design
+category: functional
+maturity: time-tested
+short_description: >-
+  Provide a lawful map operation that transforms values inside a context without changing the context shape.
+description: >-
+  A Functor is a type that supports map: apply a pure function to the value or values it contains, returning the same kind of context. Arrays map over many values, Option maps over a present value, Result maps over success, and Future maps over eventual success. The abstraction is small but powerful: transform what is inside without knowing how the context is represented.
+problem: >-
+  Code often unwraps containers just to transform their contents, duplicating empty/error/async/container handling around simple pure functions.
+context: >-
+  Use when designing generic wrappers, collection-like types, optional values, results, parser values, or async abstractions that should support transformation without unwrapping.
+consequences:
+  - Separates content transformation from context handling.
+  - Gives a common vocabulary for Option, Result, collections, and futures.
+  - >-
+    Only handles independent transformations; dependent contextual steps require Monad/flatMap.
+  - >-
+    Lawfulness matters: map(identity) and map(f).map(g) should behave predictably.
+synergies:
+  - pattern: monad
+    reason: Monads extend functors with dependent sequencing via flatMap/bind.
+  - pattern: option-maybe
+    reason: Option maps a function only when a value is present.
+  - pattern: either-result
+    reason: Result maps success while preserving error context.
+  - pattern: map-filter-reduce
+    reason: >-
+      Collection map is the everyday functor operation over lists and arrays.
+alternatives:
+  - iterator
+  - visitor
+languages:
+  - haskell
+  - scala
+  - rust
+  - typescript
+  - clojure
+frameworks:
+  - none
+  - rxjs
+project_types:
+  - library
+  - sdk
+  - web-frontend
+  - backend-service
+tags:
+  - map
+  - abstraction
+  - containers
+examples:
+  - language: rust
+    title: Mapping over optional configuration
+    negative: |
+      fn port_text(port: Option<u16>) -> Option<String> {
+          match port {
+              Some(value) => Some(format!("port={}", value)),
+              None => None,
+          }
+      }
+    positive: |
+      fn port_text(port: Option<u16>) -> Option<String> {
+          port.map(|value| format!("port={}", value))
+      }
+    explanation: >-
+      The positive version transforms the present value and lets Option preserve the None case, which is exactly the functor contract.
+ratings:
+  small:
+    score: 3
+    notes: >-
+      Useful when language libraries already expose map; rarely worth teaching as an abstraction for tiny apps.
+  medium:
+    score: 4
+    notes: >-
+      Good vocabulary for generic domain wrappers and collection-like APIs.
+  large:
+    score: 4
+    notes: >-
+      Strong for API consistency across many contextual types if laws and naming are standardised.
+references:
+  - title: Categories for the Working Mathematician
+    author: Saunders Mac Lane
+    year: 1971

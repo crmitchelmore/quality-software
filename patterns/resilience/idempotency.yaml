@@ -1,0 +1,122 @@
+id: idempotency
+title: Idempotency
+scale: integration
+category: resilience
+maturity: time-tested
+aka:
+  - Safe Repeatability
+  - Deduplicated Side Effects
+short_description: >-
+  Design an operation so repeating the same request has the same intended effect as
+  performing it once, making retries and duplicate delivery safe.
+description: >-
+  Idempotency makes integration reliable in the presence of uncertain outcomes. When a
+  caller times out after sending a request, it may not know whether the server committed
+  the side effect; when a message broker redelivers, the consumer may see the same work
+  twice. Idempotent design gives the operation a stable identity, records completed or
+  in-flight outcomes, and returns the original result for duplicates rather than doing
+  the side effect again. Some operations are naturally idempotent, such as setting a
+  resource to a specific state; others need explicit keys, uniqueness constraints or
+  idempotent receivers.
+problem: >-
+  Distributed systems cannot reliably distinguish "request lost" from "response lost".
+  Without idempotency, safe retry and at-least-once delivery can duplicate payments,
+  emails, shipments, records or commands.
+context: >-
+  Use for commands crossing process boundaries, message consumers, payment/order flows,
+  provisioning, webhooks and any write operation clients may retry. The deduplication
+  record should live in the same durability boundary as the side effect where possible.
+consequences:
+  - Enables safe retries and at-least-once delivery without duplicate side effects.
+  - Provides clearer operation identity and auditability across service boundaries.
+  - Requires durable storage, expiry policy and careful handling of concurrent duplicates.
+  - Can be hard for operations whose result depends on time, randomness or external side effects.
+synergies:
+  - pattern: retry
+    reason: Retry becomes safe for writes only when repeated attempts cannot duplicate the side effect.
+  - pattern: idempotency-key
+    reason: Idempotency keys give HTTP clients a stable request identity for deduplication.
+  - pattern: idempotent-receiver
+    reason: Message consumers use the same idea to ignore duplicate deliveries.
+  - pattern: outbox
+    reason: The outbox records emitted messages durably so replay and publication can be idempotent.
+alternatives:
+  - compensating-transaction
+  - saga
+  - pessimistic-offline-lock
+languages:
+  - language-agnostic
+  - typescript
+  - java
+  - csharp
+  - python
+frameworks:
+  - none
+  - nodejs
+  - spring-boot
+  - dotnet
+  - kafka
+project_types:
+  - web-api
+  - backend-service
+  - microservices
+  - distributed-system
+  - data-pipeline
+tags:
+  - resilience
+  - duplicate-suppression
+  - consistency
+  - safe-retry
+examples:
+  - language: typescript
+    title: Deduplicating side-effecting commands
+    negative: |
+      // If the client times out and retries, the customer may be charged twice.
+      app.post("/charges", async (req, res) => {
+        const charge = await paymentGateway.charge(req.body.customerId, req.body.amount);
+        await db.charges.insert({ customerId: req.body.customerId, gatewayId: charge.id });
+        res.status(201).json(charge);
+      });
+    positive: |
+      app.post("/charges", async (req, res) => {
+        const key = req.header("Idempotency-Key");
+        if (!key) {
+          res.status(400).json({ error: "Idempotency-Key required" });
+          return;
+        }
+
+        const existing = await db.idempotency.find(key);
+        if (existing?.status === "completed") {
+          res.status(200).json(existing.response);
+          return;
+        }
+
+        const result = await db.transaction(async tx => {
+          await tx.idempotency.reserve(key, "charges.create");
+          const charge = await paymentGateway.charge(req.body.customerId, req.body.amount, { key });
+          await tx.charges.insert({ customerId: req.body.customerId, gatewayId: charge.id });
+          await tx.idempotency.complete(key, charge);
+          return charge;
+        });
+
+        res.status(201).json(result);
+      });
+    explanation: >-
+      The positive version requires a stable operation key, records the completed
+      response, and returns that response for duplicate attempts instead of charging again.
+ratings:
+  small:
+    score: 3
+    notes: Important for payment-like or externally retried writes, even in small systems.
+  medium:
+    score: 5
+    notes: Critical once APIs, workers or webhooks retry side-effecting operations.
+  large:
+    score: 5
+    notes: Foundational for reliable distributed commands, event processing and sagas.
+references:
+  - title: Enterprise Integration Patterns; Idempotent Receiver
+    author: Gregor Hohpe and Bobby Woolf
+    year: 2003
+  - title: Stripe API Idempotent Requests
+    url: https://stripe.com/docs/idempotency

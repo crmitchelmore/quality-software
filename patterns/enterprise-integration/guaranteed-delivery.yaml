@@ -1,0 +1,83 @@
+id: guaranteed-delivery
+title: Guaranteed Delivery
+scale: integration
+category: enterprise-integration
+maturity: time-tested
+short_description: >-
+  Store messages durably and acknowledge them only at safe boundaries so delivery survives process crashes, broker restarts and network failures.
+description: >-
+  Guaranteed Delivery uses durable channels, persistent messages, producer confirms, consumer acknowledgements and transactional boundaries to ensure a message is not silently lost once accepted. The guarantee is usually at-least-once rather than exactly-once: a recovered broker or consumer may redeliver. The pattern therefore pairs durability with idempotent receivers, dead-letter handling and clear acknowledgement timing. It is appropriate for business-significant messages where loss is worse than latency or duplicate processing.
+problem: >-
+  Fire-and-forget messaging can lose orders, payments or state changes during crashes, broker failover or network partitions without either side noticing.
+context: >-
+  Use for commands and events whose loss has business impact, particularly across unreliable networks or services that deploy, restart or autoscale independently.
+consequences:
+  - Greatly reduces silent message loss across process and broker failures.
+  - Typically introduces at-least-once delivery, so duplicates must be expected.
+  - Increases latency and operational cost through disk persistence, confirms and replication.
+  - Requires end-to-end thinking; durable broker storage cannot protect side effects acknowledged too early.
+synergies:
+  - pattern: idempotent-receiver
+    reason: Durable recovery often redelivers messages, so receivers must make duplicate delivery safe.
+  - pattern: dead-letter-channel
+    reason: Messages that cannot be delivered after recovery and retry need a durable failure path.
+  - pattern: outbox
+    reason: The outbox preserves messages atomically with local state before publishing to the broker.
+  - pattern: retry
+    reason: Transient send or ack failures should be retried with backoff around the durable channel.
+alternatives:
+  - publish-subscribe
+  - event-sourcing
+languages:
+  - language-agnostic
+  - java
+  - typescript
+  - csharp
+frameworks:
+  - rabbitmq
+  - kafka
+  - nats
+  - spring-boot
+project_types:
+  - backend-service
+  - microservices
+  - distributed-system
+  - high-throughput
+tags:
+  - messaging
+  - durability
+  - reliability
+examples:
+  - language: typescript
+    title: Publishing RabbitMQ messages durably with confirms
+    negative: |
+      // Message can be lost if the broker crashes before flushing it.
+      channel.publish("orders", "accepted", Buffer.from(JSON.stringify(order)));
+    positive: |
+      const confirm = await amqp.connect(url).then((c) => c.createConfirmChannel());
+      await confirm.assertExchange("orders", "topic", { durable: true });
+
+      const accepted = confirm.publish(
+        "orders",
+        "accepted",
+        Buffer.from(JSON.stringify(order)),
+        { persistent: true, messageId: order.eventId }
+      );
+      if (!accepted) await once(confirm, "drain");
+      await confirm.waitForConfirms();
+    explanation: >-
+      The positive version uses a durable exchange, persistent message and publisher confirms, so the sender knows the broker accepted responsibility for delivery.
+ratings:
+  small:
+    score: 3
+    notes: Valuable for critical events, but may be overkill for ephemeral notifications.
+  medium:
+    score: 5
+    notes: Strong fit for business workflows where message loss is unacceptable.
+  large:
+    score: 5
+    notes: Essential, but must be designed with idempotency and throughput trade-offs.
+references:
+  - title: Enterprise Integration Patterns
+    author: Gregor Hohpe and Bobby Woolf
+    year: 2003

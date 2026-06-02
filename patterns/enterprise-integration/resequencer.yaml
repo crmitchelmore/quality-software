@@ -1,0 +1,88 @@
+id: resequencer
+title: Resequencer
+scale: integration
+category: enterprise-integration
+maturity: time-tested
+short_description: >-
+  Reorder related messages into a required sequence before forwarding them to a consumer that cannot safely process out-of-order messages.
+description: >-
+  A Resequencer buffers messages for a correlation group and releases them in sequence-number, timestamp, or domain-order order. It is needed when channels or parallel processors do not preserve order but downstream state transitions depend on it. The design must specify the ordering key, gap handling, maximum buffer size, and timeout for missing messages. A resequencer should not be used to paper over unclear domain semantics; if order is not truly required, prefer idempotent and commutative processing.
+problem: >-
+  Distributed messaging can deliver messages out of order because of retries, partitions, competing consumers, or parallel routes. Some receivers, such as ledger or lifecycle processors, produce wrong results if they observe events in the wrong order.
+context: >-
+  Use when related messages carry sequence metadata and a receiver has a genuine ordering requirement that cannot be removed by making processing idempotent or commutative.
+consequences:
+  - Protects order-sensitive consumers from invalid state transitions.
+  - Requires buffering and state, increasing latency and memory/storage pressure.
+  - Missing messages can block a group unless timeout and skip policies are explicit.
+  - Ordering often reduces throughput; partitioning by correlation key can be a simpler alternative.
+synergies:
+  - pattern: correlation-identifier
+    reason: The resequencer needs a group key to avoid ordering unrelated messages together.
+  - pattern: splitter
+    reason: Split messages often carry sequence numbers that a resequencer can restore later.
+  - pattern: idempotent-receiver
+    reason: Duplicate sequence numbers should be ignored before releasing ordered messages.
+  - pattern: message-channel
+    reason: Ordered output is usually published to a separate channel with stricter consumer expectations.
+alternatives:
+  - idempotency
+  - actor-model
+  - aggregator
+conflicts_with:
+  - competing-consumers
+languages:
+  - language-agnostic
+  - java
+  - typescript
+frameworks:
+  - spring-boot
+  - kafka
+  - redis
+project_types:
+  - distributed-system
+  - microservices
+  - data-pipeline
+  - high-throughput
+tags:
+  - eip
+  - ordering
+  - buffering
+  - sequencing
+diagram: |-
+  flowchart LR
+    In[3,1,2] --> R[(Resequencer)]
+    R --> Out[1,2,3]
+examples:
+  - language: java
+    title: Releasing account events in sequence order
+    negative: |
+      @KafkaListener(topics = "account.events")
+      void on(AccountEvent event) {
+        ledger.apply(event); // balance may be wrong if debit #3 arrives before credit #2
+      }
+    positive: |
+      from("kafka:account.events")
+        .routeId("account-resequencer")
+        .resequence(header("sequenceNumber"))
+          .batch()
+          .size(100)
+          .timeout(2000)
+        .to("kafka:account.events.ordered");
+    explanation: >-
+      The positive route buffers events and releases them by sequence number with a timeout. The ledger consumes from an ordered channel instead of assuming broker delivery order is sufficient.
+ratings:
+  small:
+    score: 1
+    notes: Avoid unless there is a proven ordering bug; it adds latency and state.
+  medium:
+    score: 3
+    notes: Situational for lifecycle or ledger flows with sequence metadata.
+  large:
+    score: 4
+    notes: Valuable for order-sensitive integration streams, but partitioning and idempotency should be considered first.
+references:
+  - title: Enterprise Integration Patterns
+    author: Gregor Hohpe and Bobby Woolf
+    year: 2003
+    url: https://www.enterpriseintegrationpatterns.com/patterns/messaging/Resequencer.html

@@ -1,0 +1,106 @@
+id: balking
+title: Balking
+aka:
+  - Return If Not Ready
+scale: concurrency
+category: concurrency
+maturity: time-tested
+short_description: >-
+  Check an object's state under synchronisation and immediately return or reject when the requested operation is not currently valid.
+description: >-
+  Balking is the non-blocking sibling of Guarded Suspension. A method enters the object's synchronisation boundary, checks whether the state permits the operation, and if not, exits immediately with a boolean, no-op, or domain-specific rejection. It is appropriate when waiting would be wasteful, dangerous, or semantically wrong: starting an already-started service, saving an unchanged document, or enqueueing after shutdown. The guard must be checked atomically with any state transition, otherwise two callers can both see "not started" and both perform the operation.
+problem: >-
+  Operations that are valid only in certain states can be executed twice or at the wrong time when state checks happen outside the lock or are separated from mutation.
+context: >-
+  Use for lifecycle methods, idempotent-ish operations, dirty flags, and capacity checks where callers should receive immediate feedback instead of blocking.
+consequences:
+  - Makes invalid timing explicit and avoids tying up threads waiting for a state that should not be awaited.
+  - Simplifies lifecycle APIs by atomically coupling guard checks and state transitions.
+  - Callers must handle the balk result; silent no-ops can hide lost work if the contract is unclear.
+  - Not suitable when the caller genuinely needs the operation to happen eventually; use guarded suspension or a queue then.
+synergies:
+  - pattern: monitor-object
+    reason: A monitor provides the atomic state check and transition that balking requires.
+  - pattern: guarded-suspension
+    reason: Balking is the immediate-return alternative when waiting for the guard would be wrong.
+  - pattern: idempotency
+    reason: Balking can enforce idempotent lifecycle transitions such as "start only once".
+  - pattern: state
+    reason: State objects can encode which operations balk in each lifecycle state.
+alternatives:
+  - guarded-suspension
+  - producer-consumer
+  - state
+conflicts_with:
+  - retry
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - go
+  - python
+frameworks:
+  - none
+project_types:
+  - library
+  - backend-service
+  - desktop-app
+  - embedded
+tags:
+  - lifecycle
+  - non-blocking
+  - state-guard
+examples:
+  - language: go
+    title: Starting a service once
+    negative: |
+      package service
+
+      type Service struct { running bool }
+
+      func (s *Service) Start() {
+          if s.running { return } // race: two goroutines can both pass
+          initialiseSockets()
+          s.running = true
+      }
+    positive: |
+      package service
+
+      import "sync"
+
+      type Service struct {
+          mu      sync.Mutex
+          running bool
+      }
+
+      func (s *Service) Start() bool {
+          s.mu.Lock()
+          if s.running {
+              s.mu.Unlock()
+              return false
+          }
+          s.running = true
+          s.mu.Unlock()
+
+          initialiseSockets()
+          return true
+      }
+    explanation: >-
+      The positive version atomically claims the transition to running before performing the side effect, so exactly one caller starts the service and others receive an immediate false result.
+ratings:
+  small:
+    score: 4
+    notes: >-
+      Simple and effective for lifecycle and dirty-state code; document whether false means no-op or rejection.
+  medium:
+    score: 4
+    notes: >-
+      Good fit for services and components with concurrent lifecycle calls or state-dependent operations.
+  large:
+    score: 3
+    notes: >-
+      Useful locally, but large systems need consistent error semantics and telemetry so balked operations are visible.
+references:
+  - title: Pattern-Oriented Software Architecture Volume 2
+    author: Schmidt, Stal, Rohnert, Buschmann
+    year: 2000

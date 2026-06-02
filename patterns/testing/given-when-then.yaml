@@ -1,0 +1,89 @@
+id: given-when-then
+title: Given-When-Then (BDD)
+aka:
+  - BDD scenario format
+  - Specification by example
+scale: implementation
+category: testing
+maturity: established
+short_description: >-
+  Describe behaviour as preconditions, user action, and expected outcome in business language that stakeholders and tests can share.
+description: >-
+  Given-When-Then is the behavioural testing grammar popularised by BDD. Given establishes the relevant context, When describes the event or action, and Then states the observable outcome. It is most valuable when scenario text becomes a shared specification; it is less useful if teams merely wrap low-level UI clicks in verbose ceremony. Keep scenarios declarative, with technical detail delegated to step implementations or helper APIs.
+problem: >-
+  Tests written in implementation language often fail to communicate the business rule they protect.
+context: >-
+  Use for acceptance tests, executable specifications, and cross-functional discussions where examples clarify requirements.
+consequences:
+  - >-
+    Creates a shared language between product, QA, and engineering.
+  - >-
+    Keeps acceptance tests focused on externally observable behaviour.
+  - >-
+    Can become slow and brittle if every unit test is forced into BDD tooling or if steps hide too much logic.
+synergies:
+  - pattern: arrange-act-assert
+    reason: >-
+      The same mental model maps to code-level Arrange, Act, Assert tests.
+  - pattern: page-object
+    reason: >-
+      Page objects keep UI step implementations declarative and selector-free.
+  - pattern: object-mother
+    reason: >-
+      Named fixtures make Given clauses concise and domain-specific.
+alternatives:
+  - arrange-act-assert
+languages:
+  - language-agnostic
+  - javascript
+  - typescript
+  - python
+  - java
+frameworks:
+  - none
+  - nodejs
+  - spring-boot
+  - django
+  - fastapi
+project_types:
+  - web-api
+  - web-frontend
+  - backend-service
+  - microservices
+  - monolith
+tags:
+  - bdd
+  - acceptance-testing
+  - specification
+examples:
+  - language: javascript
+    title: Scenario-shaped acceptance test
+    negative: |-
+      test("discount", async () => {
+        const u = await api.post("/users", { tier: "gold", orders: 10 });
+        const r = await api.post("/checkout", { userId: u.id, sku: "book" });
+        expect(r.body.total).toBe(900);
+      });
+    positive: |-
+      test("Given a gold customer, when they buy an eligible book, then the loyalty discount is applied", async () => {
+        const customer = await givenGoldCustomer({ previousOrders: 10 });
+      
+        const checkout = await whenCustomerChecksOut(customer, { sku: "book" });
+      
+        expect(checkout.total).toEqual(money(900, "GBP"));
+      });
+    explanation: >-
+      The positive version states the rule in business terms while still executing real code. Helper names carry the scenario language instead of exposing HTTP mechanics in the test body.
+ratings:
+  small:
+    score: 3
+    notes: >-
+      Useful for key behaviours; too much ceremony for tiny libraries.
+  medium:
+    score: 4
+    notes: >-
+      Strong for acceptance criteria and regression scenarios shared with non-engineers.
+  large:
+    score: 4
+    notes: >-
+      Valuable at scale when used selectively for important journeys, not every low-level test.

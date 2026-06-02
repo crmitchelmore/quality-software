@@ -1,0 +1,95 @@
+id: health-endpoint-monitoring
+title: Health Endpoint Monitoring
+scale: integration
+category: cloud-distributed
+maturity: established
+short_description: >-
+  Expose lightweight health endpoints that external monitors, load balancers, and
+  orchestrators can probe to detect liveness, readiness, and dependency degradation.
+description: >-
+  Health Endpoint Monitoring gives infrastructure a contract for deciding whether an
+  instance should receive traffic, be restarted, or trigger an alert. Good endpoints
+  distinguish liveness from readiness and deep dependency checks: a process can be
+  alive but not ready for traffic, or ready for degraded traffic while an optional
+  dependency is unavailable. The endpoint should be cheap, authenticated where needed,
+  and specific enough to avoid both false positives and cascading checks that overload
+  shared dependencies.
+problem: >-
+  Without an external health contract, platforms keep routing to broken instances or
+  restart healthy ones based on misleading process-level signals.
+context: >-
+  Services behind load balancers, orchestrators, API gateways, or synthetic monitors
+  where automated routing and alerting depend on application health.
+consequences:
+  - Enables fast removal of unready instances from traffic and clearer alerting.
+  - Separates process liveness from business readiness and dependency degradation.
+  - Bad checks can cause restart loops, false incidents, or load spikes against dependencies.
+  - Health data may reveal internals and should not expose sensitive details publicly.
+synergies:
+  - pattern: circuit-breaker
+    reason: Health can report degraded dependency state without forcing every probe to call the dependency.
+  - pattern: deployment-stamp
+    reason: Stamp-level routing depends on consistent health signals from every instance.
+  - pattern: gateway-offloading
+    reason: Gateways and load balancers consume readiness signals before forwarding requests.
+  - pattern: bulkhead
+    reason: Health checks should use isolated resources so they are not starved by normal traffic.
+alternatives:
+  - audit-logging
+languages:
+  - language-agnostic
+  - typescript
+  - java
+  - csharp
+  - go
+  - python
+frameworks:
+  - kubernetes
+  - spring-boot
+  - dotnet
+  - express
+  - fastapi
+project_types:
+  - web-api
+  - backend-service
+  - microservices
+  - distributed-system
+  - serverless
+tags:
+  - observability
+  - readiness
+  - liveness
+  - operations
+examples:
+  - language: typescript
+    title: Separating liveness and readiness
+    negative: |
+      app.get("/health", async (_req, res) => {
+        await database.query("SELECT count(*) FROM huge_table");
+        await paymentGateway.ping();
+        res.send("ok");
+      });
+    positive: |
+      app.get("/live", (_req, res) => res.status(200).send("alive"));
+
+      app.get("/ready", async (_req, res) => {
+        const db = await checks.databaseCanAcceptWrites();
+        const queue = await checks.outboxLagBelow(5000);
+        res.status(db && queue ? 200 : 503).json({ ready: db && queue });
+      });
+    explanation: >-
+      The positive version keeps liveness cheap and readiness focused on dependencies
+      required for serving traffic, avoiding expensive probes and misleading restarts.
+ratings:
+  small:
+    score: 3
+    notes: Useful for any deployed service, though checks should stay simple.
+  medium:
+    score: 5
+    notes: Excellent default once load balancers, containers, or alerts rely on service health.
+  large:
+    score: 5
+    notes: Essential for fleet automation, progressive delivery, and regional failover.
+references:
+  - title: Microsoft Azure Architecture Center; Health Endpoint Monitoring pattern
+    url: https://learn.microsoft.com/azure/architecture/patterns/health-endpoint-monitoring

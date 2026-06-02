@@ -1,0 +1,105 @@
+id: cache-aside
+title: Cache-Aside
+scale: data
+category: cloud-distributed
+maturity: time-tested
+short_description: >-
+  Let application code read through a cache on misses and explicitly invalidate or
+  refresh cached entries after writes, keeping the database as the source of truth.
+description: >-
+  Cache-Aside, also called lazy loading, keeps the cache outside the database write
+  path. A read first checks the cache; on a miss the application loads from the
+  backing store, stores the value with an appropriate TTL, and returns it. Writes
+  update the source of truth and then invalidate or refresh affected cache keys.
+  This pattern is simple, resilient to cache loss, and effective for read-heavy
+  workloads, but correctness depends on careful key design, TTLs, and invalidation
+  around mutable data.
+problem: >-
+  Repeated reads of the same data overload the primary datastore and add latency,
+  but pushing every write through a cache can complicate consistency and recovery.
+context: >-
+  Use for read-heavy data that can tolerate bounded staleness, where the
+  application owns cache keys and can decide when entries should expire or be
+  invalidated.
+consequences:
+  - Reduces database load and tail latency for hot reads.
+  - Cache outages degrade to slower database reads rather than data loss.
+  - First requests after expiry still pay the database cost and may stampede.
+  - Incorrect invalidation can serve stale or cross-tenant data.
+synergies:
+  - pattern: read-replica
+    reason: Cache misses can fall back to read replicas to protect the primary database.
+  - pattern: materialized-view
+    reason: Cache-aside can cache precomputed view rows for hot query shapes.
+  - pattern: circuit-breaker
+    reason: A breaker around the cache client prevents a slow cache from delaying all reads.
+  - pattern: idempotency
+    reason: Idempotent write handlers make invalidate-and-retry behaviour safe after partial failures.
+alternatives:
+  - write-through-cache
+  - write-behind-cache
+  - lazy-load
+languages:
+  - language-agnostic
+  - typescript
+  - java
+  - csharp
+  - go
+  - python
+frameworks:
+  - redis
+  - nodejs
+  - spring-boot
+  - dotnet
+  - django
+project_types:
+  - backend-service
+  - web-api
+  - microservices
+  - high-throughput
+tags:
+  - cache
+  - latency
+  - read-optimisation
+examples:
+  - language: typescript
+    title: Explicit cache miss and invalidation
+    negative: |
+      async function getProduct(id: string): Promise<Product> {
+        return db.products.findById(id); // hot products hit the database on every request
+      }
+
+      async function updateProduct(id: string, patch: Partial<Product>): Promise<void> {
+        await db.products.update(id, patch); // no cache contract, so later caching risks stale data
+      }
+    positive: |
+      async function getProduct(id: string): Promise<Product> {
+        const key = `product:${id}`;
+        const cached = await redis.get(key);
+        if (cached) return JSON.parse(cached) as Product;
+
+        const product = await db.products.findById(id);
+        await redis.set(key, JSON.stringify(product), { EX: 300 });
+        return product;
+      }
+
+      async function updateProduct(id: string, patch: Partial<Product>): Promise<void> {
+        await db.products.update(id, patch);
+        await redis.del(`product:${id}`);
+      }
+    explanation: >-
+      The positive version caches only after a database read and invalidates after
+      writes, keeping the database authoritative while reducing repeated read load.
+ratings:
+  small:
+    score: 3
+    notes: Useful for obvious hot reads, but avoid premature caching before measuring latency or load.
+  medium:
+    score: 4
+    notes: Good fit for read-heavy APIs when invalidation rules are well understood.
+  large:
+    score: 4
+    notes: Still valuable, though large systems need stampede protection, observability, and tenant-safe keying.
+references:
+  - title: Microsoft Azure Architecture Center; Cache-Aside pattern
+    url: https://learn.microsoft.com/azure/architecture/patterns/cache-aside

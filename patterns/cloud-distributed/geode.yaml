@@ -1,0 +1,113 @@
+id: geode
+title: Geode (Geo-Distributed)
+aka:
+  - Geo-Distributed Deployment
+  - Active-Active Regions
+scale: architectural
+category: cloud-distributed
+maturity: established
+short_description: >-
+  Deploy a service in multiple geographic regions as cooperating active units so users
+  are served near their location and the system can survive regional failure.
+description: >-
+  A geode architecture runs the same capability in several geographically separated
+  locations, with traffic routed to the nearest healthy region and data replicated or
+  partitioned according to consistency needs. Each geode should be able to serve local
+  traffic independently, while replication, conflict resolution, and failover policies
+  make the whole system behave as one product. It is not just disaster recovery: users
+  actively use multiple regions during normal operation, so latency, sovereignty, and
+  regional blast radius are first-class design constraints.
+problem: >-
+  A single-region deployment creates unacceptable latency for distant users and can
+  turn a regional cloud outage into a global service outage.
+context: >-
+  Global products, regulated workloads with data-residency requirements, and services
+  whose availability target exceeds what one region can provide.
+consequences:
+  - Improves user latency by keeping request handling and reads close to users.
+  - Survives many regional failures if routing and dependencies are also regionalised.
+  - Forces explicit choices about strong consistency, conflict resolution, and data residency.
+  - Substantially increases cost, observability, release, and operational complexity.
+synergies:
+  - pattern: deployment-stamp
+    reason: Each region can contain one or more repeatable stamps with identical infrastructure and release shape.
+  - pattern: health-endpoint-monitoring
+    reason: Global traffic managers need region-level health signals before shifting users.
+  - pattern: sharding
+    reason: Sharding by geography or tenant keeps most writes local and limits replication fan-out.
+  - pattern: event-driven-architecture
+    reason: Asynchronous events replicate facts between regions without forcing every request into a global transaction.
+alternatives:
+  - read-replica
+  - deployment-stamp
+  - cell-based-architecture
+diagram: |-
+  flowchart LR
+    UserA[Users EU] --> Dns[Global Router]
+    UserB[Users US] --> Dns
+    Dns --> Eu[Region EU]
+    Dns --> Us[Region US]
+    Dns --> Ap[Region AP]
+    Eu --> EuData[(Local Data)]
+    Us --> UsData[(Local Data)]
+    Ap --> ApData[(Local Data)]
+    EuData <--> Rep[Async Replication]
+    UsData <--> Rep
+    ApData <--> Rep
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - go
+  - typescript
+frameworks:
+  - kubernetes
+  - istio
+  - terraform
+  - spring-boot
+  - dotnet
+project_types:
+  - microservices
+  - distributed-system
+  - web-api
+  - backend-service
+  - high-throughput
+tags:
+  - multi-region
+  - active-active
+  - latency
+  - disaster-recovery
+examples:
+  - language: typescript
+    title: Region-aware writes
+    negative: |
+      // Every request crosses the ocean to the primary region.
+      async function updateProfile(user: UserProfile) {
+        await primaryRegionClient.put(`/profiles/${user.id}`, user);
+      }
+    positive: |
+      interface RegionDirectory {
+        homeRegionFor(userId: string): RegionClient;
+      }
+
+      async function updateProfile(user: UserProfile) {
+        const region = regionDirectory.homeRegionFor(user.id);
+        await region.put(`/profiles/${user.id}`, user);
+        await eventBus.publish("ProfileUpdated", { userId: user.id, region: region.name });
+      }
+    explanation: >-
+      The positive version writes to the user's home region and emits a fact for
+      replication, avoiding routine cross-region writes while retaining global visibility.
+ratings:
+  small:
+    score: 1
+    notes: Avoid for small systems; backup and restore or a warm standby is usually enough.
+  medium:
+    score: 3
+    notes: Useful only when latency, residency, or availability targets already justify multi-region operations.
+  large:
+    score: 5
+    notes: Excellent for global platforms, but only with mature observability, release, data, and incident practices.
+references:
+  - title: Microsoft Azure Architecture Center; Geodes pattern
+    url: https://learn.microsoft.com/azure/architecture/patterns/geodes

@@ -1,0 +1,97 @@
+id: data-transfer-object
+title: Data Transfer Object (DTO)
+scale: design
+category: enterprise-application
+maturity: time-tested
+short_description: >-
+  Carry data across process, layer, or network boundaries in simple serialisable structures tailored to the contract rather than the domain model.
+description: >-
+  A Data Transfer Object is a data-only shape designed for communication: API responses, request payloads, messages, RPC calls, and batch imports. It deliberately omits domain behaviour and usually uses primitive or serialisable value shapes. DTOs protect the domain model from wire-contract churn and let callers receive exactly the data they need. They are not a replacement for domain objects inside the core.
+problem: >-
+  Exposing domain entities directly across network or presentation boundaries leaks internal fields, persistence concerns, lazy-loading behaviour, and invariants that clients should not rely on.
+context: >-
+  Use at remote, public, or layer boundaries where serialisation, versioning, and compatibility matter. Avoid DTO proliferation for purely internal calls within the same cohesive module.
+consequences:
+  - Stabilises external contracts while domain and persistence models evolve independently.
+  - Reduces over-fetching and accidental exposure of sensitive or internal fields.
+  - Requires mapping code and contract tests to keep DTOs in sync with behaviour.
+  - Anemic DTOs should not be mistaken for the domain model in business logic.
+synergies:
+  - pattern: mapper
+    reason: Mappers translate between DTOs and domain models without either side knowing the other's structure.
+  - pattern: data-mapper
+    reason: Data Mapper keeps persistence mapping separate from DTO mapping, preventing database rows from becoming API contracts.
+  - pattern: contract-first-api
+    reason: Contract-first schemas define DTO shapes explicitly for clients before implementation.
+  - pattern: gateway
+    reason: Gateways often send and receive DTOs for external service calls while hiding provider wire formats.
+alternatives:
+  - parameter-object
+  - data-mapper
+conflicts_with:
+  - active-record
+languages:
+  - language-agnostic
+  - typescript
+  - java
+  - csharp
+  - python
+frameworks:
+  - spring-boot
+  - dotnet
+  - nestjs
+  - fastapi
+  - graphql
+project_types:
+  - web-api
+  - backend-service
+  - microservices
+  - sdk
+tags:
+  - api-contract
+  - serialisation
+  - boundary
+examples:
+  - language: typescript
+    title: Customer API response
+    negative: |
+      app.get('/customers/:id', async (req, res) => {
+        const customer = await repository.get(req.params.id);
+        res.json(customer); // exposes passwordHash, domain methods, and persistence fields
+      });
+    positive: |
+      type CustomerDto = {
+        id: string;
+        name: string;
+        email: string;
+        links: { self: string };
+      };
+
+      function toCustomerDto(customer: Customer): CustomerDto {
+        return {
+          id: customer.id.value,
+          name: customer.name.fullName(),
+          email: customer.email.value,
+          links: { self: '/customers/' + customer.id.value }
+        };
+      }
+
+      app.get('/customers/:id', async (req, res) => {
+        res.json(toCustomerDto(await repository.get(req.params.id)));
+      });
+    explanation: >-
+      The positive version publishes an explicit API contract and prevents internal fields, methods, and persistence details from leaking to clients.
+ratings:
+  small:
+    score: 4
+    notes: Strong at public API boundaries, though internal-only apps may not need many DTOs.
+  medium:
+    score: 5
+    notes: Excellent for services with versioned APIs, message contracts, or multiple clients.
+  large:
+    score: 5
+    notes: Essential for large distributed systems where contract stability and data minimisation matter.
+references:
+  - title: Patterns of Enterprise Application Architecture
+    author: Martin Fowler
+    year: 2002

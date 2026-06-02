@@ -1,0 +1,90 @@
+id: test-pyramid
+title: Test Pyramid
+aka:
+  - Testing pyramid
+scale: organisational
+category: testing
+maturity: established
+short_description: >-
+  Balance the test suite with many fast low-level tests, fewer service/integration tests, and a small number of slow end-to-end journeys.
+description: >-
+  The Test Pyramid is a portfolio pattern for feedback speed and confidence. Most checks should be cheap and local, exercising domain logic and components; a smaller layer verifies integration boundaries; the smallest layer covers high-value end-to-end journeys through the deployed system. The aim is not a fixed ratio but an economic shape: failures should be precise, fast tests should carry most regression load, and slow brittle journeys should be reserved for contracts that lower layers cannot prove.
+problem: >-
+  Teams often accumulate a slow, flaky end-to-end-heavy suite that gives late feedback and unclear failures.
+context: >-
+  Use when designing or recovering a product test strategy across unit, integration, contract, UI, and deployment checks.
+consequences:
+  - >-
+    Improves feedback speed and failure localisation.
+  - >-
+    Forces explicit decisions about which risks belong at which test level.
+  - >-
+    Can be misapplied as a dogmatic unit-test quota; architecture and risk should shape the actual mix.
+synergies:
+  - pattern: contract-testing
+    reason: >-
+      Contract tests form an efficient middle layer for service boundaries.
+  - pattern: page-object
+    reason: >-
+      Page objects keep the small E2E layer maintainable.
+  - pattern: property-based-testing
+    reason: >-
+      Property tests strengthen the broad base for invariant-heavy logic.
+  - pattern: golden-master
+    reason: >-
+      Approval tests can protect legacy seams while the pyramid is being rebuilt.
+alternatives:
+  - given-when-then
+languages:
+  - language-agnostic
+  - javascript
+  - typescript
+  - python
+  - java
+frameworks:
+  - none
+  - nodejs
+  - spring-boot
+  - react
+  - fastapi
+project_types:
+  - web-api
+  - web-frontend
+  - backend-service
+  - microservices
+  - monolith
+tags:
+  - test-strategy
+  - feedback
+  - ci
+examples:
+  - language: javascript
+    title: Replacing duplicate E2E coverage
+    negative: |-
+      test("checkout rejects invalid coupon in browser", async ({ page }) => { /* full UI flow */ });
+      test("checkout rejects expired coupon in browser", async ({ page }) => { /* full UI flow */ });
+      test("checkout rejects used coupon in browser", async ({ page }) => { /* full UI flow */ });
+    positive: |-
+      test.each(["invalid", "expired", "already-used"])("rejects %s coupon at service level", async (kind) => {
+        await expect(applyCoupon(cart(), couponOf(kind))).rejects.toThrow(CouponRejected);
+      });
+      
+      test("customer sees coupon error during checkout", async ({ page }) => {
+        await checkoutPage(page).applyCoupon("expired-code");
+        await expect(checkoutPage(page).couponError()).toBeVisible();
+      });
+    explanation: >-
+      The positive suite moves coupon variants to fast service tests and keeps one browser journey to prove UI wiring, reducing runtime and making failures more precise.
+ratings:
+  small:
+    score: 3
+    notes: >-
+      Useful guidance, but tiny projects may not need formal layers.
+  medium:
+    score: 5
+    notes: >-
+      Excellent for keeping CI fast and meaningful as product complexity grows.
+  large:
+    score: 5
+    notes: >-
+      Essential organisational pattern for large systems with many teams and deployment risks.

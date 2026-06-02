@@ -1,0 +1,98 @@
+id: fake-object
+title: Fake Object
+aka:
+  - In-memory implementation
+  - Fake
+scale: implementation
+category: testing
+maturity: time-tested
+short_description: >-
+  Use a lightweight working implementation of a collaborator when tests need realistic behaviour without the real infrastructure.
+description: >-
+  A fake object implements the same interface as a real collaborator but with simplified internals: an in-memory repository, a local queue, a deterministic clock, or a fake payment gateway. Unlike a stub, a fake has behaviour and state; unlike a mock, it is usually asserted through outcomes rather than interaction expectations. Good fakes are intentionally small and contract-compatible, not partial reimplementations of production systems.
+problem: >-
+  Canned stubs are too shallow for multi-step behaviour, while real infrastructure makes tests slow and brittle.
+context: >-
+  Use for domain/application tests that need persistence-like or queue-like behaviour but not the full external system.
+consequences:
+  - >-
+    Supports richer flow tests than stubs while remaining fast and local.
+  - >-
+    Encourages stable interfaces because both real and fake implementations share a contract.
+  - >-
+    May diverge from production semantics; maintain contract tests for important adapters.
+synergies:
+  - pattern: test-double
+    reason: >-
+      Fake Object is a behaviour-preserving test double.
+  - pattern: repository
+    reason: >-
+      In-memory repositories are a common fake for application-service tests.
+  - pattern: contract-testing
+    reason: >-
+      Contracts verify that the fake and real adapter honour the same externally visible rules.
+conflicts_with:
+  - mock-object
+alternatives:
+  - stub
+  - mock-object
+languages:
+  - language-agnostic
+  - javascript
+  - typescript
+  - python
+  - java
+frameworks:
+  - none
+  - nodejs
+  - spring-boot
+  - django
+  - fastapi
+project_types:
+  - library
+  - web-api
+  - backend-service
+  - microservices
+  - modular-monolith
+tags:
+  - in-memory
+  - flow-testing
+  - adapter
+examples:
+  - language: typescript
+    title: In-memory repository fake
+    negative: |-
+      test("prevents duplicate customers", async () => {
+        const repo = new PostgresCustomerRepository(pool);
+        await repo.save(Customer.register("a@example.com"));
+      
+        await expect(register(repo, "a@example.com")).rejects.toThrow("taken");
+      });
+    positive: |-
+      class InMemoryCustomerRepository implements CustomerRepository {
+        private customers = new Map<string, Customer>();
+        async byEmail(email: string) { return this.customers.get(email) ?? null; }
+        async save(customer: Customer) { this.customers.set(customer.email, customer); }
+      }
+      
+      test("prevents duplicate customers", async () => {
+        const repo = new InMemoryCustomerRepository();
+        await repo.save(Customer.register("a@example.com"));
+      
+        await expect(register(repo, "a@example.com")).rejects.toThrow("taken");
+      });
+    explanation: >-
+      The positive test keeps the duplicate-check flow realistic without needing Postgres. The fake should still be covered by adapter contract tests for database-specific semantics.
+ratings:
+  small:
+    score: 4
+    notes: >-
+      Good for small domain-rich projects; avoid if the fake becomes larger than the production adapter.
+  medium:
+    score: 5
+    notes: >-
+      Excellent for fast application flow tests around repositories, queues, and clocks.
+  large:
+    score: 4
+    notes: >-
+      Useful at scale, but divergence risk rises; invest in shared contracts and a small fake surface.

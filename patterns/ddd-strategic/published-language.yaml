@@ -1,0 +1,96 @@
+id: published-language
+title: Published Language
+scale: integration
+category: ddd-strategic
+maturity: time-tested
+short_description: >-
+  Define a stable, documented language of messages or representations that bounded contexts use to integrate without sharing internal models.
+description: >-
+  Published Language is a strategic DDD integration pattern in which a provider publishes the vocabulary, schemas, and semantics consumers should use at the boundary. It may be an OpenAPI schema, AsyncAPI event contract, protobuf definition, canonical event model, or XML/JSON vocabulary. The published language is not necessarily the provider's internal domain model; it is a deliberately stable contract designed for integration. It pairs naturally with open host service and can be translated by anti-corruption layers in downstream contexts.
+problem: >-
+  Consumers integrate against internal tables, DTOs, or undocumented JSON. Provider refactors then break consumers, while consumer interpretations of fields drift because no stable shared contract exists.
+context: >-
+  Use published language when multiple contexts exchange data or events and need stable semantics without sharing a code model or database schema.
+consequences:
+  - Gives consumers a documented, versioned contract with explicit semantics.
+  - Allows providers to change internal models behind the boundary.
+  - Supports interoperability across languages and platforms.
+  - Requires governance, compatibility policy, and migration paths for contract changes.
+synergies:
+  - pattern: open-host-service
+    reason: Open host services need a published language for request, response, and event payloads.
+  - pattern: canonical-data-model
+    reason: A canonical data model can be the published language for broad integration, though it must not become an internal domain model everywhere.
+  - pattern: anti-corruption-layer
+    reason: Downstream contexts translate published-language payloads into their own model at the boundary.
+  - pattern: contract-first-api
+    reason: Contract-first API tooling helps publish and validate the language before implementation details leak.
+alternatives:
+  - shared-kernel
+  - data-transfer-object
+  - canonical-data-model
+conflicts_with:
+  - active-record
+languages:
+  - language-agnostic
+  - csharp
+  - java
+  - typescript
+frameworks:
+  - none
+  - spring-boot
+  - dotnet
+  - grpc
+  - kafka
+project_types:
+  - backend-service
+  - microservices
+  - distributed-system
+  - web-api
+  - data-pipeline
+tags:
+  - ddd
+  - integration
+  - contract
+  - schema
+examples:
+  - language: typescript
+    title: Published event schema at the boundary
+    negative: |
+      // Consumers copy whatever the Billing ORM serialises today.
+      export type InvoiceRow = {
+        id: string;
+        acct_id: string;
+        st: number;
+        gross_cents: number;
+      };
+    positive: |
+      // Published language: billing-events/v1
+      export interface InvoicePaidV1 {
+        eventType: "billing.invoice-paid";
+        invoiceId: string;
+        accountId: string;
+        paidAt: string;
+        amount: { cents: number; currency: "GBP" | "EUR" | "USD" };
+      }
+
+      // Billing maps from its internal Invoice aggregate to InvoicePaidV1 before publishing.
+    explanation: >-
+      The positive version publishes a stable integration vocabulary with business names and versioning. Consumers no longer depend on internal table abbreviations or status encodings.
+ratings:
+  small:
+    score: 2
+    notes: >-
+      Often unnecessary for a single in-process consumer; direct types are simpler.
+  medium:
+    score: 4
+    notes: >-
+      Strong fit when several services or teams exchange events or API payloads.
+  large:
+    score: 5
+    notes: >-
+      Essential in large integration landscapes where contracts must survive provider refactoring and multi-language consumers.
+references:
+  - title: Domain-Driven Design
+    author: Eric Evans
+    year: 2003

@@ -1,0 +1,97 @@
+id: mapper
+title: Mapper
+scale: design
+category: enterprise-application
+maturity: time-tested
+short_description: >-
+  Move data between two representations while keeping both sides independent of each other's structure and lifecycle.
+description: >-
+  Mapper is a family pattern: an object translates between domain objects, DTOs, records, messages, view models, or persistence rows. Its purpose is independence. Each side can have names, types, invariants, and lifecycle suited to its own layer, while the mapper owns the conversion rules. For complex persistence this becomes Data Mapper; for API boundaries it often maps domain objects to DTOs.
+problem: >-
+  When layers directly expose each other's objects, changes in database columns, wire contracts, or UI needs ripple into the domain and application logic.
+context: >-
+  Use at boundaries where two models have different reasons to change. Avoid mapping merely to copy identical objects inside the same layer.
+consequences:
+  - Preserves independence between domain, persistence, API, and presentation models.
+  - Makes translation rules explicit and testable, including defaulting and value-object construction.
+  - Adds boilerplate and can hide missing fields if mapping is not covered by tests.
+  - Automated mappers reduce typing but can silently couple by convention.
+synergies:
+  - pattern: data-mapper
+    reason: Data Mapper is the persistence-specialised form of Mapper for translating between domain objects and database rows.
+  - pattern: data-transfer-object
+    reason: DTOs usually need mappers to avoid leaking domain objects across process or API boundaries.
+  - pattern: value-object
+    reason: Mappers can reconstruct value objects from primitive wire or database fields at the boundary.
+  - pattern: anti-corruption-layer
+    reason: An Anti-Corruption Layer uses mappers to translate foreign models into local concepts.
+alternatives:
+  - active-record
+  - table-data-gateway
+conflicts_with:
+  - active-record
+languages:
+  - language-agnostic
+  - typescript
+  - java
+  - csharp
+  - python
+frameworks:
+  - none
+  - spring-boot
+  - dotnet
+  - sqlalchemy
+  - hibernate
+project_types:
+  - web-api
+  - backend-service
+  - microservices
+  - modular-monolith
+tags:
+  - translation
+  - boundary
+  - model-independence
+examples:
+  - language: typescript
+    title: Domain to response model
+    negative: |
+      app.get('/customers/:id', async (req, res) => {
+        const customer = await customers.get(req.params.id);
+        res.json(customer); // leaks internal fields, methods, and naming
+      });
+    positive: |
+      type CustomerResponse = {
+        id: string;
+        displayName: string;
+        status: 'active' | 'suspended';
+      };
+
+      class CustomerResponseMapper {
+        static fromDomain(customer: Customer): CustomerResponse {
+          return {
+            id: customer.id.value,
+            displayName: customer.name.formatForDisplay(),
+            status: customer.isSuspended() ? 'suspended' : 'active'
+          };
+        }
+      }
+
+      app.get('/customers/:id', async (req, res) => {
+        res.json(CustomerResponseMapper.fromDomain(await customers.get(req.params.id)));
+      });
+    explanation: >-
+      The positive version makes the API contract explicit and lets the domain keep richer types and behaviour without exposing them to clients.
+ratings:
+  small:
+    score: 3
+    notes: Useful at external boundaries; avoid mapping identical internal shapes.
+  medium:
+    score: 4
+    notes: Good fit for APIs, message consumers, and persistence seams with independent models.
+  large:
+    score: 5
+    notes: Essential when many teams depend on stable contracts while domain and storage models evolve.
+references:
+  - title: Patterns of Enterprise Application Architecture
+    author: Martin Fowler
+    year: 2002

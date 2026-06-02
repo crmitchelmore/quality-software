@@ -1,0 +1,99 @@
+id: special-case
+title: Special Case
+scale: design
+category: enterprise-application
+maturity: time-tested
+short_description: >-
+  Represent exceptional or boundary cases with objects that obey the normal interface, reducing scattered null checks and exceptional branches.
+description: >-
+  Special Case creates a concrete object for a known exceptional situation such as an anonymous customer, missing discount, blocked account, or unavailable price. The object implements the same protocol as the normal object and supplies safe, explicit behaviour for that case. It generalises Null Object: not every special case is absence, and the object may carry explanation, audit, or safe defaults.
+problem: >-
+  Client code repeatedly asks whether a value is null, missing, anonymous, unavailable, or otherwise exceptional, then branches inconsistently at every call site.
+context: >-
+  Use when the exceptional condition is expected, domain meaningful, and can be modelled safely. Do not hide real failures that should be visible to operators or callers.
+consequences:
+  - Removes duplicated defensive checks and makes the special behaviour part of the model.
+  - Gives expected absence or boundary states a name that appears in tests and ubiquitous language.
+  - Can mask defects if used for cases that should fail fast.
+  - Requires careful design so special cases do not silently violate invariants or security rules.
+synergies:
+  - pattern: null-object
+    reason: Null Object is a common Special Case where the exceptional condition is absence.
+  - pattern: domain-model
+    reason: Domain models can encode expected boundary states as meaningful objects rather than primitive flags.
+  - pattern: guard-clause
+    reason: Guard clauses still reject invalid input, leaving Special Case for valid but unusual domain states.
+  - pattern: option-maybe
+    reason: Option makes absence explicit at boundaries; Special Case is better when behaviour should remain polymorphic.
+alternatives:
+  - null-object
+  - option-maybe
+  - guard-clause
+conflicts_with:
+  - fail-fast
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - typescript
+frameworks:
+  - none
+  - spring-boot
+  - dotnet
+project_types:
+  - backend-service
+  - web-api
+  - modular-monolith
+  - monolith
+tags:
+  - polymorphism
+  - null-safety
+  - domain-modelling
+examples:
+  - language: typescript
+    title: Anonymous customer pricing
+    negative: |
+      function priceFor(customer: Customer | null, basket: Basket): Money {
+        if (customer === null) {
+          return basket.total();
+        }
+        if (customer.discountCode === null) {
+          return basket.total();
+        }
+        return basket.total().minus(discounts.valueOf(customer.discountCode));
+      }
+    positive: |
+      interface CustomerPricingProfile {
+        discountFor(basket: Basket): Money;
+      }
+
+      class RegisteredCustomer implements CustomerPricingProfile {
+        constructor(private readonly discountCode: DiscountCode | null) {}
+        discountFor(basket: Basket): Money {
+          return this.discountCode ? discounts.valueOf(this.discountCode) : Money.zero();
+        }
+      }
+
+      class AnonymousCustomer implements CustomerPricingProfile {
+        discountFor(_basket: Basket): Money { return Money.zero(); }
+      }
+
+      function priceFor(customer: CustomerPricingProfile, basket: Basket): Money {
+        return basket.total().minus(customer.discountFor(basket));
+      }
+    explanation: >-
+      The positive version gives anonymous customers normal pricing behaviour, so callers do not duplicate null and discount-code checks.
+ratings:
+  small:
+    score: 3
+    notes: Useful when absence has behaviour; otherwise an Option or guard clause is simpler.
+  medium:
+    score: 4
+    notes: Good fit for domain-heavy services with repeated expected boundary states.
+  large:
+    score: 4
+    notes: Reduces duplicated special-case logic across large codebases, but needs naming discipline.
+references:
+  - title: Patterns of Enterprise Application Architecture
+    author: Martin Fowler
+    year: 2002

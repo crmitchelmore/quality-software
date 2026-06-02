@@ -1,0 +1,105 @@
+id: copy-on-write
+title: Copy-on-Write
+aka:
+  - COW
+  - Snapshot-on-write
+scale: concurrency
+category: concurrency
+maturity: time-tested
+short_description: >-
+  Let readers share an immutable snapshot while writers create and publish a fresh copy, avoiding reader locks for read-mostly data.
+description: >-
+  Copy-on-Write keeps shared state stable for readers by never mutating the currently published instance. A writer copies the existing state, applies its change to the private copy, then atomically publishes the new version. Existing readers finish on the old snapshot while new readers see the new one. The pattern is excellent for read-mostly collections, routing tables, listener lists, configuration snapshots, and small registries; it is a poor fit for large, frequently updated structures where copying dominates.
+problem: >-
+  Many readers need fast, consistent access to shared data, but conventional read/write locking still adds coordination overhead and exposes readers to writer pauses.
+context: >-
+  Use when reads vastly outnumber writes, snapshots can be slightly stale, the copied data is modest or structurally shared, and writers can tolerate copying cost.
+consequences:
+  - Readers run without locks and observe a consistent snapshot.
+  - Writers are simple and isolated because they mutate only a private copy before publishing.
+  - Write-heavy workloads suffer from copying cost and garbage pressure.
+  - Lost updates are possible unless publication uses compare-and-swap, a write lock, or another single-writer discipline.
+synergies:
+  - pattern: immutable-object
+    reason: Copy-on-Write relies on published snapshots being immutable to readers after publication.
+  - pattern: read-write-lock
+    reason: A write lock or CAS can serialise publishers while still allowing lock-free reads of snapshots.
+  - pattern: observer
+    reason: Listener lists are a classic Copy-on-Write use case because iteration is frequent and subscription changes are rare.
+  - pattern: value-object
+    reason: Value-style elements reduce aliasing surprises when copied collections share references.
+alternatives:
+  - read-write-lock
+  - immutable-object
+  - persistent-data-structure
+conflicts_with:
+  - producer-consumer
+languages:
+  - language-agnostic
+  - java
+  - cpp
+  - csharp
+  - rust
+frameworks:
+  - none
+project_types:
+  - library
+  - backend-service
+  - low-latency
+  - high-throughput
+tags:
+  - snapshots
+  - read-mostly
+  - lock-free-reads
+examples:
+  - language: java
+    title: Read-mostly listener registry
+    negative: |
+      final class ListenerRegistry {
+        private final List<Listener> listeners = new ArrayList<>();
+
+        void add(Listener listener) {
+          listeners.add(listener);
+        }
+
+        void publish(Event event) {
+          for (Listener listener : listeners) { // ConcurrentModificationException or race
+            listener.onEvent(event);
+          }
+        }
+      }
+    positive: |
+      final class ListenerRegistry {
+        private final AtomicReference<List<Listener>> listeners =
+            new AtomicReference<>(List.of());
+
+        void add(Listener listener) {
+          listeners.updateAndGet(current -> {
+            ArrayList<Listener> next = new ArrayList<>(current);
+            next.add(listener);
+            return List.copyOf(next);
+          });
+        }
+
+        void publish(Event event) {
+          for (Listener listener : listeners.get()) {
+            listener.onEvent(event);
+          }
+        }
+      }
+    explanation: >-
+      The positive version gives publishers an immutable snapshot to iterate without locks. Adding a listener copies and atomically publishes a new list, so in-flight publication remains stable.
+ratings:
+  small:
+    score: 3
+    notes: Good for small read-mostly registries; avoid using it as a generic collection replacement.
+  medium:
+    score: 4
+    notes: Strong for configuration, listener lists, and routing snapshots where writes are rare and reads are hot.
+  large:
+    score: 3
+    notes: Useful in selected low-latency paths, but large data or frequent writes can create unacceptable memory churn.
+references:
+  - title: Java Concurrency in Practice
+    author: Goetz, Peierls, Bloch, Bowbeer, Holmes, Lea
+    year: 2006

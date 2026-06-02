@@ -1,0 +1,95 @@
+id: gateway-offloading
+title: Gateway Offloading
+scale: integration
+category: cloud-distributed
+maturity: established
+short_description: >-
+  Move common edge responsibilities such as TLS termination, authentication, rate
+  limiting, caching, and compression from services into a gateway.
+description: >-
+  Gateway Offloading centralises cross-cutting request handling at the edge so backend
+  services can focus on domain behaviour. The gateway terminates transport concerns,
+  validates tokens, applies quotas, normalises headers, and can perform safe response
+  caching or compression. The boundary must be explicit: services still enforce their
+  own authorisation and invariants for defence in depth, while the gateway handles
+  repetitive protocol and policy mechanics consistently.
+problem: >-
+  Every service reimplements edge concerns differently, causing duplicated code,
+  inconsistent security policy, and unnecessary CPU work on business services.
+context: >-
+  API platforms, microservices, and ingress-heavy systems where many services share
+  identical transport, authentication, throttling, or caching requirements.
+consequences:
+  - Standardises cross-cutting behaviour and reduces duplicated service code.
+  - Lets backend services use simpler protocols or trust a smaller internal surface.
+  - The gateway becomes critical infrastructure and must be highly available and observable.
+  - Over-offloading can hide security decisions from services and create a single policy bottleneck.
+synergies:
+  - pattern: api-gateway
+    reason: Offloading is one of the core operational responsibilities of an API gateway.
+  - pattern: gatekeeper
+    reason: A gateway can act as the protected entry point that screens requests before private services.
+  - pattern: rate-limiting
+    reason: Quotas are cheaper and more consistent when enforced before traffic fans out.
+  - pattern: token-based-auth
+    reason: Token validation and claim normalisation are common gateway offload tasks.
+alternatives:
+  - sidecar
+  - service-mesh
+  - middleware-pipeline
+languages:
+  - language-agnostic
+  - typescript
+  - java
+  - csharp
+  - go
+frameworks:
+  - kubernetes
+  - istio
+  - nodejs
+  - spring-boot
+  - dotnet
+project_types:
+  - web-api
+  - microservices
+  - backend-service
+  - distributed-system
+  - serverless
+tags:
+  - edge
+  - cross-cutting
+  - security
+  - ingress
+examples:
+  - language: typescript
+    title: Removing duplicated authentication checks
+    negative: |
+      app.get("/orders/:id", async (req, res) => {
+        const token = req.headers.authorization?.replace("Bearer ", "");
+        const claims = await identityProvider.validate(token);
+        await rateLimiter.consume(claims.subject);
+        res.json(await orders.get(req.params.id, claims.subject));
+      });
+    positive: |
+      app.get("/orders/:id", async (req, res) => {
+        const subject = req.header("x-authenticated-subject");
+        if (!subject) return res.sendStatus(401);
+        res.json(await orders.get(req.params.id, subject));
+      });
+      // The gateway validates tokens, enforces quotas, and sets the trusted header.
+    explanation: >-
+      The positive version removes repetitive edge mechanics from the service while
+      still requiring a trusted authenticated subject before domain authorisation runs.
+ratings:
+  small:
+    score: 2
+    notes: Usually overkill unless a managed platform already provides it.
+  medium:
+    score: 4
+    notes: Good fit once several services duplicate the same ingress policy.
+  large:
+    score: 5
+    notes: Essential for consistent security and traffic management across many services.
+references:
+  - title: Microsoft Azure Architecture Center; Gateway Offloading pattern
+    url: https://learn.microsoft.com/azure/architecture/patterns/gateway-offloading

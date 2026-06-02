@@ -1,0 +1,118 @@
+id: hedged-requests
+title: Hedged Requests
+scale: integration
+category: resilience
+maturity: established
+aka:
+  - Backup Requests
+  - Request Hedging
+short_description: >-
+  Send a duplicate request after a short delay and use the first successful response,
+  reducing tail latency caused by straggling replicas.
+description: >-
+  Hedged requests attack tail latency by speculatively issuing a second equivalent
+  request when the first is slower than expected. The caller races the attempts, uses
+  the first successful response, and cancels the loser. Hedging is not a retry for hard
+  failure; it is a latency tool for replicated, read-heavy or idempotent operations
+  where occasional extra work is cheaper than waiting for a straggler. It must be
+  gated by percentile latency, concurrency budgets and per-request idempotency, or it
+  can double load and make overload worse.
+problem: >-
+  In large distributed systems, a small fraction of slow replicas, noisy neighbours or
+  network hiccups dominate user-visible tail latency. Waiting for the single slowest
+  attempt makes otherwise healthy replicated services feel unreliable.
+context: >-
+  Use for idempotent reads or safe duplicate requests against independently served
+  replicas, shards or regions. Avoid for non-idempotent writes, expensive operations,
+  or when the dependency is already saturated unless a strict hedge budget is enforced.
+consequences:
+  - Reduces p95/p99 latency when stragglers are independent and rare.
+  - Converts some latency risk into controlled extra load.
+  - Can amplify overload if hedges are sent too early, too often or without cancellation.
+  - Requires observability that separates primary attempts, hedged attempts and wins.
+synergies:
+  - pattern: timeout
+    reason: Hedging needs an overall deadline so racing attempts cannot outlive the caller.
+  - pattern: idempotency
+    reason: Duplicate attempts are safe only when the operation can be repeated without changing the outcome.
+  - pattern: bulkhead
+    reason: A separate hedge budget prevents speculative work from consuming all normal request capacity.
+  - pattern: rate-limiting
+    reason: Rate limits cap the extra traffic hedging introduces under tail-latency pressure.
+alternatives:
+  - retry
+  - cache-aside
+  - load-shedding
+languages:
+  - language-agnostic
+  - typescript
+  - go
+  - java
+  - csharp
+frameworks:
+  - none
+  - nodejs
+  - grpc
+  - spring-boot
+  - dotnet
+project_types:
+  - backend-service
+  - web-api
+  - microservices
+  - distributed-system
+  - low-latency
+tags:
+  - resilience
+  - tail-latency
+  - speculative-execution
+  - idempotency
+examples:
+  - language: typescript
+    title: Hedging a slow replicated read
+    negative: |
+      // A single straggling replica controls the whole user-visible latency.
+      async function readProfile(userId: string): Promise<Profile> {
+        return await replicas.primary.get<Profile>(`/profiles/${userId}`, { timeoutMs: 1_000 });
+      }
+    positive: |
+      async function readProfile(userId: string, signal: AbortSignal): Promise<Profile> {
+        const controller = new AbortController();
+        const combined = AbortSignal.any([signal, controller.signal]);
+
+        const primary = replicas.primary.get<Profile>(`/profiles/${userId}`, {
+          signal: combined,
+          timeoutMs: 700,
+        });
+
+        const hedge = new Promise<Profile>((resolve, reject) => {
+          setTimeout(() => {
+            replicas.secondary.get<Profile>(`/profiles/${userId}`, {
+              signal: combined,
+              timeoutMs: 500,
+            }).then(resolve, reject);
+          }, 120);
+        });
+
+        try {
+          return await Promise.any([primary, hedge]);
+        } finally {
+          controller.abort();
+        }
+      }
+    explanation: >-
+      The positive version starts a backup read only after the primary exceeds a hedge
+      delay, returns the first success, and cancels the losing request to limit extra work.
+ratings:
+  small:
+    score: 1
+    notes: Usually avoid; it adds complexity and extra load without meaningful tail-latency benefit.
+  medium:
+    score: 3
+    notes: Situational for high-value replicated reads with measured straggler problems.
+  large:
+    score: 4
+    notes: Powerful for large low-latency systems, but only with budgets, cancellation and idempotency.
+references:
+  - title: The Tail at Scale
+    author: Jeffrey Dean and Luiz André Barroso
+    year: 2013

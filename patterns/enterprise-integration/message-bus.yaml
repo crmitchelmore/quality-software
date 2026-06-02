@@ -1,0 +1,93 @@
+id: message-bus
+title: Message Bus
+scale: integration
+category: enterprise-integration
+maturity: time-tested
+short_description: >-
+  Provide a shared messaging backbone with common channels, contracts and operational services so applications integrate through messages instead of direct point-to-point links.
+description: >-
+  A Message Bus is an integration backbone that standardises how applications publish, route, transform, observe and consume messages. It may be implemented with a broker, streaming platform, service bus or managed eventing platform, but the pattern is more than the technology: it includes channel conventions, envelope metadata, schema governance, security, monitoring and operational ownership. A bus reduces integration sprawl, yet it can become a central bottleneck if every change requires a platform team or if teams use it as a dumping ground for poorly owned events.
+problem: >-
+  As systems multiply, direct integrations and bespoke protocols create a brittle mesh that is hard to secure, observe, change and reason about.
+context: >-
+  Use when many applications exchange messages and need common routing, delivery semantics, schema conventions, security and observability across the enterprise.
+consequences:
+  - Reduces point-to-point integration sprawl and provides shared operational capabilities.
+  - Encourages consistent envelopes, correlation ids, schemas and delivery policies.
+  - Can become an enterprise choke point if governance is too centralised or abstractions hide important broker semantics.
+  - Requires strong ownership of platform reliability, topic/channel lifecycle and access control.
+synergies:
+  - pattern: canonical-data-model
+    reason: Canonical messages make bus participants easier to integrate without pairwise schema knowledge.
+  - pattern: publish-subscribe
+    reason: A bus commonly provides pub-sub channels for distributing domain events to many subscribers.
+  - pattern: message-router
+    reason: Routing rules are often bus-level services that direct messages to appropriate channels.
+  - pattern: correlation-identifier
+    reason: Bus-wide correlation conventions make flows observable across all participants.
+alternatives:
+  - service-oriented-architecture
+  - api-gateway
+  - broker-architecture
+languages:
+  - language-agnostic
+  - java
+  - typescript
+  - csharp
+frameworks:
+  - kafka
+  - rabbitmq
+  - nats
+  - spring-boot
+project_types:
+  - microservices
+  - distributed-system
+  - backend-service
+  - data-pipeline
+tags:
+  - messaging
+  - integration-platform
+  - enterprise
+examples:
+  - language: typescript
+    title: Publishing through a standard bus envelope
+    negative: |
+      // Each producer invents its own topic, headers and payload conventions.
+      await kafka.send({
+        topic: "some-team-events",
+        messages: [{ value: JSON.stringify(order) }]
+      });
+    positive: |
+      type BusEnvelope<T> = {
+        id: string;
+        type: string;
+        version: number;
+        correlationId: string;
+        occurredAt: string;
+        payload: T;
+      };
+
+      await bus.publish<BusEnvelope<OrderAccepted>>("order.accepted.v1", {
+        id: crypto.randomUUID(),
+        type: "OrderAccepted",
+        version: 1,
+        correlationId,
+        occurredAt: new Date().toISOString(),
+        payload: { orderId: order.id, customerId: order.customerId }
+      });
+    explanation: >-
+      The positive version uses a bus abstraction and standard envelope so routing, schema validation, correlation and access control can be applied consistently.
+ratings:
+  small:
+    score: 2
+    notes: Usually unnecessary platform overhead for a small application or a few integrations.
+  medium:
+    score: 4
+    notes: Good fit once several services need shared messaging conventions and operations.
+  large:
+    score: 5
+    notes: Excellent for enterprise-scale integration, provided platform governance enables rather than blocks teams.
+references:
+  - title: Enterprise Integration Patterns
+    author: Gregor Hohpe and Bobby Woolf
+    year: 2003

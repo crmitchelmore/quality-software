@@ -1,0 +1,107 @@
+id: map-filter-reduce
+title: Map-Filter-Reduce
+aka:
+  - Map/Filter/Fold
+  - Transform-Select-Aggregate
+scale: implementation
+category: functional
+maturity: time-tested
+short_description: >-
+  Transform collections with small pure steps: map values, filter unwanted elements, then reduce the remaining values into a result.
+description: >-
+  Map-Filter-Reduce replaces index-driven loops and mutable accumulators with a declarative pipeline. Each stage has one responsibility: map changes shape, filter decides inclusion, and reduce/fold combines values. The pattern is strongest when each function is pure and the collection is processed as a value rather than as shared mutable state.
+problem: >-
+  Imperative loops often interleave traversal, branching, mutation, and aggregation, making it difficult to verify which rule transformed which value or why a value was skipped.
+context: >-
+  Use when processing finite collections, streams, query results, or events where the operation naturally decomposes into transformation, selection, and aggregation steps.
+consequences:
+  - Makes data flow explicit and isolates each operation for testing.
+  - Encourages pure, reusable transformation functions.
+  - >-
+    Can allocate intermediate collections unless the language/runtime fuses or lazily evaluates the pipeline.
+  - >-
+    Over-chaining trivial operations can hide performance costs or make debugging harder.
+synergies:
+  - pattern: pure-function
+    reason: >-
+      Pure mapping predicates and reducers make the pipeline deterministic and safe to parallelise.
+  - pattern: function-composition
+    reason: >-
+      Composed transformations keep map stages small without creating deeply nested callbacks.
+  - pattern: lazy-evaluation
+    reason: >-
+      Lazy sequences avoid intermediate collections for large or infinite inputs.
+  - pattern: pipes-and-filters
+    reason: >-
+      Pipes and Filters is the architectural analogue when the same idea crosses process or component boundaries.
+alternatives:
+  - iterator
+  - query-object
+  - pipes-and-filters
+languages:
+  - language-agnostic
+  - typescript
+  - scala
+  - haskell
+  - rust
+  - clojure
+frameworks:
+  - none
+  - rxjs
+project_types:
+  - library
+  - backend-service
+  - web-api
+  - data-pipeline
+  - etl
+tags:
+  - collections
+  - declarative
+  - data-transformation
+examples:
+  - language: typescript
+    title: Invoice totals by active customer
+    negative: |
+      type Invoice = { customerId: string; active: boolean; cents: number };
+      
+      function totalActive(invoices: Invoice[]): number {
+        let total = 0;
+        for (let i = 0; i < invoices.length; i++) {
+          const invoice = invoices[i];
+          if (invoice.active) {
+            total = total + invoice.cents;
+          }
+        }
+        return total;
+      }
+    positive: |
+      type Invoice = { customerId: string; active: boolean; cents: number };
+      
+      const isActive = (invoice: Invoice) => invoice.active;
+      const cents = (invoice: Invoice) => invoice.cents;
+      
+      function totalActive(invoices: Invoice[]): number {
+        return invoices
+          .filter(isActive)
+          .map(cents)
+          .reduce((total, amount) => total + amount, 0);
+      }
+    explanation: >-
+      The positive version separates selection, projection, and aggregation, so each rule can be named, tested, and reused without mutable loop state.
+ratings:
+  small:
+    score: 4
+    notes: >-
+      Excellent once collection logic has more than one rule; avoid contorting a simple loop if clarity suffers.
+  medium:
+    score: 5
+    notes: >-
+      A high-leverage default for business rules, ETL, API mapping, and report generation.
+  large:
+    score: 4
+    notes: >-
+      Still valuable, but large data volumes require attention to laziness, streaming, and allocation behaviour.
+references:
+  - title: Structure and Interpretation of Computer Programs
+    author: Harold Abelson, Gerald Jay Sussman
+    year: 1985

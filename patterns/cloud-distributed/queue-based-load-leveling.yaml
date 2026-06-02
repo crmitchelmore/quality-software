@@ -1,0 +1,101 @@
+id: queue-based-load-leveling
+title: Queue-Based Load Leveling
+scale: integration
+category: cloud-distributed
+maturity: time-tested
+short_description: >-
+  Insert a queue between producers and consumers so bursts are buffered and
+  downstream services process work at a sustainable, controlled rate.
+description: >-
+  Queue-Based Load Leveling smooths demand by decoupling arrival rate from
+  processing rate. Producers enqueue work quickly; consumers drain the queue using
+  configured concurrency, rate limits, and retry policy. This protects fragile or
+  expensive downstream dependencies from traffic spikes and lets the system absorb
+  short bursts without rejecting all requests. The trade-off is explicit
+  asynchrony: users may need progress tracking, deadlines, and compensation when
+  queued work is delayed or fails.
+problem: >-
+  Sudden traffic spikes overload downstream services, causing timeouts and
+  cascading failures even though average load is within capacity.
+context: >-
+  Use for background work, order fulfilment, email sending, integration with
+  rate-limited providers, and workflows where immediate synchronous completion is
+  not required.
+consequences:
+  - Protects downstream systems by controlling consumer concurrency and drain rate.
+  - Absorbs bursts and enables producer availability during temporary slowdowns.
+  - Increases end-to-end latency and requires users to understand pending states.
+  - Queues need monitoring for age, depth, poison messages, and retry exhaustion.
+synergies:
+  - pattern: competing-consumers
+    reason: Multiple workers drain the buffered queue at a controlled and scalable rate.
+  - pattern: backpressure
+    reason: Queue depth and age provide concrete signals for slowing producers or shedding load.
+  - pattern: circuit-breaker
+    reason: Consumers can pause or fail fast when downstream dependencies are unhealthy.
+  - pattern: saga
+    reason: Long-running queued workflows often need sagas to coordinate state and compensation.
+alternatives:
+  - throttling
+  - load-shedding
+  - rate-limiting
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - go
+  - typescript
+  - python
+frameworks:
+  - kafka
+  - rabbitmq
+  - nats
+  - celery
+  - aws-lambda
+project_types:
+  - backend-service
+  - microservices
+  - distributed-system
+  - high-throughput
+  - serverless
+tags:
+  - queue
+  - burst-buffering
+  - asynchronous
+examples:
+  - language: typescript
+    title: Buffering email delivery
+    negative: |
+      // Request latency and availability depend on the email provider's current capacity.
+      app.post("/checkout", async (req, res) => {
+        const order = await orders.create(req.body);
+        await emailProvider.sendReceipt(order.customerEmail, order.id);
+        res.status(201).json(order);
+      });
+    positive: |
+      app.post("/checkout", async (req, res) => {
+        const order = await orders.create(req.body);
+        await queue.publish("receipt-email", { orderId: order.id });
+        res.status(202).json({ orderId: order.id, receipt: "queued" });
+      });
+
+      queue.consume("receipt-email", async (msg) => {
+        const order = await orders.get(msg.orderId);
+        await emailProvider.sendReceipt(order.customerEmail, order.id);
+      }, { concurrency: 20 });
+    explanation: >-
+      The positive version lets checkout complete after durable enqueue while email
+      workers drain at a provider-safe concurrency, smoothing bursts.
+ratings:
+  small:
+    score: 2
+    notes: Adds operational overhead if synchronous processing is fast and reliable.
+  medium:
+    score: 4
+    notes: Good fit once background work or third-party limits affect request reliability.
+  large:
+    score: 5
+    notes: Essential for bursty distributed systems that must protect downstream capacity.
+references:
+  - title: Microsoft Azure Architecture Center; Queue-Based Load Leveling pattern
+    url: https://learn.microsoft.com/azure/architecture/patterns/queue-based-load-leveling

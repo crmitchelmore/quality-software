@@ -1,0 +1,92 @@
+id: aggregator
+title: Aggregator
+scale: integration
+category: enterprise-integration
+maturity: time-tested
+short_description: >-
+  Collect related messages, decide when the group is complete, and publish a combined result or completion event.
+description: >-
+  An Aggregator reassembles or summarises a set of related messages. It needs three policies: a correlation strategy to decide which messages belong together, a completion condition to decide when enough messages have arrived, and an aggregation function to produce the result. It is frequently paired with Splitter or Scatter-Gather. Because messages can be late, duplicated, or missing, the aggregator must persist state, apply timeouts, and define recovery behaviour.
+problem: >-
+  Once work has been split or scattered across services, the system needs a reliable way to know which results belong together and when it can continue without waiting forever.
+context: >-
+  Use when multiple messages contribute to one business outcome: line-item processing, quote collection, parallel validations, partial shipments, or distributed enrichment.
+consequences:
+  - Reconstructs business outcomes from independently processed messages.
+  - Provides a clear place for timeout, quorum, and partial-result policy.
+  - Requires durable correlation state; in-memory aggregation loses work on restart.
+  - Late, duplicate, and conflicting messages must be handled explicitly.
+synergies:
+  - pattern: splitter
+    reason: Aggregator recombines or summarises messages produced by a Splitter.
+  - pattern: scatter-gather
+    reason: Scatter-Gather commonly uses an Aggregator to collect provider responses.
+  - pattern: correlation-identifier
+    reason: Correlation identifiers are the key used to group related messages safely.
+  - pattern: idempotent-receiver
+    reason: Aggregators should suppress duplicate contribution messages before updating group state.
+alternatives:
+  - gateway-aggregation
+  - request-reply
+  - process-manager
+conflicts_with:
+  - choreography
+languages:
+  - language-agnostic
+  - java
+  - typescript
+frameworks:
+  - spring-boot
+  - kafka
+  - redis
+  - nodejs
+project_types:
+  - microservices
+  - distributed-system
+  - data-pipeline
+  - high-throughput
+tags:
+  - eip
+  - fan-in
+  - correlation
+  - stateful
+diagram: |-
+  flowchart LR
+    A[Quote A] --> Agg[(Aggregator)]
+    B[Quote B] --> Agg
+    C[Quote C] --> Agg
+    Agg --> Best[Best quote selected]
+examples:
+  - language: java
+    title: Aggregating provider quotes by request id
+    negative: |
+      void handle(QuoteResponse response) {
+        cache.put(response.provider(), response);
+        if (cache.size() == 3) {
+          publishBest(cache.values()); // shared cache, no request correlation, no timeout
+        }
+      }
+    positive: |
+      from("kafka:quotes.responses")
+        .routeId("quote-aggregator")
+        .aggregate(header("quoteRequestId"), new BestQuoteAggregationStrategy())
+          .completionSize(3)
+          .completionTimeout(1500)
+          .to("kafka:quotes.best");
+    explanation: >-
+      The positive route groups responses by request id, defines completion by size or timeout, and publishes one result. It avoids global mutable state and supports multiple concurrent quote requests.
+ratings:
+  small:
+    score: 2
+    notes: Rarely needed without parallel message flows; simple in-process joins may suffice.
+  medium:
+    score: 4
+    notes: Useful when split or parallel work must be reconciled with timeouts.
+  large:
+    score: 5
+    notes: Essential for integration-heavy systems, but it introduces state that must be durable and observable.
+references:
+  - title: Enterprise Integration Patterns
+    author: Gregor Hohpe and Bobby Woolf
+    year: 2003
+    url: https://www.enterpriseintegrationpatterns.com/patterns/messaging/Aggregator.html

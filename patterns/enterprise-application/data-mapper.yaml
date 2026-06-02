@@ -1,0 +1,126 @@
+id: data-mapper
+title: Data Mapper
+scale: data
+category: enterprise-application
+maturity: time-tested
+aka:
+  - Mapper layer
+  - Persistence mapper
+short_description: >-
+  Move data-transfer logic between database records and domain objects into a dedicated mapper layer.
+description: >-
+  Data Mapper keeps domain objects ignorant of persistence. Mappers load rows, construct domain objects, track identity, and write state back using SQL, metadata, or ORM infrastructure. This separation lets a rich Domain Model express business rules without inheriting database APIs or table-shaped compromises.
+problem: >-
+  Embedding SQL and persistence lifecycle methods inside domain objects couples business rules to storage shape, makes tests slow, and tempts callers to bypass invariants by setting persisted fields directly.
+context: >-
+  Use for complex domains, long-lived systems, or teams that need independent evolution of the object model and relational schema. It is the usual companion to Repository, Unit of Work, and Identity Map.
+consequences:
+  - >-
+    Enables persistence ignorance and richer domain objects with protected invariants.
+  - >-
+    Allows schema and domain model to diverge deliberately through mapping code or metadata.
+  - >-
+    Adds an indirection layer that can be expensive for CRUD-only applications.
+  - >-
+    Requires discipline to avoid anaemic models plus huge mappers that merely shuffle data.
+synergies:
+  - pattern: domain-model
+    reason: >-
+      Data Mapper lets a Domain Model focus on behaviour without public save/find methods or table-shaped APIs.
+  - pattern: unit-of-work
+    reason: >-
+      Mappers commonly register loaded and changed objects with a Unit of Work for atomic commit.
+  - pattern: identity-map
+    reason: >-
+      The mapper checks Identity Map before constructing an object, preserving object identity.
+  - pattern: repository
+    reason: >-
+      Repository hides mapper queries behind domain-specific collection methods.
+alternatives:
+  - active-record
+  - table-data-gateway
+  - row-data-gateway
+conflicts_with:
+  - active-record
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - typescript
+  - python
+  - ruby
+frameworks:
+  - hibernate
+  - entity-framework
+  - typeorm
+  - sqlalchemy
+  - rails
+project_types:
+  - backend-service
+  - web-api
+  - modular-monolith
+  - monolith
+tags:
+  - persistence-ignorance
+  - mapping
+  - orm
+  - domain-model
+examples:
+  - language: python
+    title: Separating account behaviour from SQL
+    negative: |
+      class Account:
+          def __init__(self, id, balance, connection):
+              self.id = id
+              self.balance = balance
+              self.connection = connection
+      
+          def withdraw(self, amount):
+              if self.balance < amount:
+                  raise ValueError("insufficient funds")
+              self.balance -= amount
+              self.connection.execute(
+                  "update accounts set balance = ? where id = ?", (self.balance, self.id)
+              )
+    positive: |
+      class Account:
+          def __init__(self, id, balance):
+              self.id = id
+              self.balance = balance
+      
+          def withdraw(self, amount):
+              if self.balance < amount:
+                  raise ValueError("insufficient funds")
+              self.balance -= amount
+      
+      class AccountMapper:
+          def find(self, id):
+              row = self.connection.execute(
+                  "select id, balance from accounts where id = ?", (id,)
+              ).fetchone()
+              return Account(row["id"], row["balance"])
+      
+          def update(self, account):
+              self.connection.execute(
+                  "update accounts set balance = ? where id = ?",
+                  (account.balance, account.id),
+              )
+    explanation: >-
+      The Account enforces the withdrawal rule without knowing how it is stored. Mapping and SQL are isolated, so tests can exercise business behaviour without a database and persistence can evolve independently.
+ratings:
+  small:
+    score: 2
+    notes: >-
+      Usually too much ceremony for simple CRUD or prototypes.
+  medium:
+    score: 4
+    notes: >-
+      Strong fit when business rules start outgrowing table-shaped objects.
+  large:
+    score: 5
+    notes: >-
+      Excellent for large enterprise systems where domain behaviour, schema evolution, testing, and transaction boundaries must be controlled separately.
+references:
+  - title: Patterns of Enterprise Application Architecture
+    author: Martin Fowler
+    year: 2002

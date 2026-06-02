@@ -1,0 +1,110 @@
+id: proxy
+title: Proxy
+scale: design
+category: gof-structural
+maturity: time-tested
+short_description: >-
+  Stand in for another object behind the same interface to control access, defer work, add protection, or represent a remote resource.
+description: >-
+  Proxy wraps a subject and exposes the same interface, but its primary intent is control rather than adding arbitrary responsibilities. A proxy may lazy-load an expensive object, check permissions before delegation, cache remote results, record access, or translate local calls into remote calls. Clients use the subject interface while the proxy manages lifecycle, location, or access policy.
+problem: >-
+  Clients need to interact with a resource, but direct access is too expensive, unsafe, remote, or lifecycle-sensitive.
+context: >-
+  Use for virtual loading, access control, remote service stubs, cache guards, and instrumentation around expensive subjects.
+consequences:
+  - Keeps clients independent of lifecycle, location, or access-control mechanics.
+  - Enables lazy loading and protective checks without changing the subject.
+  - Can surprise callers if proxy behaviour differs observably from the real subject.
+  - Remote proxies can hide network latency and failure behind ordinary method calls.
+synergies:
+  - pattern: lazy-initialization
+    reason: Virtual proxies often instantiate the real subject only on first use.
+  - pattern: decorator
+    reason: Both share the subject interface; Decorator adds responsibilities while Proxy controls access to the subject.
+  - pattern: least-privilege
+    reason: Access-control proxies enforce least-privilege decisions at the object boundary before delegation.
+  - pattern: adapter
+    reason: A remote proxy may also adapt transport-specific APIs to the subject interface.
+alternatives:
+  - decorator
+  - adapter
+  - facade
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - typescript
+  - python
+frameworks:
+  - none
+  - spring-boot
+  - dotnet
+  - nodejs
+project_types:
+  - backend-service
+  - web-api
+  - sdk
+  - desktop-app
+tags:
+  - access-control
+  - lazy-loading
+  - indirection
+examples:
+  - language: typescript
+    title: Protecting document access
+    negative: |
+      class DocumentController {
+        constructor(private readonly store: DocumentStore) {}
+        async get(user: User, id: string): Promise<Document> {
+          const document = await this.store.load(id);
+          if (!user.canRead(document.tenantId)) throw new Error("forbidden");
+          return document;
+        }
+      }
+
+      class ExportJob {
+        constructor(private readonly store: DocumentStore) {}
+        async export(user: User, id: string): Promise<Buffer> {
+          const document = await this.store.load(id);
+          return renderPdf(document);
+        }
+      }
+    positive: |
+      interface DocumentReader {
+        load(id: string): Promise<Document>;
+      }
+
+      class SecureDocumentReader implements DocumentReader {
+        constructor(private readonly inner: DocumentReader, private readonly user: User) {}
+        async load(id: string): Promise<Document> {
+          const document = await this.inner.load(id);
+          if (!this.user.canRead(document.tenantId)) throw new ForbiddenDocument(id);
+          return document;
+        }
+      }
+
+      class ExportJob {
+        constructor(private readonly documents: DocumentReader) {}
+        async export(id: string): Promise<Buffer> {
+          return renderPdf(await this.documents.load(id));
+        }
+      }
+    explanation: >-
+      The positive version puts access control in a proxy that implements the same reader interface. Every consumer receives the protected reader, so one forgotten permission check cannot bypass policy.
+ratings:
+  small:
+    score: 3
+    notes: >-
+      Useful for lazy or protected resources, but excessive if a direct call plus guard is sufficient.
+  medium:
+    score: 4
+    notes: >-
+      Good for access control, remote clients, caching guards, and expensive resources behind stable interfaces.
+  large:
+    score: 4
+    notes: >-
+      Strong for standardising access policy and remote stubs, but document latency and failure semantics clearly.
+references:
+  - title: "Design Patterns: Elements of Reusable Object-Oriented Software"
+    author: Gamma, Helm, Johnson, Vlissides
+    year: 1994

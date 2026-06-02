@@ -1,0 +1,128 @@
+id: clean-architecture
+title: Clean Architecture
+aka:
+  - The Dependency Rule
+  - Entities and Use Cases
+scale: architectural
+category: architecture
+maturity: established
+short_description: >-
+  Place enterprise rules and use cases at the centre of the system and force dependencies inward so frameworks, databases, and delivery mechanisms are replaceable details.
+description: >-
+  Clean Architecture arranges code around policy rather than technology. Entities capture enterprise rules, use cases coordinate application-specific decisions, interface adapters translate between external formats and internal models, and frameworks or drivers sit at the outside. The dependency rule is the key: source dependencies point inward, and outer details know about inner policies, never the reverse.
+problem: >-
+  Framework-first systems make business policy depend on HTTP, ORM, or message-broker details, so tests are slow and architecture decisions become expensive to reverse.
+context: >-
+  Long-lived applications with important domain policy, multiple delivery channels, or a need to test use cases without databases and web servers.
+consequences:
+  - >-
+    Keeps high-value policy stable while frameworks and vendors change around it.
+  - >-
+    Makes use cases explicit and testable through input and output boundaries.
+  - >-
+    Requires disciplined mapping between layers and can feel verbose in CRUD-heavy systems.
+  - >-
+    Poorly applied versions create too many abstractions and hide simple behaviour behind ceremonial interfaces.
+synergies:
+  - pattern: hexagonal-architecture
+    reason: >-
+      Both apply dependency inversion at the boundary between core policy and external adapters.
+  - pattern: domain-model
+    reason: >-
+      Entities and value objects provide the inner policy model Clean Architecture protects.
+  - pattern: repository
+    reason: >-
+      Repositories are common outbound boundaries for persistence details.
+  - pattern: dependency-injection
+    reason: >-
+      Dependency injection wires outer implementations into inward-facing interfaces without reversing dependencies.
+conflicts_with:
+  - active-record
+alternatives:
+  - layered-architecture
+  - hexagonal-architecture
+  - onion-architecture
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - typescript
+  - go
+  - python
+frameworks:
+  - spring-boot
+  - dotnet
+  - nestjs
+  - fastapi
+  - nodejs
+project_types:
+  - backend-service
+  - web-api
+  - modular-monolith
+  - microservices
+tags:
+  - dependency-rule
+  - use-cases
+  - testability
+  - policy
+diagram: |-
+  flowchart TB
+    FW[Frameworks] --> AD[Adapters]
+    AD --> UC[Use Cases]
+    UC --> ENT[Entities]
+    AD --> PRES[Presenters]
+    UC --> PORT[Output Port]
+    PORT --> AD
+    FW --> DB[(Database)]
+examples:
+  - language: typescript
+    title: Use cases should not import delivery or ORM details
+    negative: |
+      import { Request, Response } from "express";
+      import { prisma } from "./prisma";
+      
+      export async function approveLoan(req: Request, res: Response) {
+        const application = await prisma.loanApplication.findUnique({ where: { id: req.params.id } });
+        if (!application || application.score < 700) return res.status(409).send("rejected");
+        await prisma.loanApplication.update({ where: { id: application.id }, data: { status: "APPROVED" } });
+        res.send({ status: "APPROVED" });
+      }
+    positive: |
+      export interface LoanApplications {
+        get(id: string): Promise<LoanApplication | null>;
+        save(application: LoanApplication): Promise<void>;
+      }
+      
+      export class ApproveLoan {
+        constructor(private readonly applications: LoanApplications) {}
+      
+        async execute(id: string): Promise<LoanDecision> {
+          const application = await this.applications.get(id);
+          if (!application) return LoanDecision.notFound();
+          application.approveIfEligible();
+          await this.applications.save(application);
+          return LoanDecision.from(application);
+        }
+      }
+      
+      // Express and Prisma adapters translate HTTP and records at the outer edge.
+    explanation: >-
+      The use case is framework-free and persistence-free. Business decisions are tested by calling execute directly, while adapters can change without rewriting the approval policy.
+ratings:
+  small:
+    score: 2
+    notes: >-
+      Usually unnecessary for small CRUD apps or libraries because the boundary cost is visible before the benefit appears.
+  medium:
+    score: 4
+    notes: >-
+      Good fit when business rules are meaningful and fast use-case tests matter.
+  large:
+    score: 5
+    notes: >-
+      Excellent for long-lived systems where policy must survive framework, database, and transport churn.
+references:
+  - title: Clean Architecture
+    author: Robert C. Martin
+    year: 2017
+    url: https://www.oreilly.com/library/view/clean-architecture-a/9780134494272/

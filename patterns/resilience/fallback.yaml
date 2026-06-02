@@ -1,0 +1,108 @@
+id: fallback
+title: Fallback
+scale: integration
+category: resilience
+maturity: established
+aka:
+  - Graceful Degradation
+  - Degraded Response
+short_description: >-
+  Provide a deliberately degraded response when the preferred dependency or behaviour
+  fails, preserving the most important user or system outcome.
+description: >-
+  A fallback defines what the system should do when its ideal path is unavailable.
+  Instead of letting an exception or timeout surface raw to the caller, the system may
+  return cached data, default recommendations, a read-only view, queued acceptance, or
+  a precise degraded error. The pattern is not a blanket catch-all: a good fallback is
+  pre-designed, observable, safe for the domain, and honest about freshness or reduced
+  capability. It should protect user experience and system stability without silently
+  corrupting decisions that require authoritative data.
+problem: >-
+  Dependencies fail and optional features often share the same request path as critical
+  ones. If every missing enrichment aborts the whole operation, small outages become
+  large user-visible failures.
+context: >-
+  Use where some value is better than none, the degraded behaviour is acceptable to the
+  domain, and callers can tolerate stale, partial or queued outcomes. Avoid fallback
+  for safety-critical decisions, financial authorisation, or cases where a default could
+  be mistaken for confirmed truth.
+consequences:
+  - Improves availability and user experience during partial dependency failure.
+  - Forces product and engineering teams to define acceptable degraded modes explicitly.
+  - Can hide outages or serve stale/misleading data if not labelled and monitored.
+  - Requires domain judgement; the wrong fallback may be worse than an explicit failure.
+synergies:
+  - pattern: circuit-breaker
+    reason: The open circuit creates a clear point to return a cached or degraded response.
+  - pattern: timeout
+    reason: A timeout defines when to abandon the primary path and activate fallback.
+  - pattern: cache-aside
+    reason: A cache can supply last-known-good data when the authoritative service is unavailable.
+  - pattern: queue-based-load-leveling
+    reason: Non-urgent writes can fall back to queued acceptance rather than synchronous completion.
+alternatives:
+  - retry
+  - load-shedding
+  - request-reply
+languages:
+  - language-agnostic
+  - typescript
+  - java
+  - python
+  - csharp
+frameworks:
+  - none
+  - nodejs
+  - spring-boot
+  - dotnet
+  - redis
+project_types:
+  - web-api
+  - backend-service
+  - microservices
+  - distributed-system
+  - web-frontend
+tags:
+  - resilience
+  - graceful-degradation
+  - availability
+  - cached-response
+examples:
+  - language: typescript
+    title: Returning last-known-good data explicitly
+    negative: |
+      async function getProductPage(id: string): Promise<ProductPage> {
+        const product = await productClient.get(id);
+        const recommendations = await recommendationClient.forProduct(id);
+        return { product, recommendations };
+      }
+    positive: |
+      async function getProductPage(id: string): Promise<ProductPage> {
+        const product = await productClient.get(id);
+        try {
+          const recommendations = await recommendationClient.forProduct(id, { timeoutMs: 250 });
+          await cache.set(`recommendations:${id}`, recommendations, { ttlSeconds: 3600 });
+          return { product, recommendations, degraded: false };
+        } catch (error) {
+          logger.warn({ error, productId: id }, "serving cached recommendations");
+          const cached = await cache.get<Recommendation[]>(`recommendations:${id}`);
+          return { product, recommendations: cached ?? [], degraded: true };
+        }
+      }
+    explanation: >-
+      The positive version keeps the critical product page available, labels the
+      response as degraded, and logs fallback activation instead of treating all data as mandatory.
+ratings:
+  small:
+    score: 3
+    notes: Useful when optional external features exist; unnecessary for simple CRUD with no degraded mode.
+  medium:
+    score: 4
+    notes: Valuable for user-facing APIs and jobs with clearly separable critical and optional work.
+  large:
+    score: 5
+    notes: Essential for graceful degradation across many dependencies and product surfaces.
+references:
+  - title: Release It! Design and Deploy Production-Ready Software
+    author: Michael T. Nygard
+    year: 2007

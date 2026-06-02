@@ -1,0 +1,90 @@
+id: message-filter
+title: Message Filter
+scale: integration
+category: enterprise-integration
+maturity: time-tested
+short_description: >-
+  Remove messages from a flow when they are irrelevant, invalid, duplicate, unauthorised, or outside a consumer's declared interest.
+description: >-
+  A Message Filter consumes messages and forwards only those that satisfy a predicate. It differs from a router because there may be no output for rejected messages; the rejection is the intended outcome. Filters protect downstream consumers from noise and enforce clear boundaries, but they must be honest about discard semantics. Some rejected messages can be dropped, some must be audited, and some belong on a Dead Letter Channel with a reason code. The best filters are narrow, observable, and close to the boundary they protect.
+problem: >-
+  Consumers often receive every message on a broad channel and implement ad hoc ignore logic. This wastes capacity, hides discard rules inside business code, and makes it hard to prove why a message was not processed.
+context: >-
+  Use when a flow contains messages that a downstream consumer should not process because of type, validity, tenant, permission, duplication, freshness, or business eligibility.
+consequences:
+  - Reduces downstream load and accidental processing of irrelevant messages.
+  - Makes discard policy explicit and testable.
+  - Can cause invisible data loss if rejected messages are not counted, audited, or routed to a failure channel when appropriate.
+  - Predicates must be deterministic and based on data available before side effects happen.
+synergies:
+  - pattern: message-router
+    reason: Filters often sit before routers to keep irrelevant messages out of route evaluation.
+  - pattern: content-based-router
+    reason: A filter can reject messages with no valid content-based route and leave routing to accepted messages.
+  - pattern: dead-letter-channel
+    reason: Invalid-but-important messages should be preserved with rejection reasons instead of silently dropped.
+  - pattern: idempotent-receiver
+    reason: Duplicate detection is often implemented as a specialised filter at the receiver boundary.
+alternatives:
+  - message-router
+  - input-validation
+  - rate-limiting
+conflicts_with:
+  - guaranteed-delivery
+languages:
+  - language-agnostic
+  - java
+  - typescript
+frameworks:
+  - spring-boot
+  - kafka
+  - rabbitmq
+  - nodejs
+project_types:
+  - microservices
+  - backend-service
+  - distributed-system
+  - high-throughput
+tags:
+  - eip
+  - filtering
+  - messaging
+  - validation
+examples:
+  - language: typescript
+    title: Filtering stale fulfilment commands at the boundary
+    negative: |
+      consumer.on("fulfilment.commands", async (message) => {
+        const command = JSON.parse(message.value.toString());
+        if (command.cancelled || Date.now() - Date.parse(command.createdAt) > 86_400_000) {
+          return; // silently ignored inside business logic
+        }
+        await fulfil(command);
+      });
+    positive: |
+      const freshFulfilmentCommands = filterChannel({
+        input: "fulfilment.commands",
+        output: "fulfilment.commands.accepted",
+        rejected: "fulfilment.commands.rejected",
+        predicate: (command) => !command.cancelled && ageHours(command.createdAt) <= 24,
+        rejectionReason: (command) => command.cancelled ? "cancelled" : "stale"
+      });
+
+      freshFulfilmentCommands.start();
+    explanation: >-
+      The positive version turns the discard rule into an observable integration step. Rejections can be counted and inspected instead of disappearing inside the consumer.
+ratings:
+  small:
+    score: 3
+    notes: Useful even in modest event consumers when discard rules matter, but avoid a separate component for trivial checks.
+  medium:
+    score: 4
+    notes: Good fit for protecting services from noisy shared channels and invalid events.
+  large:
+    score: 5
+    notes: Very valuable in high-volume estates, provided rejected message handling is explicit and monitored.
+references:
+  - title: Enterprise Integration Patterns
+    author: Gregor Hohpe and Bobby Woolf
+    year: 2003
+    url: https://www.enterpriseintegrationpatterns.com/patterns/messaging/Filter.html

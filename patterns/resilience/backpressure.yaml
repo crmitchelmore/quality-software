@@ -1,0 +1,107 @@
+id: backpressure
+title: Backpressure
+scale: concurrency
+category: resilience
+maturity: established
+aka:
+  - Flow Control
+  - Demand Signalling
+short_description: >-
+  Let consumers signal available capacity to producers so work enters the system only
+  as fast as it can be processed safely.
+description: >-
+  Backpressure is flow control for concurrent and distributed workloads. Rather than
+  letting producers push unlimited work into queues, streams, sockets or worker pools,
+  the consumer exposes demand, credits, bounded buffers or awaitable writes. Producers
+  then slow down, batch, pause or fail early when downstream capacity is exhausted.
+  This is distinct from merely dropping excess load: backpressure attempts to preserve
+  work by regulating admission at the source. It works best when every stage in a
+  pipeline respects the signal; one unbounded buffer can defeat the whole design.
+problem: >-
+  Fast producers can overwhelm slower consumers, causing memory growth, long queues,
+  stale work and eventual crashes. Without a feedback signal, the producer keeps
+  creating work after the useful processing window has already passed.
+context: >-
+  Apply to streams, message processing, async pipelines, file ingestion, websocket
+  fan-out and any producer-consumer system where capacity varies over time. The work
+  must be deferrable or paceable; urgent overload may require load shedding instead.
+consequences:
+  - Prevents unbounded memory and queue growth by aligning production with consumption.
+  - Preserves useful work better than blind dropping when producers can slow down.
+  - Increases coupling between pipeline stages because producers must honour demand signals.
+  - Can propagate slowness upstream; user-facing producers may still need timeouts or shedding.
+synergies:
+  - pattern: producer-consumer
+    reason: Backpressure makes producer-consumer queues bounded and demand-aware rather than infinite buffers.
+  - pattern: queue-based-load-leveling
+    reason: Queues absorb bursts while backpressure prevents the queue itself becoming the failure point.
+  - pattern: load-shedding
+    reason: When producers cannot slow down enough, shedding is the controlled failure mode after backpressure saturates.
+  - pattern: bulkhead
+    reason: Separate backpressure signals per compartment prevent one stream from slowing all work.
+alternatives:
+  - load-shedding
+  - throttling
+  - rate-limiting
+languages:
+  - language-agnostic
+  - typescript
+  - java
+  - go
+  - rust
+frameworks:
+  - none
+  - nodejs
+  - rxjs
+  - akka
+  - kafka
+project_types:
+  - backend-service
+  - data-pipeline
+  - realtime-system
+  - high-throughput
+  - distributed-system
+tags:
+  - resilience
+  - concurrency
+  - flow-control
+  - bounded-buffer
+examples:
+  - language: typescript
+    title: Respecting stream backpressure
+    negative: |
+      // Ignores the return value from write(); memory grows if the socket is slow.
+      async function sendEvents(events: AsyncIterable<Event>, socket: NodeJS.WritableStream) {
+        for await (const event of events) {
+          socket.write(JSON.stringify(event) + "\n");
+        }
+      }
+    positive: |
+      import { once } from "events";
+
+      async function sendEvents(events: AsyncIterable<Event>, socket: NodeJS.WritableStream) {
+        for await (const event of events) {
+          const accepted = socket.write(JSON.stringify(event) + "\n");
+          if (!accepted) {
+            await once(socket, "drain");
+          }
+        }
+      }
+    explanation: >-
+      The positive version waits for the consumer's drain signal before producing more
+      output, preventing unbounded buffering when the downstream socket slows.
+ratings:
+  small:
+    score: 2
+    notes: Often unnecessary outside streaming, async or producer-consumer code.
+  medium:
+    score: 4
+    notes: Important for pipelines, websocket services and workers where bursts are common.
+  large:
+    score: 5
+    notes: Foundational for high-throughput distributed systems with multiple asynchronous stages.
+references:
+  - title: Reactive Streams Specification
+    url: https://www.reactive-streams.org/
+  - title: Node.js Streams API
+    url: https://nodejs.org/api/stream.html

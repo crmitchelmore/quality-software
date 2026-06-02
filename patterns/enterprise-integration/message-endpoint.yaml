@@ -1,0 +1,95 @@
+id: message-endpoint
+title: Message Endpoint
+scale: integration
+category: enterprise-integration
+maturity: time-tested
+short_description: >-
+  Encapsulate the code that connects an application to a messaging system so domain logic deals with commands and events rather than broker APIs.
+description: >-
+  A Message Endpoint is the application-side adapter for a message channel. It knows how to subscribe, acknowledge, commit offsets, deserialize messages, publish replies, map broker errors, preserve correlation identifiers, and call application services. It should be a thin boundary, not the place where business workflows accumulate. Well-designed endpoints isolate transport mechanics and make failure semantics explicit: when to retry, when to dead-letter, when to ignore duplicates, and when to commit.
+problem: >-
+  Without an endpoint abstraction, broker APIs, acknowledgements, headers, serialization, retries, and business logic are interleaved. That makes behaviour hard to test and changing the messaging technology expensive.
+context: >-
+  Use in any application that consumes from or publishes to message channels, especially where acknowledgement, correlation, idempotency, or translation rules matter.
+consequences:
+  - Keeps domain services free of broker-specific APIs and threading models.
+  - Centralises acknowledgement, error handling, deserialization, and correlation mechanics.
+  - Thin endpoints are easy to test; fat endpoints become accidental transaction scripts.
+  - Requires careful ownership of offset commits and side effects to avoid message loss or duplicate processing.
+synergies:
+  - pattern: message-channel
+    reason: Endpoints are the concrete application adapters attached to logical channels.
+  - pattern: message-translator
+    reason: Endpoints commonly translate external message shapes into local commands or events.
+  - pattern: idempotent-receiver
+    reason: Receiving endpoints are the right boundary to detect and suppress duplicate messages.
+  - pattern: correlation-identifier
+    reason: Endpoints should preserve or create correlation identifiers for tracing and replies.
+alternatives:
+  - gateway
+  - adapter
+  - polling-consumer
+  - event-driven-consumer
+conflicts_with:
+  - transaction-script
+languages:
+  - language-agnostic
+  - java
+  - typescript
+frameworks:
+  - spring-boot
+  - kafka
+  - rabbitmq
+  - nodejs
+project_types:
+  - microservices
+  - backend-service
+  - distributed-system
+  - web-api
+tags:
+  - eip
+  - endpoint
+  - adapter
+  - messaging
+examples:
+  - language: java
+    title: Keeping broker mechanics at the endpoint boundary
+    negative: |
+      @Service
+      class BillingService {
+        void poll() {
+          ConsumerRecord<String, String> record = kafka.pollOne("orders.submitted");
+          OrderSubmitted event = objectMapper.readValue(record.value(), OrderSubmitted.class);
+          chargeCard(event.orderId(), event.amount());
+          kafka.commitSync();
+        }
+      }
+    positive: |
+      @Component
+      class OrderSubmittedEndpoint {
+        private final BillingApplication billing;
+        private final OrderMessageTranslator translator;
+
+        @KafkaListener(topics = "orders.submitted.v1")
+        void onMessage(ConsumerRecord<String, String> record, Acknowledgment ack) {
+          billing.chargeFor(translator.toCommand(record.value(), record.headers()));
+          ack.acknowledge();
+        }
+      }
+    explanation: >-
+      The positive version confines Kafka records, headers, and acknowledgements to an endpoint. Billing application logic receives a command and stays independent of broker mechanics.
+ratings:
+  small:
+    score: 3
+    notes: Helpful in any message consumer, though a framework listener may be enough for simple apps.
+  medium:
+    score: 4
+    notes: Good fit as soon as acknowledgement, retries, or translation need consistent handling.
+  large:
+    score: 5
+    notes: Essential in large estates to standardise message boundary behaviour across many services.
+references:
+  - title: Enterprise Integration Patterns
+    author: Gregor Hohpe and Bobby Woolf
+    year: 2003
+    url: https://www.enterpriseintegrationpatterns.com/patterns/messaging/MessageEndpoint.html

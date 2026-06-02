@@ -1,0 +1,129 @@
+id: deployment-stamp
+title: Deployment Stamp (Cells)
+aka:
+  - Cell
+  - Stamp
+  - Scale Unit
+scale: architectural
+category: cloud-distributed
+maturity: established
+short_description: >-
+  Replicate a complete slice of application infrastructure as many isolated stamps,
+  each serving a subset of tenants, regions, or traffic.
+description: >-
+  A Deployment Stamp packages compute, data stores, queues, configuration, and
+  observability into a repeatable unit that can be provisioned many times. Traffic is
+  assigned to a stamp by tenant, region, shard, or capacity pool. This scales capacity
+  by adding units rather than enlarging one shared deployment, and it limits blast
+  radius because a faulty release or noisy tenant affects only its assigned stamp.
+  Stamps require strong automation: manual snowflake differences defeat the pattern.
+problem: >-
+  One shared deployment becomes too large to operate safely; capacity, tenant
+  isolation, and failure containment need a repeatable unit of scale.
+context: >-
+  SaaS platforms, regulated workloads, regional systems, or high-growth services where
+  tenants or traffic cohorts can be assigned to independent infrastructure units.
+consequences:
+  - Improves blast-radius control and allows capacity to grow by adding stamps.
+  - Enables canarying and tenant isolation at infrastructure granularity.
+  - Requires automated provisioning, routing, monitoring, and tenant placement.
+  - Cross-stamp operations and global reporting become explicit integration problems.
+synergies:
+  - pattern: sharding
+    reason: Tenant or account shards map naturally onto stamp placement and migration.
+  - pattern: geode
+    reason: Each geography can contain multiple stamps that follow the same deployment blueprint.
+  - pattern: health-endpoint-monitoring
+    reason: Routers need stamp-level health to remove unhealthy units from traffic.
+  - pattern: cell-based-architecture
+    reason: Cells provide the architectural isolation model that deployment stamps implement operationally.
+alternatives:
+  - microservices
+  - geode
+  - modular-monolith
+conflicts_with:
+  - monolith
+diagram: |-
+  flowchart TB
+    Router[Traffic Router]
+    Router --> StampA[Stamp A]
+    Router --> StampB[Stamp B]
+    Router --> StampC[Stamp C]
+    subgraph StampA[Stamp A]
+      ApiA[API]
+      WorkerA[Worker]
+      DataA[(Data)]
+      ApiA --> DataA
+      WorkerA --> DataA
+    end
+    subgraph StampB[Stamp B]
+      ApiB[API]
+      WorkerB[Worker]
+      DataB[(Data)]
+      ApiB --> DataB
+      WorkerB --> DataB
+    end
+    subgraph Control[Control Plane]
+      Placement[Tenant Map]
+      Provision[Provisioning]
+    end
+    Control --> Router
+    Provision --> StampC
+languages:
+  - language-agnostic
+  - typescript
+  - go
+  - csharp
+  - java
+frameworks:
+  - kubernetes
+  - terraform
+  - istio
+  - dotnet
+  - spring-boot
+project_types:
+  - microservices
+  - distributed-system
+  - backend-service
+  - web-api
+  - high-throughput
+tags:
+  - cell
+  - scale-unit
+  - blast-radius
+  - multi-tenancy
+examples:
+  - language: typescript
+    title: Routing tenants to stamps
+    negative: |
+      // All tenants share one deployment and one data plane.
+      app.use((req, _res, next) => {
+        req.baseUrl = process.env.PRIMARY_CLUSTER_URL;
+        next();
+      });
+    positive: |
+      interface TenantPlacement {
+        stampFor(tenantId: string): Promise<StampEndpoint>;
+      }
+
+      app.use(async (req, _res, next) => {
+        const tenantId = requireTenant(req);
+        req.stamp = await placement.stampFor(tenantId);
+        next();
+      });
+    explanation: >-
+      The positive version makes tenant placement a routing decision, enabling capacity
+      growth and isolation by moving cohorts between repeatable stamps.
+ratings:
+  small:
+    score: 1
+    notes: Avoid for small systems; one well-run deployment is simpler.
+  medium:
+    score: 3
+    notes: Situational for SaaS platforms with tenant isolation or regional growth pressures.
+  large:
+    score: 5
+    notes: Excellent for large platforms that need blast-radius control and repeatable scale units.
+references:
+  - title: Microsoft Azure Architecture Center; Deployment Stamps pattern
+    url: https://learn.microsoft.com/azure/architecture/patterns/deployment-stamp

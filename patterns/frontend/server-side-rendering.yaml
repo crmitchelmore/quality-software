@@ -1,0 +1,89 @@
+id: server-side-rendering
+title: Server-Side Rendering
+aka:
+  - SSR
+scale: frontend
+category: frontend
+maturity: time-tested
+short_description: >-
+  Render initial HTML on the server so users and crawlers receive meaningful content before client-side JavaScript hydrates interactivity.
+description: >-
+  Server-Side Rendering runs the view layer on the server for the initial request, returning HTML that already contains page content. The client may then hydrate the markup to attach event handlers and continue as an interactive app. SSR improves first contentful paint, resilience and indexing for many content-heavy applications, but it introduces a dual runtime where code must be safe on both server and browser.
+problem: >-
+  Pure client rendering can leave users staring at a blank shell while JavaScript downloads, parses, fetches data and renders the first meaningful screen.
+context: >-
+  Use for content, commerce, marketing, dashboards and authenticated apps where initial load performance, SEO, share previews or low-end devices matter.
+consequences:
+  - Improves perceived performance and crawlable content.
+  - Enables server-side data loading close to backends.
+  - Adds hydration complexity, caching strategy and server operational cost.
+  - Browser-only APIs must be isolated from server-rendered code paths.
+synergies:
+  - pattern: client-server
+    reason: SSR formalises a client-server split where the server produces initial UI state and HTML.
+  - pattern: cache-aside
+    reason: Server-rendered pages often rely on caching data or fragments to avoid per-request bottlenecks.
+  - pattern: component-based-ui
+    reason: Isomorphic components can render on the server and hydrate on the client.
+  - pattern: islands-architecture
+    reason: Islands build on SSR by hydrating only interactive regions instead of the whole page.
+alternatives:
+  - islands-architecture
+  - template-view
+  - client-server
+languages:
+  - typescript
+  - javascript
+frameworks:
+  - nextjs
+  - remix
+  - react
+  - vue
+  - angular
+project_types:
+  - web-frontend
+  - web-api
+  - serverless
+tags:
+  - performance
+  - hydration
+  - seo
+examples:
+  - language: typescript
+    title: Moving first render data loading to the server
+    negative: |
+      export function ProductPage() {
+        const [product, setProduct] = useState<Product | null>(null);
+        useEffect(() => { api.getProduct(location.pathname).then(setProduct); }, []);
+        if (!product) return <Spinner />;
+        return <ProductDetails product={product} />;
+      }
+    positive: |
+      export async function loader({ params }: LoaderArgs) {
+        return json({ product: await catalogue.getProduct(params.slug) });
+      }
+
+      export default function ProductPage() {
+        const { product } = useLoaderData<typeof loader>();
+        return <ProductDetails product={product} />;
+      }
+    explanation: >-
+      The positive version returns meaningful product HTML in the first response, avoiding a blank client shell and making data loading part of the route contract.
+ratings:
+  small:
+    score: 3
+    notes: >-
+      Useful for content-heavy small sites, but static generation may be simpler when data changes rarely.
+  medium:
+    score: 4
+    notes: >-
+      Strong fit for commerce and product apps balancing interactivity with initial load performance.
+  large:
+    score: 4
+    notes: >-
+      Valuable at scale, but requires careful caching, observability and hydration performance budgets.
+references:
+  - title: Next.js Rendering
+    url: https://nextjs.org/docs/app/building-your-application/rendering
+  - title: Remix Data Loading
+    url: https://remix.run/docs/en/main/guides/data-loading

@@ -1,0 +1,108 @@
+id: template-view
+title: Template View
+scale: design
+category: enterprise-application
+maturity: time-tested
+aka:
+  - Server-side template
+  - HTML template
+short_description: >-
+  Render dynamic pages by embedding simple presentation logic in a template populated from a model.
+description: >-
+  Template View uses an HTML, XML, or text template with placeholders and simple conditionals or loops. A controller supplies a model, and the template produces the response. The pattern is deliberately presentation-oriented: business decisions should be made before rendering, leaving the template to format already-prepared data.
+problem: >-
+  Generating markup through string concatenation or business objects mixes presentation, escaping, and domain logic. It is hard to maintain, unsafe, and inaccessible to designers or frontend specialists.
+context: >-
+  Use for server-rendered web pages, emails, reports, and documents where a view model can be prepared by a controller or service and rendered with framework escaping and layout support.
+consequences:
+  - >-
+    Separates presentation structure from request handling and domain logic.
+  - >-
+    Enables layouts, partials, escaping, localisation, and designer-friendly markup.
+  - >-
+    Templates become hard to test if they contain business decisions or database access.
+  - >-
+    For highly interactive clients, component-based UI or API-driven rendering may be a better boundary.
+synergies:
+  - pattern: page-controller
+    reason: >-
+      A Page Controller prepares the model and selects the Template View.
+  - pattern: front-controller
+    reason: >-
+      A Front Controller can standardise error handling, layouts, and view selection before templates render.
+  - pattern: data-transfer-object
+    reason: >-
+      DTOs or view models keep templates from reaching into domain internals.
+  - pattern: model-view-controller
+    reason: >-
+      Template View commonly implements the view part of MVC in server-rendered applications.
+alternatives:
+  - component-based-ui
+  - server-side-rendering
+  - model-view-controller
+conflicts_with:
+  - active-record
+languages:
+  - language-agnostic
+  - typescript
+  - python
+  - ruby
+  - php
+  - java
+  - csharp
+frameworks:
+  - rails
+  - django
+  - laravel
+  - aspnet
+  - spring-boot
+  - express
+  - nextjs
+project_types:
+  - web-frontend
+  - monolith
+  - modular-monolith
+  - web-api
+tags:
+  - view
+  - server-rendering
+  - html
+  - presentation
+examples:
+  - language: python
+    title: Rendering an invoice email
+    negative: |
+      def invoice_email(invoice):
+          return "<h1>Invoice " + invoice.number + "</h1>" +         "<p>Total: " + str(invoice.total()) + "</p>" +         "<p>" + invoice.customer.notes + "</p>"
+    positive: |
+      # controller/service
+      view_model = {
+          "number": invoice.number,
+          "total": money.format(invoice.total),
+          "customer_name": invoice.customer_name,
+      }
+      return render_template("invoice_email.html", **view_model)
+      
+      <!-- invoice_email.html -->
+      <h1>Invoice {{ number }}</h1>
+      <p>Total: {{ total }}</p>
+      <p>Customer: {{ customer_name }}</p>
+    explanation: >-
+      The positive version prepares presentation-ready data before rendering and lets the template engine handle escaping and markup structure. The template does not call domain methods or concatenate unsafe strings.
+ratings:
+  small:
+    score: 5
+    notes: >-
+      Excellent for small server-rendered pages, emails, and admin tools.
+  medium:
+    score: 4
+    notes: >-
+      Good fit when view models stay explicit and templates avoid business logic.
+  large:
+    score: 3
+    notes: >-
+      Useful for server-rendered surfaces, but complex interactive systems may favour component-based or API-driven views.
+references:
+  - title: Patterns of Enterprise Application Architecture
+    author: Martin Fowler
+    year: 2002

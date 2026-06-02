@@ -1,0 +1,101 @@
+id: compensating-transaction
+title: Compensating Transaction
+scale: integration
+category: cloud-distributed
+maturity: time-tested
+short_description: >-
+  Undo or neutralise the effects of completed distributed steps with explicit business
+  actions when a long-running workflow cannot use one atomic transaction.
+description: >-
+  A Compensating Transaction records enough intent and outcome to apply semantically
+  correct reversal steps after part of a distributed workflow has already committed.
+  Compensation is not database rollback: it might issue a refund, release inventory,
+  cancel a shipment, or post an adjusting ledger entry. Each forward step defines its
+  compensating action, ordering, retry policy, and idempotency rules so recovery can
+  proceed after crashes and partial failures.
+problem: >-
+  Distributed operations often commit independently; when a later step fails, earlier
+  successful effects remain visible and must be repaired without a global transaction.
+context: >-
+  Payments, booking, fulfilment, provisioning, and multi-service workflows where steps
+  are long-running, externally visible, or owned by different services.
+consequences:
+  - Preserves business consistency without locking resources across services for long periods.
+  - Makes failure handling auditable because repair is an explicit domain operation.
+  - Compensation may be imperfect or impossible after external side effects occur.
+  - Every compensating action must be idempotent and observable, which increases design effort.
+synergies:
+  - pattern: saga
+    reason: Sagas sequence forward actions and trigger compensations when later steps fail.
+  - pattern: process-manager
+    reason: A process manager tracks which steps completed and which compensations remain due.
+  - pattern: idempotent-receiver
+    reason: Compensation commands may be retried after crashes or broker redelivery.
+  - pattern: audit-logging
+    reason: Financial and operational repairs need an immutable trail of forward and compensating actions.
+alternatives:
+  - pessimistic-offline-lock
+  - optimistic-concurrency-control
+  - process-manager
+languages:
+  - language-agnostic
+  - typescript
+  - java
+  - csharp
+  - go
+  - python
+frameworks:
+  - kafka
+  - rabbitmq
+  - nats
+  - spring-boot
+  - dotnet
+project_types:
+  - microservices
+  - distributed-system
+  - backend-service
+  - web-api
+  - high-throughput
+tags:
+  - recovery
+  - long-running-transaction
+  - business-consistency
+  - rollback
+examples:
+  - language: typescript
+    title: Reversing a failed booking flow
+    negative: |
+      await payments.charge(card, amount);
+      await inventory.reserve(sku, quantity);
+      await shipping.createLabel(orderId); // throws; charge and reservation remain
+    positive: |
+      const completed: Array<() => Promise<void>> = [];
+
+      await payments.charge(card, amount);
+      completed.push(() => payments.refund(orderId, amount));
+
+      await inventory.reserve(sku, quantity);
+      completed.push(() => inventory.release(orderId, sku, quantity));
+
+      try {
+        await shipping.createLabel(orderId);
+      } catch (error) {
+        for (const compensate of completed.reverse()) await compensate();
+        throw error;
+      }
+    explanation: >-
+      The positive version registers domain-specific repair actions as forward steps
+      complete, so a later failure can restore business consistency instead of leaving debris.
+ratings:
+  small:
+    score: 2
+    notes: Rarely necessary unless the small system already calls external side-effecting services.
+  medium:
+    score: 4
+    notes: Good fit for multi-step integrations where business repair is better than locks.
+  large:
+    score: 5
+    notes: Essential in large distributed workflows where global transactions are unavailable or undesirable.
+references:
+  - title: Microsoft Azure Architecture Center; Compensating Transaction pattern
+    url: https://learn.microsoft.com/azure/architecture/patterns/compensating-transaction

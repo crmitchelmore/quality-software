@@ -1,0 +1,99 @@
+id: page-object
+title: Page Object
+aka:
+  - Screen Object
+scale: implementation
+category: testing
+maturity: time-tested
+short_description: >-
+  Encapsulate UI test selectors and user interactions behind page-level methods so tests express behaviour instead of DOM mechanics.
+description: >-
+  A Page Object wraps a page or component surface with intention-revealing operations such as signIn, addLineItem, or errorMessage. Tests call these operations instead of scattering CSS selectors, waits, and click sequences. The object should model user-visible capabilities, not mirror the DOM tree; if it exposes every button and field as public data, it becomes a brittle selector dump rather than a test-facing API.
+problem: >-
+  End-to-end tests become fragile and unreadable when every test repeats low-level selectors and timing work.
+context: >-
+  Use for browser or mobile UI tests with repeated flows, especially when selectors or UI mechanics change more often than user scenarios.
+consequences:
+  - >-
+    Centralises selectors and waiting behaviour, reducing brittle duplication.
+  - >-
+    Makes UI tests read like user workflows.
+  - >-
+    Can hide too much; assertions should still be visible in tests, and page objects should not contain business decisions.
+synergies:
+  - pattern: given-when-then
+    reason: >-
+      Page object methods make Given/When/Then UI steps readable and stable.
+  - pattern: test-data-builder
+    reason: >-
+      Builders create the users or orders that page scenarios need before the UI flow starts.
+  - pattern: component-based-ui
+    reason: >-
+      Component boundaries often map well to smaller component objects inside a page object.
+alternatives:
+  - arrange-act-assert
+languages:
+  - language-agnostic
+  - typescript
+  - javascript
+  - python
+  - java
+frameworks:
+  - react
+  - angular
+  - vue
+  - nodejs
+  - spring-boot
+project_types:
+  - web-frontend
+  - web-api
+  - backend-service
+  - monolith
+tags:
+  - e2e-testing
+  - selectors
+  - ui-testing
+examples:
+  - language: typescript
+    title: Playwright login flow
+    negative: |-
+      test("user can sign in", async ({ page }) => {
+        await page.goto("/login");
+        await page.locator("input[name=email]").fill("a@example.com");
+        await page.locator("input[name=password]").fill("correct horse battery staple");
+        await page.locator("button[type=submit]").click();
+        await expect(page.locator("[data-testid=user-menu]")).toContainText("a@example.com");
+      });
+    positive: |-
+      class LoginPage {
+        constructor(private readonly page: Page) {}
+        async open() { await this.page.goto("/login"); }
+        async signIn(email: string, password: string) {
+          await this.page.getByLabel("Email").fill(email);
+          await this.page.getByLabel("Password").fill(password);
+          await this.page.getByRole("button", { name: "Sign in" }).click();
+        }
+        userMenu() { return this.page.getByTestId("user-menu"); }
+      }
+      
+      test("user can sign in", async ({ page }) => {
+        const login = new LoginPage(page);
+        await login.open();
+        await login.signIn("a@example.com", "correct horse battery staple");
+        await expect(login.userMenu()).toContainText("a@example.com");
+      });
+    explanation: >-
+      The positive test keeps the user story visible and isolates selector changes inside LoginPage. It still leaves the final assertion in the test so the expected outcome is explicit.
+ratings:
+  small:
+    score: 3
+    notes: >-
+      Worth it only when selectors are reused; direct locators are fine for one or two simple tests.
+  medium:
+    score: 5
+    notes: >-
+      Strong fit once UI flows repeat and selector churn becomes expensive.
+  large:
+    score: 4
+    notes: >-
+      Helpful, but very large suites need composition to avoid enormous god page objects.

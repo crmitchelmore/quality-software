@@ -1,0 +1,96 @@
+id: input-validation
+title: Input Validation (Allow-List)
+aka:
+  - Positive validation
+  - Allow-list validation
+scale: implementation
+category: security
+maturity: time-tested
+short_description: >-
+  Accept only inputs that match known-good shape, type, range, and business rules before they reach sensitive processing.
+description: >-
+  Allow-list input validation defines what valid data looks like and rejects everything else. It is stronger than trying to block known-bad strings because attackers continuously invent new encodings and bypasses. Validation should happen at trust boundaries, preserve typed domain invariants internally, and produce safe error messages. It does not replace parameterised queries or output encoding; it reduces the set of data downstream code must safely handle.
+problem: >-
+  Untrusted input with unexpected shape, length, encoding, or meaning can trigger injection, denial of service, data corruption, or broken access decisions.
+context: >-
+  Use on API payloads, query parameters, file uploads, message consumers, CLI inputs, and any boundary where data crosses from untrusted to trusted code.
+consequences:
+  - >-
+    Reduces attack surface by rejecting malformed or out-of-policy data early.
+  - >-
+    Improves internal type safety and error handling.
+  - >-
+    Can reject legitimate clients if schemas are too narrow; version and communicate contracts.
+synergies:
+  - pattern: output-encoding
+    reason: >-
+      Validation reduces bad input, but encoding still protects each output sink from data that is valid yet unsafe to render.
+  - pattern: secure-by-default
+    reason: >-
+      Default-deny validation makes safe behaviour the normal path.
+  - pattern: property-based-testing
+    reason: >-
+      Generated hostile inputs help prove validators reject malformed cases without crashing.
+alternatives:
+  - defense-in-depth
+languages:
+  - language-agnostic
+  - javascript
+  - typescript
+  - python
+  - java
+frameworks:
+  - none
+  - nodejs
+  - express
+  - spring-boot
+  - fastapi
+  - django
+project_types:
+  - web-api
+  - backend-service
+  - microservices
+  - distributed-system
+  - web-frontend
+tags:
+  - validation
+  - allow-list
+  - injection-prevention
+examples:
+  - language: typescript
+    title: Express allow-list validation
+    negative: |-
+      app.get("/reports", async (req, res) => {
+        const sort = String(req.query.sort || "created_at");
+        const rows = await db.query(`select * from reports order by ${sort}`);
+        res.json(rows);
+      });
+    positive: |-
+      const allowedSorts = new Map([
+        ["created", "created_at"],
+        ["name", "name"],
+        ["status", "status"]
+      ]);
+      
+      app.get("/reports", async (req, res) => {
+        const column = allowedSorts.get(String(req.query.sort ?? "created"));
+        if (!column) return res.status(400).json({ error: "invalid sort" });
+      
+        const rows = await db.query(`select id, name, status from reports order by ${column}`);
+        res.json(rows);
+      });
+    explanation: >-
+      The positive code maps client input to a known set of columns instead of interpolating arbitrary text. Only known-good values can influence the SQL fragment.
+ratings:
+  small:
+    score: 5
+    notes: >-
+      Essential even for small APIs and CLIs that accept untrusted input.
+  medium:
+    score: 5
+    notes: >-
+      A baseline implementation practice for every service boundary.
+  large:
+    score: 5
+    notes: >-
+      Non-negotiable at scale; pair with schema governance and fuzz/property tests.

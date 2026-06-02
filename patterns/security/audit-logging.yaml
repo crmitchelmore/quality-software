@@ -1,0 +1,94 @@
+id: audit-logging
+title: Audit Logging
+aka:
+  - Security audit trail
+scale: design
+category: security
+maturity: time-tested
+short_description: >-
+  Record security-relevant decisions and state changes with enough integrity and context to support detection, investigation, and accountability.
+description: >-
+  Audit Logging captures who did what, to which resource, when, from where, and whether it succeeded. It differs from debug logging: audit events are intentionally designed records for authentication, authorisation, privileged actions, data access, configuration changes, and secret usage. Good audit logs avoid sensitive payloads, use stable event names and correlation identifiers, are tamper-resistant, and are retained according to risk and regulation.
+problem: >-
+  Without reliable audit trails, teams cannot investigate incidents, prove compliance, detect abuse, or understand the blast radius of compromised credentials.
+context: >-
+  Use for systems with privileged operations, personal data, financial actions, tenant boundaries, production administration, or regulated workflows.
+consequences:
+  - >-
+    Enables incident investigation, anomaly detection, and accountability.
+  - >-
+    Supports access reviews and compliance evidence.
+  - >-
+    Can leak sensitive data or overwhelm storage if events are poorly designed; log metadata, not secrets or full payloads.
+synergies:
+  - pattern: least-privilege
+    reason: >-
+      Audit data reveals excessive or unused privileges and validates access-review decisions.
+  - pattern: token-based-auth
+    reason: >-
+      Token subject, client, scope, issuer, and audience provide essential audit context.
+  - pattern: defense-in-depth
+    reason: >-
+      Audit logging is a detective layer that shows when preventive controls are bypassed.
+  - pattern: secrets-management
+    reason: >-
+      Secret reads, rotations, and denials are high-value audit events.
+alternatives:
+  - golden-master
+languages:
+  - language-agnostic
+  - javascript
+  - typescript
+  - python
+  - java
+frameworks:
+  - none
+  - nodejs
+  - express
+  - spring-boot
+  - fastapi
+  - django
+project_types:
+  - web-api
+  - backend-service
+  - microservices
+  - distributed-system
+  - monolith
+tags:
+  - audit
+  - forensics
+  - security-logging
+examples:
+  - language: java
+    title: Auditing privileged changes
+    negative: |-
+      @PostMapping("/users/{id}/roles")
+      void changeRole(@PathVariable String id, @RequestBody RoleChange request) {
+        users.changeRole(id, request.role());
+        log.info("role changed");
+      }
+    positive: |-
+      @PostMapping("/users/{id}/roles")
+      void changeRole(@PathVariable String id, @RequestBody RoleChange request, Authentication auth) {
+        users.changeRole(id, request.role());
+        audit.record("user_role_changed", Map.of(
+            "actor", auth.getName(),
+            "targetUser", id,
+            "newRole", request.role(),
+            "requestId", MDC.get("requestId")));
+      }
+    explanation: >-
+      The positive audit event has a stable event name and investigation context without dumping the whole request. It can answer who changed whose role and under which request.
+ratings:
+  small:
+    score: 3
+    notes: >-
+      Situational for tiny tools, but essential for admin or data-sensitive actions.
+  medium:
+    score: 5
+    notes: >-
+      Strong fit for services with user data, roles, billing, or production operations.
+  large:
+    score: 5
+    notes: >-
+      Essential for large systems and regulated environments; design retention, integrity, and searchability.

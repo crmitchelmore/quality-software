@@ -1,0 +1,97 @@
+id: competing-consumers
+title: Competing Consumers
+scale: integration
+category: cloud-distributed
+maturity: time-tested
+short_description: >-
+  Run multiple equivalent consumers on the same queue so each message is handled
+  by one worker, increasing throughput and resilience through horizontal scaling.
+description: >-
+  Competing Consumers uses a queue or broker consumer group to distribute work
+  items across multiple worker instances. Each message is claimed by one consumer,
+  processed, and acknowledged; if a worker fails before acknowledgement, the
+  broker can redeliver the message. The pattern decouples producers from worker
+  capacity and lets operators scale processing by adding consumers, but it assumes
+  handlers are safe under redelivery and that ordering requirements are limited or
+  partitioned deliberately.
+problem: >-
+  A single worker becomes a throughput bottleneck and a failure point, while
+  direct synchronous fan-out couples producers to worker availability.
+context: >-
+  Use for independent background jobs, command processing, media transforms,
+  billing tasks, and message streams where work can be partitioned or processed
+  out of order.
+consequences:
+  - Increases throughput by adding workers without changing producers.
+  - Failed workers can be replaced and unacknowledged messages retried.
+  - Message ordering is not guaranteed globally and must be designed for explicitly.
+  - Handlers must be idempotent because most brokers provide at-least-once delivery.
+synergies:
+  - pattern: idempotent-receiver
+    reason: Competing consumers need safe redelivery because a worker may crash after side effects.
+  - pattern: dead-letter-channel
+    reason: Poison messages should be isolated after retries so one bad item does not block the queue.
+  - pattern: queue-based-load-leveling
+    reason: The queue buffers bursts while competing consumers drain at available capacity.
+  - pattern: backpressure
+    reason: Consumer scaling and prefetch limits are a practical way to apply downstream backpressure.
+alternatives:
+  - polling-consumer
+  - event-driven-consumer
+  - producer-consumer
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - go
+  - typescript
+  - python
+frameworks:
+  - kafka
+  - rabbitmq
+  - nats
+  - celery
+  - spring-boot
+project_types:
+  - backend-service
+  - microservices
+  - distributed-system
+  - high-throughput
+tags:
+  - queue
+  - horizontal-scaling
+  - workers
+examples:
+  - language: typescript
+    title: Scaling queue workers safely
+    negative: |
+      // One process polls and processes everything; a crash stops all work.
+      setInterval(async () => {
+        const jobs = await db.jobs.findPending(100);
+        for (const job of jobs) {
+          await sendInvoice(job.invoiceId);
+          await db.jobs.markDone(job.id);
+        }
+      }, 1000);
+    positive: |
+      queue.consume("invoice-jobs", async (msg) => {
+        const job = JSON.parse(msg.body) as InvoiceJob;
+        await invoices.sendOnce(job.invoiceId, job.idempotencyKey);
+        await msg.ack();
+      }, { consumerGroup: "invoice-workers", prefetch: 10 });
+    explanation: >-
+      The positive version lets the broker distribute messages across many workers
+      and redeliver unacknowledged work, while the handler guards side effects with idempotency.
+ratings:
+  small:
+    score: 2
+    notes: Usually unnecessary until background work exceeds one worker's capacity or reliability needs.
+  medium:
+    score: 4
+    notes: Strong fit for job processing and asynchronous workflows with idempotent handlers.
+  large:
+    score: 5
+    notes: Excellent for high-throughput distributed systems where work must scale horizontally.
+references:
+  - title: Microsoft Azure Architecture Center; Competing Consumers pattern
+    url: https://learn.microsoft.com/azure/architecture/patterns/competing-consumers

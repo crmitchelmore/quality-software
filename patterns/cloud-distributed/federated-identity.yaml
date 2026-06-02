@@ -1,0 +1,102 @@
+id: federated-identity
+title: Federated Identity
+scale: integration
+category: cloud-distributed
+maturity: established
+short_description: >-
+  Trust an external identity provider to authenticate users or workloads and use
+  standard tokens to access applications across organisational or system boundaries.
+description: >-
+  Federated Identity separates authentication from each application. A relying
+  party redirects users or workloads to a trusted identity provider, validates the
+  returned token or assertion, and authorises local actions from claims and policy.
+  Standards such as OIDC, OAuth 2.0, SAML, and workload identity federation make it
+  possible to share identity across cloud accounts, vendors, enterprises, and
+  services without synchronising passwords or issuing long-lived credentials to
+  every application.
+problem: >-
+  Each application managing its own users, passwords, MFA, and lifecycle creates
+  duplicated risk, stale accounts, and inconsistent access controls.
+context: >-
+  Use for SSO, B2B partner access, cloud workload identity, SaaS integration, and
+  multi-tenant systems where identity lifecycle is owned by a central provider or
+  customer tenant.
+consequences:
+  - Centralises authentication, MFA, and account lifecycle in a specialised provider.
+  - Enables SSO and short-lived workload credentials across systems.
+  - Application availability and login experience depend on the identity provider.
+  - Claims, token audiences, clock skew, and key rotation must be validated rigorously.
+synergies:
+  - pattern: token-based-auth
+    reason: Federation usually issues JWTs or assertions that relying services validate locally.
+  - pattern: least-privilege
+    reason: Federated claims should map to narrow roles and scopes rather than broad implicit trust.
+  - pattern: gatekeeper
+    reason: Edge gatekeepers can validate federated tokens before traffic reaches private services.
+  - pattern: audit-logging
+    reason: Cross-system access needs correlation between external subject identifiers and local actions.
+alternatives:
+  - token-based-auth
+  - service-locator
+languages:
+  - language-agnostic
+  - typescript
+  - java
+  - csharp
+  - go
+  - python
+frameworks:
+  - nodejs
+  - spring-boot
+  - dotnet
+  - django
+  - kubernetes
+project_types:
+  - web-api
+  - web-frontend
+  - backend-service
+  - microservices
+  - distributed-system
+tags:
+  - identity
+  - sso
+  - oidc
+  - zero-trust
+examples:
+  - language: typescript
+    title: Validating provider-issued tokens
+    negative: |
+      // Local passwords drift from corporate lifecycle and MFA policy.
+      app.post("/login", async (req, res) => {
+        const user = await users.findByEmail(req.body.email);
+        if (!user || !(await bcrypt.compare(req.body.password, user.passwordHash))) {
+          return res.sendStatus(401);
+        }
+        res.json({ session: createSession(user.id) });
+      });
+    positive: |
+      app.get("/callback", async (req, res) => {
+        const tokenSet = await oidcClient.callback(redirectUri, req.query, { nonce: req.cookies.nonce });
+        const claims = await verifier.verify(tokenSet.id_token, {
+          issuer: "https://login.example.com/",
+          audience: "orders-web",
+        });
+        const user = await users.findOrProvisionFederated(claims.sub, claims.email);
+        res.json({ session: createSession(user.id) });
+      });
+    explanation: >-
+      The positive version delegates authentication to the identity provider while
+      the application validates issuer, audience, and nonce before creating a local session.
+ratings:
+  small:
+    score: 2
+    notes: Overhead is high for prototypes, though hosted identity can still be sensible for security.
+  medium:
+    score: 4
+    notes: Good fit when SSO, MFA, or central lifecycle management matters.
+  large:
+    score: 5
+    notes: Essential for enterprise, multi-cloud, and multi-tenant distributed systems.
+references:
+  - title: OpenID Connect Core 1.0
+    url: https://openid.net/specs/openid-connect-core-1_0.html

@@ -1,0 +1,96 @@
+id: option-maybe
+title: Option / Maybe
+aka:
+  - Optional
+  - Maybe
+scale: design
+category: functional
+maturity: time-tested
+short_description: >-
+  Represent possible absence explicitly as Some(value) or None instead of using null or undefined.
+description: >-
+  Option/Maybe makes absence part of a function signature. A caller cannot accidentally ignore it because the type must be inspected, mapped, defaulted, or chained. This moves missing-value handling from scattered null checks into explicit operations and prevents null from being a hidden member of every type.
+problem: >-
+  Null and undefined values travel invisibly through APIs until a distant dereference fails, often far from the function that introduced absence.
+context: >-
+  Use when a value may legitimately be absent: lookups, optional configuration, parsing, partial user input, cache misses, and nullable database fields after they cross into domain code.
+consequences:
+  - Makes absence explicit and type-checkable.
+  - Encourages local handling via map, flatMap, match, or default values.
+  - >-
+    Can be overused for validation failures that need error details; use Either/Result there.
+  - Interoperability with null-heavy libraries requires boundary normalisation.
+synergies:
+  - pattern: null-object
+    reason: >-
+      Null Object is better when absence should still provide behaviour; Option is better when callers must choose.
+  - pattern: smart-constructor
+    reason: >-
+      Smart constructors can return Option when invalid input simply means no value.
+  - pattern: pattern-matching
+    reason: Pattern matching forces exhaustive handling of Some and None.
+  - pattern: either-result
+    reason: Either/Result extends the idea when absence needs an explanation.
+alternatives:
+  - null-object
+  - special-case
+  - guard-clause
+conflicts_with:
+  - active-record
+languages:
+  - haskell
+  - scala
+  - rust
+  - typescript
+  - java
+  - csharp
+frameworks:
+  - none
+project_types:
+  - library
+  - backend-service
+  - web-api
+  - web-frontend
+tags:
+  - absence
+  - null-safety
+  - types
+examples:
+  - language: rust
+    title: Finding a user email
+    negative: |
+      fn email_for(users: &[User], id: UserId) -> String {
+          for user in users {
+              if user.id == id {
+                  return user.email.clone();
+              }
+          }
+          "".to_string() // empty string now means not found
+      }
+    positive: |
+      fn email_for(users: &[User], id: UserId) -> Option<String> {
+          users
+              .iter()
+              .find(|user| user.id == id)
+              .map(|user| user.email.clone())
+      }
+      
+      let label = email_for(&users, id).unwrap_or_else(|| "unknown".to_string());
+    explanation: >-
+      The positive version distinguishes a real empty email from absence and forces the caller to decide how to handle the missing user.
+ratings:
+  small:
+    score: 4
+    notes: >-
+      Great fit where the language supports it; prevents many low-cost null bugs.
+  medium:
+    score: 5
+    notes: Excellent default for lookup and parsing APIs.
+  large:
+    score: 5
+    notes: >-
+      Essential for stable contracts across teams; removes ambiguous sentinel values from public APIs.
+references:
+  - title: "Tony Hoare: Null References, The Billion Dollar Mistake"
+    author: Tony Hoare
+    year: 2009

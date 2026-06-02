@@ -1,0 +1,117 @@
+id: decorator
+title: Decorator
+aka:
+  - Wrapper
+scale: design
+category: gof-structural
+maturity: time-tested
+short_description: >-
+  Add responsibilities to an object by wrapping it with another object that implements the same interface and delegates to the wrapped component.
+description: >-
+  Decorator composes behaviour at object level. Each decorator has the same interface as the component it wraps, performs work before or after delegation, and can be stacked with other decorators. It is a precise alternative to subclassing for cross-cutting or optional features such as caching, logging, retries, validation, compression, and access control.
+problem: >-
+  Optional behaviours are implemented through inheritance or flags, causing subclass explosion and tangled conditional logic.
+context: >-
+  Use when responsibilities must be combined independently and clients should continue to see the original interface.
+consequences:
+  - Adds behaviour without modifying the original component.
+  - Allows runtime composition and ordering of responsibilities.
+  - Many nested decorators can make debugging call flow harder.
+  - Ordering matters; caching outside authorization can produce security bugs.
+synergies:
+  - pattern: composition-over-inheritance
+    reason: Decorator replaces subclass combinations with composable wrappers.
+  - pattern: proxy
+    reason: Both wrap an object behind the same interface; Proxy controls access while Decorator adds responsibilities.
+  - pattern: middleware-pipeline
+    reason: Middleware pipelines are decorator chains over request handlers.
+  - pattern: circuit-breaker
+    reason: A circuit breaker is often implemented as a decorator around a remote client.
+alternatives:
+  - proxy
+  - chain-of-responsibility
+  - strategy
+languages:
+  - language-agnostic
+  - typescript
+  - java
+  - csharp
+  - python
+frameworks:
+  - none
+  - nodejs
+  - spring-boot
+  - dotnet
+project_types:
+  - backend-service
+  - web-api
+  - library
+  - sdk
+tags:
+  - composition
+  - wrapping
+  - cross-cutting
+examples:
+  - language: typescript
+    title: Caching product lookups
+    negative: |
+      class ProductService {
+        private cache = new Map<string, Product>();
+        constructor(private readonly api: ProductApi, private readonly enableCache: boolean) {}
+
+        async bySku(sku: string): Promise<Product> {
+          if (this.enableCache && this.cache.has(sku)) return this.cache.get(sku)!;
+          const product = await this.api.fetchProduct(sku);
+          audit("product fetched", sku);
+          if (this.enableCache) this.cache.set(sku, product);
+          return product;
+        }
+      }
+    positive: |
+      interface ProductLookup {
+        bySku(sku: string): Promise<Product>;
+      }
+
+      class ApiProductLookup implements ProductLookup {
+        constructor(private readonly api: ProductApi) {}
+        bySku(sku: string): Promise<Product> { return this.api.fetchProduct(sku); }
+      }
+
+      class AuditedProductLookup implements ProductLookup {
+        constructor(private readonly inner: ProductLookup) {}
+        async bySku(sku: string): Promise<Product> {
+          const product = await this.inner.bySku(sku);
+          audit("product fetched", sku);
+          return product;
+        }
+      }
+
+      class CachedProductLookup implements ProductLookup {
+        private cache = new Map<string, Product>();
+        constructor(private readonly inner: ProductLookup) {}
+        async bySku(sku: string): Promise<Product> {
+          if (this.cache.has(sku)) return this.cache.get(sku)!;
+          const product = await this.inner.bySku(sku);
+          this.cache.set(sku, product);
+          return product;
+        }
+      }
+    explanation: >-
+      The positive version separates API access, audit logging, and caching into stackable wrappers. Each responsibility can be tested and ordered deliberately instead of controlled by flags in one class.
+ratings:
+  small:
+    score: 4
+    notes: >-
+      Good for optional behaviour when an interface already exists; avoid chains for one-off logic.
+  medium:
+    score: 5
+    notes: >-
+      Excellent for composable infrastructure concerns such as caching, logging, validation, and resilience.
+  large:
+    score: 5
+    notes: >-
+      Scales well across teams when decorator ordering is documented and assembled at the composition root.
+references:
+  - title: "Design Patterns: Elements of Reusable Object-Oriented Software"
+    author: Gamma, Helm, Johnson, Vlissides
+    year: 1994

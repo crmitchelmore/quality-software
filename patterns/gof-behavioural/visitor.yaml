@@ -1,0 +1,137 @@
+id: visitor
+title: Visitor
+aka:
+  - Double Dispatch Visitor
+scale: design
+category: gof-behavioural
+maturity: time-tested
+short_description: >-
+  Add operations over a stable object structure by moving the operation into a
+  visitor object that each element accepts.
+description: >-
+  Visitor separates operations from the object structure they operate on. Elements
+  expose an accept method that calls the corresponding visitor method for their
+  concrete type, giving the operation type-specific behaviour without instanceof
+  ladders. It works best when the element hierarchy is stable but new operations
+  are frequent, such as AST formatting, validation, code generation, pricing,
+  reporting, or serialisation. It is a poor fit when new element types are common,
+  because every visitor must then be updated.
+problem: >-
+  Many unrelated operations over a heterogeneous object structure are implemented
+  with repeated type checks, scattering operation logic and making new operations
+  risky.
+context: >-
+  Use for compilers, interpreters, document object models, rule trees, and other
+  stable hierarchies where adding operations is more common than adding element
+  classes.
+consequences:
+  - Groups one operation across many element types into a single cohesive visitor.
+  - Avoids type-checking conditionals and enables double dispatch in single-dispatch languages.
+  - Adding a new element type is expensive because all visitors need a new method.
+  - Visitors can break encapsulation if elements expose too much internal state for operations.
+synergies:
+  - pattern: composite
+    reason: Visitors commonly traverse composite object structures such as ASTs and document trees.
+  - pattern: interpreter
+    reason: Interpreters often use visitors for evaluation, pretty-printing, optimisation, or validation of expression trees.
+  - pattern: iterator
+    reason: Iterators can traverse the structure while visitors perform type-specific operations.
+  - pattern: pattern-matching
+    reason: Pattern matching is a language-level alternative for closed hierarchies and operation dispatch.
+alternatives:
+  - pattern-matching
+  - strategy
+  - iterator
+conflicts_with:
+  - active-record
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - typescript
+  - python
+frameworks:
+  - none
+project_types:
+  - library
+  - sdk
+  - data-pipeline
+  - backend-service
+  - cli-tool
+tags:
+  - double-dispatch
+  - ast
+  - extensibility
+  - operations
+examples:
+  - language: typescript
+    title: Rendering report nodes
+    negative: |
+      type ReportNode = Heading | Paragraph;
+      type Heading = { kind: "heading"; level: number; text: string };
+      type Paragraph = { kind: "paragraph"; text: string };
+
+      function renderMarkdown(node: ReportNode): string {
+        if (node.kind === "heading") return "#".repeat(node.level) + " " + node.text;
+        if (node.kind === "paragraph") return node.text;
+        throw new Error("unknown node");
+      }
+
+      function wordCount(node: ReportNode): number {
+        if (node.kind === "heading") return node.text.split(" ").length;
+        if (node.kind === "paragraph") return node.text.split(" ").length;
+        throw new Error("unknown node");
+      }
+    positive: |
+      interface ReportVisitor<T> {
+        visitHeading(node: Heading): T;
+        visitParagraph(node: Paragraph): T;
+      }
+
+      interface ReportNode {
+        accept<T>(visitor: ReportVisitor<T>): T;
+      }
+
+      class Heading implements ReportNode {
+        constructor(readonly level: number, readonly text: string) {}
+        accept<T>(visitor: ReportVisitor<T>): T { return visitor.visitHeading(this); }
+      }
+
+      class Paragraph implements ReportNode {
+        constructor(readonly text: string) {}
+        accept<T>(visitor: ReportVisitor<T>): T { return visitor.visitParagraph(this); }
+      }
+
+      class MarkdownRenderer implements ReportVisitor<string> {
+        visitHeading(node: Heading): string { return "#".repeat(node.level) + " " + node.text; }
+        visitParagraph(node: Paragraph): string { return node.text; }
+      }
+
+      class WordCounter implements ReportVisitor<number> {
+        visitHeading(node: Heading): number { return node.text.split(" ").length; }
+        visitParagraph(node: Paragraph): number { return node.text.split(" ").length; }
+      }
+    explanation: >-
+      The positive version groups each operation into its own visitor and removes
+      duplicated kind checks. Adding HTML rendering is a new visitor; adding a new
+      node type intentionally forces all operations to handle it.
+ratings:
+  small:
+    score: 2
+    notes: >-
+      Often over-engineered for small hierarchies; direct methods or pattern
+      matching are simpler when operations are few.
+  medium:
+    score: 3
+    notes: >-
+      Useful for stable object structures with several operations, especially in
+      libraries and compilers.
+  large:
+    score: 4
+    notes: >-
+      Strong fit when a stable AST or document model has many independently owned
+      operations, but costly if the element model changes frequently.
+references:
+  - title: "Design Patterns: Elements of Reusable Object-Oriented Software"
+    author: Gamma, Helm, Johnson, Vlissides
+    year: 1994

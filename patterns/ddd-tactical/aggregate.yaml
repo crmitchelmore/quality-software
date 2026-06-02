@@ -1,0 +1,109 @@
+id: aggregate
+title: Aggregate
+scale: design
+category: ddd-tactical
+maturity: time-tested
+short_description: >-
+  Group entities and value objects behind a root that enforces consistency boundaries and transactional invariants.
+description: >-
+  An Aggregate is a cluster of domain objects treated as one consistency boundary. External code references only the aggregate root; child entities and value objects are modified through root methods. The root enforces invariants that must be true at transaction commit, while relationships to other aggregates are by identity rather than direct object references. Good aggregates are deliberately small and aligned to business consistency, not database table graphs.
+problem: >-
+  Object graphs with unrestricted references allow any service to mutate any child object, making invariants unenforceable and transactions too broad. In distributed systems this produces lock contention, stale writes, and accidental coupling between business capabilities.
+context: >-
+  Use aggregates when multiple domain objects participate in rules that must remain consistent together, especially when repositories, transactions, and domain events need a clear boundary.
+consequences:
+  - Clarifies what must be saved atomically and what may become eventually consistent.
+  - Protects child entities by forcing modifications through intention-revealing root methods.
+  - Avoids large object graphs and cross-aggregate transactions when designed well.
+  - Poorly chosen boundaries cause either invariant leaks or oversized transactional bottlenecks.
+synergies:
+  - pattern: entity
+    reason: The aggregate root is an entity whose identity is the only external handle to the cluster.
+  - pattern: value-object
+    reason: Value objects keep aggregate internals compact and immutable where identity is unnecessary.
+  - pattern: repository
+    reason: Repositories are normally defined per aggregate root, not per table or child entity.
+  - pattern: domain-event
+    reason: Domain events communicate cross-aggregate consequences without broadening the transaction.
+alternatives:
+  - transaction-script
+  - active-record
+conflicts_with:
+  - table-data-gateway
+languages:
+  - language-agnostic
+  - csharp
+  - java
+  - typescript
+frameworks:
+  - none
+  - dotnet
+  - spring-boot
+  - hibernate
+  - entity-framework
+project_types:
+  - backend-service
+  - modular-monolith
+  - microservices
+  - distributed-system
+tags:
+  - ddd
+  - consistency-boundary
+  - transactions
+  - invariants
+examples:
+  - language: java
+    title: Basket aggregate boundary
+    negative: |
+      class BasketService {
+          void changeQuantity(Basket basket, UUID lineId, int quantity) {
+              BasketLine line = basket.lines().stream()
+                  .filter(l -> l.id().equals(lineId))
+                  .findFirst()
+                  .orElseThrow();
+              line.setQuantity(quantity);
+              basket.setTotal(basket.lines().stream().mapToInt(BasketLine::lineTotal).sum());
+          }
+      }
+    positive: |
+      public final class Basket {
+          private final BasketId id;
+          private final List<BasketLine> lines = new ArrayList<>();
+
+          public void changeQuantity(BasketLineId lineId, Quantity quantity) {
+              BasketLine line = lines.stream()
+                  .filter(candidate -> candidate.hasId(lineId))
+                  .findFirst()
+                  .orElseThrow(() -> new DomainException("Unknown basket line"));
+              line.changeQuantity(quantity);
+              if (total().isGreaterThan(Money.gbp(500_00))) {
+                  throw new DomainException("Basket exceeds approval limit");
+              }
+          }
+
+          public Money total() {
+              return lines.stream().map(BasketLine::lineTotal).reduce(Money.gbp(0), Money::add);
+          }
+      }
+    explanation: >-
+      The positive version prevents callers from mutating a line independently of the basket invariant. The aggregate root owns both the child change and the approval-limit rule.
+ratings:
+  small:
+    score: 2
+    notes: >-
+      Often overkill for simple CRUD; use when there is a real invariant spanning multiple objects.
+  medium:
+    score: 4
+    notes: >-
+      Good fit for domain services with meaningful transactions and repositories.
+  large:
+    score: 5
+    notes: >-
+      Excellent for large systems because aggregate boundaries define safe transaction scope and team-shared consistency rules.
+references:
+  - title: Domain-Driven Design
+    author: Eric Evans
+    year: 2003
+  - title: Effective Aggregate Design
+    author: Vaughn Vernon
+    year: 2011

@@ -1,0 +1,115 @@
+id: timeout
+title: Timeout
+scale: integration
+category: resilience
+maturity: time-tested
+aka:
+  - Deadline
+  - Request Budget
+short_description: >-
+  Bound how long a caller waits for an operation so slow dependencies release resources
+  predictably instead of turning latency into cascading failure.
+description: >-
+  A timeout turns unbounded waiting into an explicit failure mode. Instead of allowing
+  a thread, connection, event-loop task or queue worker to wait indefinitely, the caller
+  sets a per-operation deadline that is shorter than its own upstream deadline. Effective
+  timeout design uses separate connection, read and overall deadlines where supported,
+  propagates cancellation to downstream work, and records whether the timeout happened
+  before the dependency received the request or while waiting for a response. Timeouts
+  are not just constants: they encode latency budgets and should be chosen from service
+  objectives and observed percentile latency rather than arbitrary round numbers.
+problem: >-
+  Slow dependencies are often more dangerous than failed dependencies because callers
+  keep waiting, pools fill, queues grow and unrelated requests lose capacity. Without
+  explicit deadlines, one stuck network call can pin resources long after the user has
+  gone away.
+context: >-
+  Apply to network calls, database queries, lock acquisition, queue receives, external
+  process execution and any operation crossing a reliability boundary. The caller must
+  know its own deadline and leave room for cleanup, retries or fallback.
+consequences:
+  - Frees caller resources and makes slow failure observable instead of indefinite.
+  - Enables circuit breakers, retries and fallbacks to reason about latency, not only exceptions.
+  - Badly chosen values either fail healthy requests too aggressively or wait long enough to cascade.
+  - Requires cancellation propagation; otherwise timed-out work may keep running in the background.
+synergies:
+  - pattern: retry
+    reason: Timeouts bound each retry attempt and prevent the retry policy exceeding the caller deadline.
+  - pattern: circuit-breaker
+    reason: Breakers need timeouts so slow calls count as failures before resources are exhausted.
+  - pattern: fallback
+    reason: A timeout creates the trigger point for serving cached, degraded or default responses.
+  - pattern: bulkhead
+    reason: Bulkheads limit how many operations can be waiting when a timeout threshold is wrong.
+alternatives:
+  - queue-based-load-leveling
+  - request-reply
+  - fallback
+languages:
+  - language-agnostic
+  - typescript
+  - java
+  - csharp
+  - go
+frameworks:
+  - none
+  - nodejs
+  - spring-boot
+  - dotnet
+  - grpc
+project_types:
+  - backend-service
+  - web-api
+  - microservices
+  - distributed-system
+  - low-latency
+tags:
+  - resilience
+  - latency
+  - cancellation
+  - resource-management
+examples:
+  - language: typescript
+    title: Propagating an overall deadline
+    negative: |
+      // The default client may wait for minutes; the request thread remains occupied.
+      async function priceBasket(userId: string): Promise<Price> {
+        const profile = await http.get<Profile>(`https://profiles/users/${userId}`);
+        return await http.post<Price>("https://pricing/quote", { tier: profile.tier });
+      }
+    positive: |
+      async function priceBasket(userId: string, requestSignal: AbortSignal): Promise<Price> {
+        const deadline = AbortSignal.timeout(1_500);
+        const signal = AbortSignal.any([requestSignal, deadline]);
+
+        const profile = await http.get<Profile>(`https://profiles/users/${userId}`, {
+          signal,
+          connectTimeoutMs: 200,
+          timeoutMs: 500,
+        });
+
+        return await http.post<Price>("https://pricing/quote", { tier: profile.tier }, {
+          signal,
+          timeoutMs: 700,
+        });
+      }
+    explanation: >-
+      The positive version budgets the full request, applies shorter per-call timeouts,
+      and propagates cancellation so downstream work stops when the caller gives up.
+ratings:
+  small:
+    score: 3
+    notes: Important for any external call, though a single-process app may only need simple client defaults.
+  medium:
+    score: 5
+    notes: One of the highest-value safeguards for APIs, workers and integrations.
+  large:
+    score: 5
+    notes: Mandatory in distributed systems because latency cascades are common and hard to diagnose.
+references:
+  - title: The Tail at Scale
+    author: Jeffrey Dean and Luiz André Barroso
+    year: 2013
+  - title: Release It! Design and Deploy Production-Ready Software
+    author: Michael T. Nygard
+    year: 2007

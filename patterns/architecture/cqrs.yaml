@@ -1,0 +1,123 @@
+id: cqrs
+title: CQRS (Command Query Responsibility Segregation)
+aka:
+  - Command Query Responsibility Segregation
+scale: architectural
+category: architecture
+maturity: established
+short_description: >-
+  Separate write models that enforce commands and invariants from read models optimised for queries, allowing each side to evolve for its own workload.
+description: >-
+  CQRS splits an application into command paths that change state and query paths that read state. The write model validates intent, protects invariants, and emits facts or updates stores; the read model denormalises data for fast, simple queries. CQRS can be implemented inside one application or across services, and it does not require event sourcing, although the two often compose.
+problem: >-
+  A single CRUD model often becomes a poor compromise when writes need rich invariants but reads need denormalised, high-volume, or user-specific projections.
+context: >-
+  Domains with complex write rules, very different read and write workloads, audit or projection needs, or performance pressure on read-heavy screens.
+consequences:
+  - >-
+    Lets command models focus on invariants and query models focus on read performance.
+  - >-
+    Enables independent scaling and denormalised read stores.
+  - >-
+    Introduces eventual consistency when read models are updated asynchronously.
+  - >-
+    Adds conceptual overhead and duplicate models that are wasteful for simple CRUD.
+synergies:
+  - pattern: event-sourcing
+    reason: >-
+      Event sourcing supplies a durable stream of facts that can rebuild CQRS projections.
+  - pattern: materialized-view
+    reason: >-
+      Materialized views are a practical read-side implementation.
+  - pattern: domain-model
+    reason: >-
+      The command side benefits from a domain model that enforces invariants.
+  - pattern: mediator
+    reason: >-
+      A mediator can route commands and queries to distinct handlers cleanly.
+conflicts_with:
+  - active-record
+alternatives:
+  - layered-architecture
+  - transaction-script
+  - event-sourcing
+languages:
+  - language-agnostic
+  - csharp
+  - java
+  - typescript
+  - go
+  - python
+frameworks:
+  - dotnet
+  - spring-boot
+  - nestjs
+  - kafka
+  - typeorm
+project_types:
+  - backend-service
+  - web-api
+  - microservices
+  - high-throughput
+  - distributed-system
+tags:
+  - commands
+  - queries
+  - projections
+  - read-models
+diagram: |-
+  flowchart LR
+    UI[Client] --> Cmd[Command API]
+    UI --> Query[Query API]
+    Cmd --> WM[Write Model]
+    WM --> WDB[(Write Store)]
+    WM -. events .-> Proj[Projector]
+    Proj --> RDB[(Read Store)]
+    Query --> RDB
+examples:
+  - language: csharp
+    title: Do not force reads through the write aggregate
+    negative: |
+      public async Task<OrderPage> GetOrderPage(Guid id)
+      {
+          var order = await repository.Load(id);
+          var customer = await customers.Load(order.CustomerId);
+          var payments = await payments.ForOrder(id);
+          return OrderPage.From(order, customer, payments);
+      }
+    positive: |
+      public sealed class ApproveOrderHandler
+      {
+          public async Task Handle(ApproveOrder command)
+          {
+              var order = await orders.Load(command.OrderId);
+              order.Approve(command.ApproverId);
+              await orders.Save(order);
+              await events.Append(order.PendingEvents);
+          }
+      }
+      
+      public sealed class OrderPageQueries
+      {
+          public Task<OrderPageDto> Get(Guid id) => readDb.OrderPages.SingleAsync(x => x.Id == id);
+      }
+    explanation: >-
+      The positive version separates the command path that enforces approval rules from the query path that returns a pre-shaped page. Neither side compromises the other.
+ratings:
+  small:
+    score: 2
+    notes: >-
+      Rarely justified for simple CRUD because duplicate models and consistency rules add cost.
+  medium:
+    score: 4
+    notes: >-
+      Good when read and write needs diverge or a few high-value projections simplify the product.
+  large:
+    score: 5
+    notes: >-
+      Excellent for large systems with heavy reads, complex writes, or independent projection teams, as long as consistency semantics are explicit.
+references:
+  - title: CQRS
+    author: Martin Fowler
+    year: 2011
+    url: https://martinfowler.com/bliki/CQRS.html

@@ -1,0 +1,149 @@
+id: state
+title: State
+aka:
+  - State Object
+scale: design
+category: gof-behavioural
+maturity: time-tested
+short_description: >-
+  Represent each state of an object as a separate object so behaviour and allowed
+  transitions vary with the current state without large conditional blocks.
+description: >-
+  State delegates state-dependent behaviour from a context to an object that
+  represents the current state. Each state object implements the same operations
+  but enforces the rules, side effects, and allowed transitions for one lifecycle
+  phase. The context holds the current state and exposes stable behaviour to
+  clients. This is different from Strategy: strategies are interchangeable
+  algorithms selected by policy, while states model an object's lifecycle and
+  normally transition in response to events.
+problem: >-
+  A lifecycle-rich object accumulates switch statements over status values, and
+  each new status requires editing many methods that must remain consistent.
+context: >-
+  Use when behaviour changes by lifecycle state and transitions are governed by
+  domain rules: orders, tickets, media players, workflow items, sessions, and
+  protocol connections.
+consequences:
+  - Localises state-specific rules and transitions, making invalid transitions easier to reject.
+  - Adds classes and indirection; a simple enum and guard clauses may be enough for tiny lifecycles.
+  - Transitions become explicit, but scattered transition calls can still be hard to audit without tests or diagrams.
+  - Persisted state needs careful mapping so stored status and runtime state objects cannot diverge.
+synergies:
+  - pattern: type-state
+    reason: Type State pushes some transition legality into the type system for APIs that can afford stricter modelling.
+  - pattern: memento
+    reason: Mementos can snapshot an object before a state transition for undo or rollback.
+  - pattern: domain-event
+    reason: State transitions often emit domain events that describe the lifecycle change.
+  - pattern: state-machine-ui
+    reason: UI state machines apply the same lifecycle discipline to frontend interaction states.
+alternatives:
+  - strategy
+  - guard-clause
+  - type-state
+conflicts_with:
+  - strategy
+languages:
+  - language-agnostic
+  - typescript
+  - java
+  - csharp
+  - python
+frameworks:
+  - none
+  - xstate
+  - spring-boot
+  - dotnet
+project_types:
+  - backend-service
+  - web-api
+  - web-frontend
+  - game
+  - realtime-system
+tags:
+  - lifecycle
+  - state-machine
+  - transitions
+  - polymorphism
+examples:
+  - language: typescript
+    title: Support ticket lifecycle
+    negative: |
+      class Ticket {
+        status: "open" | "assigned" | "resolved" | "closed" = "open";
+
+        assign(): void {
+          if (this.status === "open") this.status = "assigned";
+          else throw new Error("cannot assign from " + this.status);
+        }
+
+        resolve(): void {
+          if (this.status === "assigned") this.status = "resolved";
+          else throw new Error("cannot resolve from " + this.status);
+        }
+
+        reopen(): void {
+          if (this.status === "resolved" || this.status === "closed") this.status = "open";
+          else throw new Error("cannot reopen from " + this.status);
+        }
+      }
+    positive: |
+      interface TicketState {
+        name: string;
+        assign(ticket: Ticket): void;
+        resolve(ticket: Ticket): void;
+        reopen(ticket: Ticket): void;
+      }
+
+      class Ticket {
+        constructor(private state: TicketState = new Open()) {}
+        transitionTo(state: TicketState): void { this.state = state; }
+        assign(): void { this.state.assign(this); }
+        resolve(): void { this.state.resolve(this); }
+        reopen(): void { this.state.reopen(this); }
+      }
+
+      class Open implements TicketState {
+        name = "open";
+        assign(ticket: Ticket): void { ticket.transitionTo(new Assigned()); }
+        resolve(): void { throw new Error("assign before resolving"); }
+        reopen(): void { throw new Error("already open"); }
+      }
+
+      class Assigned implements TicketState {
+        name = "assigned";
+        assign(): void { throw new Error("already assigned"); }
+        resolve(ticket: Ticket): void { ticket.transitionTo(new Resolved()); }
+        reopen(ticket: Ticket): void { ticket.transitionTo(new Open()); }
+      }
+
+      class Resolved implements TicketState {
+        name = "resolved";
+        assign(): void { throw new Error("resolved"); }
+        resolve(): void { throw new Error("already resolved"); }
+        reopen(ticket: Ticket): void { ticket.transitionTo(new Open()); }
+      }
+    explanation: >-
+      The positive version places each transition rule beside the state it belongs
+      to. Adding Escalated changes the lifecycle by adding a state class and
+      targeted transitions, rather than editing every switch over status.
+ratings:
+  small:
+    score: 3
+    notes: >-
+      Useful for non-trivial lifecycles even in small apps, but overkill for two
+      states with one transition.
+  medium:
+    score: 4
+    notes: >-
+      Good fit for workflow-heavy services where invalid transitions are common
+      production defects.
+  large:
+    score: 5
+    notes: >-
+      Excellent when lifecycle rules are shared across teams; pair with diagrams,
+      integration tests, and persistence mapping checks.
+references:
+  - title: "Design Patterns: Elements of Reusable Object-Oriented Software"
+    author: Gamma, Helm, Johnson, Vlissides
+    year: 1994

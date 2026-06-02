@@ -1,0 +1,93 @@
+id: optimistic-ui
+title: Optimistic UI
+scale: frontend
+category: frontend
+maturity: established
+short_description: >-
+  Update the interface immediately as if an operation will succeed, then reconcile, confirm or roll back when the server responds.
+description: >-
+  Optimistic UI treats user intent as the leading signal for local feedback. The client applies a predicted state change immediately, sends a command to the server, and later confirms, adjusts or rolls back based on the result. It is powerful for high-latency interactions such as likes, comments and drag-and-drop ordering, but only safe when failures are recoverable and operations have clear identity.
+problem: >-
+  Waiting for every network round trip makes interfaces feel slow, encourages repeated clicks and hides whether the user's intent was captured.
+context: >-
+  Use for reversible, low-risk actions with stable identifiers, predictable outcomes and server APIs that support idempotency or conflict handling.
+consequences:
+  - Dramatically improves perceived performance and interaction confidence.
+  - Requires explicit pending, confirmed and failed states.
+  - Rollback can be confusing if the predicted outcome differs from server rules.
+  - Dangerous for irreversible, regulated or high-value actions without confirmation.
+synergies:
+  - pattern: idempotency
+    reason: Retried optimistic commands need server-side duplicate protection.
+  - pattern: command
+    reason: A local optimistic update should be tied to a named command with an identity and rollback strategy.
+  - pattern: redux-pattern
+    reason: Action logs and reducers make pending, fulfilled and rejected transitions explicit.
+  - pattern: state-machine-ui
+    reason: State machines model optimistic, confirming, failed and reverted states without boolean soup.
+alternatives:
+  - retry
+  - fallback
+  - pessimistic-offline-lock
+languages:
+  - typescript
+  - javascript
+frameworks:
+  - react
+  - vue
+  - angular
+  - svelte
+  - redux
+project_types:
+  - web-frontend
+  - mobile-app
+  - realtime-system
+tags:
+  - perceived-performance
+  - latency-hiding
+  - rollback
+examples:
+  - language: typescript
+    title: Liking a post with rollback
+    negative: |
+      async function LikeButton({ post }: { post: Post }) {
+        const [liked, setLiked] = useState(post.viewerLiked);
+        return <button onClick={async () => {
+          await api.like(post.id);
+          setLiked(true);
+        }}>{liked ? "Liked" : "Like"}</button>;
+      }
+    positive: |
+      function LikeButton({ post }: { post: Post }) {
+        const [liked, setLiked] = useState(post.viewerLiked);
+        const [pending, setPending] = useState(false);
+
+        async function like() {
+          const previous = liked;
+          setLiked(true);
+          setPending(true);
+          try { await api.like(post.id, { idempotencyKey: crypto.randomUUID() }); }
+          catch { setLiked(previous); }
+          finally { setPending(false); }
+        }
+
+        return <button aria-busy={pending} disabled={pending} onClick={like}>{liked ? "Liked" : "Like"}</button>;
+      }
+    explanation: >-
+      The positive version gives immediate feedback but tracks pending state, supplies an idempotency key and restores the previous value if the command fails.
+ratings:
+  small:
+    score: 3
+    notes: >-
+      Situational for simple reversible actions; avoid adding rollback machinery to rarely used operations.
+  medium:
+    score: 4
+    notes: >-
+      Strong fit for social, collaboration and commerce flows where latency would otherwise dominate UX.
+  large:
+    score: 4
+    notes: >-
+      Valuable at scale but requires consistent command IDs, telemetry and conflict handling across clients.
+references:
+  - title: Optimistic UI
+    url: https://www.apollographql.com/docs/react/performance/optimistic-ui/

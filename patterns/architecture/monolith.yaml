@@ -1,0 +1,126 @@
+id: monolith
+title: Monolith
+aka:
+  - Single Deployable Application
+scale: architectural
+category: architecture
+maturity: time-tested
+short_description: >-
+  Build and deploy the application as one process or tightly coupled unit, centralising code, data access, and release management for operational simplicity.
+description: >-
+  A Monolith is a single deployable application that contains many features behind one runtime boundary. It can be excellent when the product is small, the team is compact, consistency matters, or the domain is still being discovered. The pattern becomes harmful when it is confused with a lack of architecture: a healthy monolith still has internal modules, explicit seams, tests, and disciplined ownership.
+problem: >-
+  Distributed architecture adds failure modes and coordination overhead that many products do not need, especially before service boundaries and operational needs are clear.
+context: >-
+  Early-stage products, small teams, transactional business applications, and domains where one deployment unit and one database simplify delivery and correctness.
+consequences:
+  - >-
+    Fast to build, debug, test locally, and deploy as one unit.
+  - >-
+    Simplifies transactions and consistency because most work stays in one process and database.
+  - >-
+    Scaling, release cadence, and fault isolation are coupled across the whole application.
+  - >-
+    Without modular discipline it can become a big ball of mud that blocks later change.
+synergies:
+  - pattern: layered-architecture
+    reason: >-
+      Layering gives a simple internal structure to a single deployable.
+  - pattern: model-view-controller
+    reason: >-
+      MVC is a common presentation and web structure inside monoliths.
+  - pattern: unit-of-work
+    reason: >-
+      A single process and database make unit-of-work transactions straightforward.
+  - pattern: modular-monolith
+    reason: >-
+      Modular monolith is the natural evolution path when a monolith needs stronger internal boundaries.
+conflicts_with:
+  - microservices
+alternatives:
+  - modular-monolith
+  - microservices
+  - serverless-architecture
+languages:
+  - language-agnostic
+  - ruby
+  - php
+  - python
+  - java
+  - csharp
+  - typescript
+frameworks:
+  - rails
+  - laravel
+  - django
+  - spring-boot
+  - dotnet
+  - nestjs
+project_types:
+  - monolith
+  - web-api
+  - backend-service
+  - prototype
+tags:
+  - single-deployable
+  - simplicity
+  - transactions
+  - startup
+diagram: |-
+  flowchart TB
+    Client[Client] --> App[Web App]
+    App --> UI[Controllers]
+    App --> Domain[Domain Logic]
+    App --> Jobs[Jobs]
+    Domain --> DB[(Shared DB)]
+    Jobs --> DB
+    App --> Cache[(Cache)]
+examples:
+  - language: ruby
+    title: A monolith can still have explicit application boundaries
+    negative: |
+      post "/refunds" do
+        order = Order.find(params[:order_id])
+        PaymentGateway.refund(order.payment_id, order.total)
+        order.update!(status: "refunded")
+        Mailer.refund(order.customer_email).deliver_now
+      end
+    positive: |
+      class RefundOrder
+        def initialize(orders:, payments:, mailer:)
+          @orders = orders
+          @payments = payments
+          @mailer = mailer
+        end
+      
+        def call(order_id)
+          order = @orders.fetch(order_id)
+          order.mark_refunded!(@payments.refund(order.payment_id, order.total))
+          @orders.save(order)
+          @mailer.refund(order.customer_email)
+        end
+      end
+      
+      post "/refunds" do
+        RefundOrder.new(orders: OrdersRepo.new, payments: PaymentGateway, mailer: Mailer).call(params[:order_id])
+      end
+    explanation: >-
+      The positive version keeps monolithic deployment but avoids handler sprawl. Business flow is testable and can later move into a module or service if evidence justifies it.
+ratings:
+  small:
+    score: 5
+    notes: >-
+      Excellent for small products and prototypes because operational simplicity accelerates learning.
+  medium:
+    score: 4
+    notes: >-
+      Good when team size and domain complexity remain manageable, especially if internal modules are maintained.
+  large:
+    score: 2
+    notes: >-
+      Rarely a good fit without modularisation because release coupling, build time, and ownership conflicts grow sharply.
+references:
+  - title: Monolith First
+    author: Martin Fowler
+    year: 2015
+    url: https://martinfowler.com/bliki/MonolithFirst.html

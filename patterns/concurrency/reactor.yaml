@@ -1,0 +1,107 @@
+id: reactor
+title: Reactor
+aka:
+  - Event demultiplexer
+  - Non-blocking event loop
+scale: concurrency
+category: concurrency
+maturity: time-tested
+short_description: >-
+  Demultiplex readiness events from many I/O handles and dispatch each ready event to a short, non-blocking handler on one or more event-loop threads.
+description: >-
+  Reactor structures concurrent I/O around readiness notification. The application registers handles such as sockets, timers, and signals with an event demultiplexer, then the loop waits until a handle can be read or written without blocking. When readiness is reported, the loop invokes the matching handler, which performs the small non-blocking operation and returns quickly. The pattern is the foundation of select/epoll/kqueue based servers, GUI loops, and many runtime event loops: concurrency comes from interleaving many short actions rather than dedicating a thread per connection.
+problem: >-
+  A server must manage thousands of mostly idle connections without allocating a blocking thread to each one, but ordinary synchronous code ties up threads while waiting for network I/O.
+context: >-
+  Use when the operating system can notify readiness for many handles and each handler can be written as non-blocking, bounded work. It fits network gateways, proxies, chat servers, and runtimes where latency and connection count matter more than CPU-bound parallelism.
+consequences:
+  - Handles very high connection counts with few threads because idle clients consume descriptors rather than stacks and schedulable threads.
+  - >-
+    Makes backpressure and scheduling explicit: handlers must avoid blocking and must offload CPU-heavy work to worker pools.
+  - Control flow is harder than blocking code; state often moves into callbacks, continuations, or small state machines.
+  - A slow handler can stall every other connection on the same loop, so instrumentation and strict handler budgets are essential.
+synergies:
+  - pattern: proactor
+    reason: Proactor solves the same I/O multiplexing problem with completion events; comparing the two clarifies whether the platform reports readiness or completed operations.
+  - pattern: thread-pool
+    reason: Reactor loops commonly delegate CPU-heavy or blocking operations to a bounded pool so the event loop remains responsive.
+  - pattern: backpressure
+    reason: Readiness handlers need explicit queue limits and write-interest management to stop fast producers overrunning slow consumers.
+  - pattern: message-channel
+    reason: Channels or queues give handlers a safe hand-off point to other parts of the application without blocking the loop.
+alternatives:
+  - proactor
+  - thread-pool
+  - half-sync-half-async
+conflicts_with:
+  - thread-specific-storage
+languages:
+  - language-agnostic
+  - cpp
+  - c
+  - java
+  - go
+  - typescript
+frameworks:
+  - nodejs
+  - tokio
+  - none
+project_types:
+  - backend-service
+  - realtime-system
+  - high-throughput
+  - low-latency
+tags:
+  - event-loop
+  - non-blocking-io
+  - readiness
+examples:
+  - language: cpp
+    title: Keeping a reactor handler non-blocking
+    negative: |
+      // Readiness callback blocks on disk and monopolises the event loop.
+      void onReadable(int fd) {
+        std::string request = readAvailable(fd);
+        std::string profile = loadProfileFromDisk(request); // may block for milliseconds
+        send(fd, render(profile));
+      }
+    positive: |
+      class Server {
+       public:
+        void onReadable(int fd) {
+          Request request = readAvailable(fd);          // bounded non-blocking read
+          workers.submit([this, fd, request] {
+            Response response = buildResponse(request); // may block or use CPU
+            loop.post([this, fd, response] {
+              writeBuffers[fd].append(response.bytes());
+              loop.enableWrite(fd);
+            });
+          });
+        }
+
+        void onWritable(int fd) {
+          writeSome(fd, writeBuffers[fd]);              // bounded non-blocking write
+          if (writeBuffers[fd].empty()) loop.disableWrite(fd);
+        }
+
+       private:
+        EventLoop loop;
+        ThreadPool workers;
+        std::unordered_map<int, Buffer> writeBuffers;
+      };
+    explanation: >-
+      The positive version keeps the reactor thread responsible only for readiness-driven I/O and dispatch. Potentially blocking work runs in a pool, then posts the result back to the loop for a bounded write.
+ratings:
+  small:
+    score: 2
+    notes: Usually overkill unless the small project is specifically an event-loop library or high-connection server.
+  medium:
+    score: 4
+    notes: A strong fit for network services where connection count and predictable resource use matter; use a proven framework when possible.
+  large:
+    score: 5
+    notes: Foundational for large gateways, brokers, and runtimes, but requires operational discipline around handler latency and backpressure.
+references:
+  - title: Pattern-Oriented Software Architecture Volume 2
+    author: Schmidt, Stal, Rohnert, Buschmann
+    year: 2000

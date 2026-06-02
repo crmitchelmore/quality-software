@@ -1,0 +1,124 @@
+id: cell-based-architecture
+title: Cell-Based Architecture
+aka:
+  - Cellular architecture
+  - Bulkheaded cells
+scale: architectural
+category: architecture
+maturity: established
+short_description: >-
+  Partition a platform into self-contained cells so each cell serves a subset of
+  traffic with isolated capacity, data, and blast radius.
+description: >-
+  Cell-Based Architecture divides a large system into repeatable, mostly
+  self-sufficient cells. Each cell contains the services, data stores, queues,
+  and operational dependencies required to serve an assigned set of tenants,
+  regions, shards, or customers. A routing layer maps incoming traffic to the
+  correct cell, while shared control planes handle provisioning and metadata.
+  The pattern limits blast radius and supports horizontal scaling by adding
+  cells rather than endlessly scaling one global deployment. It requires strong
+  automation because every operational change must be safe across many similar
+  but independently failing units.
+problem: >-
+  A single shared production plane lets one hot tenant, bad deploy, noisy queue,
+  or regional incident degrade the entire customer base.
+context: >-
+  Use for large multi-tenant or high-scale platforms where isolation, regionality,
+  and controlled blast radius matter. Define cell assignment, failover, and data
+  movement policies before introducing cells.
+consequences:
+  - Failures are contained to a cell when dependencies and data ownership are truly isolated.
+  - Scaling becomes repeatable by adding cells with known capacity envelopes.
+  - Cross-cell queries, tenant moves, global reporting, and operational rollouts become harder.
+  - Automation, deployment orchestration, and observability must treat cell identity as first-class.
+  - Underfilled cells can increase cost compared with a fully shared pool.
+synergies:
+  - pattern: bulkhead
+    reason: Cells are an architectural form of bulkhead that isolate capacity and failure domains.
+  - pattern: api-gateway
+    reason: The gateway can resolve tenant or region metadata and route traffic to the correct cell edge.
+  - pattern: database-per-service
+    reason: Cells depend on data ownership boundaries so cell-local services can fail independently.
+  - pattern: service-mesh
+    reason: Mesh policy can enforce that service calls stay within a cell unless explicitly allowed.
+  - pattern: circuit-breaker
+    reason: Cross-cell or control-plane calls need fast failure to avoid spreading an incident.
+alternatives:
+  - microservices
+  - space-based-architecture
+  - client-server
+conflicts_with:
+  - layered-architecture
+languages:
+  - language-agnostic
+  - java
+  - go
+  - typescript
+  - csharp
+frameworks:
+  - kubernetes
+  - terraform
+  - kafka
+  - spring-boot
+project_types:
+  - distributed-system
+  - microservices
+  - high-throughput
+  - backend-service
+tags:
+  - isolation
+  - multi-tenant
+  - blast-radius
+  - sharding
+  - platform
+diagram: |-
+  flowchart LR
+    Client[Client] --> Router[Cell Router]
+    Router --> CellA[Cell A]
+    Router --> CellB[Cell B]
+    CellA --> DataA[(Data A)]
+    CellB --> DataB[(Data B)]
+    Control[Control] --> Router
+    Control --> CellA
+    Control --> CellB
+examples:
+  - language: typescript
+    title: Routing tenants to isolated cells
+    negative: |
+      export async function handleRequest(req: Request, pool: GlobalPool) {
+        const tenant = req.headers.get("tenant-id")!;
+        return pool.query("select * from orders where tenant_id = ?", [tenant]);
+      }
+    positive: |
+      export async function handleRequest(req: Request, directory: CellDirectory) {
+        const tenant = req.headers.get("tenant-id")!;
+        const cell = await directory.cellForTenant(tenant);
+        const client = await cell.connect();
+        return client.orders.forTenant(tenant);
+      }
+    explanation: >-
+      The negative version sends all tenants through one global pool, so hot
+      tenants and failures are shared. The positive version uses a tenant
+      directory to route work to a cell with isolated services and data.
+ratings:
+  small:
+    score: 1
+    notes: >-
+      Avoid for small systems; cells add routing, duplication, and operational
+      automation needs without enough scale to justify them.
+  medium:
+    score: 3
+    notes: >-
+      Situational for regulated tenants or regional isolation, but most medium
+      systems should start with simpler bulkheads and clear service boundaries.
+  large:
+    score: 5
+    notes: >-
+      Excellent for large multi-tenant platforms where blast-radius containment
+      and repeatable capacity units are business requirements.
+references:
+  - title: Reducing the Scope of Impact with Cell-Based Architecture
+    author: Amazon Web Services
+  - title: Release It!
+    author: Michael Nygard
+    year: 2018

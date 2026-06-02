@@ -1,0 +1,116 @@
+id: fork-join
+title: Fork-Join
+aka:
+  - Divide and conquer parallelism
+  - Work-stealing fork/join
+scale: concurrency
+category: concurrency
+maturity: time-tested
+short_description: >-
+  Split a task into independent subtasks, run them in parallel, then join their results into one deterministic outcome.
+description: >-
+  Fork-Join applies divide-and-conquer to parallel execution. A task either solves a small base case directly or forks independent subtasks that can run concurrently; after the subtasks complete, the parent joins their results. Efficient implementations use work-stealing pools so idle workers can execute queued subtasks without oversubscribing threads. The pattern is best when subtasks are CPU-bound, independent, and balanced enough that parallel overhead is smaller than the saved work.
+problem: >-
+  A large CPU-bound computation is too slow sequentially, but naive thread creation per item overwhelms the scheduler and makes result aggregation error-prone.
+context: >-
+  Use for recursive or batch computations that can be partitioned into independent chunks: sorting, searching, tree processing, map/reduce-style transforms, image processing, and numerical workloads.
+consequences:
+  - Uses available cores effectively for independent CPU-bound work.
+  - Work-stealing can balance uneven recursive tasks without manual worker assignment.
+  - Poor thresholds create either too many tiny tasks or too little parallelism.
+  - Blocking I/O inside fork-join workers can starve the pool and delay unrelated computations.
+synergies:
+  - pattern: thread-pool
+    reason: Fork-Join normally runs on a specialised pool to reuse workers and avoid creating threads per subtask.
+  - pattern: immutable-object
+    reason: Immutable inputs and outputs avoid locks between subtasks and make joins deterministic.
+  - pattern: map-filter-reduce
+    reason: >-
+      Map/reduce operations are a common fork-join shape: partition, map in parallel, then reduce results.
+  - pattern: barrier
+    reason: Join points act like local barriers where all subtasks must arrive before aggregation proceeds.
+alternatives:
+  - producer-consumer
+  - future-promise
+  - thread-pool
+conflicts_with:
+  - reactor
+languages:
+  - language-agnostic
+  - java
+  - cpp
+  - csharp
+  - scala
+  - rust
+frameworks:
+  - none
+project_types:
+  - backend-service
+  - data-pipeline
+  - ml-system
+  - high-throughput
+tags:
+  - parallelism
+  - divide-and-conquer
+  - work-stealing
+examples:
+  - language: java
+    title: Summing a large array with sensible thresholds
+    negative: |
+      long sum(int[] values) throws Exception {
+        List<Thread> threads = new ArrayList<>();
+        AtomicLong total = new AtomicLong();
+        for (int value : values) {
+          Thread t = new Thread(() -> total.addAndGet(value));
+          threads.add(t);
+          t.start();
+        }
+        for (Thread t : threads) t.join();
+        return total.get();
+      }
+    positive: |
+      final class SumTask extends RecursiveTask<Long> {
+        private static final int THRESHOLD = 10_000;
+        private final int[] values;
+        private final int start;
+        private final int end;
+
+        SumTask(int[] values, int start, int end) {
+          this.values = values;
+          this.start = start;
+          this.end = end;
+        }
+
+        @Override protected Long compute() {
+          if (end - start <= THRESHOLD) {
+            long total = 0;
+            for (int i = start; i < end; i++) total += values[i];
+            return total;
+          }
+          int mid = (start + end) >>> 1;
+          SumTask left = new SumTask(values, start, mid);
+          SumTask right = new SumTask(values, mid, end);
+          left.fork();
+          return right.compute() + left.join();
+        }
+      }
+
+      long sum(int[] values) {
+        return ForkJoinPool.commonPool().invoke(new SumTask(values, 0, values.length));
+      }
+    explanation: >-
+      The positive version uses a bounded work-stealing pool and a threshold that keeps task overhead reasonable. Each subtask reads immutable input ranges and returns a local result, so aggregation needs no shared counter contention.
+ratings:
+  small:
+    score: 3
+    notes: Useful for small CPU-bound libraries, but unnecessary for ordinary request/response code.
+  medium:
+    score: 4
+    notes: Strong when there are clear independent partitions and measured CPU bottlenecks.
+  large:
+    score: 4
+    notes: Valuable in computation-heavy systems, though pool isolation and blocking discipline become critical at scale.
+references:
+  - title: A Java Fork/Join Framework
+    author: Doug Lea
+    year: 2000

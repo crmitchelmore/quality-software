@@ -1,0 +1,122 @@
+id: rate-limiting
+title: Rate Limiting
+scale: integration
+category: resilience
+maturity: time-tested
+aka:
+  - Token Bucket
+  - Quota Enforcement
+short_description: >-
+  Control how many requests a client, tenant or workload may perform in a time window,
+  protecting shared capacity and enforcing fair use.
+description: >-
+  Rate limiting is admission control based on identity and time. A service tracks how
+  many units of work a caller has consumed and rejects, delays or shapes requests that
+  exceed its policy. Common algorithms include fixed windows, sliding windows, token
+  buckets and leaky buckets; token buckets are often preferred because they allow
+  bounded bursts while preserving a long-term rate. Effective rate limits are attached
+  to a meaningful subject, return clear status and retry metadata, and are implemented
+  close enough to shared resources to protect them without becoming a single hot spot.
+problem: >-
+  A few callers can monopolise shared resources through bugs, abusive traffic or normal
+  bursts. Without a limit, everyone else experiences higher latency or failure, and the
+  overloaded service has little leverage except scaling.
+context: >-
+  Use for public APIs, multi-tenant services, expensive operations, background job
+  submission and dependency protection. Choose limits from capacity and business rules,
+  not arbitrary round numbers, and consider distributed counters when traffic spans nodes.
+consequences:
+  - Protects shared services from abusive, buggy or unexpectedly bursty clients.
+  - Provides fairness and predictable capacity planning by client, tenant or operation.
+  - Adds state and distributed consistency concerns when enforced across many instances.
+  - Poor limits can block legitimate bursts or encourage clients to retry too aggressively.
+synergies:
+  - pattern: throttling
+    reason: Throttling can slow excessive clients while rate limiting defines the quota boundary.
+  - pattern: load-shedding
+    reason: Rate limits handle known per-client pressure; shedding reacts to whole-system saturation.
+  - pattern: retry
+    reason: Retry policies should honour Retry-After metadata instead of immediately reattempting 429s.
+  - pattern: bulkhead
+    reason: Per-tenant limits pair with isolated resource pools to reduce noisy-neighbour impact.
+alternatives:
+  - throttling
+  - backpressure
+  - load-shedding
+languages:
+  - language-agnostic
+  - typescript
+  - go
+  - java
+  - python
+frameworks:
+  - none
+  - nodejs
+  - express
+  - redis
+  - istio
+project_types:
+  - web-api
+  - backend-service
+  - microservices
+  - distributed-system
+  - high-throughput
+tags:
+  - resilience
+  - quota
+  - fairness
+  - token-bucket
+examples:
+  - language: typescript
+    title: Token bucket per API key
+    negative: |
+      // Every authenticated client can submit unlimited expensive work.
+      app.post("/exports", authenticate, async (req, res) => {
+        const exportId = await exports.start(req.user.id, req.body);
+        res.status(202).json({ exportId });
+      });
+    positive: |
+      type Bucket = { tokens: number; refreshedAt: number };
+      const buckets = new Map<string, Bucket>();
+
+      function takeToken(key: string, now = Date.now()): boolean {
+        const capacity = 20;
+        const refillPerSecond = 2;
+        const bucket = buckets.get(key) ?? { tokens: capacity, refreshedAt: now };
+        const elapsedSeconds = (now - bucket.refreshedAt) / 1000;
+        bucket.tokens = Math.min(capacity, bucket.tokens + elapsedSeconds * refillPerSecond);
+        bucket.refreshedAt = now;
+        if (bucket.tokens < 1) {
+          buckets.set(key, bucket);
+          return false;
+        }
+        bucket.tokens -= 1;
+        buckets.set(key, bucket);
+        return true;
+      }
+
+      app.post("/exports", authenticate, async (req, res) => {
+        if (!takeToken(req.user.apiKey)) {
+          res.setHeader("Retry-After", "1");
+          res.status(429).json({ error: "rate limit exceeded" });
+          return;
+        }
+        const exportId = await exports.start(req.user.id, req.body);
+        res.status(202).json({ exportId });
+      });
+    explanation: >-
+      The positive version allows bounded bursts but caps sustained expensive work per
+      API key, returning 429 and retry guidance when the quota is exhausted.
+ratings:
+  small:
+    score: 3
+    notes: Useful for public endpoints or expensive operations; overkill for private single-user tools.
+  medium:
+    score: 4
+    notes: A strong default for APIs with multiple clients or tenants.
+  large:
+    score: 5
+    notes: Essential for fairness and capacity protection across distributed, multi-tenant platforms.
+references:
+  - title: Microsoft Azure Architecture Center; Rate Limiting pattern
+    url: https://learn.microsoft.com/azure/architecture/patterns/rate-limiting-pattern

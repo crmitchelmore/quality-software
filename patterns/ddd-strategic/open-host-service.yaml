@@ -1,0 +1,92 @@
+id: open-host-service
+title: Open Host Service
+scale: integration
+category: ddd-strategic
+maturity: time-tested
+short_description: >-
+  Offer a stable, well-documented service interface that multiple downstream contexts can use without bespoke point-to-point integrations.
+description: >-
+  Open Host Service is a strategic integration pattern where a bounded context exposes a public protocol or API for other contexts to consume. Instead of creating custom endpoints for every downstream team, the provider designs a stable service surface, documents it, versions it, and supports multiple consumers. It is often paired with a published language that defines the messages, resource representations, or event schemas. The service is open to intended consumers, not necessarily public on the internet.
+problem: >-
+  Point-to-point integrations multiply as each consumer gets a bespoke API, feed, or database view. Provider teams then spend most of their time maintaining slight variants and downstream teams cannot predict compatibility.
+context: >-
+  Use open host service when one bounded context has a capability consumed by several other contexts and the provider can own a product-like API contract.
+consequences:
+  - Reduces bespoke integration surfaces and gives consumers a stable entry point.
+  - Encourages provider ownership of documentation, versioning, and compatibility.
+  - Works best with a published language for payload semantics.
+  - Can become a lowest-common-denominator API if consumer needs are not curated.
+synergies:
+  - pattern: published-language
+    reason: Published language defines the stable payloads and terms used by the open host service.
+  - pattern: bounded-context
+    reason: The service exposes one context's capabilities without exposing its internal model wholesale.
+  - pattern: context-map
+    reason: OHS relationships should be visible where multiple downstream contexts depend on the provider.
+  - pattern: api-versioning
+    reason: Versioning protects consumers as the host service evolves.
+alternatives:
+  - customer-supplier
+  - message-bus
+  - anti-corruption-layer
+conflicts_with:
+  - shared-kernel
+languages:
+  - language-agnostic
+  - csharp
+  - java
+  - typescript
+frameworks:
+  - none
+  - spring-boot
+  - dotnet
+  - grpc
+  - graphql
+project_types:
+  - backend-service
+  - microservices
+  - distributed-system
+  - web-api
+tags:
+  - ddd
+  - integration
+  - api-design
+  - strategic-design
+examples:
+  - language: typescript
+    title: Stable service interface rather than bespoke endpoints
+    negative: |
+      app.get("/billing/orders-for-shipping", handlerForShipping);
+      app.get("/billing/orders-for-reporting", handlerForReporting);
+      app.get("/billing/orders-for-support", handlerForSupport);
+
+      // Each endpoint returns a slightly different shape and lifecycle vocabulary.
+    positive: |
+      app.get("/v1/invoices/:invoiceId", getInvoice);
+      app.get("/v1/accounts/:accountId/invoices", listAccountInvoices);
+
+      interface PublishedInvoice {
+        invoiceId: string;
+        accountId: string;
+        status: "issued" | "paid" | "void";
+        total: { cents: number; currency: string };
+      }
+    explanation: >-
+      The positive version exposes a stable host service with a published invoice representation that multiple consumers can use, instead of bespoke downstream-specific shapes.
+ratings:
+  small:
+    score: 2
+    notes: >-
+      Usually unnecessary for one consumer; a direct API or module call is simpler.
+  medium:
+    score: 4
+    notes: >-
+      Good fit once a capability has several consumers and compatibility starts to matter.
+  large:
+    score: 5
+    notes: >-
+      Excellent for large ecosystems because it turns an internal capability into a governed product-like integration surface.
+references:
+  - title: Domain-Driven Design
+    author: Eric Evans
+    year: 2003

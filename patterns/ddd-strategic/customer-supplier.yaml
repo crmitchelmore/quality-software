@@ -1,0 +1,93 @@
+id: customer-supplier
+title: Customer-Supplier
+scale: organisational
+category: ddd-strategic
+maturity: time-tested
+short_description: >-
+  Define an upstream/downstream relationship where the upstream supplier plans changes in collaboration with downstream customer needs.
+description: >-
+  Customer-Supplier is a context-map relationship for two bounded contexts where the upstream team provides a model, API, or data feed and the downstream team depends on it. Unlike conformist, the downstream customer has a recognised voice in upstream planning: priorities, compatibility needs, release schedules, and contract changes are negotiated. It is an organisational agreement as much as a technical integration pattern.
+problem: >-
+  Downstream teams often discover upstream changes after they break. If the upstream team ignores dependent needs, downstream workarounds multiply; if every request blocks upstream progress, delivery stalls.
+context: >-
+  Use customer-supplier when one team owns a capability consumed by another and both can collaborate on planning, contracts, and compatibility.
+consequences:
+  - Makes dependency power and planning responsibilities explicit.
+  - Reduces surprise breakage through roadmap and contract negotiation.
+  - Gives downstream needs a formal channel without transferring ownership.
+  - Fails when teams lack trust, cadence, or authority to honour the relationship.
+synergies:
+  - pattern: context-map
+    reason: Customer-supplier should be shown on the map with upstream and downstream direction.
+  - pattern: bounded-context
+    reason: The relationship connects separate bounded contexts without merging their models.
+  - pattern: contract-testing
+    reason: Consumer-driven contract tests make downstream expectations executable.
+  - pattern: published-language
+    reason: A stable published language gives the supplier a concrete contract to negotiate and version.
+alternatives:
+  - conformist
+  - anti-corruption-layer
+  - open-host-service
+conflicts_with:
+  - shared-kernel
+languages:
+  - language-agnostic
+  - csharp
+  - java
+  - typescript
+frameworks:
+  - none
+  - spring-boot
+  - dotnet
+  - grpc
+  - graphql
+project_types:
+  - microservices
+  - modular-monolith
+  - distributed-system
+  - backend-service
+tags:
+  - ddd
+  - strategic-design
+  - team-collaboration
+  - upstream-downstream
+examples:
+  - language: typescript
+    title: Downstream contract captured explicitly
+    negative: |
+      // Shipping silently depends on fields from Ordering's internal response.
+      const response = await fetch("/internal/orders/" + orderId);
+      const order = await response.json();
+      if (order.state === "paid" && order.lines.length > 0) scheduleShipment(order.lines);
+    positive: |
+      // Customer-supplier agreement: Shipping publishes this consumer contract.
+      interface PaidOrderForShipping {
+        orderId: string;
+        paidAt: string;
+        shippableLines: Array<{ sku: string; quantity: number }>;
+      }
+
+      async function handlePaidOrder(event: PaidOrderForShipping): Promise<void> {
+        if (event.shippableLines.length === 0) return;
+        await scheduleShipment(event.orderId, event.shippableLines);
+      }
+    explanation: >-
+      The positive version turns the downstream need into an explicit contract that Ordering can plan against, rather than relying on an accidental internal shape.
+ratings:
+  small:
+    score: 1
+    notes: >-
+      Usually unnecessary with one team or one deployable; direct conversation is enough.
+  medium:
+    score: 3
+    notes: >-
+      Useful as teams split ownership and need explicit upstream/downstream commitments.
+  large:
+    score: 5
+    notes: >-
+      Excellent for large organisations because it turns dependency management into an explicit planning relationship.
+references:
+  - title: Domain-Driven Design
+    author: Eric Evans
+    year: 2003

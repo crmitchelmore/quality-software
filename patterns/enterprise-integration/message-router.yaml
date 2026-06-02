@@ -1,0 +1,97 @@
+id: message-router
+title: Message Router
+scale: integration
+category: enterprise-integration
+maturity: time-tested
+short_description: >-
+  Consume a message from one channel and forward it to one or more output channels without changing the message's essential meaning.
+description: >-
+  A Message Router centralises routing decisions that would otherwise be scattered across producers and consumers. It inspects message metadata, payload, configuration, or external state, then forwards the message to the next channel or endpoint. The router should be explicit about whether it is pure routing, enrichment, filtering, or transformation; mixing all of those responsibilities creates an opaque integration hub. Good routers keep routing policy testable and observable, preserve correlation data, and publish to stable logical channels.
+problem: >-
+  Producers often embed conditional delivery logic for downstream systems. As consumers are added or rules change, every producer becomes coupled to integration topology and releases are required for what should be routing policy changes.
+context: >-
+  Use when messages entering an integration flow need to be directed to different channels, services, or processing paths based on type, metadata, tenant, priority, region, or business rule.
+consequences:
+  - Removes routing knowledge from producers and receivers, reducing direct coupling.
+  - Provides a single place to observe, test, and change routing policy.
+  - Can become a central bottleneck or rule graveyard if it also owns transformation, validation, and orchestration.
+  - Misrouting is often worse than failure; routes need metrics, traces, and safe defaults such as dead-letter handling.
+synergies:
+  - pattern: content-based-router
+    reason: Content-Based Router is the common specialised form when routing is based on message fields.
+  - pattern: message-filter
+    reason: Filters can drop irrelevant messages before the router spends capacity on downstream dispatch.
+  - pattern: message-translator
+    reason: Translation should happen at route boundaries when different recipients require distinct contracts.
+  - pattern: message-channel
+    reason: Router outputs are stable logical channels rather than hard-coded destination addresses.
+alternatives:
+  - routing-slip
+  - process-manager
+  - api-gateway
+conflicts_with:
+  - choreography
+languages:
+  - language-agnostic
+  - java
+  - typescript
+frameworks:
+  - spring-boot
+  - kafka
+  - rabbitmq
+  - nodejs
+project_types:
+  - microservices
+  - distributed-system
+  - backend-service
+  - high-throughput
+tags:
+  - eip
+  - messaging
+  - routing
+  - broker
+diagram: |-
+  flowchart LR
+    In[(orders.in)] --> Router{route}
+    Router -->|digital| Digital[(orders.digital)]
+    Router -->|physical| Warehouse[(orders.physical)]
+    Router -->|unknown| DLQ[(orders.dead)]
+examples:
+  - language: java
+    title: Keeping routing policy out of producers
+    negative: |
+      class OrderPublisher {
+        void publish(Order order) {
+          if (order.isDigital()) {
+            kafka.send("orders.digital", order);
+          } else if (order.requiresWarehouse()) {
+            kafka.send("orders.physical", order);
+          } else {
+            kafka.send("orders.manual-review", order);
+          }
+        }
+      }
+    positive: |
+      from("kafka:orders.in")
+        .routeId("order-router")
+        .choice()
+          .when(simple("${body.digital} == true")).to("kafka:orders.digital")
+          .when(simple("${body.requiresWarehouse} == true")).to("kafka:orders.physical")
+          .otherwise().to("kafka:orders.manual-review");
+    explanation: >-
+      The positive route lets producers emit one canonical order message while routing rules live in the integration layer, where they can be tested, changed, and monitored independently.
+ratings:
+  small:
+    score: 2
+    notes: Adds indirection for a small application with one or two fixed destinations.
+  medium:
+    score: 4
+    notes: Useful when several consumers or business categories need different processing paths.
+  large:
+    score: 5
+    notes: Essential in message-heavy estates, provided routing remains observable and not overloaded with orchestration.
+references:
+  - title: Enterprise Integration Patterns
+    author: Gregor Hohpe and Bobby Woolf
+    year: 2003
+    url: https://www.enterpriseintegrationpatterns.com/patterns/messaging/MessageRouter.html

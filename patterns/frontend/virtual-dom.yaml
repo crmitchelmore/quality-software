@@ -1,0 +1,79 @@
+id: virtual-dom
+title: Virtual DOM
+scale: frontend
+category: frontend
+maturity: established
+short_description: >-
+  Render UI as an in-memory tree and reconcile it with the real DOM so code describes desired output rather than imperative mutations.
+description: >-
+  Virtual DOM uses a lightweight representation of the UI tree to compare previous and next render output, then applies a minimal set of DOM operations. The pattern lets developers express UI as a function of state while the framework handles reconciliation, event binding and batching. It is an implementation strategy rather than an application architecture, and it has trade-offs compared with compile-time reactivity or fine-grained signals.
+problem: >-
+  Manual DOM updates scatter mutation logic across event handlers and easily leave the screen inconsistent with application state.
+context: >-
+  Use through frameworks such as React or Vue when declarative rendering, component composition and predictable state-to-view updates matter more than the absolute lowest runtime overhead.
+consequences:
+  - Simplifies mental model by treating render output as derived from state.
+  - Enables batching, diffing and component-level abstraction.
+  - Large trees can still be expensive without memoisation, keys and sensible state boundaries.
+  - Not always faster than direct DOM or compiled reactive approaches.
+synergies:
+  - pattern: component-based-ui
+    reason: Components produce virtual tree fragments that are composed and reconciled by the framework.
+  - pattern: immutability
+    reason: Immutable state changes make it easier to decide when virtual subtrees should re-render.
+  - pattern: observer
+    reason: State subscriptions trigger new render passes that the virtual DOM reconciles.
+alternatives:
+  - observer
+  - template-view
+  - flyweight
+languages:
+  - typescript
+  - javascript
+frameworks:
+  - react
+  - vue
+project_types:
+  - web-frontend
+  - mobile-app
+  - desktop-app
+tags:
+  - reconciliation
+  - declarative-rendering
+  - dom
+examples:
+  - language: typescript
+    title: Declaring output instead of patching the DOM by hand
+    negative: |
+      function setUnread(count: number) {
+        const badge = document.querySelector("#unread")!;
+        badge.textContent = String(count);
+        badge.classList.toggle("hidden", count === 0);
+        document.title = count > 0 ? `(${count}) Inbox` : "Inbox";
+      }
+    positive: |
+      function InboxBadge({ unread }: { unread: number }) {
+        useEffect(() => {
+          document.title = unread > 0 ? `(${unread}) Inbox` : "Inbox";
+        }, [unread]);
+
+        return <span id="unread" hidden={unread === 0}>{unread}</span>;
+      }
+    explanation: >-
+      The component declares how the badge should look for a given state; reconciliation updates the DOM consistently rather than relying on scattered imperative patches.
+ratings:
+  small:
+    score: 3
+    notes: >-
+      Helpful when already using React or Vue, but unnecessary for very small static pages.
+  medium:
+    score: 4
+    notes: >-
+      A strong fit for complex component trees where declarative rendering improves correctness.
+  large:
+    score: 4
+    notes: >-
+      Valuable at scale with profiling and memoisation; uncontrolled global renders can become costly.
+references:
+  - title: React Reconciliation
+    url: https://legacy.reactjs.org/docs/reconciliation.html

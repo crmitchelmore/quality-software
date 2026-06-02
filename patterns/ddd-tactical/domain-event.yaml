@@ -1,0 +1,106 @@
+id: domain-event
+title: Domain Event
+scale: design
+category: ddd-tactical
+maturity: time-tested
+short_description: >-
+  Capture a business-significant occurrence as an immutable fact so other parts of the domain can react without coupling to the initiating object.
+description: >-
+  A Domain Event names something that has already happened in the business, usually in past tense: OrderConfirmed, PaymentCaptured, ClaimRejected. It is raised by domain behaviour when a meaningful state transition occurs and carries the minimal facts needed by interested handlers. Inside a process it decouples side effects from the aggregate method; across boundaries it often feeds an outbox, message bus, or integration event after translation. Domain events are not generic CRUD notifications; they should reflect language the business uses.
+problem: >-
+  Without events, initiating services directly call every downstream side effect: send email, update loyalty, start fulfilment, notify analytics. This creates temporal coupling and makes the original operation brittle as new reactions are added.
+context: >-
+  Use domain events when a domain action has consequences in other aggregates, bounded contexts, or policies, but the initiating model should not know who reacts.
+consequences:
+  - Decouples the decision that something happened from the policies that react to it.
+  - Creates an auditable vocabulary of important business facts.
+  - Enables eventual consistency between aggregates and contexts.
+  - Requires clear transaction and delivery semantics; in-process events are not automatically reliable integration messages.
+synergies:
+  - pattern: aggregate
+    reason: Aggregates raise domain events after enforcing invariants, keeping event facts trustworthy.
+  - pattern: outbox
+    reason: Outbox persists events with state changes before publishing them reliably to other processes.
+  - pattern: choreography
+    reason: Domain events can drive cross-service workflows without a central orchestrator.
+  - pattern: published-language
+    reason: Events exposed outside the bounded context should be translated into a stable published language.
+alternatives:
+  - observer
+  - process-manager
+  - message-bus
+conflicts_with:
+  - transaction-script
+languages:
+  - language-agnostic
+  - csharp
+  - java
+  - typescript
+frameworks:
+  - none
+  - dotnet
+  - spring-boot
+  - kafka
+  - rabbitmq
+project_types:
+  - backend-service
+  - microservices
+  - modular-monolith
+  - distributed-system
+tags:
+  - ddd
+  - events
+  - eventual-consistency
+  - decoupling
+examples:
+  - language: csharp
+    title: Raising an order-confirmed event
+    negative: |
+      public async Task Confirm(Guid orderId)
+      {
+          var order = await orders.Get(orderId);
+          order.Status = "Confirmed";
+          await orders.Save(order);
+          await email.SendConfirmation(order.CustomerEmail);
+          await fulfilment.Start(order.Id);
+          await loyalty.AwardPoints(order.CustomerId, order.Total);
+      }
+    positive: |
+      public sealed record OrderConfirmed(OrderId OrderId, CustomerId CustomerId, Money Total, Instant OccurredAt);
+
+      public sealed class Order
+      {
+          private readonly List<object> events = new();
+          public IReadOnlyCollection<object> DomainEvents => events.AsReadOnly();
+
+          public void Confirm(IClock clock)
+          {
+              if (Status != OrderStatus.Ready) throw new DomainException("Order is not ready");
+              Status = OrderStatus.Confirmed;
+              events.Add(new OrderConfirmed(Id, CustomerId, Total, clock.Now()));
+          }
+      }
+
+      // Application service saves the order; handlers react to OrderConfirmed afterwards.
+    explanation: >-
+      The positive version keeps the aggregate responsible for the business fact and lets independent handlers add email, fulfilment, or loyalty reactions without modifying Confirm.
+ratings:
+  small:
+    score: 2
+    notes: >-
+      Often unnecessary in tiny CRUD apps; direct calls are simpler when there are no independent reactions.
+  medium:
+    score: 4
+    notes: >-
+      Strong fit when multiple policies react to one business event inside a modular monolith or service.
+  large:
+    score: 5
+    notes: >-
+      Essential for large domain systems, especially where bounded contexts integrate asynchronously and require auditable business facts.
+references:
+  - title: Domain-Driven Design
+    author: Eric Evans
+    year: 2003
+  - title: Implementing Domain-Driven Design
+    author: Vaughn Vernon
+    year: 2013

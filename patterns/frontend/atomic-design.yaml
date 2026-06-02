@@ -1,0 +1,87 @@
+id: atomic-design
+title: Atomic Design
+scale: frontend
+category: frontend
+maturity: established
+short_description: >-
+  Structure a design system as progressively composed atoms, molecules, organisms, templates and pages.
+description: >-
+  Atomic Design is a taxonomy for building consistent interfaces from small primitives to full pages. Atoms are indivisible elements such as buttons and labels; molecules combine atoms into small controls; organisms form recognisable sections; templates define layout; pages bind real content. The value is not the chemistry metaphor itself, but a shared language for granularity, ownership and reuse in component libraries.
+problem: >-
+  Design systems often become a flat collection of components with unclear reuse expectations, causing teams to duplicate near-identical UI at different levels.
+context: >-
+  Use when a product has a shared design system, multiple teams building screens, or a component catalogue that needs explicit composition levels.
+consequences:
+  - Creates a shared vocabulary for design and engineering collaboration.
+  - Encourages reuse from primitives through page-level composition.
+  - Can become rigid if every component must fit the taxonomy perfectly.
+  - Does not replace domain-oriented feature boundaries or accessibility standards.
+synergies:
+  - pattern: component-based-ui
+    reason: Component-Based UI supplies the implementation unit that Atomic Design organises.
+  - pattern: container-presentational
+    reason: Atomic components are usually presentational; containers bind them to application data.
+  - pattern: composite
+    reason: Larger organisms and templates are composites of smaller UI parts.
+alternatives:
+  - layered-architecture
+  - component-based-ui
+languages:
+  - typescript
+  - javascript
+frameworks:
+  - react
+  - vue
+  - angular
+  - svelte
+  - solidjs
+project_types:
+  - web-frontend
+  - mobile-app
+  - library
+tags:
+  - design-system
+  - component-library
+  - taxonomy
+examples:
+  - language: typescript
+    title: Naming composition levels explicitly
+    negative: |
+      export function SignupThing({ plan, onSubmit }: Props) {
+        return <div className="blue-panel">
+          <h2>Start {plan.name}</h2>
+          <input placeholder="Email" />
+          <button onClick={onSubmit}>Create account</button>
+        </div>;
+      }
+    positive: |
+      export const Button = ({ children, ...props }: ButtonProps) => <button {...props}>{children}</button>;
+      export const EmailField = (props: FieldProps) => <label>Email<input type="email" {...props} /></label>;
+
+      export function SignupForm({ plan, onSubmit }: Props) {
+        return <section aria-labelledby="signup-title">
+          <h2 id="signup-title">Start {plan.name}</h2>
+          <EmailField name="email" />
+          <Button onClick={onSubmit}>Create account</Button>
+        </section>;
+      }
+    explanation: >-
+      The positive version identifies reusable atoms and a molecule/organism boundary, making design-system reuse explicit rather than hidden inside a one-off panel.
+ratings:
+  small:
+    score: 2
+    notes: >-
+      Often too much taxonomy for small products; simple component naming may be enough.
+  medium:
+    score: 4
+    notes: >-
+      Good fit once a design system and multiple screens need consistency.
+  large:
+    score: 5
+    notes: >-
+      Excellent for large product suites when paired with governance, accessibility checks and versioned component APIs.
+references:
+  - title: Atomic Design
+    author: Brad Frost
+    year: 2016
+    url: https://atomicdesign.bradfrost.com/

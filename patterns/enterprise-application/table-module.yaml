@@ -1,0 +1,112 @@
+id: table-module
+title: Table Module
+scale: design
+category: enterprise-application
+maturity: time-tested
+aka:
+  - Table-oriented domain logic
+short_description: >-
+  Place business logic in one class or module per database table, operating on sets of records rather than objects per row.
+description: >-
+  Table Module organises logic around tables or record sets. Instead of each row having behaviour, a module such as CustomerTable or ContractTable contains operations over rows, often backed by datasets, gateways, or stored procedures. It suits environments where tables are the dominant abstraction and set-oriented processing matters.
+problem: >-
+  A full Domain Model may be unnatural for table-shaped applications, reporting-heavy workflows, or platforms where data sets are already the primary unit. Pure transaction scripts can still duplicate rules across procedures.
+context: >-
+  Use in table-centric enterprise applications, legacy database systems, reporting/admin tools, and .NET/DataSet-style designs where related rules apply consistently to rows from one table or view.
+consequences:
+  - >-
+    Centralises table-related rules without requiring one object per row.
+  - >-
+    Works well with set-oriented database operations and legacy schemas.
+  - >-
+    Keeps code close to table shape, which can leak storage decisions into business policy.
+  - >-
+    Less expressive than Domain Model for behaviour involving rich object collaboration and invariants across aggregates.
+synergies:
+  - pattern: table-data-gateway
+    reason: >-
+      The gateway provides the module with consistent table access while the module owns business operations.
+  - pattern: transaction-script
+    reason: >-
+      Scripts can delegate repeated table-specific rules to a Table Module instead of duplicating them.
+  - pattern: query-object
+    reason: >-
+      Query Objects help Table Modules expose complex set selection without long method lists.
+alternatives:
+  - domain-model
+  - transaction-script
+  - active-record
+conflicts_with:
+  - domain-model
+languages:
+  - language-agnostic
+  - csharp
+  - java
+  - typescript
+  - python
+frameworks:
+  - dotnet
+  - spring-boot
+  - nodejs
+  - django
+  - none
+project_types:
+  - monolith
+  - backend-service
+  - data-pipeline
+  - modular-monolith
+tags:
+  - table-oriented
+  - set-based
+  - legacy
+  - business-logic
+examples:
+  - language: csharp
+    title: Set-oriented discount rules
+    negative: |
+      foreach (DataRow row in orders.Rows) {
+          if ((decimal)row["total"] > 1000m) {
+              row["discount"] = 0.10m;
+          }
+      }
+      
+      foreach (DataRow row in renewalOrders.Rows) {
+          if ((decimal)row["total"] > 1000m) {
+              row["discount"] = 0.10m;
+          }
+      }
+    positive: |
+      public sealed class OrderTableModule {
+          private readonly DataTable orders;
+      
+          public OrderTableModule(DataTable orders) {
+              this.orders = orders;
+          }
+      
+          public void ApplyVolumeDiscounts() {
+              foreach (DataRow row in orders.Rows) {
+                  if ((decimal)row["total"] > 1000m) {
+                      row["discount"] = 0.10m;
+                  }
+              }
+          }
+      }
+    explanation: >-
+      The discount rule is expressed once for the order table rather than copied through scripts. The design remains set-oriented and table-shaped, which is appropriate for this style of application.
+ratings:
+  small:
+    score: 2
+    notes: >-
+      Usually not needed; a script or Active Record is simpler.
+  medium:
+    score: 4
+    notes: >-
+      Good fit for table-centric business systems and legacy database applications.
+  large:
+    score: 3
+    notes: >-
+      Useful in table-oriented subsystems, but large core domains often need richer Domain Models to avoid storage-shaped policy.
+references:
+  - title: Patterns of Enterprise Application Architecture
+    author: Martin Fowler
+    year: 2002

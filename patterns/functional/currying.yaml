@@ -1,0 +1,95 @@
+id: currying
+title: Currying
+aka:
+  - Curried Functions
+scale: implementation
+category: functional
+maturity: time-tested
+short_description: >-
+  Represent a multi-argument function as a chain of one-argument functions, enabling staged configuration and reuse.
+description: >-
+  Currying turns f(a, b, c) into f(a)(b)(c). The first calls capture context and return specialised functions, so dependencies, policies, or validation rules can be supplied once and reused many times. It is an interface design choice: callers gain composability, but APIs become less familiar in languages without native support.
+problem: >-
+  Repeatedly passing the same leading arguments clutters call sites and makes it hard to build small reusable functions from a general operation.
+context: >-
+  Use in functional languages or typed JavaScript/TypeScript modules where functions are composed and configured in stages, especially for validators, parsers, formatters, and dependency-free domain rules.
+consequences:
+  - >-
+    Creates specialised functions without classes or mutable configuration objects.
+  - Works well with point-free composition in languages that support it.
+  - >-
+    Can be surprising in mainstream codebases; error messages around partial inference may be poor.
+  - >-
+    Over-currying domain APIs can obscure required inputs and make stack traces less direct.
+synergies:
+  - pattern: partial-application
+    reason: >-
+      Currying makes partial application automatic because each argument returns the next function.
+  - pattern: function-composition
+    reason: >-
+      Unary functions produced by currying compose cleanly from right to left or left to right.
+  - pattern: higher-order-function
+    reason: >-
+      A curried function is a higher-order function at every stage except the final result.
+  - pattern: pure-function
+    reason: >-
+      Pure curried functions are safe to specialise and reuse without hidden state.
+alternatives:
+  - options-object
+  - parameter-object
+  - fluent-interface
+languages:
+  - haskell
+  - scala
+  - clojure
+  - typescript
+  - javascript
+frameworks:
+  - none
+project_types:
+  - library
+  - sdk
+  - web-frontend
+  - backend-service
+tags:
+  - function-interface
+  - composition
+  - reuse
+examples:
+  - language: typescript
+    title: Configuring a price formatter
+    negative: |
+      function formatPrice(currency: string, locale: string, cents: number): string {
+        return new Intl.NumberFormat(locale, { style: "currency", currency })
+          .format(cents / 100);
+      }
+      
+      const a = formatPrice("GBP", "en-GB", 1299);
+      const b = formatPrice("GBP", "en-GB", 2599);
+    positive: |
+      const formatPrice = (currency: string) => (locale: string) => (cents: number): string =>
+        new Intl.NumberFormat(locale, { style: "currency", currency })
+          .format(cents / 100);
+      
+      const formatSterling = formatPrice("GBP")("en-GB");
+      const a = formatSterling(1299);
+      const b = formatSterling(2599);
+    explanation: >-
+      The positive version captures stable configuration once and returns a focused unary formatter that is easy to pass to map, compose, or inject.
+ratings:
+  small:
+    score: 3
+    notes: >-
+      Useful in libraries and functional modules, but may be unfamiliar overhead in ordinary application code.
+  medium:
+    score: 4
+    notes: >-
+      Good for reusable validation, formatting, and policy functions when team conventions support it.
+  large:
+    score: 3
+    notes: >-
+      Apply selectively; explicit parameter objects may communicate intent better across large mixed-experience teams.
+references:
+  - title: To Mock a Mockingbird
+    author: Raymond Smullyan
+    year: 1985

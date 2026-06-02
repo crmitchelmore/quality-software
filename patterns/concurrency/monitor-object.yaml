@@ -1,0 +1,114 @@
+id: monitor-object
+title: Monitor Object
+aka:
+  - Synchronized Object
+scale: concurrency
+category: concurrency
+maturity: time-tested
+short_description: >-
+  Encapsulate shared mutable state inside an object whose methods acquire a mutual-exclusion lock and coordinate condition waits internally.
+description: >-
+  Monitor Object makes the object the owner of both state and synchronisation. Public methods enter the monitor, check and mutate invariants while holding the lock, and use condition variables to wait for state changes without busy spinning. Clients call intention-revealing methods rather than managing locks themselves. The pattern works best when the critical section is small and all mutable state is private; it fails if methods call out to untrusted code while locked, expose internal collections, or split one invariant across several monitors.
+problem: >-
+  Shared mutable state protected by ad-hoc external locks is easy to misuse: clients forget to lock, lock in inconsistent order, or wait using unsafe check-then-sleep loops.
+context: >-
+  Use when a single object owns a small set of mutable invariants that must be read or updated atomically by multiple threads.
+consequences:
+  - Centralises locking discipline and keeps invariants close to the state they protect.
+  - Condition waits avoid busy loops and lost wakeups when used in while loops.
+  - Coarse monitor locks can reduce concurrency and create contention hotspots.
+  - Calling external code under the monitor risks deadlock or long lock hold times.
+synergies:
+  - pattern: guarded-suspension
+    reason: Guarded Suspension is commonly implemented as a monitor method that waits until a predicate becomes true.
+  - pattern: balking
+    reason: A monitor can atomically test state and return immediately when an operation is inappropriate.
+  - pattern: immutable-object
+    reason: Immutable values can be safely returned from monitor methods without leaking protected mutable state.
+  - pattern: active-object
+    reason: Active Object is an asynchronous alternative when callers should not block on the monitor.
+alternatives:
+  - active-object
+  - read-write-lock
+  - semaphore
+conflicts_with:
+  - thread-specific-storage
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - cpp
+  - python
+frameworks:
+  - none
+project_types:
+  - library
+  - backend-service
+  - desktop-app
+  - embedded
+tags:
+  - mutex
+  - condition-variable
+  - encapsulation
+examples:
+  - language: cpp
+    title: Coordinating a bounded buffer
+    negative: |
+      #include <queue>
+
+      class Buffer {
+        std::queue<int> items;
+      public:
+        void put(int value) { items.push(value); }     // data race
+        int take() {
+          while (items.empty()) {}                     // busy wait and data race
+          int value = items.front();
+          items.pop();
+          return value;
+        }
+      };
+    positive: |
+      #include <condition_variable>
+      #include <mutex>
+      #include <queue>
+
+      class Buffer {
+        std::mutex mutex;
+        std::condition_variable not_empty;
+        std::queue<int> items;
+      public:
+        void put(int value) {
+          {
+            std::lock_guard<std::mutex> lock(mutex);
+            items.push(value);
+          }
+          not_empty.notify_one();
+        }
+
+        int take() {
+          std::unique_lock<std::mutex> lock(mutex);
+          not_empty.wait(lock, [&] { return !items.empty(); });
+          int value = items.front();
+          items.pop();
+          return value;
+        }
+      };
+    explanation: >-
+      The positive version hides the queue and synchronises every access through the monitor. The condition wait is predicate-based, so spurious wakeups and lost notifications do not break correctness.
+ratings:
+  small:
+    score: 4
+    notes: >-
+      Good for small libraries with shared state; the discipline is simple if critical sections stay tiny.
+  medium:
+    score: 4
+    notes: >-
+      Strong fit for encapsulated mutable components, though contention should be measured before adding more elaborate locks.
+  large:
+    score: 3
+    notes: >-
+      Still useful internally, but large systems often prefer immutability, actors, or partitioning to avoid coarse shared monitors.
+references:
+  - title: Concurrent Programming in Java
+    author: Doug Lea
+    year: 1999

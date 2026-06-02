@@ -1,0 +1,109 @@
+id: component-based-ui
+title: Component-Based UI
+aka:
+  - Component Architecture
+  - Component-Oriented UI
+scale: frontend
+category: frontend
+maturity: established
+short_description: >-
+  Build interfaces from encapsulated, composable units that own their rendering contract and, where appropriate, local behaviour.
+description: >-
+  Component-Based UI decomposes screens into reusable elements with explicit inputs and outputs. A component should hide its markup, styling and small interaction details behind a stable contract while delegating shared state, routing and data loading to surrounding application layers. The pattern works best when components are cohesive, named after user concepts, and composed into larger features rather than treated as a dumping ground for every concern on a page.
+problem: >-
+  Page-sized templates and controllers accumulate unrelated markup, state changes and event handlers, making UI changes risky and reuse accidental.
+context: >-
+  Use for web frontends with repeated interaction patterns, multiple teams contributing to shared surfaces, or design systems that need durable contracts across React, Vue, Angular, Svelte or similar frameworks.
+consequences:
+  - Improves reuse, testability and visual consistency by giving each UI unit a clear boundary.
+  - Supports incremental delivery because features can be assembled from stable primitives.
+  - Can create prop-drilling, wrapper-heavy trees and fragmented ownership when component boundaries are too small.
+  - Requires discipline around public props, accessibility and state ownership.
+synergies:
+  - pattern: atomic-design
+    reason: Atomic Design gives a naming and composition hierarchy for component libraries.
+  - pattern: container-presentational
+    reason: Separating data-aware containers from view components keeps component contracts shallow.
+  - pattern: hooks
+    reason: Hooks extract reusable behaviour without forcing every component through inheritance or wrapper layers.
+alternatives:
+  - template-view
+  - model-view-controller
+conflicts_with:
+  - transaction-script
+languages:
+  - typescript
+  - javascript
+frameworks:
+  - react
+  - vue
+  - angular
+  - svelte
+  - solidjs
+project_types:
+  - web-frontend
+  - mobile-app
+  - desktop-app
+tags:
+  - composition
+  - encapsulation
+  - design-system
+examples:
+  - language: typescript
+    title: Extracting a product card boundary
+    negative: |
+      export function ProductGrid({ products, onBuy }: Props) {
+        return <div className="grid">
+          {products.map(product => <div className="card" key={product.id}>
+            <img alt="" src={product.imageUrl} />
+            <h2>{product.name}</h2>
+            <p>{new Intl.NumberFormat("en-GB", { style: "currency", currency: "GBP" }).format(product.price)}</p>
+            <button disabled={!product.inStock} onClick={() => onBuy(product.id)}>
+              {product.inStock ? "Add" : "Sold out"}
+            </button>
+          </div>)}
+        </div>;
+      }
+    positive: |
+      type ProductCardProps = {
+        product: ProductSummary;
+        onBuy(productId: string): void;
+      };
+
+      function ProductCard({ product, onBuy }: ProductCardProps) {
+        const price = new Intl.NumberFormat("en-GB", { style: "currency", currency: "GBP" }).format(product.price);
+        return <article className="card">
+          <img alt="" src={product.imageUrl} />
+          <h2>{product.name}</h2>
+          <p>{price}</p>
+          <button disabled={!product.inStock} onClick={() => onBuy(product.id)}>
+            {product.inStock ? "Add" : "Sold out"}
+          </button>
+        </article>;
+      }
+
+      export function ProductGrid({ products, onBuy }: Props) {
+        return <div className="grid">
+          {products.map(product => <ProductCard key={product.id} product={product} onBuy={onBuy} />)}
+        </div>;
+      }
+    explanation: >-
+      The positive version gives product presentation a named contract, making layout reuse, accessibility review and visual tests possible without editing the grid orchestration.
+ratings:
+  small:
+    score: 4
+    notes: >-
+      A good default even for small apps, provided components map to real UI concepts rather than every div becoming a component.
+  medium:
+    score: 5
+    notes: >-
+      Excellent once shared screens and teams appear; component boundaries keep feature work from trampling design-system details.
+  large:
+    score: 5
+    notes: >-
+      Essential for large frontends, though governance around ownership, versioning and accessibility becomes as important as the code structure.
+references:
+  - title: React Components and Props
+    url: https://react.dev/learn/your-first-component
+  - title: Vue Component Basics
+    url: https://vuejs.org/guide/essentials/component-basics.html

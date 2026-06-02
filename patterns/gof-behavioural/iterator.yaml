@@ -1,0 +1,126 @@
+id: iterator
+title: Iterator
+aka:
+  - Cursor
+  - Enumerator
+scale: design
+category: gof-behavioural
+maturity: time-tested
+short_description: >-
+  Provide a uniform way to traverse elements of a collection without exposing the
+  collection's internal representation.
+description: >-
+  Iterator separates traversal from storage. A collection supplies an object or
+  generator that yields elements in a defined order while hiding whether the data
+  lives in an array, tree, paged API, database cursor, or composite structure. This
+  lets client code use a stable traversal protocol and lets collections offer
+  multiple traversals, such as depth-first, breadth-first, filtered, or paginated,
+  without leaking internal fields.
+problem: >-
+  Client code reaches into collection internals to loop over data, coupling itself
+  to representation and duplicating traversal logic.
+context: >-
+  Use when a collection has non-trivial traversal, may change representation, or
+  should expose multiple traversal orders. Also use when streaming or pagination
+  means callers should not materialise the whole collection at once.
+consequences:
+  - Encapsulates representation and traversal order behind a stable protocol.
+  - Supports lazy traversal of large or remote data sets when implemented as generators or cursors.
+  - >-
+    Concurrent mutation during iteration needs an explicit policy: snapshot,
+    fail-fast, or weak consistency.
+  - An iterator can hide expensive I/O, so document whether iteration is in-memory, streaming, or remote.
+synergies:
+  - pattern: composite
+    reason: Iterators provide uniform traversal over tree-shaped composites without exposing child storage.
+  - pattern: pagination
+    reason: Paginated APIs expose an iterator-like contract over remote pages.
+  - pattern: lazy-evaluation
+    reason: Lazy iterators defer work until the caller pulls the next item.
+  - pattern: repository
+    reason: Repositories can return iterable result sets while hiding database cursor details.
+alternatives:
+  - visitor
+  - map-filter-reduce
+  - query-object
+languages:
+  - language-agnostic
+  - typescript
+  - javascript
+  - python
+  - java
+  - csharp
+frameworks:
+  - none
+  - nodejs
+  - dotnet
+  - spring-boot
+project_types:
+  - library
+  - sdk
+  - backend-service
+  - data-pipeline
+  - cli-tool
+tags:
+  - traversal
+  - collections
+  - lazy
+  - encapsulation
+examples:
+  - language: typescript
+    title: Traversing a tree without exposing nodes
+    negative: |
+      class MenuNode {
+        constructor(public label: string, public children: MenuNode[] = []) {}
+      }
+
+      function render(menu: MenuNode): string[] {
+        const labels: string[] = [];
+        labels.push(menu.label);
+        for (const child of menu.children) {
+          labels.push(child.label);
+          for (const grandChild of child.children) {
+            labels.push(grandChild.label);
+          }
+        }
+        return labels;
+      }
+    positive: |
+      class MenuNode {
+        constructor(private readonly label: string, private readonly children: MenuNode[] = []) {}
+
+        *depthFirst(): IterableIterator<string> {
+          yield this.label;
+          for (const child of this.children) {
+            yield* child.depthFirst();
+          }
+        }
+      }
+
+      function render(menu: MenuNode): string[] {
+        return [...menu.depthFirst()];
+      }
+    explanation: >-
+      The positive version keeps child storage private and makes traversal a named
+      operation. Rendering no longer assumes a fixed tree depth or array-backed
+      implementation.
+ratings:
+  small:
+    score: 4
+    notes: >-
+      Built into most languages and cheap to use; ideal whenever callers should
+      not know collection internals.
+  medium:
+    score: 4
+    notes: >-
+      Strong fit for libraries, SDKs, and services that stream or page results
+      while preserving a simple traversal contract.
+  large:
+    score: 4
+    notes: >-
+      Remains useful at scale, especially for APIs and data pipelines, but needs
+      clear performance and consistency semantics.
+references:
+  - title: "Design Patterns: Elements of Reusable Object-Oriented Software"
+    author: Gamma, Helm, Johnson, Vlissides
+    year: 1994

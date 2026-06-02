@@ -1,0 +1,125 @@
+id: pipes-and-filters
+title: Pipes and Filters
+aka:
+  - Pipeline Architecture
+scale: architectural
+category: architecture
+maturity: time-tested
+short_description: >-
+  Process data through a sequence of independent filters connected by pipes, where each filter transforms, enriches, validates, or routes the stream.
+description: >-
+  Pipes and Filters breaks processing into composable stages. Each filter has a narrow contract: consume input, produce output, and avoid hidden coupling to neighbouring stages. Pipes carry data between filters in memory, files, streams, queues, or processes. The pattern is especially strong for compilers, ETL, media processing, data pipelines, and message integration flows.
+problem: >-
+  Data transformation logic becomes hard to test and reuse when parsing, validation, enrichment, business rules, and output formatting are tangled in one long procedure.
+context: >-
+  Streaming or batch workflows where data moves through well-defined transformations and stages can be reordered, reused, scaled, or tested independently.
+consequences:
+  - >-
+    Improves composability because each filter can be developed and tested independently.
+  - >-
+    Supports streaming, parallelism, backpressure, and reuse of common stages.
+  - >-
+    Shared mutable state across filters breaks the pattern and makes order-dependent bugs likely.
+  - >-
+    Error handling, schema evolution, and observability must be designed across stage boundaries.
+synergies:
+  - pattern: message-channel
+    reason: >-
+      Message channels are durable or asynchronous pipes between filters.
+  - pattern: message-filter
+    reason: >-
+      Message Filter is a specialised filter that discards unwanted messages.
+  - pattern: message-translator
+    reason: >-
+      Message Translator is a filter that changes representation between stages.
+  - pattern: splitter
+    reason: >-
+      Splitter and Aggregator provide common pipeline stages for collection-shaped messages.
+conflicts_with:
+  - transaction-script
+alternatives:
+  - event-driven-architecture
+  - chain-of-responsibility
+  - message-router
+languages:
+  - language-agnostic
+  - python
+  - go
+  - java
+  - typescript
+  - shell
+frameworks:
+  - kafka
+  - rabbitmq
+  - nats
+  - nodejs
+  - celery
+project_types:
+  - data-pipeline
+  - etl
+  - backend-service
+  - high-throughput
+  - cli-tool
+tags:
+  - pipeline
+  - streaming
+  - transforms
+  - etl
+diagram: |-
+  flowchart LR
+    Source[Source] --> Parse[Parse]
+    Parse --> Validate[Validate]
+    Validate --> Enrich[Enrich]
+    Enrich --> Route[Route]
+    Route --> Sink[Sink]
+    Validate -. rejects .-> DLQ[Rejects]
+examples:
+  - language: python
+    title: Compose data stages instead of one mutable script
+    negative: |
+      def import_customers(rows):
+          imported = []
+          for row in rows:
+              row["email"] = row["email"].strip().lower()
+              if "@" not in row["email"]:
+                  continue
+              row["country"] = lookup_country(row["postcode"])
+              db.insert("customers", row)
+              imported.append(row)
+          return imported
+    positive: |
+      def normalise(rows):
+          for row in rows:
+              yield {**row, "email": row["email"].strip().lower()}
+      
+      def valid(rows):
+          for row in rows:
+              if "@" in row["email"]:
+                  yield row
+      
+      def enrich(rows, geo):
+          for row in rows:
+              yield {**row, "country": geo.country(row["postcode"])}
+      
+      def import_customers(rows, geo, sink):
+          for row in enrich(valid(normalise(rows)), geo):
+              sink.write(row)
+    explanation: >-
+      The positive version gives each filter one transformation contract. Stages can be tested with iterables, reused in other pipelines, and instrumented separately.
+ratings:
+  small:
+    score: 3
+    notes: >-
+      Useful even in small scripts when transformations are naturally staged, though full pipeline infrastructure is unnecessary.
+  medium:
+    score: 4
+    notes: >-
+      Good for ETL, import, and message-processing systems where stages need reuse and testability.
+  large:
+    score: 5
+    notes: >-
+      Excellent for high-throughput data platforms that need independent scaling, backpressure, and observable processing stages.
+references:
+  - title: Pattern-Oriented Software Architecture Volume 1
+    author: Buschmann et al.
+    year: 1996

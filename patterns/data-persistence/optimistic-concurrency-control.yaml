@@ -1,0 +1,87 @@
+id: optimistic-concurrency-control
+title: Optimistic Concurrency Control
+scale: data
+category: data-persistence
+maturity: time-tested
+short_description: >-
+  Detect conflicting updates with versions, timestamps, or compare-and-swap conditions instead of locking records for long workflows.
+description: >-
+  Optimistic Concurrency Control assumes conflicts are uncommon but must be detected reliably. A reader receives a version token with the data; the writer includes that token in the update condition. If another transaction changed the row first, the update affects zero rows or raises a concurrency exception, allowing the caller to retry, merge, or report a conflict. The pattern is essential for long think-time edits, APIs, and distributed workflows where pessimistic locks would be fragile or too expensive.
+problem: >-
+  Two callers can read the same value and overwrite each other, losing one update without any error.
+context: >-
+  Use when records are read, modified outside a short transaction, then written back; conflicts are possible but not constant. Choose pessimistic locking for high-contention invariants that cannot be merged.
+consequences:
+  - Prevents silent lost updates while avoiding long-held locks.
+  - Callers must handle conflict outcomes explicitly instead of assuming every save succeeds.
+  - Version fields need to be included in API contracts, forms, or ETags.
+  - High-contention data can devolve into repeated retries and poor user experience.
+synergies:
+  - pattern: etag-conditional-request
+    reason: >-
+      HTTP ETags expose the same compare-and-swap idea through If-Match headers.
+  - pattern: repository
+    reason: >-
+      Repositories can hide version checks behind aggregate save semantics.
+  - pattern: optimistic-offline-lock
+    reason: >-
+      Optimistic Offline Lock is the enterprise application version of the same pattern.
+  - pattern: retry
+    reason: >-
+      Retries should be selective; retrying a semantic conflict blindly can overwrite user intent.
+alternatives:
+  - pessimistic-offline-lock
+  - read-write-lock
+  - etag-conditional-request
+conflicts_with:
+  - pessimistic-offline-lock
+languages:
+  - language-agnostic
+  - sql
+  - java
+  - typescript
+  - csharp
+frameworks:
+  - entity-framework
+  - hibernate
+  - spring-boot
+  - dotnet
+  - none
+project_types:
+  - web-api
+  - backend-service
+  - modular-monolith
+  - distributed-system
+tags:
+  - lost-update
+  - versioning
+  - concurrency
+examples:
+  - language: sql
+    title: Version the write condition
+    negative: |
+      UPDATE accounts
+      SET display_name = 'Chris'
+      WHERE id = 'acc_123';
+      -- Any concurrent edit is silently overwritten.
+    positive: |
+      UPDATE accounts
+      SET display_name = 'Chris', version = version + 1
+      WHERE id = 'acc_123' AND version = 7;
+
+      -- If row_count is 0, return a concurrency conflict and reload before retrying.
+    explanation: >-
+      The positive update succeeds only if the caller edited the version it originally read, so concurrent changes are detected rather than lost.
+ratings:
+  small:
+    score: 3
+    notes: >-
+      Useful where users edit shared records, but overkill for append-only or single-user data.
+  medium:
+    score: 5
+    notes: >-
+      Excellent default for APIs and admin tools that update durable records.
+  large:
+    score: 5
+    notes: >-
+      Essential in large distributed systems; combine with clear conflict semantics and ETags.

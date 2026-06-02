@@ -1,0 +1,101 @@
+id: routing-slip
+title: Routing Slip
+scale: integration
+category: enterprise-integration
+maturity: time-tested
+short_description: >-
+  Attach a dynamic itinerary to a message so each processing step sends it to the next endpoint listed on the slip.
+description: >-
+  A Routing Slip carries the planned sequence of processing steps with the message, often as headers or metadata. Each endpoint performs its work, advances the slip, and forwards the message to the next destination. It is useful when the path is chosen at runtime but the steps are still simple, stateless transformations or validations. The slip should describe routing, not hidden business state; if the next step depends on accumulated outcomes, compensation, or long-running decisions, a Process Manager is usually clearer.
+problem: >-
+  Static routes cannot express per-message processing itineraries, while embedding all possible conditional paths in each endpoint couples endpoints to the whole workflow.
+context: >-
+  Use when each message needs a different but explicit sequence of endpoints, selected by configuration, customer, product, or message content before the flow starts.
+consequences:
+  - Enables dynamic, per-message routing without central orchestration for every hop.
+  - "Keeps endpoints simple: process the message, then follow the next slip entry."
+  - Makes auditing easier because the intended itinerary travels with the message.
+  - Slips can become unsafe if clients can inject destinations; validate and restrict allowed steps.
+synergies:
+  - pattern: message-router
+    reason: Routers can initialise or advance routing slips based on allowed endpoint names.
+  - pattern: message-endpoint
+    reason: Endpoints implement each itinerary step and forward to the next listed channel.
+  - pattern: process-manager
+    reason: A Process Manager can create a slip for simple subflows while retaining control of long-running decisions.
+  - pattern: message-translator
+    reason: Translation steps are common entries in a slip when messages cross partner boundaries.
+alternatives:
+  - process-manager
+  - content-based-router
+  - chain-of-responsibility
+conflicts_with:
+  - choreography
+languages:
+  - language-agnostic
+  - java
+  - typescript
+frameworks:
+  - spring-boot
+  - rabbitmq
+  - kafka
+  - nodejs
+project_types:
+  - microservices
+  - distributed-system
+  - backend-service
+  - etl
+tags:
+  - eip
+  - itinerary
+  - dynamic-routing
+  - workflow
+diagram: |-
+  flowchart LR
+    In[Message with slip] --> A[Validate]
+    A --> B[Translate]
+    B --> C[Enrich]
+    C --> Out[Publish]
+examples:
+  - language: java
+    title: Dynamic itinerary without hard-coded endpoint chains
+    negative: |
+      void process(Message message) {
+        validate(message);
+        if (message.customerTier().equals("enterprise")) {
+          enrich(message);
+          complianceCheck(message);
+        }
+        translate(message);
+        publish(message);
+      }
+    positive: |
+      from("kafka:claims.in")
+        .routeId("claims-routing-slip")
+        .setHeader("routingSlip", method(ClaimItinerary.class, "forClaim"))
+        .routingSlip(header("routingSlip"));
+
+      final class ClaimItinerary {
+        String forClaim(Claim claim) {
+          return claim.enterprise()
+            ? "direct:validate,direct:enrich,direct:compliance,direct:publish"
+            : "direct:validate,direct:publish";
+        }
+      }
+    explanation: >-
+      The positive route computes a constrained itinerary once and lets the routing slip drive the flow. Endpoint code no longer contains every possible path.
+ratings:
+  small:
+    score: 2
+    notes: Usually unnecessary where a simple method chain or router is clearer.
+  medium:
+    score: 3
+    notes: Situational for configurable integration pipelines with simple steps.
+  large:
+    score: 4
+    notes: Useful for dynamic routing at scale, but prefer Process Manager for stateful, long-running workflows.
+references:
+  - title: Enterprise Integration Patterns
+    author: Gregor Hohpe and Bobby Woolf
+    year: 2003
+    url: https://www.enterpriseintegrationpatterns.com/patterns/messaging/RoutingTable.html

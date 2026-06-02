@@ -1,0 +1,98 @@
+id: least-privilege
+title: Principle of Least Privilege
+aka:
+  - PoLP
+  - Least authority
+scale: design
+category: security
+maturity: time-tested
+short_description: >-
+  Grant each user, service, token, and process only the permissions required for its current task, for the shortest practical time.
+description: >-
+  Least Privilege constrains blast radius by designing permissions around specific duties instead of convenience. It applies to human roles, service accounts, database users, cloud IAM policies, OAuth scopes, file access, and runtime capabilities. Effective least privilege is continuously reviewed: permissions are explicit, default-deny, time-bounded where possible, and separated by environment and tenant. The design goal is that a compromised component cannot freely move sideways or mutate unrelated data.
+problem: >-
+  Broad credentials and shared administrator roles turn ordinary bugs or credential leaks into full-system compromise.
+context: >-
+  Use whenever code, people, services, or automation access protected resources, especially across service or cloud boundaries.
+consequences:
+  - >-
+    Reduces blast radius and lateral movement after compromise.
+  - >-
+    Improves auditability because permissions express intended duties.
+  - >-
+    Requires ongoing permission discovery and can initially slow teams if roles are too coarse or workflows are poorly understood.
+synergies:
+  - pattern: token-based-auth
+    reason: >-
+      Tokens should carry narrow scopes and audiences that enforce least privilege at resource boundaries.
+  - pattern: federated-identity
+    reason: >-
+      Federation can issue short-lived, scoped credentials instead of long-lived shared secrets.
+  - pattern: audit-logging
+    reason: >-
+      Audit trails reveal unused or excessive privileges and support access reviews.
+  - pattern: secure-by-default
+    reason: >-
+      Default-deny posture makes least privilege the baseline rather than an afterthought.
+alternatives:
+  - defense-in-depth
+languages:
+  - language-agnostic
+  - javascript
+  - typescript
+  - python
+  - java
+frameworks:
+  - none
+  - nodejs
+  - express
+  - spring-boot
+  - fastapi
+  - django
+project_types:
+  - web-api
+  - backend-service
+  - microservices
+  - distributed-system
+  - web-frontend
+tags:
+  - access-control
+  - iam
+  - blast-radius
+examples:
+  - language: javascript
+    title: Scoped database access in Node.js
+    negative: |-
+      // The web app connects as a database owner and can drop or rewrite any table.
+      const pool = new Pool({ connectionString: process.env.ADMIN_DATABASE_URL });
+      
+      app.get("/orders/:id", async (req, res) => {
+        const { rows } = await pool.query("select * from orders where id = $1", [req.params.id]);
+        res.json(rows[0]);
+      });
+    positive: |-
+      // ORDER_READ_DATABASE_URL belongs to a role with SELECT on orders_view only.
+      const pool = new Pool({ connectionString: process.env.ORDER_READ_DATABASE_URL });
+      
+      app.get("/orders/:id", requireScope("orders:read"), async (req, res) => {
+        const { rows } = await pool.query(
+          "select id, total, status from orders_view where id = $1 and tenant_id = $2",
+          [req.params.id, req.user.tenantId]
+        );
+        res.json(rows[0] ?? null);
+      });
+    explanation: >-
+      The positive version narrows both token scope and database capability. If the endpoint is compromised, the credential cannot modify data or read unrelated tenant tables.
+ratings:
+  small:
+    score: 4
+    notes: >-
+      Worth applying even in small services, though roles may be coarse at first.
+  medium:
+    score: 5
+    notes: >-
+      Excellent fit as teams and credentials multiply.
+  large:
+    score: 5
+    notes: >-
+      Essential at scale; broad shared privileges become existential risk.

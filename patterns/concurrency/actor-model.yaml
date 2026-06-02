@@ -1,0 +1,105 @@
+id: actor-model
+title: Actor Model
+aka:
+  - Actors
+  - Share-nothing message passing
+scale: concurrency
+category: concurrency
+maturity: time-tested
+short_description: >-
+  Encapsulate mutable state inside independently scheduled actors that communicate only by asynchronous messages.
+description: >-
+  The Actor Model represents concurrent components as actors with private state, a mailbox, and behaviour for handling one message at a time. An actor may update its own state, send messages to other actors, create new actors, or change its behaviour for the next message, but it never exposes its state for direct shared-memory access. This turns many locking problems into message-routing, supervision, and protocol-design problems. It is especially strong where workloads are naturally partitioned by entity, session, device, room, or aggregate.
+problem: >-
+  Shared mutable state protected by ad-hoc locks becomes fragile as the number of concurrent operations grows, producing races, deadlocks, and unclear ownership.
+context: >-
+  Use when state can be partitioned into independent owners that process commands/events sequentially, and when asynchronous messaging is acceptable for coordination.
+consequences:
+  - Eliminates data races inside each actor because only that actor mutates its private state.
+  - Aligns well with supervision, location transparency, and failure isolation in Erlang/Elixir/Akka-style systems.
+  - Requires explicit message protocols, mailbox sizing, and monitoring for stuck or overloaded actors.
+  - Cross-actor invariants are harder than in shared-memory transactions; they need sagas, choreography, or careful orchestration.
+synergies:
+  - pattern: communicating-sequential-processes
+    reason: Both use message passing; actors emphasise identity and mailboxes, while CSP emphasises channel topology and rendezvous.
+  - pattern: message-channel
+    reason: Actor mailboxes are specialised message channels with ownership, ordering, and delivery semantics that must be designed deliberately.
+  - pattern: saga
+    reason: Long-running workflows across actors often need sagas to coordinate state changes without shared transactions.
+  - pattern: bulkhead
+    reason: Actor systems can isolate risky tenants or subsystems behind separate dispatchers, supervisors, or mailbox limits.
+alternatives:
+  - communicating-sequential-processes
+  - monitor-object
+  - active-object
+conflicts_with:
+  - thread-specific-storage
+languages:
+  - language-agnostic
+  - erlang
+  - elixir
+  - scala
+  - java
+  - csharp
+frameworks:
+  - akka
+  - phoenix
+  - none
+project_types:
+  - backend-service
+  - realtime-system
+  - distributed-system
+  - game
+tags:
+  - message-passing
+  - share-nothing
+  - supervision
+examples:
+  - language: scala
+    title: Serialising account updates by actor ownership
+    negative: |
+      final class Account(var balance: BigDecimal)
+      val account = new Account(100)
+
+      def withdraw(amount: BigDecimal): Future[Boolean] = Future {
+        if (account.balance >= amount) {
+          account.balance = account.balance - amount // race under concurrent calls
+          true
+        } else false
+      }
+    positive: |
+      sealed trait AccountCommand
+      final case class Withdraw(amount: BigDecimal, replyTo: ActorRef[Boolean]) extends AccountCommand
+
+      final class AccountActor extends AbstractBehavior[AccountCommand] {
+        private var balance: BigDecimal = 100
+
+        override def onMessage(message: AccountCommand): Behavior[AccountCommand] = message match {
+          case Withdraw(amount, replyTo) if balance >= amount =>
+            balance = balance - amount
+            replyTo ! true
+            this
+          case Withdraw(_, replyTo) =>
+            replyTo ! false
+            this
+        }
+      }
+    explanation: >-
+      The positive version gives one actor exclusive ownership of the account balance. Concurrent callers enqueue messages, but the actor processes them one at a time, so the invariant is checked and updated atomically within the actor.
+ratings:
+  small:
+    score: 2
+    notes: Often too much ceremony for small apps unless the domain is already event/session oriented.
+  medium:
+    score: 4
+    notes: Strong for chat, device, workflow, and game domains where state partitions naturally by identity.
+  large:
+    score: 5
+    notes: Excellent in large concurrent systems when paired with supervision, mailbox backpressure, and clear message contracts.
+references:
+  - title: A Universal Modular ACTOR Formalism for Artificial Intelligence
+    author: Carl Hewitt, Peter Bishop, Richard Steiger
+    year: 1973
+  - title: Erlang and OTP in Action
+    author: Logan, Merritt, Carlsson
+    year: 2010

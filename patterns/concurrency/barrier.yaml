@@ -1,0 +1,97 @@
+id: barrier
+title: Barrier
+aka:
+  - Synchronisation barrier
+  - Rendezvous barrier
+scale: concurrency
+category: concurrency
+maturity: time-tested
+short_description: >-
+  Make a fixed group of concurrent workers wait at a known point until every participant has arrived, then release them together.
+description: >-
+  A Barrier coordinates phases of parallel work. Each participant performs local work, arrives at the barrier, and blocks until the required number of participants have arrived. Once the barrier opens, all participants continue to the next phase, sometimes after a barrier action aggregates or publishes phase results. Barriers are useful for simulations, batch algorithms, test coordination, and staged startup, but they require a stable participant count and robust failure handling.
+problem: >-
+  Parallel workers must not begin the next phase until every worker has completed the current phase, otherwise they observe incomplete state or race with unfinished work.
+context: >-
+  Use when concurrency is organised into explicit phases with a known number of participants: numerical simulations, parallel graph algorithms, staged initialisation, or deterministic integration tests.
+consequences:
+  - Provides a clear phase boundary and makes inter-phase visibility explicit.
+  - Helps deterministic testing by coordinating workers at known points.
+  - One slow or failed participant stalls everyone unless timeout/broken-barrier handling exists.
+  - Dynamic participant counts or irregular work often fit channels, queues, or completion services better.
+synergies:
+  - pattern: fork-join
+    reason: Joins and barriers both coordinate completion before aggregation; barriers are useful when workers continue through multiple phases.
+  - pattern: thread-pool
+    reason: Fixed-size worker pools are common barrier participants, but the pool must have at least as many runnable workers as the barrier requires.
+  - pattern: immutable-object
+    reason: Immutable phase snapshots prevent workers from mutating data after a barrier has published it to the next phase.
+alternatives:
+  - fork-join
+  - future-promise
+  - message-channel
+conflicts_with:
+  - producer-consumer
+languages:
+  - language-agnostic
+  - java
+  - cpp
+  - csharp
+  - go
+frameworks:
+  - none
+project_types:
+  - data-pipeline
+  - ml-system
+  - game
+  - realtime-system
+tags:
+  - synchronisation
+  - phased-execution
+  - coordination
+examples:
+  - language: java
+    title: Coordinating simulation phases
+    negative: |
+      for (Worker worker : workers) {
+        new Thread(() -> {
+          while (running.get()) {
+            worker.computeNextPosition();
+            world.publish(worker.position()); // other workers may still be on the old phase
+          }
+        }).start();
+      }
+    positive: |
+      CyclicBarrier phaseBarrier = new CyclicBarrier(workers.size(), world::publishAll);
+
+      for (Worker worker : workers) {
+        new Thread(() -> {
+          try {
+            while (running.get()) {
+              worker.computeNextPosition();
+              phaseBarrier.await(1, TimeUnit.SECONDS);
+            }
+          } catch (TimeoutException e) {
+            running.set(false); // fail the simulation rather than wait forever
+          } catch (InterruptedException | BrokenBarrierException e) {
+            Thread.currentThread().interrupt();
+            running.set(false);
+          }
+        }).start();
+      }
+    explanation: >-
+      The positive version makes publication a barrier action that runs only after every worker has computed the phase. Timeouts and broken-barrier handling prevent one failed worker from hanging the simulation indefinitely.
+ratings:
+  small:
+    score: 2
+    notes: Rare in small applications outside tests or teaching examples; simpler joins usually suffice.
+  medium:
+    score: 3
+    notes: Useful for phased algorithms, but brittle if participant counts are dynamic or failure handling is weak.
+  large:
+    score: 3
+    notes: Valuable in specialised computation and simulation systems; risky in general services because one participant can stall a fleet of workers.
+references:
+  - title: The Art of Multiprocessor Programming
+    author: Herlihy and Shavit
+    year: 2008

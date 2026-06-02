@@ -1,0 +1,113 @@
+id: flyweight
+title: Flyweight
+scale: design
+category: gof-structural
+maturity: time-tested
+short_description: >-
+  Share immutable intrinsic state across many fine-grained objects while keeping per-use extrinsic state outside the shared instance.
+description: >-
+  Flyweight reduces memory footprint when an application needs large numbers of similar objects. Shared intrinsic state is stored once in immutable flyweight instances, usually obtained from a factory or cache. Context-specific extrinsic state is passed to operations or stored separately. The pattern is most effective when object counts are high, shared state is substantial, and identity is not tied to each logical occurrence.
+problem: >-
+  Creating one full object per logical item wastes memory because many objects repeat the same immutable state.
+context: >-
+  Use in renderers, parsers, games, editors, and high-throughput services where millions of small objects share a limited set of stable attributes.
+consequences:
+  - Significantly reduces memory and allocation pressure for repeated immutable state.
+  - Makes sharing explicit and safe when flyweights are immutable.
+  - Separating intrinsic and extrinsic state complicates the API.
+  - Incorrectly sharing mutable state causes cross-item data corruption.
+synergies:
+  - pattern: factory-method
+    reason: A factory method centralises lookup and reuse of flyweight instances.
+  - pattern: immutable-object
+    reason: Flyweights must be immutable or effectively immutable to be safely shared.
+  - pattern: object-pool
+    reason: Both reduce allocation pressure, but Flyweight shares state while Object Pool reuses whole objects with lifecycle management.
+  - pattern: prototype
+    reason: Prototype copies configured objects, while Flyweight shares stable intrinsic parts; combining them clarifies copy versus share boundaries.
+alternatives:
+  - object-pool
+  - cache-aside
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - typescript
+  - cpp
+  - python
+frameworks:
+  - none
+project_types:
+  - game
+  - desktop-app
+  - backend-service
+  - high-throughput
+tags:
+  - memory
+  - sharing
+  - immutability
+examples:
+  - language: typescript
+    title: Rendering map markers
+    negative: |
+      class Marker {
+        constructor(
+          readonly lat: number,
+          readonly lon: number,
+          readonly iconBytes: Uint8Array,
+          readonly labelFont: string,
+          readonly colour: string,
+        ) {}
+      }
+
+      const markers = locations.map((loc) =>
+        new Marker(loc.lat, loc.lon, loadIcon(loc.type), "Inter", loc.colour),
+      );
+    positive: |
+      class MarkerStyle {
+        constructor(
+          readonly iconBytes: Uint8Array,
+          readonly labelFont: string,
+          readonly colour: string,
+        ) {}
+      }
+
+      class MarkerStyleFactory {
+        private readonly styles = new Map<string, MarkerStyle>();
+        styleFor(type: string, colour: string): MarkerStyle {
+          const key = `${type}:${colour}`;
+          let style = this.styles.get(key);
+          if (!style) {
+            style = new MarkerStyle(loadIcon(type), "Inter", colour);
+            this.styles.set(key, style);
+          }
+          return style;
+        }
+      }
+
+      type Marker = { lat: number; lon: number; style: MarkerStyle };
+      const styles = new MarkerStyleFactory();
+      const markers = locations.map((loc) => ({
+        lat: loc.lat,
+        lon: loc.lon,
+        style: styles.styleFor(loc.type, loc.colour),
+      }));
+    explanation: >-
+      The positive version stores heavy icon and font state once per style and keeps coordinates outside the flyweight. The negative version allocates duplicate icon data for every marker.
+ratings:
+  small:
+    score: 1
+    notes: >-
+      Avoid unless memory profiling proves repeated state is a problem; it adds complexity prematurely.
+  medium:
+    score: 3
+    notes: >-
+      Situational for editors, renderers, parsers, or services with high object counts.
+  large:
+    score: 4
+    notes: >-
+      Valuable in memory-sensitive, high-throughput, or UI-heavy systems when backed by measurements and immutable state.
+references:
+  - title: "Design Patterns: Elements of Reusable Object-Oriented Software"
+    author: Gamma, Helm, Johnson, Vlissides
+    year: 1994

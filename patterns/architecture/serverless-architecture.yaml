@@ -1,0 +1,132 @@
+id: serverless-architecture
+title: Serverless / FaaS Architecture
+aka:
+  - Function as a Service
+  - Event-driven serverless
+scale: architectural
+category: architecture
+maturity: established
+short_description: >-
+  Compose managed functions, events, and cloud services so teams ship behaviour
+  without managing servers, scaling infrastructure, or idle capacity directly.
+description: >-
+  Serverless Architecture decomposes application behaviour into small functions
+  triggered by HTTP requests, queues, streams, schedules, object-store events, or
+  workflow engines. The cloud provider owns capacity management, placement,
+  scaling, patching, and much of the runtime operation; the team owns function
+  code, permissions, event contracts, observability, and service configuration.
+  The architecture works best when workloads are spiky, event-shaped, or
+  integration-heavy and when boundaries are kept explicit. It performs poorly when
+  long-running stateful processes, low cold-start latency, or provider portability
+  are dominant requirements.
+problem: >-
+  Teams often over-provision and operate always-on services for intermittent,
+  event-driven workloads, paying operational and capacity costs that do not match
+  demand.
+context: >-
+  Use when workloads are naturally triggered by events, can run within provider
+  execution limits, and can delegate storage, identity, messaging, and workflow to
+  managed services. Apply strong infrastructure-as-code and least-privilege
+  permissions because architecture is split across code and cloud configuration.
+consequences:
+  - Capacity scales rapidly with demand and can approach zero cost when idle.
+  - Managed services reduce server maintenance but increase reliance on provider-specific contracts.
+  - Distributed tracing, idempotency, retries, and dead-letter handling are mandatory for debuggability.
+  - Cold starts, execution limits, and per-invocation pricing can surprise latency-sensitive or sustained workloads.
+  - Local development and integration testing require realistic emulation or deployed test environments.
+synergies:
+  - pattern: api-gateway
+    reason: API gateways provide HTTP routing, authentication, throttling, and request shaping in front of functions.
+  - pattern: event-driven-architecture
+    reason: Functions are commonly triggered by events and emit events to continue workflows without direct coupling.
+  - pattern: circuit-breaker
+    reason: Functions calling external APIs need bounded failure handling to avoid retry storms and cost amplification.
+  - pattern: backend-for-frontend
+    reason: A thin BFF can be implemented as serverless handlers tailored to a specific client experience.
+alternatives:
+  - microservices
+  - client-server
+  - broker-architecture
+conflicts_with:
+  - space-based-architecture
+languages:
+  - language-agnostic
+  - typescript
+  - python
+  - java
+  - go
+  - csharp
+frameworks:
+  - aws-lambda
+  - azure-functions
+  - nodejs
+  - fastapi
+  - dotnet
+project_types:
+  - serverless
+  - web-api
+  - backend-service
+  - data-pipeline
+tags:
+  - faas
+  - managed-services
+  - event-driven
+  - cloud
+  - scale-to-zero
+diagram: |-
+  flowchart LR
+    Client[Client] --> Gateway[Gateway]
+    Gateway --> FuncA[Function A]
+    Event[Event Bus] --> FuncB[Function B]
+    FuncA --> Queue[Queue]
+    Queue --> FuncB
+    FuncA --> Store[(Store)]
+    FuncB --> Store
+examples:
+  - language: typescript
+    title: Isolating stateless function work
+    negative: |
+      let currentBatch: string[] = [];
+
+      export async function handler(event: UploadEvent) {
+        currentBatch.push(event.key);
+        if (currentBatch.length >= 100) {
+          await writeReport(currentBatch);
+          currentBatch = [];
+        }
+      }
+    positive: |
+      export async function handler(event: UploadEvent, deps: Deps) {
+        const record = { id: event.id, key: event.key, receivedAt: Date.now() };
+        const inserted = await deps.store.insertIfAbsent(record.id, record);
+        if (!inserted) return;
+
+        await deps.queue.send({ type: "BuildReport", key: event.key });
+      }
+    explanation: >-
+      The negative version assumes warm in-memory state and loses data when the
+      platform scales or recycles instances. The positive version treats the
+      function as stateless, writes idempotently, and passes follow-up work to a
+      durable queue.
+ratings:
+  small:
+    score: 3
+    notes: >-
+      Useful for prototypes, scheduled jobs, and low-traffic APIs, but can become
+      confusing if every trivial operation is split into separate functions.
+  medium:
+    score: 4
+    notes: >-
+      Good fit for event-heavy products where managed services reduce operations.
+      Invest early in infrastructure-as-code, observability, and local workflows.
+  large:
+    score: 4
+    notes: >-
+      Excellent for selected domains at scale, but large estates need governance
+      for permissions, cost, deployment topology, and provider coupling.
+references:
+  - title: Serverless Architectures
+    author: Mike Roberts
+    year: 2018
+  - title: AWS Lambda Operator Guide
+    author: Amazon Web Services

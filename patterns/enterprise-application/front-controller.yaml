@@ -1,0 +1,113 @@
+id: front-controller
+title: Front Controller
+scale: design
+category: enterprise-application
+maturity: time-tested
+aka:
+  - Application controller endpoint
+  - Central request controller
+short_description: >-
+  Route all web requests through one controller entry point for shared dispatch, security, and request handling.
+description: >-
+  Front Controller puts a single handler in front of web requests. It performs common work such as authentication, locale selection, error handling, command lookup, and dispatch to application controllers or service-layer operations. Modern web frameworks often implement it as a central router or middleware pipeline.
+problem: >-
+  When every page or endpoint handles security, parsing, errors, and dispatch independently, behaviour drifts and cross-cutting changes require edits across many controllers.
+context: >-
+  Use for web applications with many routes that need consistent request preprocessing, authorisation, command dispatch, and error mapping. It is especially useful when routes map to use cases rather than static pages.
+consequences:
+  - >-
+    Centralises cross-cutting request concerns and makes route dispatch consistent.
+  - >-
+    Supports middleware, filters, and command lookup before invoking application logic.
+  - >-
+    Can become a god object if it contains business logic rather than dispatching to services/controllers.
+  - >-
+    Adds unnecessary indirection for very small static or page-specific applications.
+synergies:
+  - pattern: service-layer
+    reason: >-
+      The front controller can route transport-specific requests into service-layer operations.
+  - pattern: application-controller
+    reason: >-
+      Application Controller can decide the next action or view after the front controller has normalised the request.
+  - pattern: template-view
+    reason: >-
+      After dispatch, the selected operation can render a Template View consistently.
+  - pattern: middleware-pipeline
+    reason: >-
+      Middleware pipelines are a modern implementation mechanism for front-controller preprocessing.
+alternatives:
+  - page-controller
+  - model-view-controller
+  - api-gateway
+conflicts_with:
+  - page-controller
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - typescript
+  - python
+  - ruby
+  - php
+frameworks:
+  - spring-boot
+  - aspnet
+  - express
+  - django
+  - rails
+  - laravel
+  - jakarta-ee
+project_types:
+  - web-api
+  - backend-service
+  - monolith
+  - modular-monolith
+tags:
+  - web
+  - routing
+  - controller
+  - cross-cutting
+examples:
+  - language: typescript
+    title: Central request dispatch
+    negative: |
+      app.get("/orders/:id", requireLogin, withErrors(showOrder));
+      app.post("/orders", requireLogin, withErrors(createOrder));
+      app.post("/refunds", requireAdmin, withErrors(createRefund));
+      // Each route repeats security, parsing, and error conventions.
+    positive: |
+      const routes = new Map<string, Handler>([
+        ["GET /orders/:id", showOrder],
+        ["POST /orders", createOrder],
+        ["POST /refunds", createRefund]
+      ]);
+      
+      app.use(async (req, res) => {
+        const user = await authenticate(req);
+        const handler = match(routes, req.method, req.path);
+        try {
+          await handler({ req, res, user });
+        } catch (error) {
+          renderProblem(res, error);
+        }
+      });
+    explanation: >-
+      The positive version has one request entry point for authentication, route lookup, and error mapping. Individual handlers can focus on the application operation rather than repeated plumbing.
+ratings:
+  small:
+    score: 3
+    notes: >-
+      Often supplied by the framework; useful but not something to over-design manually.
+  medium:
+    score: 4
+    notes: >-
+      Good fit for consistent web/API request handling across many endpoints.
+  large:
+    score: 4
+    notes: >-
+      Strong fit when combined with middleware and service layers, provided dispatch stays thin and observable.
+references:
+  - title: Patterns of Enterprise Application Architecture
+    author: Martin Fowler
+    year: 2002

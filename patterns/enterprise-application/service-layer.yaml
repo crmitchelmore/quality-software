@@ -1,0 +1,122 @@
+id: service-layer
+title: Service Layer
+scale: design
+category: enterprise-application
+maturity: time-tested
+aka:
+  - Application service layer
+  - Use-case layer
+short_description: >-
+  Define application operations as a boundary that coordinates domain logic, transactions, security, and integration.
+description: >-
+  Service Layer exposes the use cases of an application through services such as PlaceOrder or TransferFunds. It coordinates repositories, units of work, domain objects, gateways, authorisation, and messaging, but should avoid becoming the place where all business rules live when a Domain Model exists. The layer gives controllers, jobs, and APIs one stable entry point for application behaviour.
+problem: >-
+  Without a service layer, controllers, message handlers, and scheduled jobs duplicate transaction demarcation, authorisation, orchestration, and persistence calls. The same use case behaves differently depending on which adapter invoked it.
+context: >-
+  Use when an application has multiple entry points, non-trivial transaction boundaries, or domain operations that need consistent orchestration across web, API, batch, and messaging adapters.
+consequences:
+  - >-
+    Creates a clear application API independent of transport details.
+  - >-
+    Centralises transaction, authorisation, idempotency, and integration orchestration.
+  - >-
+    Can turn into an anaemic god layer if domain rules are not pushed into Domain Model or well-named scripts.
+  - >-
+    Adds indirection for very small applications with only one controller path.
+synergies:
+  - pattern: domain-model
+    reason: >-
+      The service layer coordinates use cases and delegates business decisions to domain objects.
+  - pattern: unit-of-work
+    reason: >-
+      Application services are a natural place to start and commit a Unit of Work.
+  - pattern: repository
+    reason: >-
+      Services use repositories to load and persist aggregates without depending on SQL or controllers.
+  - pattern: data-transfer-object
+    reason: >-
+      DTOs form stable input and output contracts at the service boundary.
+  - pattern: front-controller
+    reason: >-
+      A Front Controller can route all requests into service-layer operations consistently.
+alternatives:
+  - transaction-script
+  - application-controller
+  - facade
+conflicts_with:
+  - active-record
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - typescript
+  - python
+  - ruby
+frameworks:
+  - spring-boot
+  - dotnet
+  - nestjs
+  - django
+  - rails
+  - jakarta-ee
+project_types:
+  - backend-service
+  - web-api
+  - modular-monolith
+  - monolith
+  - microservices
+tags:
+  - application-layer
+  - use-case
+  - transactions
+  - orchestration
+examples:
+  - language: typescript
+    title: Keeping controllers thin
+    negative: |
+      app.post("/orders", async (req, res) => {
+        const customer = await db.customers.find(req.body.customerId);
+        const order = Order.create(customer, req.body.lines);
+        await db.orders.insert(order);
+        await bus.publish("OrderPlaced", { orderId: order.id });
+        res.status(201).json({ id: order.id });
+      });
+    positive: |
+      class PlaceOrderService {
+        constructor(
+          private readonly customers: CustomerRepository,
+          private readonly orders: OrderRepository,
+          private readonly unitOfWork: UnitOfWork
+        ) {}
+      
+        async place(command: PlaceOrder): Promise<OrderId> {
+          const customer = await this.customers.get(command.customerId);
+          const order = Order.place(customer, command.lines);
+          this.orders.add(order);
+          await this.unitOfWork.commit();
+          return order.id;
+        }
+      }
+      
+      app.post("/orders", async (req, res) =>
+        res.status(201).json({ id: await placeOrder.place(req.body) })
+      );
+    explanation: >-
+      The controller only translates HTTP. The service provides a reusable application operation with one transaction boundary, so another adapter can place an order without duplicating orchestration.
+ratings:
+  small:
+    score: 3
+    notes: >-
+      Useful when multiple adapters exist, but can be needless layering for a tiny single-controller app.
+  medium:
+    score: 5
+    notes: >-
+      Excellent default for backend services with transactions, authorisation, and integration boundaries.
+  large:
+    score: 5
+    notes: >-
+      Essential for large systems to keep transports thin and use-case behaviour consistent across many entry points.
+references:
+  - title: Patterns of Enterprise Application Architecture
+    author: Martin Fowler
+    year: 2002

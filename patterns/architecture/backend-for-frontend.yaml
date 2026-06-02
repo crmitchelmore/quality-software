@@ -1,0 +1,131 @@
+id: backend-for-frontend
+title: Backend for Frontend (BFF)
+aka:
+  - Client-specific backend
+scale: architectural
+category: architecture
+maturity: established
+short_description: >-
+  Create a backend tailored to one frontend or channel so the client receives
+  purpose-built APIs without inheriting generic service topology or contracts.
+description: >-
+  Backend for Frontend places a server-side layer between a particular client
+  experience and the wider service estate. A mobile app, web app, kiosk, or
+  partner channel gets its own backend that shapes responses, composes service
+  calls, handles client-specific authentication flows, and shields the frontend
+  from internal APIs. Unlike a general API gateway, a BFF is product-experience
+  oriented and owned close to the frontend team. The pattern reduces chatty
+  clients and allows different channels to evolve independently, but it can
+  duplicate logic if teams do not keep domain rules in underlying services.
+problem: >-
+  Generic APIs either over-fetch, under-fetch, or expose internal service shapes,
+  forcing each frontend to implement brittle composition and channel-specific
+  workarounds.
+context: >-
+  Use when different clients need materially different payloads, performance
+  profiles, authentication flows, or release cadences. Keep BFFs thin and
+  experience-focused; shared business policy belongs in domain services.
+consequences:
+  - Frontends get stable, task-oriented APIs that match their screens and latency needs.
+  - Client teams can release experience changes without waiting for generic platform APIs.
+  - Logic can fragment across BFFs unless shared rules remain in services or libraries.
+  - More deployables and routes require ownership, monitoring, and versioning discipline.
+  - BFFs can reduce frontend complexity but increase backend estate size.
+synergies:
+  - pattern: api-gateway
+    reason: A gateway can apply common edge policy before routing to the correct client-specific BFF.
+  - pattern: microservices
+    reason: BFFs compose several microservice APIs into payloads suited to a single client journey.
+  - pattern: serverless-architecture
+    reason: Low-traffic or highly elastic BFF endpoints can be implemented as functions behind an edge route.
+  - pattern: anti-corruption-layer
+    reason: A BFF can translate internal domain contracts into client-specific view models without leaking service models.
+alternatives:
+  - api-gateway
+  - graphql
+  - client-server
+conflicts_with:
+  - peer-to-peer
+languages:
+  - language-agnostic
+  - typescript
+  - javascript
+  - kotlin
+  - swift
+  - csharp
+frameworks:
+  - nodejs
+  - express
+  - nestjs
+  - nextjs
+  - graphql
+project_types:
+  - web-frontend
+  - mobile-app
+  - web-api
+  - microservices
+tags:
+  - experience-api
+  - aggregation
+  - frontend
+  - client-specific
+  - composition
+diagram: |-
+  flowchart LR
+    Web[Web App] --> WebBff[Web BFF]
+    Mobile[Mobile App] --> MobBff[Mobile BFF]
+    WebBff --> Catalog[Catalog]
+    WebBff --> Orders[Orders]
+    MobBff --> Catalog
+    MobBff --> Orders
+examples:
+  - language: typescript
+    title: Shaping data for a mobile screen
+    negative: |
+      export async function renderHome(userId: string) {
+        const user = await api.get(`/users/${userId}`);
+        const orders = await api.get(`/orders?user=${userId}&limit=3`);
+        const promos = await api.get(`/promotions?segment=${user.segment}`);
+        return drawHome({ name: user.displayName, orders, promos });
+      }
+    positive: |
+      export async function getMobileHome(userId: string, services: Services) {
+        const [user, orders, promos] = await Promise.all([
+          services.users.summary(userId),
+          services.orders.recent(userId, 3),
+          services.promotions.forUser(userId),
+        ]);
+
+        return {
+          greeting: `Hello ${user.firstName}`,
+          cards: orders.map(toOrderCard),
+          banners: promos.map(toBanner),
+        };
+      }
+    explanation: >-
+      The negative version makes the mobile client compose internal APIs and shape
+      view data itself. The positive BFF performs channel-specific composition on
+      the server while leaving domain rules in the underlying services.
+ratings:
+  small:
+    score: 2
+    notes: >-
+      Rarely worth a separate deployable for one small frontend and one backend.
+      A controller or route module usually suffices.
+  medium:
+    score: 4
+    notes: >-
+      Good fit when web and mobile experiences diverge or when frontend latency is
+      hurt by chatty service calls.
+  large:
+    score: 4
+    notes: >-
+      Strong fit for large product estates, but governance is needed to prevent
+      duplicated business logic and inconsistent customer experiences.
+references:
+  - title: Pattern Backends For Frontends
+    author: Sam Newman
+    year: 2015
+  - title: Building Microservices
+    author: Sam Newman
+    year: 2021

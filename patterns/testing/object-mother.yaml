@@ -1,0 +1,92 @@
+id: object-mother
+title: Object Mother
+aka:
+  - Fixture Mother
+scale: implementation
+category: testing
+maturity: time-tested
+short_description: >-
+  Provide named factory methods for common test fixtures so tests can ask for well-known example objects in domain language.
+description: >-
+  Object Mother centralises creation of canonical fixtures such as aPremiumCustomer, anExpiredSubscription, or aPaidInvoice. It is useful for communicating domain examples and reducing duplicated setup. Its weakness is rigidity: as scenarios multiply, one mother class can become a warehouse of subtly different fixtures. For variation-heavy tests, keep Object Mother methods as named shortcuts over Test Data Builders rather than returning hard-coded objects directly.
+problem: >-
+  Repeated construction of common example objects clutters tests and leads to inconsistent fixture meanings.
+context: >-
+  Use when the domain has a small set of named, widely understood examples used across many tests.
+consequences:
+  - >-
+    Improves readability for well-known examples and business scenarios.
+  - >-
+    Centralises changes to canonical fixtures.
+  - >-
+    Can become a fixture dumping ground; prefer Test Data Builder for per-test variation.
+synergies:
+  - pattern: test-data-builder
+    reason: >-
+      Object Mother methods can call builders to provide named defaults with controlled overrides.
+  - pattern: given-when-then
+    reason: >-
+      Named fixtures make BDD Given clauses read like domain examples.
+  - pattern: golden-master
+    reason: >-
+      Stable named fixtures help approval tests produce reproducible outputs.
+conflicts_with:
+  - test-data-builder
+alternatives:
+  - test-data-builder
+languages:
+  - language-agnostic
+  - javascript
+  - typescript
+  - python
+  - java
+frameworks:
+  - none
+  - nodejs
+  - spring-boot
+  - django
+  - fastapi
+project_types:
+  - library
+  - web-api
+  - backend-service
+  - microservices
+  - modular-monolith
+tags:
+  - fixtures
+  - domain-examples
+  - test-data
+examples:
+  - language: python
+    title: Pytest canonical subscriptions
+    negative: |-
+      def test_expired_subscription_cannot_stream():
+          subscription = Subscription(
+              id="s1", plan="pro", active=False,
+              expires_on=date(2023, 1, 1), seats=3, country="GB"
+          )
+          assert not can_stream(subscription)
+    positive: |-
+      class Subscriptions:
+          @staticmethod
+          def expired_pro():
+              return SubscriptionBuilder().pro().expired_on(date(2023, 1, 1)).build()
+      
+      def test_expired_subscription_cannot_stream():
+          subscription = Subscriptions.expired_pro()
+          assert not can_stream(subscription)
+    explanation: >-
+      The positive test uses a named domain example and delegates construction detail to a builder, avoiding both noisy literals and a rigid all-knowing fixture class.
+ratings:
+  small:
+    score: 3
+    notes: >-
+      Helpful for a few canonical examples; avoid using it for every fixture.
+  medium:
+    score: 4
+    notes: >-
+      Good when combined with builders and disciplined naming.
+  large:
+    score: 2
+    notes: >-
+      Often becomes a maintenance bottleneck in large suites unless carefully modularised.

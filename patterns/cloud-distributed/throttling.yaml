@@ -1,0 +1,92 @@
+id: throttling
+title: Throttling
+scale: integration
+category: cloud-distributed
+maturity: time-tested
+short_description: >-
+  Intentionally limit request or work rates so clients, services, and dependencies
+  stay within agreed capacity instead of failing unpredictably under load.
+description: >-
+  Throttling enforces a maximum rate or concurrency for a caller, tenant,
+  operation, or downstream dependency. Unlike passive overload handling, it is an
+  explicit control: requests above the budget are delayed, queued, degraded, or
+  rejected with a clear retry signal. Good throttling protects shared systems from
+  noisy neighbours and preserves fairness, but it must be observable and aligned
+  with product contracts so legitimate traffic is not silently harmed.
+problem: >-
+  Without explicit limits, a single tenant, client bug, or burst can consume shared
+  capacity and cause broad latency or outages.
+context: >-
+  Use at APIs, worker pools, third-party integrations, and tenant boundaries where
+  capacity is finite and fairness or provider quotas matter.
+consequences:
+  - Protects dependencies and shared capacity before saturation turns into an outage.
+  - Makes fairness and quotas explicit through documented limits and retry signals.
+  - Can harm user experience if limits are too low or opaque.
+  - Requires distributed counters or token buckets when traffic is spread across many instances.
+synergies:
+  - pattern: rate-limiting
+    reason: Rate limiting is the common API-facing form of throttling with per-client budgets.
+  - pattern: backpressure
+    reason: Throttling turns capacity pressure into a concrete slow-down signal.
+  - pattern: queue-based-load-leveling
+    reason: Excess work can be queued and drained at the throttled rate instead of being rejected.
+  - pattern: bulkhead
+    reason: Per-tenant or per-operation throttles combine with isolated resource pools for stronger containment.
+alternatives:
+  - load-shedding
+  - rate-limiting
+  - backpressure
+languages:
+  - language-agnostic
+  - typescript
+  - java
+  - csharp
+  - go
+  - python
+frameworks:
+  - redis
+  - nodejs
+  - spring-boot
+  - dotnet
+  - istio
+project_types:
+  - web-api
+  - backend-service
+  - microservices
+  - distributed-system
+  - high-throughput
+tags:
+  - quotas
+  - overload-protection
+  - fairness
+examples:
+  - language: typescript
+    title: Tenant-aware outbound throttling
+    negative: |
+      // A busy tenant can consume all provider quota and starve everyone else.
+      async function enrichLead(tenantId: string, lead: Lead): Promise<EnrichedLead> {
+        return provider.enrich(lead);
+      }
+    positive: |
+      async function enrichLead(tenantId: string, lead: Lead): Promise<EnrichedLead> {
+        const permit = await throttle.take(`provider:${tenantId}`, { ratePerSecond: 5, burst: 20 });
+        if (!permit.granted) throw new RetryAfterError(permit.retryAfterMs);
+        return provider.enrich(lead);
+      }
+    explanation: >-
+      The positive version gives each tenant an explicit provider budget and returns
+      a retry signal instead of allowing one tenant to exhaust shared quota.
+ratings:
+  small:
+    score: 3
+    notes: Useful at public API or third-party boundaries, but avoid complex distributed limiters too early.
+  medium:
+    score: 4
+    notes: Strong fit for multi-tenant services and rate-limited integrations.
+  large:
+    score: 5
+    notes: Essential for fairness and overload control in large distributed systems.
+references:
+  - title: Microsoft Azure Architecture Center; Throttling pattern
+    url: https://learn.microsoft.com/azure/architecture/patterns/throttling

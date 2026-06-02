@@ -1,0 +1,124 @@
+id: process-manager
+title: Process Manager
+scale: integration
+category: enterprise-integration
+maturity: time-tested
+short_description: >-
+  Maintain the state of a long-running integration process and decide which command or message should be sent next as events arrive.
+description: >-
+  A Process Manager is a stateful coordinator for an integration process that spans multiple systems, messages, and time. It listens for events, records process state, evaluates transition rules, sends commands, handles timeouts, and may trigger compensation. Unlike a Routing Slip, the future path is not fully known at the start; it depends on outcomes. Unlike pure Choreography, the coordination logic is explicit and observable in one component. The pattern is especially useful for sagas where business progress and compensating actions must be tracked reliably.
+problem: >-
+  Long-running business processes often start in one service and continue through several asynchronous outcomes. If every participant decides the next step independently, the overall process becomes hard to understand, audit, timeout, or repair.
+context: >-
+  Use when an integration flow has durable state, branching decisions based on intermediate results, timeouts, compensation, human review, or cross-service lifecycle visibility requirements.
+consequences:
+  - Makes long-running process state, transitions, and timeouts explicit and observable.
+  - Centralises coordination while keeping participating services focused on local work.
+  - Introduces a stateful component that must be durable, idempotent, and operationally monitored.
+  - Can become a god orchestrator if it absorbs domain logic that belongs inside services.
+synergies:
+  - pattern: saga
+    reason: A Process Manager is a common orchestration implementation for sagas with compensation.
+  - pattern: routing-slip
+    reason: It can emit routing slips for predictable subflows while retaining stateful control of the larger process.
+  - pattern: message-endpoint
+    reason: Endpoints adapt incoming events and outgoing commands while the manager owns process state.
+  - pattern: correlation-identifier
+    reason: Every event and command must correlate to a process instance.
+alternatives:
+  - routing-slip
+  - choreography
+  - application-controller
+conflicts_with:
+  - choreography
+languages:
+  - language-agnostic
+  - java
+  - typescript
+  - csharp
+frameworks:
+  - spring-boot
+  - kafka
+  - nodejs
+  - dotnet
+project_types:
+  - microservices
+  - distributed-system
+  - backend-service
+  - safety-critical
+tags:
+  - eip
+  - orchestration
+  - workflow
+  - state-machine
+diagram: |-
+  stateDiagram-v2
+    [*] --> Started
+    Started --> PaymentRequested: OrderSubmitted
+    PaymentRequested --> InventoryRequested: PaymentAuthorised
+    PaymentRequested --> Cancelled: PaymentDeclined
+    InventoryRequested --> Completed: InventoryReserved
+    InventoryRequested --> Compensating: InventoryRejected
+    Compensating --> Cancelled: PaymentVoided
+examples:
+  - language: typescript
+    title: Coordinating a long-running order process explicitly
+    negative: |
+      bus.on("OrderSubmitted", async (event) => {
+        await bus.publish("ReserveInventory", { orderId: event.orderId });
+      });
+
+      bus.on("InventoryReserved", async (event) => {
+        await bus.publish("CapturePayment", { orderId: event.orderId });
+      });
+
+      bus.on("PaymentFailed", async (event) => {
+        await bus.publish("ReleaseInventory", { orderId: event.orderId });
+      });
+    positive: |
+      class OrderProcessManager {
+        async handle(event: OrderEvent): Promise<void> {
+          const process = await store.load(event.orderId) ?? OrderProcess.start(event.orderId);
+          const commands = process.apply(event);
+
+          await store.save(process);
+          for (const command of commands) {
+            await bus.publish(command.type, { ...command.payload, correlationId: process.id });
+          }
+        }
+      }
+
+      class OrderProcess {
+        apply(event: OrderEvent): Command[] {
+          switch (`${this.state}:${event.type}`) {
+            case "STARTED:OrderSubmitted":
+              this.state = "PAYMENT_REQUESTED";
+              return [{ type: "AuthorisePayment", payload: { orderId: this.id } }];
+            case "PAYMENT_REQUESTED:PaymentAuthorised":
+              this.state = "INVENTORY_REQUESTED";
+              return [{ type: "ReserveInventory", payload: { orderId: this.id } }];
+            case "INVENTORY_REQUESTED:InventoryRejected":
+              this.state = "COMPENSATING";
+              return [{ type: "VoidPayment", payload: { orderId: this.id } }];
+            default:
+              return [];
+          }
+        }
+      }
+    explanation: >-
+      The positive version stores process state and emits commands from explicit transitions. The process can be audited, timed out, retried, and compensated without reconstructing behaviour from scattered event handlers.
+ratings:
+  small:
+    score: 2
+    notes: Too much machinery for simple request/response or short synchronous workflows.
+  medium:
+    score: 4
+    notes: Strong fit for a few long-running asynchronous processes with compensation or human review.
+  large:
+    score: 5
+    notes: Excellent for complex integration estates where stateful orchestration and auditability matter.
+references:
+  - title: Enterprise Integration Patterns
+    author: Gregor Hohpe and Bobby Woolf
+    year: 2003
+    url: https://www.enterpriseintegrationpatterns.com/patterns/messaging/ProcessManager.html

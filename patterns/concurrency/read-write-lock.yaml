@@ -1,0 +1,111 @@
+id: read-write-lock
+title: Read-Write Lock
+aka:
+  - Shared-Exclusive Lock
+scale: concurrency
+category: concurrency
+maturity: time-tested
+short_description: >-
+  Allow many concurrent readers or one exclusive writer for shared state whose reads are frequent and writes are comparatively rare.
+description: >-
+  Read-Write Lock splits access into shared read mode and exclusive write mode. It improves throughput when protected data is read often, writes are short, and reads are long enough for parallelism to matter. Correctness still requires every access to use the appropriate lock and writers to publish complete updates before releasing it. The pattern is often overused: on small critical sections a plain mutex can be faster, and unfair policies can starve writers behind a constant stream of readers.
+problem: >-
+  A single mutex serialises all access to mostly-read state, while no lock permits readers to observe partial writes or data structures being mutated underneath them.
+context: >-
+  Use for in-memory indexes, routing tables, configuration snapshots, or caches where reads dominate writes and stale immutable snapshots are not sufficient.
+consequences:
+  - Increases read-side concurrency for read-heavy workloads with meaningful critical sections.
+  - More complex than a mutex; lock upgrading/downgrading can deadlock if not carefully supported.
+  - Writer starvation or reader latency spikes depend on fairness policy.
+  - Does not protect mutable objects returned to callers unless copied or immutable.
+synergies:
+  - pattern: immutable-object
+    reason: Writers can swap immutable snapshots so readers hold the lock briefly or not at all.
+  - pattern: copy-on-write
+    reason: Copy-on-Write is an alternative for very read-heavy data where writes can clone and publish a new version.
+  - pattern: monitor-object
+    reason: A monitor may use a read-write lock internally while still hiding synchronisation from clients.
+  - pattern: cache-aside
+    reason: Read-heavy caches sometimes protect local maps with read-write locks when cache misses update entries.
+alternatives:
+  - monitor-object
+  - copy-on-write
+  - immutable-object
+conflicts_with:
+  - active-object
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - go
+  - cpp
+frameworks:
+  - none
+project_types:
+  - backend-service
+  - web-api
+  - high-throughput
+  - realtime-system
+tags:
+  - shared-exclusive
+  - read-heavy
+  - lock
+examples:
+  - language: go
+    title: Protecting a routing table
+    negative: |
+      package routes
+
+      var table = map[string]string{}
+
+      func Lookup(path string) string {
+          return table[path] // races with Update; Go may panic on concurrent map access
+      }
+
+      func Update(path, backend string) {
+          table[path] = backend
+      }
+    positive: |
+      package routes
+
+      import "sync"
+
+      type Table struct {
+          mu    sync.RWMutex
+          table map[string]string
+      }
+
+      func NewTable() *Table {
+          return &Table{table: map[string]string{}}
+      }
+
+      func (t *Table) Lookup(path string) (string, bool) {
+          t.mu.RLock()
+          backend, ok := t.table[path]
+          t.mu.RUnlock()
+          return backend, ok
+      }
+
+      func (t *Table) Update(path, backend string) {
+          t.mu.Lock()
+          t.table[path] = backend
+          t.mu.Unlock()
+      }
+    explanation: >-
+      The positive version lets concurrent lookups proceed while updates remain exclusive. Every access is inside the lock, so readers never race with map mutation.
+ratings:
+  small:
+    score: 2
+    notes: >-
+      Rarely worth the complexity for small code; a mutex or immutable replacement is usually clearer.
+  medium:
+    score: 4
+    notes: >-
+      Good when profiling shows read-heavy contention and critical sections are not tiny.
+  large:
+    score: 3
+    notes: >-
+      Situational: useful in hot local structures, but large systems should consider sharding, immutable snapshots, or lock-free read paths.
+references:
+  - title: The Go sync Package; RWMutex
+    url: https://pkg.go.dev/sync#RWMutex

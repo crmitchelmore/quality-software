@@ -1,0 +1,106 @@
+id: factory-method
+title: Factory Method
+scale: design
+category: gof-creational
+maturity: time-tested
+short_description: >-
+  Defer object creation to a method that subclasses or collaborators can override, so clients depend on a product abstraction instead of concrete construction.
+description: >-
+  Factory Method moves the decision about which concrete product to instantiate behind a creation method. The caller works with a stable product interface, while subclasses, configuration-specific factories, or framework hooks supply the concrete implementation. It is valuable when construction has variants, when the creator must remain open for extension, or when creation needs to be aligned with a lifecycle owned by a framework or module.
+problem: >-
+  Client code directly calls constructors for concrete types, so adding a new variant requires editing business logic and scattering construction details.
+context: >-
+  Use when a class or module knows when it needs a product but should not know exactly which concrete product to create.
+consequences:
+  - Removes concrete constructor knowledge from clients and keeps them open for extension.
+  - Localises variant selection, validation, and construction defaults.
+  - Adds indirection and naming overhead for simple objects with no meaningful variants.
+  - Can hide dependency graphs if the factory grows into a service locator.
+synergies:
+  - pattern: strategy
+    reason: A factory method commonly selects the strategy implementation that a context will use.
+  - pattern: dependency-injection
+    reason: DI supplies factories when construction needs runtime parameters but dependencies are container-owned.
+  - pattern: template-method
+    reason: Template methods often call factory methods at extension points to create collaborators.
+  - pattern: abstract-factory
+    reason: Abstract Factory generalises several related factory methods into a family-level creation interface.
+alternatives:
+  - abstract-factory
+  - builder
+conflicts_with:
+  - service-locator
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - typescript
+  - python
+  - go
+frameworks:
+  - none
+  - spring-boot
+  - dotnet
+  - nestjs
+project_types:
+  - library
+  - sdk
+  - backend-service
+  - web-api
+tags:
+  - creation
+  - polymorphism
+  - open-closed
+examples:
+  - language: typescript
+    title: Creating payment clients
+    negative: |
+      class CheckoutService {
+        async charge(provider: string, amount: number): Promise<void> {
+          if (provider === "stripe") {
+            await new StripeClient(process.env.STRIPE_KEY!).charge(amount);
+          } else if (provider === "adyen") {
+            await new AdyenClient(process.env.ADYEN_KEY!).capture(amount);
+          } else {
+            throw new Error("unsupported provider");
+          }
+        }
+      }
+    positive: |
+      interface PaymentClient {
+        charge(amount: number): Promise<void>;
+      }
+
+      class PaymentClientFactory {
+        create(provider: "stripe" | "adyen"): PaymentClient {
+          if (provider === "stripe") return new StripeClient(process.env.STRIPE_KEY!);
+          if (provider === "adyen") return new AdyenPaymentAdapter(process.env.ADYEN_KEY!);
+          throw new Error("unsupported provider");
+        }
+      }
+
+      class CheckoutService {
+        constructor(private readonly clients: PaymentClientFactory) {}
+        async charge(provider: "stripe" | "adyen", amount: number): Promise<void> {
+          await this.clients.create(provider).charge(amount);
+        }
+      }
+    explanation: >-
+      The positive version confines provider selection and adapter construction to one factory method. CheckoutService depends only on PaymentClient, so adding a provider changes the factory rather than the checkout flow.
+ratings:
+  small:
+    score: 3
+    notes: >-
+      Useful once there are real variants, but unnecessary for simple constructors in small codebases.
+  medium:
+    score: 4
+    notes: >-
+      A good fit for plugin points, provider selection, and framework-owned lifecycles.
+  large:
+    score: 4
+    notes: >-
+      Valuable for isolating construction decisions across teams, though overuse can create factory sprawl.
+references:
+  - title: "Design Patterns: Elements of Reusable Object-Oriented Software"
+    author: Gamma, Helm, Johnson, Vlissides
+    year: 1994

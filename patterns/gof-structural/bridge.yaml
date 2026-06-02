@@ -1,0 +1,104 @@
+id: bridge
+title: Bridge
+scale: design
+category: gof-structural
+maturity: time-tested
+short_description: >-
+  Split an abstraction from its implementation hierarchy so both can vary independently without an explosion of subclasses.
+description: >-
+  Bridge separates the high-level abstraction clients use from a lower-level implementor interface that performs platform- or provider-specific work. The abstraction delegates to the implementor through composition rather than inheritance. This is most useful when two dimensions vary independently, such as shapes and renderers, notifications and transports, or domain services and storage engines.
+problem: >-
+  Combining two independent variation axes through inheritance creates a class for every combination and forces unrelated changes into the same hierarchy.
+context: >-
+  Use when an abstraction and its implementation details both need to evolve, be selected at runtime, or be tested independently.
+consequences:
+  - Avoids subclass explosion by replacing inheritance with composition.
+  - Lets implementations be swapped without changing the abstraction interface.
+  - Requires careful interface design; a leaky implementor couples the abstraction back to concrete platforms.
+  - Adds indirection that can feel unnecessary when only one axis varies.
+synergies:
+  - pattern: composition-over-inheritance
+    reason: Bridge is a canonical object-level application of composition over inheritance.
+  - pattern: abstract-factory
+    reason: An abstract factory can provide compatible implementors for a chosen platform family.
+  - pattern: adapter
+    reason: Implementors are often adapters around platform-specific APIs.
+  - pattern: strategy
+    reason: Both delegate behaviour through an interface; Bridge emphasises separating abstraction and implementation axes.
+alternatives:
+  - adapter
+  - strategy
+  - template-method
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - typescript
+  - python
+frameworks:
+  - none
+project_types:
+  - library
+  - sdk
+  - desktop-app
+  - backend-service
+tags:
+  - composition
+  - abstraction
+  - variation
+examples:
+  - language: typescript
+    title: Notifications across transports
+    negative: |
+      class EmailInvoiceNotification {
+        async send(invoice: Invoice): Promise<void> { await smtp.send(renderInvoice(invoice)); }
+      }
+      class SmsInvoiceNotification {
+        async send(invoice: Invoice): Promise<void> { await twilio.send(renderInvoice(invoice)); }
+      }
+      class EmailPasswordResetNotification {
+        async send(user: User): Promise<void> { await smtp.send(renderReset(user)); }
+      }
+      class SmsPasswordResetNotification {
+        async send(user: User): Promise<void> { await twilio.send(renderReset(user)); }
+      }
+    positive: |
+      interface MessageTransport {
+        send(to: string, body: string): Promise<void>;
+      }
+
+      abstract class Notification {
+        constructor(protected readonly transport: MessageTransport) {}
+        protected abstract render(): { to: string; body: string };
+        async send(): Promise<void> {
+          const message = this.render();
+          await this.transport.send(message.to, message.body);
+        }
+      }
+
+      class InvoiceNotification extends Notification {
+        constructor(private readonly invoice: Invoice, transport: MessageTransport) { super(transport); }
+        protected render() { return { to: this.invoice.email, body: renderInvoice(this.invoice) }; }
+      }
+
+      const notification = new InvoiceNotification(invoice, new SmsTransport(twilio));
+      await notification.send();
+    explanation: >-
+      The positive version varies message type and transport independently. Adding push notifications or a new notification kind no longer requires classes for every combination.
+ratings:
+  small:
+    score: 2
+    notes: >-
+      Usually too abstract until two genuine variation axes appear.
+  medium:
+    score: 4
+    notes: >-
+      Good fit for libraries, SDKs, and services with provider/platform implementations.
+  large:
+    score: 4
+    notes: >-
+      Helps large systems avoid inheritance matrices, but needs disciplined interface ownership.
+references:
+  - title: "Design Patterns: Elements of Reusable Object-Oriented Software"
+    author: Gamma, Helm, Johnson, Vlissides
+    year: 1994

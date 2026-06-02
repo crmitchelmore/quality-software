@@ -1,0 +1,133 @@
+id: space-based-architecture
+title: Space-Based Architecture
+aka:
+  - Tuple space architecture
+  - Shared space architecture
+scale: architectural
+category: architecture
+maturity: established
+short_description: >-
+  Scale high-volume workloads by colocating processing with an in-memory data
+  grid, reducing database contention and coordinating state through a shared space.
+description: >-
+  Space-Based Architecture organises an application around processing units that
+  hold both behaviour and hot state in a distributed in-memory space. Requests are
+  routed to any available processing unit; each unit reads and writes to the space,
+  while asynchronous replication or write-behind synchronises durable storage.
+  The design targets extreme load and burst tolerance by removing the central
+  relational database from the synchronous request path. It is most useful when
+  the workload can tolerate eventual consistency for some data, when hot data can
+  be partitioned or replicated safely, and when operational teams can manage data
+  grid consistency, failover, and recovery semantics.
+problem: >-
+  A central database can become the bottleneck and single scaling limit for
+  workloads with very high write rates, volatile demand, and many stateless
+  application instances competing for the same rows.
+context: >-
+  Use for high-throughput, low-latency systems where hot state is read and written
+  frequently, synchronous durability is not required for every interaction, and
+  partitioning rules are well understood. It is unsuitable when strong global
+  transactions and immediate consistency dominate the requirements.
+consequences:
+  - Throughput improves because hot reads and writes stay close to processing units.
+  - The system can absorb bursts by adding processing units rather than scaling only the database.
+  - Eventual consistency, split-brain protection, and recovery procedures become central design concerns.
+  - Debugging is harder because the source of truth is distributed across memory, replication logs, and durable stores.
+  - Data models must be designed for partitioning, affinity, and idempotent replay.
+synergies:
+  - pattern: bulkhead
+    reason: Processing units can be partitioned by tenant or workload so a hot partition does not starve the entire grid.
+  - pattern: event-driven-architecture
+    reason: Durable events or change streams are often used to replicate from the space to downstream systems.
+  - pattern: database-per-service
+    reason: Each bounded service can own its durable store while using an in-memory space for hot operational state.
+  - pattern: retry
+    reason: Clients and write-behind consumers need bounded retries because partitions and replicas can move during rebalancing.
+conflicts_with:
+  - layered-architecture
+alternatives:
+  - client-server
+  - microservices
+  - broker-architecture
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - go
+  - python
+frameworks:
+  - redis
+  - kafka
+  - spring-boot
+  - dotnet
+  - kubernetes
+project_types:
+  - high-throughput
+  - low-latency
+  - distributed-system
+  - realtime-system
+tags:
+  - in-memory-data-grid
+  - partitioning
+  - eventual-consistency
+  - burst-tolerance
+  - scaling
+diagram: |-
+  flowchart LR
+    User[User] --> Router[Router]
+    Router --> UnitA[Unit A]
+    Router --> UnitB[Unit B]
+    UnitA <--> Space[Data Space]
+    UnitB <--> Space
+    Space --> Sync[Async Sync]
+    Sync --> Store[(Store)]
+examples:
+  - language: typescript
+    title: Keeping hot state out of the request database path
+    negative: |
+      export async function reserveSeat(db: Db, showId: string, seatId: string) {
+        await db.transaction(async tx => {
+          const seat = await tx.query("select status from seats where id = ? for update", [seatId]);
+          if (seat.status !== "free") throw new Error("seat unavailable");
+          await tx.query("update seats set status = 'held' where id = ?", [seatId]);
+        });
+      }
+    positive: |
+      export interface Space {
+        compareAndSet(key: string, expected: string, next: string): Promise<boolean>;
+        publishChange(event: SeatHeld): Promise<void>;
+      }
+
+      export async function reserveSeat(space: Space, showId: string, seatId: string) {
+        const key = `show:${showId}:seat:${seatId}`;
+        const held = await space.compareAndSet(key, "free", "held");
+        if (!held) throw new Error("seat unavailable");
+        await space.publishChange({ showId, seatId, status: "held" });
+      }
+    explanation: >-
+      The negative version serialises every reservation through the database. The
+      positive version performs an atomic operation in the hot data space and emits
+      a change for durable projection, reducing lock contention during peaks.
+ratings:
+  small:
+    score: 1
+    notes: >-
+      Avoid for small systems; the consistency and operational complexity is far
+      greater than the value gained.
+  medium:
+    score: 3
+    notes: >-
+      Situational for a specific hot path with clear partitioning and replay
+      semantics. Most medium systems are better served by caching and queues.
+  large:
+    score: 4
+    notes: >-
+      Strong fit for very high-throughput platforms that can invest in data-grid
+      operations, consistency testing, and failure-mode drills.
+references:
+  - title: Patterns of Enterprise Application Architecture
+    author: Martin Fowler
+    year: 2002
+  - title: Space-Based Architecture
+    author: Mark Richards
+    year: 2015

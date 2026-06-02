@@ -1,0 +1,101 @@
+id: query-object
+title: Query Object
+scale: data
+category: enterprise-application
+maturity: time-tested
+short_description: >-
+  Represent a database query as an object so selection criteria, ordering, paging, and joins can be composed and reused without scattering SQL strings.
+description: >-
+  Query Object packages query intent as a first-class object. It can expose a fluent API, immutable criteria, or a specification-like structure that a repository, mapper, or gateway translates to SQL, ORM criteria, or search DSL. The pattern is strongest when many callers need variations of the same query and when raw SQL in application code would leak persistence details.
+problem: >-
+  Ad hoc SQL strings and ORM predicates spread through services, duplicating filters and making security, paging, and performance rules inconsistent.
+context: >-
+  Use when query composition is domain meaningful and needs reuse. Prefer named repository methods for a small number of stable queries, and prefer raw SQL for highly tuned reporting queries where object abstraction obscures intent.
+consequences:
+  - Reuses common filters, sorting, and paging rules while keeping callers persistence-agnostic.
+  - Gives repositories a typed input instead of many optional parameters or string fragments.
+  - Can become a leaky general-purpose SQL builder if it exposes database concepts indiscriminately.
+  - Requires care to avoid injection, unexpected joins, and unbounded result sets.
+synergies:
+  - pattern: repository
+    reason: Repositories can accept Query Objects to express criteria without exposing SQL or ORM APIs.
+  - pattern: specification
+    reason: Specifications capture domain predicates that Query Objects can translate for persistence.
+  - pattern: data-mapper
+    reason: Data Mapper translates query objects into SQL and maps matching rows back into domain objects.
+  - pattern: pagination
+    reason: Query Objects can make paging and ordering mandatory parts of list queries.
+alternatives:
+  - repository
+  - specification
+  - table-data-gateway
+conflicts_with:
+  - active-record
+languages:
+  - language-agnostic
+  - typescript
+  - java
+  - csharp
+  - python
+frameworks:
+  - hibernate
+  - entity-framework
+  - sqlalchemy
+  - prisma
+  - typeorm
+project_types:
+  - backend-service
+  - web-api
+  - data-pipeline
+  - modular-monolith
+tags:
+  - query-composition
+  - data-access
+  - filtering
+examples:
+  - language: typescript
+    title: Reusable customer search
+    negative: |
+      async function findCustomers(region?: string, overdueOnly?: boolean) {
+        let sql = 'SELECT * FROM customers WHERE 1=1';
+        if (region) sql += ` AND region = '${region}'`;
+        if (overdueOnly) sql += ' AND balance_cents > 0 AND due_date < NOW()';
+        return db.query(sql);
+      }
+    positive: |
+      class CustomerQuery {
+        private clauses: string[] = [];
+        private values: unknown[] = [];
+
+        inRegion(region: string): this {
+          this.values.push(region);
+          this.clauses.push('region = $' + this.values.length);
+          return this;
+        }
+
+        overdue(): this {
+          this.clauses.push('balance_cents > 0 AND due_date < NOW()');
+          return this;
+        }
+
+        toSql(): SqlQuery {
+          const where = this.clauses.length ? ' WHERE ' + this.clauses.join(' AND ') : '';
+          return { text: 'SELECT * FROM customers' + where + ' ORDER BY name LIMIT 100', values: this.values };
+        }
+      }
+    explanation: >-
+      The positive version composes query criteria safely and consistently, avoiding string interpolation and repeated overdue logic.
+ratings:
+  small:
+    score: 3
+    notes: Useful for complex searches; named repository methods are simpler for a few queries.
+  medium:
+    score: 4
+    notes: Good fit for APIs with reusable filtering, sorting, and paging rules.
+  large:
+    score: 4
+    notes: Valuable for standardising query construction, but reporting workloads may need explicit SQL instead.
+references:
+  - title: Patterns of Enterprise Application Architecture
+    author: Martin Fowler
+    year: 2002

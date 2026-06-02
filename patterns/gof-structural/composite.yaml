@@ -1,0 +1,105 @@
+id: composite
+title: Composite
+scale: design
+category: gof-structural
+maturity: time-tested
+short_description: >-
+  Treat individual objects and tree-shaped groups uniformly through a shared component interface.
+description: >-
+  Composite models part-whole hierarchies where leaves and containers support the same operations. A composite object contains child components and implements behaviour by coordinating or aggregating those children, while leaves perform the actual primitive work. It fits UI trees, file systems, menus, rules, organisation charts, and expression trees where clients should not care whether they are operating on one item or a nested group.
+problem: >-
+  Client code branches on whether an item is a leaf or a group, duplicating traversal and making recursive structures hard to extend.
+context: >-
+  Use when the domain is naturally hierarchical and operations should apply uniformly to both single items and groups.
+consequences:
+  - Simplifies clients by making leaf and container objects interchangeable.
+  - Localises recursive traversal and aggregation behaviour inside composites.
+  - Can make invalid operations visible on leaves if the common interface is too broad.
+  - Deep trees may need attention to performance, cycles, and stack depth.
+synergies:
+  - pattern: iterator
+    reason: Iterator can traverse a composite tree without exposing its internal child structure.
+  - pattern: visitor
+    reason: Visitor adds new operations over a composite hierarchy without changing every component interface.
+  - pattern: decorator
+    reason: Decorators can wrap components uniformly because leaves and composites share an interface.
+  - pattern: null-object
+    reason: A null component can represent an empty subtree without special-case checks.
+alternatives:
+  - visitor
+  - chain-of-responsibility
+languages:
+  - language-agnostic
+  - typescript
+  - java
+  - csharp
+  - python
+frameworks:
+  - none
+  - react
+  - angular
+  - vue
+project_types:
+  - web-frontend
+  - desktop-app
+  - library
+  - game
+tags:
+  - tree
+  - hierarchy
+  - recursion
+examples:
+  - language: typescript
+    title: Pricing nested order bundles
+    negative: |
+      type OrderLine = ProductLine | BundleLine;
+
+      function total(line: OrderLine): number {
+        if (line.kind === "product") return line.price;
+        let sum = 0;
+        for (const child of line.children) {
+          if (child.kind === "product") sum += child.price;
+          else sum += total(child);
+        }
+        return sum;
+      }
+    positive: |
+      interface PricedItem {
+        total(): number;
+      }
+
+      class ProductLine implements PricedItem {
+        constructor(private readonly price: number) {}
+        total(): number { return this.price; }
+      }
+
+      class BundleLine implements PricedItem {
+        constructor(private readonly children: PricedItem[]) {}
+        total(): number {
+          return this.children.reduce((sum, child) => sum + child.total(), 0);
+        }
+      }
+
+      const order: PricedItem = new BundleLine([
+        new ProductLine(20),
+        new BundleLine([new ProductLine(5), new ProductLine(8)]),
+      ]);
+    explanation: >-
+      The positive version lets products and bundles answer the same total message. Recursion is owned by BundleLine, so clients do not branch on every structural case.
+ratings:
+  small:
+    score: 3
+    notes: >-
+      Useful when a real hierarchy exists, but avoid imposing it on flat data.
+  medium:
+    score: 4
+    notes: >-
+      Strong for UI, rule, menu, and document trees where uniform operations simplify clients.
+  large:
+    score: 4
+    notes: >-
+      Valuable for complex hierarchical domains, though traversal performance and broad interfaces need governance.
+references:
+  - title: "Design Patterns: Elements of Reusable Object-Oriented Software"
+    author: Gamma, Helm, Johnson, Vlissides
+    year: 1994

@@ -1,0 +1,98 @@
+id: separated-interface
+title: Separated Interface
+scale: design
+category: enterprise-application
+maturity: time-tested
+short_description: >-
+  Define an interface in one package or layer while implementations live elsewhere, allowing clients to depend on a stable contract rather than concrete infrastructure.
+description: >-
+  Separated Interface places a contract where the client can own or depend on it, and keeps implementations in another module, plugin, adapter, or infrastructure layer. The split supports independent deployment, replacement, and testing because the dependency points toward the abstraction. It is most useful when package dependencies matter; within a tiny codebase, a regular interface next to its implementation may be enough.
+problem: >-
+  High-level modules become coupled to concrete database, message, or external-service implementations because the only available type lives in the infrastructure package.
+context: >-
+  Use across architectural boundaries, package boundaries, or plugins where the caller should define what it needs and the provider supplies an implementation.
+consequences:
+  - Inverts dependencies so domain or application code can remain independent of infrastructure.
+  - Enables alternate implementations for tests, local development, or different deployments.
+  - Requires disciplined packaging; too many tiny interfaces can obscure the actual behaviour.
+  - Interface drift is possible if no integration tests prove that implementations honour the contract.
+synergies:
+  - pattern: hexagonal-architecture
+    reason: Ports are separated interfaces owned by the core and implemented by adapters.
+  - pattern: dependency-injection
+    reason: Dependency Injection supplies concrete implementations without clients importing infrastructure packages.
+  - pattern: gateway
+    reason: A Gateway interface can sit in the application layer while HTTP or SDK implementations live in integration code.
+  - pattern: repository
+    reason: Repository contracts can be owned by the domain/application layer and implemented by persistence adapters.
+alternatives:
+  - adapter
+  - facade
+conflicts_with:
+  - active-record
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - typescript
+  - go
+frameworks:
+  - spring-boot
+  - dotnet
+  - nestjs
+  - none
+project_types:
+  - backend-service
+  - microservices
+  - modular-monolith
+  - sdk
+tags:
+  - dependency-inversion
+  - ports
+  - modularity
+examples:
+  - language: java
+    title: Payment dependency direction
+    negative: |
+      package checkout;
+
+      import infra.stripe.StripeClient;
+
+      final class CheckoutService {
+          private final StripeClient stripe;
+          CheckoutService(StripeClient stripe) { this.stripe = stripe; }
+          Receipt pay(Order order) { return stripe.charge(order.total(), order.cardToken()); }
+      }
+    positive: |
+      package checkout;
+
+      public interface PaymentGateway {
+          Receipt charge(Money amount, CardToken token);
+      }
+
+      final class CheckoutService {
+          private final PaymentGateway payments;
+          CheckoutService(PaymentGateway payments) { this.payments = payments; }
+          Receipt pay(Order order) { return payments.charge(order.total(), order.cardToken()); }
+      }
+
+      package infra.stripe;
+      final class StripePaymentGateway implements checkout.PaymentGateway {
+          public Receipt charge(Money amount, CardToken token) { return stripe.charge(amount, token); }
+      }
+    explanation: >-
+      The positive version lets checkout own the contract it needs while the Stripe implementation depends inward, so tests and alternative payment providers do not change checkout code.
+ratings:
+  small:
+    score: 3
+    notes: Useful at hard boundaries, but excessive interfaces around every class slow small teams down.
+  medium:
+    score: 4
+    notes: Good default for persistence, messaging, and third-party integrations.
+  large:
+    score: 5
+    notes: Excellent for large modular systems where package dependency direction and replaceability matter.
+references:
+  - title: Patterns of Enterprise Application Architecture
+    author: Martin Fowler
+    year: 2002

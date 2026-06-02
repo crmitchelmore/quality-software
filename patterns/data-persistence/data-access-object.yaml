@@ -1,0 +1,94 @@
+id: data-access-object
+title: Data Access Object (DAO)
+scale: design
+category: data-persistence
+maturity: time-tested
+short_description: >-
+  Encapsulate table- or query-oriented persistence operations behind an object dedicated to data access, distinct from domain repositories.
+description: >-
+  A Data Access Object centralises SQL, driver calls, row mapping, and low-level persistence concerns for a particular table, query family, or external data source. Unlike a Repository, which usually exposes aggregate-oriented collection semantics to a domain model, a DAO often works closer to records and data transfer shapes. It is especially useful in transaction scripts, reporting, ETL, and services where the database schema is the main contract.
+problem: >-
+  Scattered SQL and row mapping produce inconsistent parameters, duplicated queries, unsafe string construction, and hard-to-change schema knowledge.
+context: >-
+  Use when application code needs a clear seam around database access but a full domain repository would pretend there are aggregates or behaviours that do not exist.
+consequences:
+  - Centralises query construction, parameterisation, mapping, and connection handling.
+  - Keeps service code readable without forcing a domain model onto data-centric flows.
+  - Can become an anemic dumping ground if every query in the system lands in one DAO.
+  - Less protective than Repository for domain invariants because it often exposes record-shaped operations.
+synergies:
+  - pattern: table-data-gateway
+    reason: >-
+      DAO often looks like a typed, application-local form of Table Data Gateway.
+  - pattern: transaction-script
+    reason: >-
+      Transaction scripts pair well with DAOs because the business flow remains procedural while SQL stays encapsulated.
+  - pattern: repository
+    reason: >-
+      Repository is the domain-oriented alternative; DAO is better when records and queries are the real abstraction.
+  - pattern: query-object
+    reason: >-
+      Complex filtering can be moved from DAO method explosions into explicit query objects.
+alternatives:
+  - repository
+  - table-data-gateway
+  - row-data-gateway
+  - data-mapper
+conflicts_with:
+  - active-record
+languages:
+  - language-agnostic
+  - java
+  - typescript
+  - python
+  - csharp
+frameworks:
+  - spring-boot
+  - dotnet
+  - sqlalchemy
+  - nodejs
+  - none
+project_types:
+  - backend-service
+  - web-api
+  - monolith
+  - modular-monolith
+tags:
+  - data-access
+  - sql
+  - crud
+examples:
+  - language: typescript
+    title: Centralise SQL and mapping
+    negative: |
+      async function handler(req: Request) {
+        const rows = await db.query(`SELECT * FROM users WHERE email='${req.email}'`);
+        return rows.rows.map(r => ({ id: r.id, email: r.email, active: r.status === "A" }));
+      }
+    positive: |
+      class UserDao {
+        constructor(private readonly db: Pool) {}
+
+        async findActiveByEmail(email: string): Promise<UserRow[]> {
+          const result = await this.db.query(
+            "SELECT id,email,status FROM users WHERE email=$1 AND status=$2",
+            [email, "A"]
+          );
+          return result.rows.map(r => ({ id: r.id, email: r.email, active: true }));
+        }
+      }
+    explanation: >-
+      The positive version parameterises SQL and keeps record mapping in one data-access component instead of scattering it through handlers.
+ratings:
+  small:
+    score: 4
+    notes: >-
+      Good small-system seam for SQL without inventing a domain model.
+  medium:
+    score: 4
+    notes: >-
+      Solid for CRUD and reporting services; split DAOs by cohesive query families.
+  large:
+    score: 3
+    notes: >-
+      Still useful, but large domain systems often need repositories, mappers, and stronger aggregate boundaries.

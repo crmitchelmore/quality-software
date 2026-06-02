@@ -1,0 +1,118 @@
+id: service-oriented-architecture
+title: Service-Oriented Architecture (SOA)
+aka:
+  - SOA
+scale: architectural
+category: architecture
+maturity: time-tested
+short_description: >-
+  Expose coarse-grained business capabilities as reusable services coordinated through stable contracts, often with shared integration infrastructure and enterprise governance.
+description: >-
+  Service-Oriented Architecture decomposes an enterprise into services that represent reusable business capabilities. Compared with microservices, SOA usually accepts coarser services, stronger central governance, shared schemas, and integration middleware such as a message bus or service broker. It is most useful when many applications need to integrate around canonical business processes rather than when small teams need rapid independent deployment.
+problem: >-
+  Large organisations accumulate point-to-point integrations and duplicated business capabilities across applications, making change expensive and data semantics inconsistent.
+context: >-
+  Enterprise estates with multiple systems, long-lived integration contracts, governance requirements, and a need to reuse capabilities such as customer, billing, identity, or fulfilment services.
+consequences:
+  - >-
+    Promotes reuse of coarse-grained business capabilities across many applications.
+  - >-
+    Can standardise contracts, security, monitoring, and transformation at enterprise scale.
+  - >-
+    Central governance and shared middleware can slow product teams and create bottlenecks.
+  - >-
+    Overuse of canonical models can couple services through a shared enterprise schema.
+synergies:
+  - pattern: message-bus
+    reason: >-
+      A message bus is a common SOA integration backbone for routing and mediation.
+  - pattern: canonical-data-model
+    reason: >-
+      Canonical models reduce translation work when many enterprise systems exchange the same concepts.
+  - pattern: gateway
+    reason: >-
+      Gateways wrap legacy systems behind service contracts.
+  - pattern: request-reply
+    reason: >-
+      Request-reply supports synchronous service operations where callers require immediate results.
+conflicts_with:
+  - microservices
+alternatives:
+  - microservices
+  - event-driven-architecture
+  - broker-architecture
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - go
+  - typescript
+frameworks:
+  - spring-boot
+  - dotnet
+  - grpc
+  - kafka
+  - rabbitmq
+project_types:
+  - distributed-system
+  - backend-service
+  - microservices
+  - web-api
+tags:
+  - enterprise-integration
+  - services
+  - governance
+  - contracts
+diagram: |-
+  flowchart LR
+    AppA[App A] --> Bus[Service Bus]
+    AppB[App B] --> Bus
+    Bus --> Cust[Customer Svc]
+    Bus --> Bill[Billing Svc]
+    Bus --> Fulfil[Fulfil Svc]
+    Cust --> CDB[(Customer DB)]
+    Bill --> BDB[(Billing DB)]
+    Fulfil --> FDB[(Fulfil DB)]
+examples:
+  - language: java
+    title: Prefer coarse service contracts over point-to-point database access
+    negative: |
+      public CustomerCredit loadCredit(UUID customerId) {
+          CustomerRow customer = legacyCrm.queryCustomer(customerId);
+          List<InvoiceRow> invoices = billingDb.queryInvoices(customerId);
+          return calculate(customer, invoices);
+      }
+    positive: |
+      public final class CreditApplicationService {
+          private final CustomerService customers;
+          private final BillingService billing;
+      
+          public CustomerCredit loadCredit(CustomerId customerId) {
+              CustomerProfile profile = customers.profile(customerId);
+              AccountBalance balance = billing.balanceFor(customerId);
+              return CustomerCredit.from(profile, balance);
+          }
+      }
+      
+      interface CustomerService { CustomerProfile profile(CustomerId id); }
+      interface BillingService { AccountBalance balanceFor(CustomerId id); }
+    explanation: >-
+      The positive version depends on service contracts rather than each system's storage model. That improves reuse and lets service owners evolve internals behind stable enterprise APIs.
+ratings:
+  small:
+    score: 1
+    notes: >-
+      Avoid for small products; governance and integration infrastructure are disproportionate.
+  medium:
+    score: 3
+    notes: >-
+      Situational for organisations integrating several applications, but can be heavy compared with modular monoliths or simple APIs.
+  large:
+    score: 4
+    notes: >-
+      Good for large enterprise estates where reusable services and standard contracts matter more than team-level deployment autonomy.
+references:
+  - title: Enterprise Integration Patterns
+    author: Gregor Hohpe and Bobby Woolf
+    year: 2003
+    url: https://www.enterpriseintegrationpatterns.com/

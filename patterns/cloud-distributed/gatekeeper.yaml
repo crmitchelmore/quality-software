@@ -1,0 +1,108 @@
+id: gatekeeper
+title: Gatekeeper
+scale: architectural
+category: cloud-distributed
+maturity: established
+short_description: >-
+  Route external requests through a hardened entry component that validates,
+  authenticates, filters, and forwards only safe traffic to protected backend
+  services.
+description: >-
+  Gatekeeper splits exposed edge responsibilities from protected application
+  processing. The gatekeeper terminates public traffic, verifies identity and
+  request shape, applies coarse policy, strips dangerous input, and forwards a
+  narrow trusted request to internal services that are not directly reachable from
+  the internet. Unlike a general API Gateway, the emphasis is security isolation:
+  minimise the public attack surface and keep high-risk parsing, authentication,
+  and request rejection out of sensitive backend components.
+problem: >-
+  Backend services often become internet-facing by accident, each reimplementing
+  authentication, input filtering, rate limits, and TLS handling with inconsistent
+  quality.
+context: >-
+  Use for internet-exposed systems, zero-trust service boundaries, administrative
+  APIs, and workloads where request validation and authentication should be
+  enforced before traffic reaches private compute or data services.
+consequences:
+  - Reduces attack surface by making protected services private by default.
+  - Provides a single place for coarse security policy, request rejection, and edge telemetry.
+  - Becomes a critical dependency and must be highly available and carefully hardened.
+  - Can create a false sense of safety if backend services stop enforcing their own invariants.
+synergies:
+  - pattern: api-gateway
+    reason: A gatekeeper may be implemented as a security-focused gateway at the system edge.
+  - pattern: token-based-auth
+    reason: The gatekeeper validates tokens before forwarding identity claims to private services.
+  - pattern: rate-limiting
+    reason: Edge rate limits protect downstream services before expensive work begins.
+  - pattern: least-privilege
+    reason: Protected services can accept traffic only from the gatekeeper and run with narrower network exposure.
+alternatives:
+  - gateway-offloading
+  - backend-for-frontend
+  - defense-in-depth
+languages:
+  - language-agnostic
+  - go
+  - java
+  - csharp
+  - typescript
+frameworks:
+  - kubernetes
+  - istio
+  - aspnet
+  - nodejs
+  - spring-boot
+project_types:
+  - web-api
+  - backend-service
+  - microservices
+  - distributed-system
+tags:
+  - edge-security
+  - validation
+  - zero-trust
+diagram: |-
+  flowchart LR
+    User[User] --> Gatekeeper[Gatekeeper]
+    Gatekeeper --> Auth[Auth]
+    Gatekeeper --> Policy[Policy]
+    Gatekeeper --> Api[Private API]
+    Api --> Data[(Data)]
+    User -. blocked .-> Api
+examples:
+  - language: typescript
+    title: Rejecting unsafe traffic at the edge
+    negative: |
+      // The backend is public and every handler must remember all security checks.
+      app.post("/admin/reindex", async (req, res) => {
+        if (!req.headers.authorization) return res.sendStatus(401);
+        if (req.body.scope === "all" && !req.user?.roles.includes("admin")) return res.sendStatus(403);
+        await search.reindex(req.body.scope);
+        res.sendStatus(202);
+      });
+    positive: |
+      // Public edge: validate identity, schema, and coarse authorisation before forwarding.
+      edge.post("/admin/reindex", requireToken, requireRole("admin"), validate(ReindexRequest), proxyTo("admin-api"));
+
+      // Private service: still checks business invariants, but is not internet reachable.
+      adminApi.post("/admin/reindex", async (req, res) => {
+        await search.reindex(req.body.scope);
+        res.sendStatus(202);
+      });
+    explanation: >-
+      The positive version removes direct public access to the sensitive service and
+      rejects unauthenticated or malformed requests before they reach private code.
+ratings:
+  small:
+    score: 2
+    notes: A simple framework middleware stack is often enough for a small private app.
+  medium:
+    score: 3
+    notes: Useful for exposed APIs with several backend services, provided it does not replace service-level checks.
+  large:
+    score: 5
+    notes: Excellent for large distributed systems where public edge hardening and private backends are mandatory.
+references:
+  - title: Microsoft Azure Architecture Center; Gatekeeper pattern
+    url: https://learn.microsoft.com/azure/architecture/patterns/gatekeeper

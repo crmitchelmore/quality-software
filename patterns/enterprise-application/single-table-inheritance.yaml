@@ -1,0 +1,89 @@
+id: single-table-inheritance
+title: Single Table Inheritance
+scale: data
+category: enterprise-application
+maturity: time-tested
+short_description: >-
+  Store an entire inheritance hierarchy in one database table, using a discriminator column to identify the concrete subtype for each row.
+description: >-
+  Single Table Inheritance maps a class hierarchy to one table with columns for all subtype-specific fields plus a discriminator such as type. It is fast to query because no joins are needed, and it works well when subtypes share many fields or the hierarchy is shallow. Its cost is schema looseness: many nullable columns, weaker subtype constraints, and a table that can become wide as the hierarchy grows.
+problem: >-
+  Object hierarchies need persistence, but separate tables can make polymorphic reads expensive and complicated when most queries need all subtypes together.
+context: >-
+  Use when subtypes are queried together, have substantial common data, and subtype-specific fields are few. Prefer class table inheritance when subtype-specific data and constraints dominate.
+consequences:
+  - Polymorphic reads are simple and fast because one table contains the whole hierarchy.
+  - Schema migrations are straightforward for common fields and cross-type indexes.
+  - Subtype-only columns are nullable for other types, weakening relational constraints.
+  - A growing hierarchy can produce a sparse, confusing table with many conditional rules.
+synergies:
+  - pattern: data-mapper
+    reason: Data Mapper can use the discriminator to instantiate the correct subtype while keeping domain classes persistence-ignorant.
+  - pattern: metadata-mapping
+    reason: Metadata can declare discriminator values and subtype column mappings in one place.
+  - pattern: query-object
+    reason: Query Objects can centralise type filters and avoid scattering discriminator strings.
+  - pattern: optimistic-offline-lock
+    reason: A shared table makes a single version column easy to enforce across all subtypes.
+alternatives:
+  - class-table-inheritance
+  - active-record
+conflicts_with:
+  - class-table-inheritance
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - sql
+frameworks:
+  - hibernate
+  - entity-framework
+  - sqlalchemy
+  - rails
+project_types:
+  - backend-service
+  - web-api
+  - monolith
+  - modular-monolith
+tags:
+  - inheritance-mapping
+  - discriminator
+  - persistence
+examples:
+  - language: sql
+    title: Payment method hierarchy
+    negative: |
+      -- Card and bank payments are queried together, but every listing needs unions.
+      SELECT id, amount, 'card' AS kind FROM card_payments WHERE customer_id = 42
+      UNION ALL
+      SELECT id, amount, 'bank' AS kind FROM bank_payments WHERE customer_id = 42;
+    positive: |
+      CREATE TABLE payments (
+        id BIGINT PRIMARY KEY,
+        customer_id BIGINT NOT NULL,
+        kind VARCHAR(20) NOT NULL,
+        amount_cents INTEGER NOT NULL,
+        card_last4 VARCHAR(4),
+        bank_account_hash VARCHAR(64),
+        version INTEGER NOT NULL
+      );
+
+      SELECT id, kind, amount_cents, card_last4, bank_account_hash
+        FROM payments
+       WHERE customer_id = 42;
+    explanation: >-
+      The positive version makes polymorphic reads cheap and centralises the discriminator, accepting nullable subtype columns as the trade-off.
+ratings:
+  small:
+    score: 3
+    notes: Simple and pragmatic for small hierarchies; beware premature inheritance in the domain.
+  medium:
+    score: 4
+    notes: Good when polymorphic reads dominate and subtype fields remain modest.
+  large:
+    score: 3
+    notes: Can work at scale for stable shallow hierarchies, but sparse tables and constraints become costly.
+references:
+  - title: Patterns of Enterprise Application Architecture
+    author: Martin Fowler
+    year: 2002

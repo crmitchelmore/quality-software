@@ -1,0 +1,103 @@
+id: immutability
+title: Immutability
+aka:
+  - Immutable State
+  - Value-Oriented Design
+scale: design
+category: functional
+maturity: time-tested
+short_description: >-
+  Model state as values that are not changed in place; every update returns a new value preserving the old one.
+description: >-
+  Immutability makes object or data structure state stable after construction. Instead of changing a record in place, code creates a revised value that shares unchanged parts where possible. This protects invariants, supports reasoning over time, and reduces accidental coupling between callers that hold references to the same object.
+problem: >-
+  Shared mutable state lets distant code change values unexpectedly, creating order-dependent bugs, defensive copying, and difficult concurrency failures.
+context: >-
+  Use for domain values, configuration, events, reducer state, messages, and concurrent or asynchronous workflows where many components observe the same data.
+consequences:
+  - Eliminates accidental aliasing and makes historical states safe to retain.
+  - Simplifies concurrency because readers do not need locks for stable values.
+  - >-
+    May allocate more unless structural sharing, copy-on-write, or compiler optimisations apply.
+  - Requires explicit update APIs; naive deep copying can be slow and noisy.
+synergies:
+  - pattern: immutable-object
+    reason: >-
+      Immutable Object is the object-oriented formulation of the same invariant.
+  - pattern: copy-on-write
+    reason: >-
+      Copy-on-Write delays copying until mutation is required, reducing the cost of immutable snapshots.
+  - pattern: persistent-data-structure
+    reason: >-
+      Persistent structures make immutable updates efficient through structural sharing.
+  - pattern: pure-function
+    reason: >-
+      Pure functions depend on immutable inputs to remain referentially transparent.
+alternatives:
+  - memento
+  - copy-on-write
+  - event-sourcing
+languages:
+  - language-agnostic
+  - haskell
+  - clojure
+  - scala
+  - rust
+  - typescript
+frameworks:
+  - none
+  - react
+  - redux
+project_types:
+  - library
+  - web-frontend
+  - backend-service
+  - distributed-system
+  - safety-critical
+tags:
+  - state
+  - concurrency
+  - value-semantics
+examples:
+  - language: typescript
+    title: Updating an order without mutating the original
+    negative: |
+      type Order = { id: string; lines: string[]; status: "draft" | "submitted" };
+      
+      function submit(order: Order): Order {
+        order.status = "submitted";
+        order.lines.push("audit-line");
+        return order;
+      }
+    positive: |
+      type Order = Readonly<{
+        id: string;
+        lines: readonly string[];
+        status: "draft" | "submitted";
+      }>;
+      
+      function submit(order: Order): Order {
+        return {
+          ...order,
+          status: "submitted",
+          lines: [...order.lines, "audit-line"],
+        };
+      }
+    explanation: >-
+      The positive version returns a new order and leaves existing references untouched, so callers holding the draft cannot observe a surprise mutation.
+ratings:
+  small:
+    score: 4
+    notes: >-
+      Usually worth it for value objects and UI state; do not over-engineer tiny throwaway scripts.
+  medium:
+    score: 5
+    notes: Excellent default for domain state, reducers, and configuration.
+  large:
+    score: 5
+    notes: >-
+      Critical for concurrent systems and large teams because it removes whole classes of aliasing bugs.
+references:
+  - title: Purely Functional Data Structures
+    author: Chris Okasaki
+    year: 1998

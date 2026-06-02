@@ -1,0 +1,97 @@
+id: polling-consumer
+title: Polling Consumer
+scale: integration
+category: enterprise-integration
+maturity: time-tested
+short_description: >-
+  Let a receiver control when it checks a channel for work, trading latency for predictable resource use and simpler scheduling.
+description: >-
+  A Polling Consumer explicitly asks a channel, queue or endpoint for the next available message. The poll can run on a schedule, with long-polling, or inside a worker loop that only requests more work when it has capacity. This gives the consumer control over concurrency, maintenance windows and backpressure, but messages wait until the next poll and empty polls can waste resources. It is a good pattern for batch-friendly workloads, legacy endpoints, rate-limited APIs and queues where the receiver must decide when it is safe to accept more work.
+problem: >-
+  Some consumers cannot be called asynchronously whenever work arrives because they are offline, batch-oriented, rate-limited, stateful or need to control transaction and resource boundaries.
+context: >-
+  Use when a receiver pulls from a queue, inbox table, SFTP drop, mailbox, REST API or broker subscription on its own cadence rather than being invoked by the channel.
+consequences:
+  - Consumer controls load, concurrency and maintenance windows.
+  - Easier to combine with database transactions and explicit leases for durable work queues.
+  - Adds latency up to the poll interval and may generate empty polls.
+  - Requires careful visibility timeouts, leases or acknowledgement handling to avoid duplicate or stuck work.
+synergies:
+  - pattern: idempotent-receiver
+    reason: Polling loops commonly retry after crashes or timeouts, so duplicate delivery must be safe.
+  - pattern: retry
+    reason: Failed polls and transient message processing failures need bounded retry with backoff rather than tight loops.
+  - pattern: backpressure
+    reason: The poller can stop or slow pulls when downstream capacity is exhausted.
+  - pattern: competing-consumers
+    reason: Multiple pollers can share a queue when leases or broker acknowledgements prevent double processing.
+alternatives:
+  - event-driven-consumer
+  - webhook
+conflicts_with:
+  - event-driven-consumer
+languages:
+  - language-agnostic
+  - java
+  - typescript
+  - python
+frameworks:
+  - rabbitmq
+  - kafka
+  - nodejs
+  - spring-boot
+project_types:
+  - backend-service
+  - microservices
+  - data-pipeline
+  - distributed-system
+tags:
+  - messaging
+  - scheduling
+  - pull
+examples:
+  - language: typescript
+    title: Polling RabbitMQ without spinning or losing acknowledgements
+    negative: |
+      // Tight empty loop; acknowledges before durable work completes.
+      async function run() {
+        while (true) {
+          const msg = await channel.get("invoice-work", { noAck: true });
+          if (!msg) continue;
+          await sendInvoice(JSON.parse(msg.content.toString()));
+        }
+      }
+    positive: |
+      async function run() {
+        while (!shuttingDown) {
+          const msg = await channel.get("invoice-work", { noAck: false });
+          if (!msg) {
+            await delay(1_000);
+            continue;
+          }
+
+          try {
+            await sendInvoice(JSON.parse(msg.content.toString()));
+            channel.ack(msg);
+          } catch (err) {
+            channel.nack(msg, false, true); // return to queue for a later poll
+            await delay(5_000);
+          }
+        }
+      }
+    explanation: >-
+      The positive poller backs off when the queue is empty and acknowledges only after processing succeeds, so the consumer controls load without dropping work.
+ratings:
+  small:
+    score: 3
+    notes: Practical for simple scheduled imports or small queues, but watch wasteful loops.
+  medium:
+    score: 4
+    notes: Good fit for controlled workers, batch integration and rate-limited dependencies.
+  large:
+    score: 3
+    notes: Still useful, but large low-latency systems often prefer event-driven consumers with broker-managed push.
+references:
+  - title: Enterprise Integration Patterns
+    author: Gregor Hohpe and Bobby Woolf
+    year: 2003

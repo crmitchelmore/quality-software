@@ -1,0 +1,131 @@
+id: observer
+title: Observer
+aka:
+  - Publish Subscribe
+  - Listener
+scale: design
+category: gof-behavioural
+maturity: time-tested
+short_description: >-
+  Let interested observers subscribe to state changes in a subject so the subject
+  can notify them without knowing their concrete types.
+description: >-
+  Observer defines a one-to-many dependency between a subject and observers. The
+  subject owns the state or event source; observers register callbacks or listener
+  objects and are notified when something relevant changes. This keeps the subject
+  focused on its own invariants while enabling logging, projections, UI updates,
+  cache invalidation, or side effects to be added externally. Robust implementations
+  make subscription lifetimes explicit and define whether notifications are
+  synchronous, asynchronous, ordered, replayed, or best-effort.
+problem: >-
+  A state change must trigger several reactions, but hard-coding those reactions
+  into the subject couples it to unrelated concerns and makes extension risky.
+context: >-
+  Use for in-process events, UI model updates, domain notifications, and extension
+  points where observers can come and go. For cross-process delivery, prefer
+  messaging patterns with durable delivery semantics.
+consequences:
+  - Decouples event producers from consumers and supports extension without editing the subject.
+  - Notification order, error handling, and re-entrancy must be deliberately specified.
+  - Subscriptions can leak memory or duplicate effects if lifecycle management is weak.
+  - Synchronous observers can make the subject slow or fragile; asynchronous observers need delivery semantics.
+synergies:
+  - pattern: event-emitter
+    reason: Event emitters are the common implementation form for in-process observer registration and dispatch.
+  - pattern: publish-subscribe
+    reason: Publish-subscribe generalises observer across messaging infrastructure and process boundaries.
+  - pattern: domain-event
+    reason: Domain events provide business-level notifications that observers can react to without coupling aggregates.
+  - pattern: mediator
+    reason: A mediator can observe colleague events and coordinate broader workflow reactions.
+alternatives:
+  - mediator
+  - message-bus
+  - webhook
+conflicts_with:
+  - singleton
+languages:
+  - language-agnostic
+  - typescript
+  - javascript
+  - java
+  - csharp
+  - python
+frameworks:
+  - react
+  - angular
+  - vue
+  - rxjs
+  - nodejs
+project_types:
+  - web-frontend
+  - backend-service
+  - desktop-app
+  - realtime-system
+  - library
+tags:
+  - events
+  - notification
+  - decoupling
+  - subscription
+examples:
+  - language: typescript
+    title: Account status notifications
+    negative: |
+      class Account {
+        constructor(private readonly email: EmailClient, private readonly audit: AuditLog) {}
+
+        suspend(reason: string): void {
+          this.status = "suspended";
+          this.email.send("account suspended: " + reason);
+          this.audit.record("suspended: " + reason);
+        }
+
+        private status = "active";
+      }
+    positive: |
+      type AccountEvent = { type: "suspended"; reason: string };
+      type AccountObserver = (event: AccountEvent) => void;
+
+      class Account {
+        private status = "active";
+        private readonly observers = new Set<AccountObserver>();
+
+        subscribe(observer: AccountObserver): () => void {
+          this.observers.add(observer);
+          return () => this.observers.delete(observer);
+        }
+
+        suspend(reason: string): void {
+          this.status = "suspended";
+          for (const observer of this.observers) {
+            observer({ type: "suspended", reason });
+          }
+        }
+      }
+
+      account.subscribe((event) => email.send("account suspended: " + event.reason));
+      account.subscribe((event) => audit.record("suspended: " + event.reason));
+    explanation: >-
+      The positive version keeps Account free of email and audit dependencies while
+      making subscription lifetime explicit through the unsubscribe function.
+ratings:
+  small:
+    score: 3
+    notes: >-
+      Useful for UI and library extension points, but direct calls are clearer for
+      one or two mandatory reactions.
+  medium:
+    score: 4
+    notes: >-
+      Good fit for modular applications with optional in-process reactions, as
+      long as ordering and error handling are explicit.
+  large:
+    score: 4
+    notes: >-
+      Valuable at module boundaries, but large systems must avoid invisible event
+      chains and distinguish in-process observers from durable messaging.
+references:
+  - title: "Design Patterns: Elements of Reusable Object-Oriented Software"
+    author: Gamma, Helm, Johnson, Vlissides
+    year: 1994

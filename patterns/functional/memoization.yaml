@@ -1,0 +1,103 @@
+id: memoization
+title: Memoization
+aka:
+  - Result Caching
+scale: implementation
+category: functional
+maturity: time-tested
+short_description: >-
+  Cache the result of a pure function by its inputs so repeated calls return immediately without recomputation.
+description: >-
+  Memoization stores a mapping from argument values to results. It is safe only when the function is referentially transparent: the same inputs always produce the same output and no observable side effects are skipped. It is most useful for expensive recursive functions, derived view data, parsing, and deterministic calculations with repeated inputs.
+problem: >-
+  Expensive pure computations may be repeated with identical inputs, wasting CPU and sometimes turning otherwise simple recursive algorithms exponential.
+context: >-
+  Use when inputs are hashable or can be canonicalised, outputs are stable, and memory growth can be bounded or deliberately accepted.
+consequences:
+  - Can change exponential repeated subproblems into linear work.
+  - Keeps callers simple because caching is local to the function boundary.
+  - Consumes memory and may require eviction for unbounded input domains.
+  - >-
+    Unsafe for impure functions because it can hide I/O, time, randomness, or mutable state changes.
+synergies:
+  - pattern: pure-function
+    reason: >-
+      Purity is the precondition that makes cached results semantically equivalent to recomputation.
+  - pattern: lazy-evaluation
+    reason: Lazy values and memoized thunks compute at most once, when demanded.
+  - pattern: materialized-view
+    reason: >-
+      Materialized View applies the same reuse-of-derived-results idea at data-store scale rather than function scope.
+  - pattern: cache-aside
+    reason: >-
+      Cache-aside is the distributed/data-access analogue when cached values cross process boundaries.
+alternatives:
+  - cache-aside
+  - lazy-initialization
+  - materialized-view
+conflicts_with:
+  - event-sourcing
+languages:
+  - language-agnostic
+  - typescript
+  - python
+  - haskell
+  - scala
+  - clojure
+frameworks:
+  - none
+  - react
+  - redux
+project_types:
+  - library
+  - web-frontend
+  - backend-service
+  - data-pipeline
+tags:
+  - caching
+  - performance
+  - referential-transparency
+examples:
+  - language: typescript
+    title: Fibonacci with repeated subproblems
+    negative: |
+      function fib(n: number): number {
+        if (n < 2) return n;
+        return fib(n - 1) + fib(n - 2);
+      }
+      
+      fib(42); // recomputes the same subtrees many times
+    positive: |
+      function memoize<A extends string | number, R>(fn: (arg: A) => R): (arg: A) => R {
+        const cache = new Map<A, R>();
+        return (arg: A) => {
+          if (cache.has(arg)) return cache.get(arg)!;
+          const value = fn(arg);
+          cache.set(arg, value);
+          return value;
+        };
+      }
+      
+      const fib: (n: number) => number = memoize((n) => {
+        if (n < 2) return n;
+        return fib(n - 1) + fib(n - 2);
+      });
+    explanation: >-
+      The positive version relies on fib being pure: once a value is computed for n, returning it from the cache is indistinguishable from recomputing it.
+ratings:
+  small:
+    score: 3
+    notes: >-
+      Situational; excellent for repeated expensive calculations but unnecessary for cheap code.
+  medium:
+    score: 4
+    notes: >-
+      Good for derived data, parser tables, and dynamic programming if cache size is controlled.
+  large:
+    score: 3
+    notes: >-
+      Useful but risky when caches become hidden state; prefer explicit observability and eviction policies.
+references:
+  - title: The Art of Computer Programming, Volume 1
+    author: Donald Knuth
+    year: 1968

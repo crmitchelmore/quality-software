@@ -1,0 +1,106 @@
+id: active-record
+title: Active Record
+scale: data
+category: enterprise-application
+maturity: time-tested
+aka:
+  - Record object
+short_description: >-
+  Combine a row-shaped domain object with persistence methods such as find, save, and destroy.
+description: >-
+  Active Record represents a database row as an object that carries both data and persistence behaviour. It works well when business logic is close to CRUD and the table structure is a natural model for the application. The pattern favours speed and convention over persistence ignorance.
+problem: >-
+  Small applications can waste effort building separate mappers and repositories when the domain is mostly validating and saving table-shaped records. Conversely, using raw SQL everywhere duplicates persistence code and validation.
+context: >-
+  Use for simple web applications, admin tools, prototypes, and CRUD-heavy systems where the data model is stable and business rules are modest. Reconsider it as invariants span multiple records or storage decisions start leaking into policy.
+consequences:
+  - >-
+    Very productive for CRUD because the object knows how to load and save itself.
+  - >-
+    Keeps simple validations close to persisted fields and benefits from framework conventions.
+  - >-
+    Couples domain logic to database shape and framework lifecycle callbacks.
+  - >-
+    Becomes awkward for rich Domain Models, complex transactions, and multiple persistence stores.
+synergies:
+  - pattern: transaction-script
+    reason: >-
+      Transaction Script pairs naturally with Active Record for simple request handlers that orchestrate row objects.
+  - pattern: page-controller
+    reason: >-
+      Page Controller actions can load and save Active Records directly in small server-rendered applications.
+  - pattern: table-data-gateway
+    reason: >-
+      A Table Data Gateway can be an intermediate step when Active Record models need thinner persistence responsibilities.
+alternatives:
+  - data-mapper
+  - row-data-gateway
+  - table-data-gateway
+conflicts_with:
+  - data-mapper
+  - domain-model
+languages:
+  - language-agnostic
+  - ruby
+  - php
+  - python
+  - typescript
+frameworks:
+  - rails
+  - django
+  - laravel
+  - typeorm
+project_types:
+  - prototype
+  - web-api
+  - backend-service
+  - monolith
+tags:
+  - crud
+  - orm
+  - productivity
+  - record-object
+examples:
+  - language: ruby
+    title: Simple invoice model
+    negative: |
+      class PayInvoice
+        def call(id)
+          row = DB[:invoices].where(id: id).first
+          raise "paid" if row[:paid_at]
+      
+          DB[:invoices].where(id: id).update(paid_at: Time.now)
+        end
+      end
+    positive: |
+      class Invoice < ApplicationRecord
+        def pay!(clock: Time)
+          raise AlreadyPaid if paid_at.present?
+          update!(paid_at: clock.now)
+        end
+      end
+      
+      class PayInvoice
+        def call(id)
+          Invoice.find(id).pay!
+        end
+      end
+    explanation: >-
+      The positive version puts the simple invariant next to the row-shaped object and uses the framework persistence API consistently. This is appropriate while the rule remains local to one record.
+ratings:
+  small:
+    score: 5
+    notes: >-
+      Excellent for prototypes, admin apps, and simple CRUD where convention matters more than isolation.
+  medium:
+    score: 3
+    notes: >-
+      Useful for CRUD slices, but watch for callback webs and cross-record rules that want a service or mapper boundary.
+  large:
+    score: 2
+    notes: >-
+      Rarely a good core domain pattern in large systems; persistence coupling and lifecycle callbacks become hard to reason about.
+references:
+  - title: Patterns of Enterprise Application Architecture
+    author: Martin Fowler
+    year: 2002

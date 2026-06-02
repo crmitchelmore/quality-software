@@ -1,0 +1,125 @@
+id: service-mesh
+title: Service Mesh
+scale: architectural
+category: architecture
+maturity: established
+short_description: >-
+  Move cross-service traffic policy, telemetry, security, and resilience controls
+  into a dedicated infrastructure layer managed consistently across services.
+description: >-
+  A Service Mesh provides a data plane, often sidecar or node proxies, and a
+  control plane that configures service-to-service communication. Application
+  services continue to expose ordinary network endpoints, while the mesh handles
+  mutual TLS, traffic splitting, retries, timeouts, load balancing, identity,
+  policy enforcement, and telemetry. The pattern is architectural because it
+  changes where cross-cutting network behaviour lives: out of each service's
+  libraries and into a shared operational substrate. It is valuable when many
+  services need consistent communication policy, but it can be excessive for a
+  small fleet or for teams without platform engineering capacity.
+problem: >-
+  In a large service estate, each team reimplements inconsistent client-side
+  networking, security, retries, metrics, and traffic-management logic, making
+  behaviour hard to govern or audit.
+context: >-
+  Use when many services communicate over the network, require uniform mTLS and
+  observability, and run on an orchestrated platform such as Kubernetes. Avoid
+  adopting a mesh before service boundaries and operational ownership are mature.
+consequences:
+  - Security and traffic policy become centrally configurable and consistently enforced.
+  - Service code can shed duplicated client libraries for telemetry, mTLS, and traffic splitting.
+  - The mesh adds proxies, control-plane dependencies, latency, resource overhead, and failure modes.
+  - Platform teams must provide safe defaults, upgrade paths, and clear debugging practices.
+  - Misconfigured retries or timeouts can amplify failures across the whole service graph.
+synergies:
+  - pattern: sidecar
+    reason: Many meshes implement the data plane as sidecar proxies colocated with each service instance.
+  - pattern: microservices
+    reason: A mesh becomes valuable when microservice count makes consistent service-to-service policy difficult in libraries.
+  - pattern: circuit-breaker
+    reason: Mesh traffic policies can enforce timeouts, outlier detection, and circuit-breaking consistently.
+  - pattern: api-gateway
+    reason: Gateways manage north-south edge traffic while the mesh manages east-west service traffic.
+alternatives:
+  - api-gateway
+  - broker-architecture
+  - client-server
+conflicts_with:
+  - modular-monolith
+languages:
+  - language-agnostic
+  - go
+  - java
+  - typescript
+frameworks:
+  - kubernetes
+  - istio
+  - grpc
+  - spring-boot
+project_types:
+  - microservices
+  - distributed-system
+  - backend-service
+  - high-throughput
+tags:
+  - platform
+  - mtls
+  - observability
+  - traffic-policy
+  - east-west
+diagram: |-
+  flowchart LR
+    Control[Control Plane] --> ProxyA[Proxy A]
+    Control --> ProxyB[Proxy B]
+    ServiceA[Service A] <--> ProxyA
+    ProxyA <--> ProxyB
+    ProxyB <--> ServiceB[Service B]
+    ProxyA --> Telemetry[Telemetry]
+    ProxyB --> Telemetry
+examples:
+  - language: typescript
+    title: Removing bespoke network policy from services
+    negative: |
+      export async function getCustomer(id: string) {
+        const cert = await loadCertificate("customer-client");
+        for (let attempt = 0; attempt < 5; attempt++) {
+          try {
+            return await http.get(`https://customers.internal/${id}`, { cert, timeout: 8000 });
+          } catch (error) {
+            await sleep(100 * attempt);
+          }
+        }
+        throw new Error("customer service unavailable");
+      }
+    positive: |
+      export async function getCustomer(id: string, client: HttpClient) {
+        return client.get(`/customers/${id}`);
+      }
+
+      // Mesh policy owns mTLS identity, a 500 ms timeout, bounded retries,
+      // outlier detection, and telemetry for calls to the customer service.
+    explanation: >-
+      The negative version hides security and retry policy inside every caller.
+      The positive version keeps application code focused on the business call
+      while shared mesh configuration applies consistent network behaviour.
+ratings:
+  small:
+    score: 1
+    notes: >-
+      Avoid for small systems; sidecars, control planes, and policy debugging add
+      more complexity than they remove.
+  medium:
+    score: 3
+    notes: >-
+      Situational when there are enough services and compliance needs to justify a
+      platform layer. Start with a narrow policy set.
+  large:
+    score: 5
+    notes: >-
+      Excellent for large microservice estates that need uniform mTLS,
+      observability, and controlled traffic rollout across many teams.
+references:
+  - title: Istio Documentation
+    author: Istio Authors
+  - title: Service Mesh Patterns
+    author: Lee Calcote and Nic Jackson
+    year: 2019

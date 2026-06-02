@@ -1,0 +1,94 @@
+id: write-behind-cache
+title: Write-Behind Cache
+scale: data
+category: data-persistence
+maturity: established
+short_description: >-
+  Acknowledge writes after updating the cache or queue, then persist them asynchronously to reduce latency while accepting durability risk.
+description: >-
+  Write-behind caching places a fast cache, log, or buffer in front of the durable store. The caller receives success before the database write has completed, and a background worker flushes changes in batches. This can absorb bursts and reduce tail latency, but the cache becomes a temporary system of record; therefore it needs durable buffering, replay, ordering, idempotency, and explicit loss semantics.
+problem: >-
+  Synchronous database writes can dominate latency or collapse under bursty workloads even though the business can tolerate delayed persistence.
+context: >-
+  Use for counters, telemetry, preferences, or derived state where bounded loss or delayed durability is acceptable. Avoid for money, entitlement, legal, or inventory decisions unless the write-behind log itself is durable and audited.
+consequences:
+  - Improves write latency and can batch database IO efficiently.
+  - Risk of acknowledged-but-lost writes if the buffer is volatile or replay is not tested.
+  - Conflict resolution and ordering become application concerns.
+  - Observability must cover queue depth, flush lag, replay failures, and dead letters.
+synergies:
+  - pattern: write-through-cache
+    reason: >-
+      Write-through is the safer consistency-oriented alternative for state that must be durable before acknowledgement.
+  - pattern: outbox
+    reason: >-
+      A durable log or outbox can make asynchronous flushes replayable rather than memory-only.
+  - pattern: idempotency
+    reason: >-
+      Flush workers should make repeated writes produce the same logical database state.
+  - pattern: dead-letter-channel
+    reason: >-
+      Poison flush records need quarantine instead of infinite retries blocking later changes.
+alternatives:
+  - write-through-cache
+  - queue-based-load-leveling
+  - event-sourcing
+conflicts_with:
+  - write-through-cache
+languages:
+  - language-agnostic
+  - java
+  - typescript
+  - go
+  - python
+frameworks:
+  - redis
+  - kafka
+  - rabbitmq
+  - spring-boot
+  - nodejs
+project_types:
+  - high-throughput
+  - backend-service
+  - data-pipeline
+  - distributed-system
+tags:
+  - async-persistence
+  - buffering
+  - latency
+examples:
+  - language: typescript
+    title: Do not treat volatile cache as durable
+    negative: |
+      async function incrementViews(articleId: string) {
+        await redis.incr(`views:${articleId}`);
+        return { accepted: true };
+      }
+    positive: |
+      async function incrementViews(articleId: string, eventId: string) {
+        await stream.append("article-viewed", { eventId, articleId, delta: 1 });
+        await redis.incr(`views:${articleId}`);
+        return { accepted: true };
+      }
+
+      async function flush(record: ViewRecord) {
+        await db.query(`
+          INSERT INTO article_view_events(event_id, article_id, delta)
+          VALUES ($1,$2,$3) ON CONFLICT (event_id) DO NOTHING`,
+          [record.eventId, record.articleId, record.delta]);
+      }
+    explanation: >-
+      The positive version acknowledges only after writing a replayable record and makes the asynchronous database flush idempotent.
+ratings:
+  small:
+    score: 2
+    notes: >-
+      Usually too risky for small systems unless the state is disposable telemetry.
+  medium:
+    score: 3
+    notes: >-
+      Situational for burst absorption where delayed persistence is acceptable and replay exists.
+  large:
+    score: 4
+    notes: >-
+      Powerful at large scale, but only with durable logs, lag alerts, and rehearsed recovery.

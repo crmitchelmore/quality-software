@@ -1,0 +1,112 @@
+id: materialized-view
+title: Materialized View
+scale: data
+category: cloud-distributed
+maturity: time-tested
+short_description: >-
+  Precompute and store a read-optimised projection of source data so expensive or
+  cross-service queries can be served quickly from a purpose-built view.
+description: >-
+  A Materialized View stores derived data rather than calculating it on every
+  request. The view may be refreshed synchronously, on a schedule, or from events
+  and change streams. In distributed systems it is often a denormalised projection
+  owned by a read model, search index, dashboard table, or cache-like store. The
+  pattern trades freshness and write complexity for predictable read latency and
+  query shapes that do not require joining across service boundaries.
+problem: >-
+  User-facing reads often need aggregates, joins, filters, or cross-service data
+  that are too slow, too expensive, or impossible to compute from normalised
+  sources at request time.
+context: >-
+  Use for dashboards, search pages, reporting, CQRS read models, and high-traffic
+  endpoints where read shape is stable and bounded staleness is acceptable.
+consequences:
+  - Provides fast, simple reads tailored to a specific query or UI.
+  - Avoids runtime joins across service or database boundaries.
+  - Introduces eventual consistency and refresh failure modes.
+  - Requires rebuild, backfill, and reconciliation procedures when projection logic changes.
+synergies:
+  - pattern: cqrs
+    reason: Materialized views are the usual read side of a CQRS model.
+  - pattern: event-sourcing
+    reason: Event streams can rebuild or update projections deterministically.
+  - pattern: change-data-capture
+    reason: CDC feeds keep views up to date without coupling writes to projection storage.
+  - pattern: cache-aside
+    reason: Hot projection rows can still be cached while the materialized view remains the query source.
+alternatives:
+  - read-replica
+  - query-object
+  - cache-aside
+languages:
+  - language-agnostic
+  - sql
+  - typescript
+  - java
+  - csharp
+  - python
+frameworks:
+  - kafka
+  - redis
+  - spring-boot
+  - dotnet
+  - nodejs
+project_types:
+  - backend-service
+  - web-api
+  - data-pipeline
+  - distributed-system
+  - high-throughput
+tags:
+  - projection
+  - read-model
+  - denormalisation
+diagram: |-
+  flowchart LR
+    Source[(Source Data)] --> Projector[Projector]
+    Events[Events] --> Projector
+    Projector --> View[(Read View)]
+    Api[Query API] --> View
+examples:
+  - language: sql
+    title: Precomputing customer order totals
+    negative: |
+      SELECT c.id, c.name, COUNT(o.id) AS order_count, SUM(o.total) AS lifetime_value
+      FROM customers c
+      LEFT JOIN orders o ON o.customer_id = c.id
+      WHERE c.tenant_id = $1
+      GROUP BY c.id, c.name
+      ORDER BY lifetime_value DESC
+      LIMIT 50;
+    positive: |
+      CREATE TABLE customer_order_summary (
+        tenant_id text NOT NULL,
+        customer_id text NOT NULL,
+        customer_name text NOT NULL,
+        order_count integer NOT NULL,
+        lifetime_value numeric NOT NULL,
+        refreshed_at timestamptz NOT NULL,
+        PRIMARY KEY (tenant_id, customer_id)
+      );
+
+      SELECT customer_id, customer_name, order_count, lifetime_value
+      FROM customer_order_summary
+      WHERE tenant_id = $1
+      ORDER BY lifetime_value DESC
+      LIMIT 50;
+    explanation: >-
+      The positive version reads from a projection shaped for the screen, avoiding
+      repeated aggregate joins on every request at the cost of managed freshness.
+ratings:
+  small:
+    score: 2
+    notes: Usually premature unless a specific query is already too slow to index normally.
+  medium:
+    score: 4
+    notes: Good fit for dashboards and read-heavy endpoints with acceptable staleness.
+  large:
+    score: 5
+    notes: Essential for large distributed systems where read models must avoid cross-service joins.
+references:
+  - title: Microsoft Azure Architecture Center; Materialized View pattern
+    url: https://learn.microsoft.com/azure/architecture/patterns/materialized-view

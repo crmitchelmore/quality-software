@@ -1,0 +1,134 @@
+id: template-method
+title: Template Method
+aka:
+  - Skeleton Method
+scale: design
+category: gof-behavioural
+maturity: time-tested
+short_description: >-
+  Define the invariant skeleton of an algorithm in a base type while allowing
+  subclasses to override selected steps.
+description: >-
+  Template Method captures a stable algorithm sequence in one method and delegates
+  variable steps to protected hooks or abstract operations. It is useful when the
+  order, error handling, resource management, or transaction boundary must remain
+  consistent across variants. Because it relies on inheritance, it should be used
+  deliberately: keep the template small, make required hooks explicit, and avoid
+  exposing broad base-class state that subclasses can misuse.
+problem: >-
+  Several operations share the same sequence but duplicate the orchestration,
+  causing subtle differences in validation, cleanup, metrics, or error handling.
+context: >-
+  Use in frameworks, test fixtures, import/export pipelines, and application
+  services where an invariant workflow should be reused while selected steps vary.
+  Prefer Strategy when algorithm variants need runtime composition rather than
+  inheritance.
+consequences:
+  - Centralises invariant ordering, cleanup, and cross-cutting behaviour in one algorithm skeleton.
+  - Makes extension points explicit through abstract steps and hooks.
+  - Inheritance couples subclasses to the base class lifecycle and can lead to fragile base-class problems.
+  - Runtime swapping is awkward compared with composition-based Strategy.
+synergies:
+  - pattern: strategy
+    reason: Strategy is the composition-based alternative when variable steps should be injected rather than inherited.
+  - pattern: composition-over-inheritance
+    reason: Composition over Inheritance is the pressure-release valve when a template hierarchy becomes too rigid.
+  - pattern: dependency-injection
+    reason: A template can inject collaborators for shared steps while subclasses customise only domain-specific steps.
+  - pattern: guard-clause
+    reason: Templates often enforce preconditions up front before calling variable subclass steps.
+alternatives:
+  - strategy
+  - composition-over-inheritance
+  - chain-of-responsibility
+conflicts_with:
+  - strategy
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - typescript
+  - python
+frameworks:
+  - none
+  - spring-boot
+  - dotnet
+  - django
+project_types:
+  - library
+  - backend-service
+  - cli-tool
+  - data-pipeline
+  - modular-monolith
+tags:
+  - inheritance
+  - algorithm-skeleton
+  - hooks
+  - reuse
+examples:
+  - language: typescript
+    title: Import job skeleton
+    negative: |
+      class CsvCustomerImport {
+        async run(file: string): Promise<void> {
+          console.log("starting");
+          const rows = await readCsv(file);
+          for (const row of rows) await saveCustomer(row);
+          console.log("finished");
+        }
+      }
+
+      class CsvProductImport {
+        async run(file: string): Promise<void> {
+          const rows = await readCsv(file);
+          for (const row of rows) await saveProduct(row);
+          console.log("done");
+        }
+      }
+    positive: |
+      abstract class ImportJob<T> {
+        async run(file: string): Promise<void> {
+          console.log("starting import");
+          const records = await this.parse(file);
+          for (const record of records) {
+            await this.persist(record);
+          }
+          console.log("finished import");
+        }
+
+        protected abstract parse(file: string): Promise<T[]>;
+        protected abstract persist(record: T): Promise<void>;
+      }
+
+      class CustomerImport extends ImportJob<CustomerRow> {
+        protected parse(file: string): Promise<CustomerRow[]> {
+          return readCsv(file);
+        }
+
+        protected persist(record: CustomerRow): Promise<void> {
+          return saveCustomer(record);
+        }
+      }
+    explanation: >-
+      The positive version guarantees consistent logging and iteration for every
+      import job while leaving parsing and persistence as explicit subclass steps.
+ratings:
+  small:
+    score: 2
+    notes: >-
+      Usually too much inheritance for small code unless authoring a mini-framework
+      or test harness.
+  medium:
+    score: 3
+    notes: >-
+      Situational when a stable skeleton has several variants; prefer Strategy if
+      variants need runtime selection.
+  large:
+    score: 3
+    notes: >-
+      Useful for framework-like extension points, but large systems should guard
+      against fragile base classes and hidden subclass coupling.
+references:
+  - title: "Design Patterns: Elements of Reusable Object-Oriented Software"
+    author: Gamma, Helm, Johnson, Vlissides
+    year: 1994

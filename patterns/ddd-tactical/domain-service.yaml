@@ -1,0 +1,98 @@
+id: domain-service
+title: Domain Service
+scale: design
+category: ddd-tactical
+maturity: time-tested
+short_description: >-
+  Place domain behaviour that does not naturally belong to one entity or value object into a stateless service expressed in ubiquitous language.
+description: >-
+  A Domain Service implements business logic that coordinates multiple domain objects or performs a domain operation without a natural owning entity. It is part of the domain model, not an application service or infrastructure adapter, and should speak domain language: PricingPolicy, FraudAssessment, TransferFunds. Good domain services are usually stateless, take entities/value objects as inputs, return domain results, and avoid framework or persistence concerns.
+problem: >-
+  Some rules are forced into arbitrary entities because teams try to avoid services, while other systems put all business logic in application services. Both choices obscure ownership and weaken the model.
+context: >-
+  Use a domain service when an operation is conceptually domain behaviour, spans multiple aggregates or value objects, and cannot be assigned to one object without making that object know too much.
+consequences:
+  - Keeps entities cohesive by not stuffing cross-object policies into one aggregate.
+  - Names domain operations explicitly and makes them reusable across application workflows.
+  - Can slide into an anemic domain model if every behaviour becomes a service.
+  - Must stay infrastructure-free; persistence and messaging belong in application services/adapters.
+synergies:
+  - pattern: entity
+    reason: Domain services coordinate entities without taking over behaviour that clearly belongs inside one entity.
+  - pattern: value-object
+    reason: Services should accept and return rich value objects so rules stay type-safe and intention-revealing.
+  - pattern: specification
+    reason: Specifications can package reusable predicates consumed by a domain service.
+  - pattern: service-layer
+    reason: Application services can call domain services while handling transactions, security, and integration.
+alternatives:
+  - transaction-script
+  - strategy
+conflicts_with:
+  - active-record
+languages:
+  - language-agnostic
+  - csharp
+  - java
+  - typescript
+frameworks:
+  - none
+  - dotnet
+  - spring-boot
+  - nestjs
+project_types:
+  - backend-service
+  - modular-monolith
+  - microservices
+  - web-api
+tags:
+  - ddd
+  - domain-model
+  - service
+  - cohesion
+examples:
+  - language: java
+    title: Transfer policy across accounts
+    negative: |
+      class Account {
+          void transferTo(Account destination, Money amount, ExchangeRateProvider rates) {
+              Money converted = rates.convert(amount, destination.currency());
+              if (!canDebit(amount)) throw new IllegalStateException("insufficient funds");
+              debit(amount);
+              destination.credit(converted);
+          }
+      }
+    positive: |
+      public final class FundsTransfer {
+          private final ExchangeRates exchangeRates;
+
+          public FundsTransfer(ExchangeRates exchangeRates) {
+              this.exchangeRates = exchangeRates;
+          }
+
+          public void transfer(Account source, Account destination, Money amount) {
+              if (!source.canDebit(amount)) throw new DomainException("Insufficient funds");
+              Money destinationAmount = exchangeRates.convert(amount, destination.currency());
+              source.debit(amount);
+              destination.credit(destinationAmount);
+          }
+      }
+    explanation: >-
+      The positive version avoids making Account depend on exchange-rate policy or know how another account should be credited. The transfer remains domain logic, but the service owns the cross-account operation.
+ratings:
+  small:
+    score: 2
+    notes: >-
+      Use sparingly; tiny systems often do not have enough cross-object behaviour to justify it.
+  medium:
+    score: 4
+    notes: >-
+      Good fit when rules span entities but the domain model remains behaviour-rich.
+  large:
+    score: 4
+    notes: >-
+      Valuable in large models, though overuse creates service-heavy procedural domains; guard entity behaviour carefully.
+references:
+  - title: Domain-Driven Design
+    author: Eric Evans
+    year: 2003

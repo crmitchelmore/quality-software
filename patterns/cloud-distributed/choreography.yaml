@@ -1,0 +1,113 @@
+id: choreography
+title: Choreography
+scale: integration
+category: cloud-distributed
+maturity: established
+short_description: >-
+  Coordinate a distributed workflow through events, where each participant reacts to
+  facts it owns instead of being commanded by a central orchestrator.
+description: >-
+  Choreography lets services collaborate by publishing and subscribing to domain
+  events. Each participant owns its local transaction and emits the next fact when its
+  work completes; other services decide independently whether and how to react. This
+  reduces central coupling and fits event-driven domains, but the overall process is
+  implicit in event contracts and observability rather than one executable workflow.
+  Teams need correlation identifiers, versioned events, idempotent receivers, and
+  process-level monitoring to avoid invisible failure.
+problem: >-
+  A central coordinator can become a coupling point and availability bottleneck for
+  workflows where services can naturally react to each other's completed facts.
+context: >-
+  Event-driven microservices, domain events, and business processes whose steps are
+  locally owned and can proceed asynchronously.
+consequences:
+  - Lowers direct service coupling and allows participants to evolve independently.
+  - Preserves local autonomy because each service owns its transaction and reaction rules.
+  - Makes end-to-end workflow state harder to see and reason about.
+  - Event contract drift or missed messages can break the process without one obvious owner.
+synergies:
+  - pattern: event-driven-architecture
+    reason: Choreography is a workflow style built on event publication and subscription.
+  - pattern: publish-subscribe
+    reason: Pub-sub channels distribute domain events to interested participants without direct addressing.
+  - pattern: idempotent-receiver
+    reason: Subscribers must handle duplicate events safely under at-least-once delivery.
+  - pattern: correlation-identifier
+    reason: End-to-end tracing of an implicit workflow requires a shared correlation id.
+alternatives:
+  - saga
+  - process-manager
+  - routing-slip
+conflicts_with:
+  - request-reply
+diagram: |-
+  sequenceDiagram
+    participant O as Orders
+    participant B as Broker
+    participant P as Payments
+    participant I as Inventory
+    participant S as Shipping
+    O->>B: OrderPlaced
+    B-->>P: OrderPlaced
+    P->>B: PaymentCaptured
+    B-->>I: PaymentCaptured
+    I->>B: StockReserved
+    B-->>S: StockReserved
+    S->>B: ShipmentCreated
+languages:
+  - language-agnostic
+  - typescript
+  - java
+  - csharp
+  - go
+  - python
+frameworks:
+  - kafka
+  - rabbitmq
+  - nats
+  - spring-boot
+  - dotnet
+project_types:
+  - microservices
+  - distributed-system
+  - backend-service
+  - high-throughput
+  - realtime-system
+tags:
+  - event-driven
+  - workflow
+  - decentralised
+  - async
+examples:
+  - language: typescript
+    title: Reacting to order events
+    negative: |
+      // Order service knows every downstream step and blocks on all of them.
+      await payments.capture(order.id);
+      await inventory.reserve(order.id);
+      await shipping.createShipment(order.id);
+      await orders.markReady(order.id);
+    positive: |
+      await orders.create(order);
+      await events.publish("OrderPlaced", { orderId: order.id, customerId: order.customerId });
+
+      events.on("OrderPlaced", async event => payments.capture(event.orderId));
+      events.on("PaymentCaptured", async event => inventory.reserve(event.orderId));
+      events.on("StockReserved", async event => shipping.createShipment(event.orderId));
+    explanation: >-
+      The positive version lets each service react to business facts it understands,
+      removing direct workflow calls from the order service and supporting asynchronous progress.
+ratings:
+  small:
+    score: 2
+    notes: Usually harder to understand than direct calls in small systems.
+  medium:
+    score: 4
+    notes: Good fit when several services already publish domain events and can tolerate eventual consistency.
+  large:
+    score: 4
+    notes: Powerful at scale, but needs strong observability and ownership of the emergent process.
+references:
+  - title: Microservices Patterns
+    author: Chris Richardson
+    year: 2018

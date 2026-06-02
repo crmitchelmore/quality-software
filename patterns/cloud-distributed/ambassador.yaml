@@ -1,0 +1,113 @@
+id: ambassador
+title: Ambassador
+scale: architectural
+category: cloud-distributed
+maturity: established
+short_description: >-
+  Put a local proxy in front of remote services so an application delegates
+  outbound connectivity concerns such as discovery, protocol adaptation,
+  retries, and observability to a companion component.
+description: >-
+  Ambassador is a specialised sidecar focused on outbound communication. The
+  application calls a stable local endpoint, while the ambassador locates the
+  target service, transforms protocols or credentials if necessary, applies
+  resilience policy, and emits telemetry. This keeps clients simple when remote
+  dependencies move, require complicated authentication, or need consistent
+  connection management. It is especially valuable when legacy or off-the-shelf
+  applications cannot be changed to use modern discovery and resilience libraries.
+problem: >-
+  Client applications accumulate brittle networking code: service discovery,
+  certificates, retry rules, endpoint failover, and protocol quirks for each
+  dependency.
+context: >-
+  Use when outbound connectivity is complex, repeated across clients, or must be
+  changed independently from application releases. It fits container platforms,
+  edge appliances, and migrations from legacy protocols to modern service APIs.
+consequences:
+  - Simplifies application code by presenting local, stable dependency endpoints.
+  - Allows networking policy and protocol adaptation to change without rebuilding the app.
+  - Adds latency and an extra hop on every protected call.
+  - Misconfigured ambassadors can hide dependency semantics or create unexpected retry storms.
+synergies:
+  - pattern: sidecar
+    reason: Ambassador is commonly deployed as a sidecar with a narrower outbound-proxy responsibility.
+  - pattern: retry
+    reason: The ambassador can apply standard retry budgets close to the caller, hiding transient network errors from simple clients.
+  - pattern: circuit-breaker
+    reason: A local proxy can fail fast when a remote dependency is unhealthy rather than letting many clients block.
+  - pattern: service-mesh
+    reason: Mesh data planes generalise ambassadors across inbound and outbound service traffic.
+alternatives:
+  - api-gateway
+  - gateway-offloading
+  - adapter
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - go
+  - typescript
+frameworks:
+  - kubernetes
+  - istio
+  - grpc
+  - spring-boot
+  - dotnet
+project_types:
+  - microservices
+  - distributed-system
+  - backend-service
+  - web-api
+tags:
+  - outbound-proxy
+  - protocol-adapter
+  - resilience
+diagram: |-
+  flowchart LR
+    App[App] --> Local[Local Endpoint]
+    subgraph Pod[Pod]
+      App
+      Local --> Ambassador[Ambassador]
+    end
+    Ambassador --> Discovery[Discovery]
+    Ambassador --> Remote[Remote API]
+    Ambassador --> Metrics[Metrics]
+examples:
+  - language: go
+    title: Hiding service discovery and credentials
+    negative: |
+      func LoadCustomer(ctx context.Context, id string) (*Customer, error) {
+          endpoint, err := registry.Resolve(ctx, "customer-v2")
+          if err != nil {
+              return nil, err
+          }
+          token, err := oauth.Token(ctx, "customer.read")
+          if err != nil {
+              return nil, err
+          }
+          req, _ := http.NewRequestWithContext(ctx, "GET", endpoint+"/customers/"+id, nil)
+          req.Header.Set("Authorization", "Bearer "+token)
+          return decodeCustomer(http.DefaultClient.Do(req))
+      }
+    positive: |
+      func LoadCustomer(ctx context.Context, id string) (*Customer, error) {
+          req, _ := http.NewRequestWithContext(ctx, "GET", "http://127.0.0.1:8181/customers/"+id, nil)
+          return decodeCustomer(http.DefaultClient.Do(req))
+      }
+    explanation: >-
+      The positive version lets the ambassador own discovery, credentials, and
+      failover policy. Application code depends on a stable local contract rather
+      than every remote platform detail.
+ratings:
+  small:
+    score: 2
+    notes: Rarely needed when a single client can call a dependency directly with a normal SDK.
+  medium:
+    score: 3
+    notes: Useful for legacy clients or shared outbound policy, but simpler libraries may be enough.
+  large:
+    score: 4
+    notes: Strong fit where many clients need consistent dependency access, especially during migrations.
+references:
+  - title: Microsoft Azure Architecture Center; Ambassador pattern
+    url: https://learn.microsoft.com/azure/architecture/patterns/ambassador

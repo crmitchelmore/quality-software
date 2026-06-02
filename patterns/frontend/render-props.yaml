@@ -1,0 +1,88 @@
+id: render-props
+title: Render Props
+aka:
+  - Function as Child
+scale: frontend
+category: frontend
+maturity: established
+short_description: >-
+  Share stateful behaviour through a component prop that is a function, letting the caller decide exactly what UI to render.
+description: >-
+  Render Props separate reusable behaviour from rendering by passing current state and actions into a function supplied by the consumer. The provider component owns subscriptions, measurements or async status; the caller owns markup. This pattern is especially useful when the consumer needs precise control over layout and semantics, though hooks have replaced it for many same-framework state-sharing cases.
+problem: >-
+  Behaviour needs reuse across different visual treatments, but a wrapper component or HOC would impose unwanted DOM structure or hide data flow.
+context: >-
+  Use when a library component must expose behaviour without prescribing markup, such as animation state, form field registration, drag-and-drop sensors or responsive measurements.
+consequences:
+  - Gives consumers full control of DOM, accessibility and composition.
+  - Makes data flow explicit at the call site.
+  - Inline render functions can add nesting and unstable identities if misused.
+  - Hooks are often simpler for application code that does not need component-level inversion of rendering.
+synergies:
+  - pattern: component-based-ui
+    reason: Behaviour providers stay reusable while consumer components keep their own visual boundary.
+  - pattern: higher-order-component
+    reason: Both solve behaviour reuse; render props are often clearer when the caller needs local rendering control.
+  - pattern: hooks
+    reason: A render-prop component can be a compatibility shell around an internal hook.
+alternatives:
+  - hooks
+  - higher-order-component
+  - strategy
+languages:
+  - typescript
+  - javascript
+frameworks:
+  - react
+project_types:
+  - web-frontend
+  - library
+  - sdk
+tags:
+  - inversion-of-control
+  - behaviour-reuse
+  - composition
+examples:
+  - language: typescript
+    title: Reusing mouse position without dictating markup
+    negative: |
+      function TrackingCard() {
+        const [point, setPoint] = useState({ x: 0, y: 0 });
+        return <div onMouseMove={event => setPoint({ x: event.clientX, y: event.clientY })}>
+          Pointer: {point.x}, {point.y}
+        </div>;
+      }
+
+      function TrackingChart() {
+        const [point, setPoint] = useState({ x: 0, y: 0 });
+        return <svg onMouseMove={event => setPoint({ x: event.clientX, y: event.clientY })} />;
+      }
+    positive: |
+      function PointerTracker({ children }: { children(point: Point): React.ReactNode }) {
+        const [point, setPoint] = useState({ x: 0, y: 0 });
+        return <div onMouseMove={event => setPoint({ x: event.clientX, y: event.clientY })}>
+          {children(point)}
+        </div>;
+      }
+
+      <PointerTracker>
+        {point => <output>Pointer: {point.x}, {point.y}</output>}
+      </PointerTracker>
+    explanation: >-
+      Pointer tracking is implemented once, but the caller controls the rendered element and accessibility semantics instead of accepting a hard-coded card or wrapper.
+ratings:
+  small:
+    score: 2
+    notes: >-
+      Usually more ceremony than a local hook in small apps unless authoring reusable library components.
+  medium:
+    score: 3
+    notes: >-
+      Situational for behavioural components where consumers require layout control.
+  large:
+    score: 3
+    notes: >-
+      Still useful in shared UI SDKs, but excessive nesting hurts readability and hooks are generally preferred in feature code.
+references:
+  - title: Render Props
+    url: https://legacy.reactjs.org/docs/render-props.html

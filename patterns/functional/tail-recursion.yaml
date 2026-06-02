@@ -1,0 +1,94 @@
+id: tail-recursion
+title: Tail Recursion
+aka:
+  - Tail Call Recursion
+scale: implementation
+category: functional
+maturity: time-tested
+short_description: >-
+  Structure recursion so the recursive call is the final action, allowing stack-safe optimisation or straightforward loop conversion.
+description: >-
+  Tail Recursion rewrites a recursive algorithm so it carries accumulated state as parameters and returns the recursive call directly. In runtimes with tail-call optimisation, this runs in constant stack space; elsewhere, the same shape can be safely translated to an explicit loop. The pattern is most useful for structurally recursive algorithms in functional code.
+problem: >-
+  Naive recursion can overflow the call stack or retain pending operations for every element in a large input.
+context: >-
+  Use for recursive traversal, folds, parsers, and algorithms over lists/trees when the language optimises tail calls or when you want a clear route to loop conversion.
+consequences:
+  - >-
+    Preserves recursive structure while avoiding unbounded stack growth in supporting runtimes.
+  - Makes accumulator state explicit and often easier to test.
+  - Can be less direct than the mathematical definition for small inputs.
+  - >-
+    Not all runtimes optimise tail calls; verify language behaviour before relying on it.
+synergies:
+  - pattern: map-filter-reduce
+    reason: >-
+      A tail-recursive fold is the primitive beneath many reduce operations.
+  - pattern: persistent-data-structure
+    reason: >-
+      Recursive traversal over persistent lists/trees often needs tail-recursive helpers for stack safety.
+  - pattern: guard-clause
+    reason: >-
+      Base-case guard clauses make recursive termination conditions obvious.
+  - pattern: iterator
+    reason: >-
+      In non-TCO runtimes, an iterator or loop may be the safer alternative.
+alternatives:
+  - iterator
+  - fork-join
+  - map-filter-reduce
+languages:
+  - scala
+  - haskell
+  - elixir
+  - clojure
+  - haskell
+  - rust
+frameworks:
+  - none
+project_types:
+  - library
+  - data-pipeline
+  - backend-service
+  - cli-tool
+tags:
+  - recursion
+  - stack-safety
+  - algorithms
+examples:
+  - language: scala
+    title: Summing a list stack-safely
+    negative: |
+      def sum(values: List[Int]): Int =
+        values match {
+          case Nil => 0
+          case head :: tail => head + sum(tail)
+        }
+    positive: |
+      import scala.annotation.tailrec
+      
+      @tailrec
+      def sum(values: List[Int], total: Int = 0): Int =
+        values match {
+          case Nil => total
+          case head :: tail => sum(tail, total + head)
+        }
+    explanation: >-
+      The positive version has no pending addition after the recursive call, and the @tailrec annotation makes the compiler reject regressions that would reintroduce stack growth.
+ratings:
+  small:
+    score: 3
+    notes: >-
+      Situational; loops may be clearer in languages without tail-call guarantees.
+  medium:
+    score: 4
+    notes: >-
+      Good for recursive functional modules and parsers when compiler support exists.
+  large:
+    score: 4
+    notes: >-
+      Important for stack safety in functional services, but enforce with compiler annotations or tests.
+references:
+  - title: Structure and Interpretation of Computer Programs
+    author: Harold Abelson, Gerald Jay Sussman
+    year: 1985

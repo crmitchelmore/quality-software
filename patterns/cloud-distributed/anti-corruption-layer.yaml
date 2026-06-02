@@ -1,0 +1,113 @@
+id: anti-corruption-layer
+title: Anti-Corruption Layer
+scale: integration
+category: cloud-distributed
+maturity: time-tested
+short_description: >-
+  Insert a translation boundary between systems so an external model, protocol,
+  or lifecycle cannot leak into and distort the local domain model.
+description: >-
+  An Anti-Corruption Layer (ACL) protects a system from another system's language,
+  assumptions, and data quality. It translates requests and responses, maps
+  identifiers, normalises error semantics, and absorbs legacy quirks behind a
+  deliberate boundary. The goal is not merely object mapping; it is preserving the
+  integrity of the local model while still integrating with a partner, vendor,
+  legacy platform, or neighbouring bounded context that evolves independently.
+problem: >-
+  Direct integration with an external model causes foreign names, nullable fields,
+  state transitions, and error codes to spread through local code until the local
+  design becomes coupled to another system's constraints.
+context: >-
+  Use at bounded-context seams, vendor integrations, legacy strangler migrations,
+  and multi-team APIs where the external contract cannot be changed to match the
+  consuming domain.
+consequences:
+  - Keeps the local model clean and intention-revealing even when the remote system is messy.
+  - Makes integration assumptions explicit and testable at one boundary.
+  - Adds mapping code and a second vocabulary that must be maintained.
+  - Can become a dumping ground unless ownership and translation rules are clear.
+synergies:
+  - pattern: bounded-context
+    reason: ACLs enforce the translation boundary between contexts with different ubiquitous languages.
+  - pattern: message-translator
+    reason: Message Translator is the integration-level mechanism often used inside an ACL.
+  - pattern: strangler-fig
+    reason: During migration, the ACL shields new code from legacy models while functionality is peeled away.
+  - pattern: hexagonal-architecture
+    reason: The ACL naturally sits in an outbound or inbound adapter, keeping the application core pure.
+alternatives:
+  - canonical-data-model
+  - shared-kernel
+  - conformist
+languages:
+  - language-agnostic
+  - typescript
+  - java
+  - csharp
+  - go
+  - python
+frameworks:
+  - spring-boot
+  - dotnet
+  - nestjs
+  - nodejs
+  - grpc
+project_types:
+  - backend-service
+  - microservices
+  - modular-monolith
+  - distributed-system
+tags:
+  - translation
+  - boundaries
+  - legacy-integration
+examples:
+  - language: typescript
+    title: Translating a vendor order model
+    negative: |
+      // Vendor fields and states leak into the local domain and tests.
+      async function canShip(orderId: string): Promise<boolean> {
+        const raw = await vendor.get(`/ORD/${orderId}`);
+        return raw.STS === "REL" && raw.HOLD_FLG !== "Y" && raw.ship_to?.cntry !== "BLOCKED";
+      }
+    positive: |
+      type FulfilmentStatus = "released" | "blocked" | "pending";
+
+      interface FulfilmentOrder {
+        id: string;
+        status: FulfilmentStatus;
+        destinationCountry: string;
+      }
+
+      class VendorOrderAcl {
+        async load(orderId: string): Promise<FulfilmentOrder> {
+          const raw = await vendor.get(`/ORD/${orderId}`);
+          return {
+            id: raw.ORD_NO,
+            status: raw.HOLD_FLG === "Y" ? "blocked" : raw.STS === "REL" ? "released" : "pending",
+            destinationCountry: raw.ship_to?.cntry ?? "unknown",
+          };
+        }
+      }
+
+      async function canShip(orderId: string): Promise<boolean> {
+        const order = await acl.load(orderId);
+        return order.status === "released" && order.destinationCountry !== "BLOCKED";
+      }
+    explanation: >-
+      The positive version confines vendor field names and status codes to the ACL,
+      so local code works with explicit domain concepts and can change independently.
+ratings:
+  small:
+    score: 2
+    notes: Often unnecessary for a small app with one simple, stable dependency.
+  medium:
+    score: 4
+    notes: Valuable when external contracts are owned by other teams or vendors.
+  large:
+    score: 5
+    notes: Essential across bounded contexts and legacy migrations where model pollution is otherwise costly.
+references:
+  - title: Domain-Driven Design
+    author: Eric Evans
+    year: 2003

@@ -1,0 +1,98 @@
+id: factory
+title: Factory (DDD)
+scale: design
+category: ddd-tactical
+maturity: time-tested
+short_description: >-
+  Encapsulate complex creation of aggregates or value objects so newly created domain objects are valid and intention-revealing from the start.
+description: >-
+  A DDD Factory centralises creation logic when constructing an object is more than calling a constructor. It may assign identities, choose subtypes, assemble child entities, validate cross-field rules, or translate a creation command into a valid aggregate. Unlike a generic GoF factory, a DDD factory is part of the domain model when creation itself contains domain rules. Use named creation methods such as registerNewCustomer or createTrialSubscription, and keep persistence and transport concerns outside.
+problem: >-
+  Complex constructors and scattered object initialisation let callers forget required fields, create partially valid aggregates, or duplicate creation rules across application services.
+context: >-
+  Use a factory when creating an aggregate or value object requires non-trivial rules, generated identifiers, default policies, or coordination of several domain objects.
+consequences:
+  - Makes object creation explicit, valid, and expressed in domain language.
+  - Keeps constructors small while still protecting invariants.
+  - Reduces duplication of defaulting and assembly rules.
+  - Can become a dumping ground if it performs persistence, orchestration, or unrelated calculations.
+synergies:
+  - pattern: aggregate
+    reason: Factories can create aggregate roots with all required child entities and invariants established.
+  - pattern: value-object
+    reason: Factories often compose validated value objects during aggregate creation.
+  - pattern: repository
+    reason: Factories create new aggregates; repositories later persist and rehydrate existing ones.
+  - pattern: builder
+    reason: Builders can help tests assemble many optional inputs, while factories enforce production creation rules.
+alternatives:
+  - factory-method
+  - abstract-factory
+  - builder
+conflicts_with:
+  - active-record
+languages:
+  - language-agnostic
+  - csharp
+  - java
+  - typescript
+frameworks:
+  - none
+  - dotnet
+  - spring-boot
+  - nestjs
+project_types:
+  - backend-service
+  - modular-monolith
+  - microservices
+  - web-api
+tags:
+  - ddd
+  - creation
+  - invariants
+  - aggregates
+examples:
+  - language: typescript
+    title: Creating a trial subscription
+    negative: |
+      const subscription = new Subscription();
+      subscription.id = randomUUID();
+      subscription.customerId = customerId;
+      subscription.plan = "trial";
+      subscription.endsAt = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
+      subscription.status = "active";
+      subscription.seats = requestedSeats;
+    positive: |
+      class SubscriptionFactory {
+        constructor(private readonly ids: IdGenerator, private readonly clock: Clock) {}
+
+        createTrial(customerId: CustomerId, requestedSeats: number): Subscription {
+          const seats = SeatCount.of(requestedSeats);
+          const period = DateRange.startingOn(this.clock.today()).forDays(14);
+          return Subscription.startTrial(
+            SubscriptionId.of(this.ids.next()),
+            customerId,
+            seats,
+            period,
+          );
+        }
+      }
+    explanation: >-
+      The positive version names the creation use case and prevents callers from forgetting identity, status, seat validation, or trial-period calculation.
+ratings:
+  small:
+    score: 2
+    notes: >-
+      Usually unnecessary when constructors are simple; named constructors may be enough.
+  medium:
+    score: 4
+    notes: >-
+      Useful when aggregates have complex creation rules or multiple creation scenarios.
+  large:
+    score: 4
+    notes: >-
+      Strong fit for complex domains, especially when creation policies must remain consistent across teams and applications.
+references:
+  - title: Domain-Driven Design
+    author: Eric Evans
+    year: 2003

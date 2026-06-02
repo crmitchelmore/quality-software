@@ -1,0 +1,112 @@
+id: future-promise
+title: Future / Promise
+aka:
+  - Deferred Result
+  - Task
+scale: concurrency
+category: concurrency
+maturity: time-tested
+short_description: >-
+  Represent a result that will be available later, allowing work to run concurrently while callers compose, await, cancel, or observe completion.
+description: >-
+  A Future is a read handle for an eventual value or failure; a Promise is the write side that completes it. The pattern decouples starting work from consuming its result and turns callback-heavy coordination into explicit values that can be awaited, combined, timed out, or cancelled. It is most useful when the result has exactly one completion and many potential observers. Correct use requires handling failures and cancellation as first-class outcomes, avoiding blocking waits on event-loop or pool threads, and keeping ownership of the Promise narrow so completion cannot race or happen twice.
+problem: >-
+  Concurrent work needs to return values, failures, and cancellation to callers without blocking the caller immediately or exposing low-level thread coordination.
+context: >-
+  Use for asynchronous I/O, task execution, fan-out/fan-in, and APIs where clients should compose operations without knowing whether they run on threads, event loops, or remote callbacks.
+consequences:
+  - Makes eventual results composable and explicit, including errors and timeouts.
+  - Can hide where work executes; blocking on futures can deadlock event loops or saturated pools.
+  - Cancellation and resource cleanup must be designed, not bolted on later.
+  - Promise completion should be single-owner to avoid double-complete races.
+synergies:
+  - pattern: thread-pool
+    reason: Executor submission commonly returns a Future tied to work scheduled on a pool.
+  - pattern: actor-model
+    reason: Ask-style actor interactions often return a Future for the eventual reply.
+  - pattern: reactor
+    reason: Reactor callbacks frequently complete promises so callers can await without blocking the event loop.
+  - pattern: timeout
+    reason: Futures compose naturally with deadlines so callers do not wait forever.
+alternatives:
+  - observer
+  - proactor
+  - communicating-sequential-processes
+conflicts_with:
+  - active-object
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - go
+  - python
+  - cpp
+frameworks:
+  - none
+  - dotnet
+  - spring
+  - tokio
+  - nodejs
+project_types:
+  - backend-service
+  - web-api
+  - desktop-app
+  - high-throughput
+tags:
+  - async
+  - eventual-result
+  - composition
+examples:
+  - language: python
+    title: Returning a result from background work
+    negative: |
+      import threading
+
+      result = None
+      error = None
+
+      def load_user(user_id):
+          global result, error
+          try:
+              result = fetch_user(user_id)
+          except Exception as exc:
+              error = exc
+
+      threading.Thread(target=load_user, args=(42,)).start()
+      # Race: the read may happen before the thread writes; exceptions are out-of-band.
+      if error:
+          raise error
+      print(result.name)
+    positive: |
+      from concurrent.futures import ThreadPoolExecutor, TimeoutError
+
+      executor = ThreadPoolExecutor(max_workers=8)
+      future = executor.submit(fetch_user, 42)
+
+      try:
+          user = future.result(timeout=0.5)   # waits with a deadline and re-raises failure
+          print(user.name)
+      except TimeoutError:
+          future.cancel()
+          raise
+      finally:
+          executor.shutdown(wait=False, cancel_futures=True)
+    explanation: >-
+      The positive version packages completion, failure, and cancellation into one synchronised object. The caller never reads shared mutable globals and can bound waiting with a timeout.
+ratings:
+  small:
+    score: 4
+    notes: >-
+      Strong fit whenever a small app already does async work; avoid if a plain synchronous call is clearer.
+  medium:
+    score: 5
+    notes: >-
+      Excellent for composing I/O and background tasks, especially with deadlines and structured error handling.
+  large:
+    score: 4
+    notes: >-
+      Still foundational, but large systems must standardise cancellation, tracing context propagation, and avoid chains that obscure ownership.
+references:
+  - title: Promises/A+
+    year: 2012
+    url: https://promisesaplus.com/

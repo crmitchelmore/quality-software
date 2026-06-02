@@ -1,0 +1,126 @@
+id: bulkhead
+title: Bulkhead
+scale: integration
+category: resilience
+maturity: time-tested
+aka:
+  - Resource Partitioning
+  - Isolation Pool
+short_description: >-
+  Partition execution resources so one slow or failing dependency cannot consume every
+  thread, connection, queue slot or worker needed by the rest of the system.
+description: >-
+  A bulkhead isolates failure by assigning separate capacity to different workloads,
+  tenants, priorities or dependencies. Like watertight compartments in a ship, each
+  partition has its own concurrency limit, queue and sometimes connection pool. When
+  one dependency stalls, only its compartment fills; unrelated traffic still has
+  reserved capacity. Good bulkheads are explicit about what they protect, expose queue
+  depth and rejection metrics, and choose bounded queues over unbounded buffering.
+  They can be implemented in-process with semaphores and worker pools, at the runtime
+  with separate executors, or operationally with separate pods, pools or clusters.
+problem: >-
+  Shared pools create hidden coupling: a slow analytics API, noisy tenant or blocked
+  queue can occupy every worker and make unrelated critical paths fail. Scaling the
+  shared pool often delays the incident while increasing contention and memory use.
+context: >-
+  Use when an application calls dependencies with different reliability profiles,
+  serves mixed-priority traffic, or processes multiple tenants/workloads through common
+  infrastructure. Bulkheads are especially valuable when the caller cannot control
+  downstream latency.
+consequences:
+  - Contains failure and protects critical traffic from noisy neighbours.
+  - Makes capacity allocation deliberate and measurable by dependency or workload.
+  - Can reduce average utilisation because reserved capacity may sit idle.
+  - Requires careful sizing and rejection behaviour; too many partitions add operational complexity.
+synergies:
+  - pattern: circuit-breaker
+    reason: A breaker fails fast for a sick dependency while the bulkhead ensures it cannot exhaust shared resources first.
+  - pattern: timeout
+    reason: Timeouts drain occupied slots; without them, a bulkhead can still fill permanently.
+  - pattern: load-shedding
+    reason: Once a compartment is full, load shedding provides a controlled refusal instead of unbounded queuing.
+  - pattern: rate-limiting
+    reason: Rate limits reduce admitted work while bulkheads reserve capacity for each class of work.
+alternatives:
+  - thread-pool
+  - queue-based-load-leveling
+  - deployment-stamp
+languages:
+  - language-agnostic
+  - java
+  - csharp
+  - go
+  - typescript
+frameworks:
+  - none
+  - spring-boot
+  - dotnet
+  - nodejs
+  - kubernetes
+project_types:
+  - backend-service
+  - web-api
+  - microservices
+  - distributed-system
+  - high-throughput
+tags:
+  - resilience
+  - isolation
+  - resource-management
+  - fault-containment
+examples:
+  - language: typescript
+    title: Isolating dependency concurrency
+    negative: |
+      // All dependencies share the same unbounded promise fan-out.
+      async function renderDashboard(userId: string): Promise<Dashboard> {
+        const [account, recommendations, adverts] = await Promise.all([
+          accountClient.get(userId),
+          recommendationClient.get(userId),
+          advertClient.get(userId),
+        ]);
+        return { account, recommendations, adverts };
+      }
+    positive: |
+      import { Semaphore } from "async-mutex";
+
+      const accounts = new Semaphore(50);
+      const recommendations = new Semaphore(10);
+      const adverts = new Semaphore(5);
+
+      async function withBulkhead<T>(pool: Semaphore, work: () => Promise<T>): Promise<T> {
+        const [release] = await pool.acquire();
+        try {
+          return await work();
+        } finally {
+          release();
+        }
+      }
+
+      async function renderDashboard(userId: string): Promise<Dashboard> {
+        const [account, recs, ads] = await Promise.allSettled([
+          withBulkhead(accounts, () => accountClient.get(userId)),
+          withBulkhead(recommendations, () => recommendationClient.get(userId)),
+          withBulkhead(adverts, () => advertClient.get(userId)),
+        ]);
+        return composeDashboard(account, recs, ads);
+      }
+    explanation: >-
+      The positive version reserves independent concurrency for each downstream path,
+      so a slow advert service cannot consume capacity needed for account data.
+ratings:
+  small:
+    score: 2
+    notes: Usually unnecessary unless the app has several unreliable dependencies or mixed-priority workloads.
+  medium:
+    score: 4
+    notes: Strong fit for APIs and workers sharing pools across important integrations.
+  large:
+    score: 5
+    notes: Critical for multi-tenant and microservice estates where noisy neighbours are inevitable.
+references:
+  - title: Release It! Design and Deploy Production-Ready Software
+    author: Michael T. Nygard
+    year: 2007
+  - title: Microsoft Azure Architecture Center; Bulkhead pattern
+    url: https://learn.microsoft.com/azure/architecture/patterns/bulkhead

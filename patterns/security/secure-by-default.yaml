@@ -1,0 +1,92 @@
+id: secure-by-default
+title: Secure by Default
+aka:
+  - Safe defaults
+  - Default deny
+scale: design
+category: security
+maturity: time-tested
+short_description: >-
+  Design APIs, configurations, and workflows so the easiest path is the safe path and insecure behaviour requires explicit, visible opt-in.
+description: >-
+  Secure by Default moves security from optional diligence into product and API design. New routes require authentication unless marked public, cookies default to Secure and HttpOnly, debug features are off outside development, and generated credentials are scoped and short-lived. Defaults should fail closed and be hard to accidentally weaken. This pattern reduces reliance on every caller remembering every security knob and makes dangerous choices reviewable.
+problem: >-
+  Insecure defaults are copied widely; teams ship exposed admin routes, permissive CORS, debug modes, or broad permissions because unsafe setup was the path of least resistance.
+context: >-
+  Use when designing frameworks, service templates, platform defaults, libraries, and product features with security-relevant configuration.
+consequences:
+  - >-
+    Prevents classes of misconfiguration before code review or scanning.
+  - >-
+    Makes exceptions explicit and auditable.
+  - >-
+    Can frustrate rapid prototyping if escape hatches are unclear; provide safe local-development modes.
+synergies:
+  - pattern: least-privilege
+    reason: >-
+      Default-deny permissions make least privilege the natural starting point.
+  - pattern: input-validation
+    reason: >-
+      Reject-by-default validators embody secure-by-default at data boundaries.
+  - pattern: output-encoding
+    reason: >-
+      Auto-escaping templates make safe rendering the default path.
+  - pattern: defense-in-depth
+    reason: >-
+      Secure defaults ensure each layer starts in its safest reasonable state.
+alternatives:
+  - defense-in-depth
+languages:
+  - language-agnostic
+  - javascript
+  - typescript
+  - python
+  - java
+frameworks:
+  - none
+  - nodejs
+  - express
+  - spring-boot
+  - fastapi
+  - django
+project_types:
+  - web-api
+  - backend-service
+  - microservices
+  - distributed-system
+  - web-frontend
+tags:
+  - safe-defaults
+  - default-deny
+  - configuration
+examples:
+  - language: typescript
+    title: Authentication middleware defaults
+    negative: |-
+      const router = express.Router();
+      
+      router.get("/health", health);
+      router.get("/admin/users", adminUsers); // accidentally public
+      router.post("/admin/reindex", reindex); // accidentally public
+    positive: |-
+      const router = express.Router();
+      router.use(requireAuthenticatedUser);
+      
+      router.get("/health", allowAnonymous, health);
+      router.get("/admin/users", requireScope("users:admin:read"), adminUsers);
+      router.post("/admin/reindex", requireScope("search:admin:write"), reindex);
+    explanation: >-
+      The positive router requires authentication by default and makes public access the exception. Sensitive routes then add explicit scopes, reducing accidental exposure.
+ratings:
+  small:
+    score: 4
+    notes: >-
+      High leverage even in small apps because defaults are copied.
+  medium:
+    score: 5
+    notes: >-
+      Excellent for service templates and shared libraries used by multiple teams.
+  large:
+    score: 5
+    notes: >-
+      Essential for platforms and large organisations where configuration drift is inevitable.
