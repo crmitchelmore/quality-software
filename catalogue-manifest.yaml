@@ -1,0 +1,300 @@
+# Pattern catalogue manifest — single source of truth for IDs (prevents dupes & broken xrefs)
+# Each id appears exactly once with its home category + scale. Agents author to these ids
+# and may only cross-reference ids that appear in this file.
+
+# ===== GoF Creational (gof-creational, design) =====
+- {id: singleton, title: Singleton, category: gof-creational, scale: design}
+- {id: factory-method, title: Factory Method, category: gof-creational, scale: design}
+- {id: abstract-factory, title: Abstract Factory, category: gof-creational, scale: design}
+- {id: builder, title: Builder, category: gof-creational, scale: design}
+- {id: prototype, title: Prototype, category: gof-creational, scale: design}
+
+# ===== GoF Structural (gof-structural, design) =====
+- {id: adapter, title: Adapter, category: gof-structural, scale: design}
+- {id: bridge, title: Bridge, category: gof-structural, scale: design}
+- {id: composite, title: Composite, category: gof-structural, scale: design}
+- {id: decorator, title: Decorator, category: gof-structural, scale: design}
+- {id: facade, title: Facade, category: gof-structural, scale: design}
+- {id: flyweight, title: Flyweight, category: gof-structural, scale: design}
+- {id: proxy, title: Proxy, category: gof-structural, scale: design}
+
+# ===== GoF Behavioural (gof-behavioural, design) =====
+- {id: chain-of-responsibility, title: Chain of Responsibility, category: gof-behavioural, scale: design}
+- {id: command, title: Command, category: gof-behavioural, scale: design}
+- {id: interpreter, title: Interpreter, category: gof-behavioural, scale: design}
+- {id: iterator, title: Iterator, category: gof-behavioural, scale: design}
+- {id: mediator, title: Mediator, category: gof-behavioural, scale: design}
+- {id: memento, title: Memento, category: gof-behavioural, scale: design}
+- {id: observer, title: Observer, category: gof-behavioural, scale: design}
+- {id: state, title: State, category: gof-behavioural, scale: design}
+- {id: strategy, title: Strategy, category: gof-behavioural, scale: design}          # DONE
+- {id: template-method, title: Template Method, category: gof-behavioural, scale: design}
+- {id: visitor, title: Visitor, category: gof-behavioural, scale: design}
+
+# ===== Architecture (architecture, architectural — REQUIRE mermaid) =====
+- {id: layered-architecture, title: Layered (N-Tier) Architecture, category: architecture, scale: architectural}
+- {id: hexagonal-architecture, title: Hexagonal Architecture (Ports & Adapters), category: architecture, scale: architectural} # DONE
+- {id: clean-architecture, title: Clean Architecture, category: architecture, scale: architectural}
+- {id: onion-architecture, title: Onion Architecture, category: architecture, scale: architectural}
+- {id: microservices, title: Microservices, category: architecture, scale: architectural}
+- {id: modular-monolith, title: Modular Monolith, category: architecture, scale: architectural}
+- {id: monolith, title: Monolith, category: architecture, scale: architectural}
+- {id: service-oriented-architecture, title: Service-Oriented Architecture (SOA), category: architecture, scale: architectural}
+- {id: event-driven-architecture, title: Event-Driven Architecture, category: architecture, scale: architectural}
+- {id: cqrs, title: CQRS (Command Query Responsibility Segregation), category: architecture, scale: architectural}
+- {id: event-sourcing, title: Event Sourcing, category: architecture, scale: architectural}
+- {id: microkernel, title: Microkernel (Plugin) Architecture, category: architecture, scale: architectural}
+- {id: pipes-and-filters, title: Pipes and Filters, category: architecture, scale: architectural}
+- {id: broker-architecture, title: Broker Architecture, category: architecture, scale: architectural}
+- {id: space-based-architecture, title: Space-Based Architecture, category: architecture, scale: architectural}
+- {id: serverless-architecture, title: Serverless / FaaS Architecture, category: architecture, scale: architectural}
+- {id: service-mesh, title: Service Mesh, category: architecture, scale: architectural}
+- {id: api-gateway, title: API Gateway, category: architecture, scale: architectural}
+- {id: backend-for-frontend, title: Backend for Frontend (BFF), category: architecture, scale: architectural}
+- {id: strangler-fig, title: Strangler Fig, category: architecture, scale: architectural}
+- {id: cell-based-architecture, title: Cell-Based Architecture, category: architecture, scale: architectural}
+- {id: model-view-controller, title: Model-View-Controller (MVC), category: architecture, scale: architectural}
+- {id: client-server, title: Client-Server, category: architecture, scale: architectural}
+- {id: peer-to-peer, title: Peer-to-Peer, category: architecture, scale: architectural}
+
+# ===== Cloud / Distributed (cloud-distributed) =====
+- {id: sidecar, title: Sidecar, category: cloud-distributed, scale: architectural}
+- {id: ambassador, title: Ambassador, category: cloud-distributed, scale: architectural}
+- {id: anti-corruption-layer, title: Anti-Corruption Layer, category: cloud-distributed, scale: integration}
+- {id: cache-aside, title: Cache-Aside, category: cloud-distributed, scale: data}
+- {id: gatekeeper, title: Gatekeeper, category: cloud-distributed, scale: architectural}
+- {id: valet-key, title: Valet Key, category: cloud-distributed, scale: integration}
+- {id: federated-identity, title: Federated Identity, category: cloud-distributed, scale: integration}
+- {id: competing-consumers, title: Competing Consumers, category: cloud-distributed, scale: integration}
+- {id: claim-check, title: Claim Check, category: cloud-distributed, scale: integration}
+- {id: queue-based-load-leveling, title: Queue-Based Load Leveling, category: cloud-distributed, scale: integration}
+- {id: throttling, title: Throttling, category: cloud-distributed, scale: integration}
+- {id: materialized-view, title: Materialized View, category: cloud-distributed, scale: data}
+- {id: sharding, title: Sharding, category: cloud-distributed, scale: data}
+- {id: geode, title: Geode (Geo-Distributed), category: cloud-distributed, scale: architectural}
+- {id: leader-election, title: Leader Election, category: cloud-distributed, scale: architectural}
+- {id: health-endpoint-monitoring, title: Health Endpoint Monitoring, category: cloud-distributed, scale: integration}
+- {id: compensating-transaction, title: Compensating Transaction, category: cloud-distributed, scale: integration}
+- {id: gateway-aggregation, title: Gateway Aggregation, category: cloud-distributed, scale: integration}
+- {id: gateway-offloading, title: Gateway Offloading, category: cloud-distributed, scale: integration}
+- {id: deployment-stamp, title: Deployment Stamp (Cells), category: cloud-distributed, scale: architectural}
+- {id: scheduler-agent-supervisor, title: Scheduler-Agent-Supervisor, category: cloud-distributed, scale: integration}
+- {id: choreography, title: Choreography, category: cloud-distributed, scale: integration}
+- {id: saga, title: Saga, category: cloud-distributed, scale: integration}
+- {id: outbox, title: Transactional Outbox, category: cloud-distributed, scale: data}
+
+# ===== Resilience (resilience) =====
+- {id: circuit-breaker, title: Circuit Breaker, category: resilience, scale: integration}  # DONE
+- {id: retry, title: Retry with Backoff, category: resilience, scale: integration}
+- {id: timeout, title: Timeout, category: resilience, scale: integration}
+- {id: bulkhead, title: Bulkhead, category: resilience, scale: integration}
+- {id: fallback, title: Fallback, category: resilience, scale: integration}
+- {id: backpressure, title: Backpressure, category: resilience, scale: concurrency}
+- {id: load-shedding, title: Load Shedding, category: resilience, scale: integration}
+- {id: rate-limiting, title: Rate Limiting, category: resilience, scale: integration}
+- {id: idempotency, title: Idempotency, category: resilience, scale: integration}
+- {id: hedged-requests, title: Hedged Requests, category: resilience, scale: integration}
+
+# ===== Enterprise Application / PoEAA (enterprise-application) =====
+- {id: unit-of-work, title: Unit of Work, category: enterprise-application, scale: data}
+- {id: identity-map, title: Identity Map, category: enterprise-application, scale: data}
+- {id: lazy-load, title: Lazy Load, category: enterprise-application, scale: data}
+- {id: data-mapper, title: Data Mapper, category: enterprise-application, scale: data}
+- {id: active-record, title: Active Record, category: enterprise-application, scale: data}
+- {id: table-data-gateway, title: Table Data Gateway, category: enterprise-application, scale: data}
+- {id: row-data-gateway, title: Row Data Gateway, category: enterprise-application, scale: data}
+- {id: domain-model, title: Domain Model, category: enterprise-application, scale: design}
+- {id: transaction-script, title: Transaction Script, category: enterprise-application, scale: design}
+- {id: service-layer, title: Service Layer, category: enterprise-application, scale: design}
+- {id: table-module, title: Table Module, category: enterprise-application, scale: design}
+- {id: front-controller, title: Front Controller, category: enterprise-application, scale: design}
+- {id: page-controller, title: Page Controller, category: enterprise-application, scale: design}
+- {id: template-view, title: Template View, category: enterprise-application, scale: design}
+- {id: application-controller, title: Application Controller, category: enterprise-application, scale: design}
+- {id: layer-supertype, title: Layer Supertype, category: enterprise-application, scale: design}
+- {id: separated-interface, title: Separated Interface, category: enterprise-application, scale: design}
+- {id: registry, title: Registry, category: enterprise-application, scale: design}
+- {id: special-case, title: Special Case, category: enterprise-application, scale: design}
+- {id: gateway, title: Gateway, category: enterprise-application, scale: integration}
+- {id: mapper, title: Mapper, category: enterprise-application, scale: design}
+- {id: optimistic-offline-lock, title: Optimistic Offline Lock, category: enterprise-application, scale: data}
+- {id: pessimistic-offline-lock, title: Pessimistic Offline Lock, category: enterprise-application, scale: data}
+- {id: single-table-inheritance, title: Single Table Inheritance, category: enterprise-application, scale: data}
+- {id: class-table-inheritance, title: Class Table Inheritance, category: enterprise-application, scale: data}
+- {id: metadata-mapping, title: Metadata Mapping, category: enterprise-application, scale: data}
+- {id: query-object, title: Query Object, category: enterprise-application, scale: data}
+- {id: data-transfer-object, title: Data Transfer Object (DTO), category: enterprise-application, scale: design}
+
+# ===== Enterprise Integration / EIP (enterprise-integration / messaging) =====
+- {id: message-channel, title: Message Channel, category: enterprise-integration, scale: integration}
+- {id: message-router, title: Message Router, category: enterprise-integration, scale: integration}
+- {id: content-based-router, title: Content-Based Router, category: enterprise-integration, scale: integration}
+- {id: message-filter, title: Message Filter, category: enterprise-integration, scale: integration}
+- {id: message-translator, title: Message Translator, category: enterprise-integration, scale: integration}
+- {id: message-endpoint, title: Message Endpoint, category: enterprise-integration, scale: integration}
+- {id: splitter, title: Splitter, category: enterprise-integration, scale: integration}
+- {id: aggregator, title: Aggregator, category: enterprise-integration, scale: integration}
+- {id: resequencer, title: Resequencer, category: enterprise-integration, scale: integration}
+- {id: scatter-gather, title: Scatter-Gather, category: enterprise-integration, scale: integration}
+- {id: routing-slip, title: Routing Slip, category: enterprise-integration, scale: integration}
+- {id: process-manager, title: Process Manager, category: enterprise-integration, scale: integration}
+- {id: canonical-data-model, title: Canonical Data Model, category: enterprise-integration, scale: integration}
+- {id: polling-consumer, title: Polling Consumer, category: enterprise-integration, scale: integration}
+- {id: event-driven-consumer, title: Event-Driven Consumer, category: enterprise-integration, scale: integration}
+- {id: idempotent-receiver, title: Idempotent Receiver, category: enterprise-integration, scale: integration}
+- {id: dead-letter-channel, title: Dead Letter Channel, category: enterprise-integration, scale: integration}
+- {id: guaranteed-delivery, title: Guaranteed Delivery, category: enterprise-integration, scale: integration}
+- {id: wire-tap, title: Wire Tap, category: enterprise-integration, scale: integration}
+- {id: publish-subscribe, title: Publish-Subscribe Channel, category: enterprise-integration, scale: integration}
+- {id: request-reply, title: Request-Reply, category: enterprise-integration, scale: integration}
+- {id: correlation-identifier, title: Correlation Identifier, category: enterprise-integration, scale: integration}
+- {id: message-bus, title: Message Bus, category: enterprise-integration, scale: integration}
+
+# ===== DDD tactical & strategic (ddd-tactical / ddd-strategic) =====
+- {id: entity, title: Entity, category: ddd-tactical, scale: design}
+- {id: value-object, title: Value Object, category: ddd-tactical, scale: design}
+- {id: aggregate, title: Aggregate, category: ddd-tactical, scale: design}
+- {id: domain-event, title: Domain Event, category: ddd-tactical, scale: design}
+- {id: domain-service, title: Domain Service, category: ddd-tactical, scale: design}
+- {id: factory, title: Factory (DDD), category: ddd-tactical, scale: design}
+- {id: specification, title: Specification, category: ddd-tactical, scale: design}
+- {id: bounded-context, title: Bounded Context, category: ddd-strategic, scale: architectural}
+- {id: ubiquitous-language, title: Ubiquitous Language, category: ddd-strategic, scale: organisational}
+- {id: context-map, title: Context Map, category: ddd-strategic, scale: architectural}
+- {id: shared-kernel, title: Shared Kernel, category: ddd-strategic, scale: organisational}
+- {id: customer-supplier, title: Customer-Supplier, category: ddd-strategic, scale: organisational}
+- {id: conformist, title: Conformist, category: ddd-strategic, scale: organisational}
+- {id: open-host-service, title: Open Host Service, category: ddd-strategic, scale: integration}
+- {id: published-language, title: Published Language, category: ddd-strategic, scale: integration}
+
+# ===== Concurrency (concurrency) =====
+- {id: producer-consumer, title: Producer-Consumer, category: concurrency, scale: concurrency}
+- {id: thread-pool, title: Thread Pool, category: concurrency, scale: concurrency}
+- {id: future-promise, title: Future / Promise, category: concurrency, scale: concurrency}
+- {id: active-object, title: Active Object, category: concurrency, scale: concurrency}
+- {id: monitor-object, title: Monitor Object, category: concurrency, scale: concurrency}
+- {id: read-write-lock, title: Read-Write Lock, category: concurrency, scale: concurrency}
+- {id: double-checked-locking, title: Double-Checked Locking, category: concurrency, scale: concurrency}
+- {id: guarded-suspension, title: Guarded Suspension, category: concurrency, scale: concurrency}
+- {id: balking, title: Balking, category: concurrency, scale: concurrency}
+- {id: half-sync-half-async, title: Half-Sync/Half-Async, category: concurrency, scale: concurrency}
+- {id: reactor, title: Reactor, category: concurrency, scale: concurrency}
+- {id: proactor, title: Proactor, category: concurrency, scale: concurrency}
+- {id: thread-specific-storage, title: Thread-Specific Storage, category: concurrency, scale: concurrency}
+- {id: actor-model, title: Actor Model, category: concurrency, scale: concurrency}
+- {id: communicating-sequential-processes, title: Communicating Sequential Processes (CSP), category: concurrency, scale: concurrency}
+- {id: fork-join, title: Fork-Join, category: concurrency, scale: concurrency}
+- {id: barrier, title: Barrier, category: concurrency, scale: concurrency}
+- {id: immutable-object, title: Immutable Object, category: concurrency, scale: design}
+- {id: copy-on-write, title: Copy-on-Write, category: concurrency, scale: concurrency}
+- {id: semaphore, title: Semaphore, category: concurrency, scale: concurrency}
+
+# ===== Functional (functional) =====
+- {id: map-filter-reduce, title: Map-Filter-Reduce, category: functional, scale: implementation}
+- {id: currying, title: Currying, category: functional, scale: implementation}
+- {id: partial-application, title: Partial Application, category: functional, scale: implementation}
+- {id: memoization, title: Memoization, category: functional, scale: implementation}
+- {id: higher-order-function, title: Higher-Order Function, category: functional, scale: implementation}
+- {id: pure-function, title: Pure Function, category: functional, scale: implementation}
+- {id: immutability, title: Immutability, category: functional, scale: design}
+- {id: monad, title: Monad, category: functional, scale: design}
+- {id: functor, title: Functor, category: functional, scale: design}
+- {id: option-maybe, title: Option / Maybe, category: functional, scale: design}
+- {id: either-result, title: Either / Result, category: functional, scale: design}
+- {id: lens, title: Lens, category: functional, scale: design}
+- {id: function-composition, title: Function Composition, category: functional, scale: implementation}
+- {id: lazy-evaluation, title: Lazy Evaluation, category: functional, scale: implementation}
+- {id: tail-recursion, title: Tail Recursion, category: functional, scale: implementation}
+- {id: pattern-matching, title: Pattern Matching, category: functional, scale: implementation}
+- {id: persistent-data-structure, title: Persistent Data Structure, category: functional, scale: design}
+
+# ===== Frontend (frontend) =====
+- {id: component-based-ui, title: Component-Based UI, category: frontend, scale: frontend}
+- {id: container-presentational, title: Container / Presentational, category: frontend, scale: frontend}
+- {id: higher-order-component, title: Higher-Order Component, category: frontend, scale: frontend}
+- {id: render-props, title: Render Props, category: frontend, scale: frontend}
+- {id: hooks, title: Hooks, category: frontend, scale: frontend}
+- {id: flux, title: Flux, category: frontend, scale: frontend}
+- {id: redux-pattern, title: Redux (Unidirectional Store), category: frontend, scale: frontend}
+- {id: model-view-viewmodel, title: Model-View-ViewModel (MVVM), category: frontend, scale: frontend}
+- {id: model-view-presenter, title: Model-View-Presenter (MVP), category: frontend, scale: frontend}
+- {id: virtual-dom, title: Virtual DOM, category: frontend, scale: frontend}
+- {id: atomic-design, title: Atomic Design, category: frontend, scale: frontend}
+- {id: micro-frontends, title: Micro-Frontends, category: frontend, scale: architectural}
+- {id: optimistic-ui, title: Optimistic UI, category: frontend, scale: frontend}
+- {id: debounce-throttle-ui, title: Debounce / Throttle (UI), category: frontend, scale: frontend}
+- {id: state-machine-ui, title: State Machine UI, category: frontend, scale: frontend}
+- {id: server-side-rendering, title: Server-Side Rendering, category: frontend, scale: frontend}
+- {id: islands-architecture, title: Islands Architecture, category: frontend, scale: architectural}
+
+# ===== Data / Persistence (data-persistence) =====
+- {id: repository, title: Repository, category: data-persistence, scale: design}  # DONE
+- {id: database-per-service, title: Database per Service, category: data-persistence, scale: data}
+- {id: read-replica, title: Read Replica, category: data-persistence, scale: data}
+- {id: write-through-cache, title: Write-Through Cache, category: data-persistence, scale: data}
+- {id: write-behind-cache, title: Write-Behind Cache, category: data-persistence, scale: data}
+- {id: polyglot-persistence, title: Polyglot Persistence, category: data-persistence, scale: data}
+- {id: change-data-capture, title: Change Data Capture (CDC), category: data-persistence, scale: data}
+- {id: connection-pool, title: Connection Pool, category: data-persistence, scale: data}
+- {id: data-access-object, title: Data Access Object (DAO), category: data-persistence, scale: design}
+- {id: optimistic-concurrency-control, title: Optimistic Concurrency Control, category: data-persistence, scale: data}
+
+# ===== API design (api-design) =====
+- {id: rest, title: REST, category: api-design, scale: integration}
+- {id: graphql, title: GraphQL Schema, category: api-design, scale: integration}
+- {id: grpc-rpc, title: gRPC / RPC, category: api-design, scale: integration}
+- {id: api-versioning, title: API Versioning, category: api-design, scale: integration}
+- {id: pagination, title: Pagination, category: api-design, scale: integration}
+- {id: hateoas, title: HATEOAS, category: api-design, scale: integration}
+- {id: idempotency-key, title: Idempotency Key, category: api-design, scale: integration}
+- {id: webhook, title: Webhook, category: api-design, scale: integration}
+- {id: problem-details, title: Problem Details (RFC 7807 Errors), category: api-design, scale: integration}
+- {id: contract-first-api, title: Contract-First API (OpenAPI), category: api-design, scale: integration}
+- {id: etag-conditional-request, title: ETag / Conditional Request, category: api-design, scale: integration}
+
+# ===== Testing (testing) =====
+- {id: arrange-act-assert, title: Arrange-Act-Assert, category: testing, scale: implementation}
+- {id: test-double, title: Test Double, category: testing, scale: implementation}
+- {id: mock-object, title: Mock Object, category: testing, scale: implementation}
+- {id: stub, title: Stub, category: testing, scale: implementation}
+- {id: fake-object, title: Fake Object, category: testing, scale: implementation}
+- {id: page-object, title: Page Object, category: testing, scale: implementation}
+- {id: test-data-builder, title: Test Data Builder, category: testing, scale: implementation}
+- {id: object-mother, title: Object Mother, category: testing, scale: implementation}
+- {id: given-when-then, title: Given-When-Then (BDD), category: testing, scale: implementation}
+- {id: golden-master, title: Golden Master (Approval), category: testing, scale: implementation}
+- {id: contract-testing, title: Consumer-Driven Contract Testing, category: testing, scale: integration}
+- {id: property-based-testing, title: Property-Based Testing, category: testing, scale: implementation}
+- {id: test-pyramid, title: Test Pyramid, category: testing, scale: organisational}
+
+# ===== Security (security) =====
+- {id: least-privilege, title: Principle of Least Privilege, category: security, scale: design}
+- {id: defense-in-depth, title: Defense in Depth, category: security, scale: architectural}
+- {id: input-validation, title: Input Validation (Allow-List), category: security, scale: implementation}
+- {id: output-encoding, title: Output Encoding, category: security, scale: implementation}
+- {id: secure-by-default, title: Secure by Default, category: security, scale: design}
+- {id: token-based-auth, title: Token-Based Authentication, category: security, scale: integration}
+- {id: secrets-management, title: Secrets Management, category: security, scale: design}
+- {id: audit-logging, title: Audit Logging, category: security, scale: design}
+
+# ===== Implementation / small-scale idioms (implementation) =====
+- {id: guard-clause, title: Guard Clause (Early Return), category: implementation, scale: implementation}  # DONE
+- {id: null-object, title: Null Object, category: implementation, scale: design}
+- {id: dependency-injection, title: Dependency Injection, category: implementation, scale: design}
+- {id: inversion-of-control, title: Inversion of Control, category: implementation, scale: design}
+- {id: service-locator, title: Service Locator, category: implementation, scale: design}
+- {id: raii, title: RAII (Resource Acquisition Is Initialization), category: implementation, scale: implementation}
+- {id: object-pool, title: Object Pool, category: implementation, scale: design}
+- {id: lazy-initialization, title: Lazy Initialization, category: implementation, scale: implementation}
+- {id: fluent-interface, title: Fluent Interface, category: implementation, scale: implementation}
+- {id: parameter-object, title: Parameter Object, category: implementation, scale: implementation}
+- {id: fail-fast, title: Fail Fast, category: implementation, scale: implementation}
+- {id: composition-over-inheritance, title: Composition over Inheritance, category: implementation, scale: design}
+- {id: feature-toggle, title: Feature Toggle, category: implementation, scale: implementation}
+- {id: middleware-pipeline, title: Middleware Pipeline, category: implementation, scale: design}
+- {id: event-emitter, title: Event Emitter (Pub-Sub in-process), category: implementation, scale: design}
+- {id: options-object, title: Options Object, category: implementation, scale: implementation}
+- {id: type-state, title: Type State, category: implementation, scale: design}
+- {id: smart-constructor, title: Smart Constructor, category: implementation, scale: implementation}
+- {id: newtype-wrapper, title: Newtype / Wrapper Type, category: implementation, scale: implementation}
+- {id: dry, title: DRY (Don't Repeat Yourself), category: implementation, scale: implementation}
