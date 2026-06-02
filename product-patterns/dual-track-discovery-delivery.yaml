@@ -1,0 +1,107 @@
+id: dual-track-discovery-delivery
+title: Dual-Track Discovery & Delivery
+aka:
+  - Dual-Track Agile
+  - Continuous Discovery and Delivery
+discipline: product
+category: product-operations
+maturity: established
+short_description: >-
+  Run discovery and delivery as connected parallel tracks so teams continuously learn what should be built while reliably shipping validated, ready work.
+description: >-
+  Dual-Track Discovery and Delivery separates the uncertainty-reduction work of product discovery from the production-building work of delivery while keeping them tightly coupled in one team. Discovery explores opportunities, customer needs, assumptions, prototypes, and experiments. Delivery turns validated slices into reliable product changes. The tracks run in parallel, not as a waterfall hand-off: discovery feeds delivery with ready, evidence-backed work, and delivery outcomes feed discovery with behavioural data and constraints. The pattern helps teams avoid both extremes of building a backlog of unvalidated ideas and endlessly researching without shipping.
+problem: >-
+  Teams either rush ideas into delivery without validating the problem, or they isolate discovery in a separate phase that produces hand-off documents and stale recommendations. Delivery starves for ready work while discovery loses contact with implementation and real outcomes.
+context: >-
+  Best for empowered product teams that own outcomes, have regular customer access, and can prototype, test, instrument, and ship in small increments.
+forces:
+  - Discovery needs openness and divergent learning; delivery needs commitment, sequencing, and reliability.
+  - Keeping both tracks in one team preserves context but creates capacity tension, especially for product, design, and engineering.
+  - If discovery gets too far ahead, learning goes stale; if it is too close, delivery waits.
+  - Stakeholders may misread the tracks as permission to promise everything in discovery will be built.
+solution: >-
+  Maintain two linked flows. In discovery, identify opportunities, assumptions, prototypes, and experiment results around a target outcome. In delivery, pull only work that meets readiness criteria and has a clear customer value, acceptance examples, and measurement plan. Keep engineers involved in discovery to test feasibility and keep product and design involved in delivery to protect intent. Review both tracks together: discovery health, delivery flow, decisions made, and outcomes observed. Explicitly discard discovery ideas that fail to earn delivery investment.
+when_to_use:
+  - A team owns a measurable outcome and must learn continuously while still shipping reliably.
+  - Backlogs are full of stakeholder requests with weak customer evidence.
+  - Discovery, design, and engineering are separated enough that hand-offs lose context.
+anti_patterns:
+  - Treating discovery as a mini-waterfall phase that must finish before any delivery starts.
+  - Letting discovery become an innovation theatre backlog where every prototype is assumed to become a feature.
+  - Excluding engineers from discovery, causing feasibility surprises and weak solution options.
+  - Measuring delivery velocity while ignoring discovery quality and outcome learning.
+metrics:
+  - Ratio of delivered work traceable to validated opportunities or tested assumptions.
+  - Discovery decision velocity, such as assumptions tested and ideas killed or advanced per cycle.
+  - Delivery flow stability for ready work, including cycle time and blocked time.
+  - Outcome movement and learning readouts from shipped discovery-backed changes.
+examples:
+  - title: Parallel tracks, shared team
+    poor: >-
+      Product and design spend a quarter researching a new onboarding concept, then hand a large specification to engineering. Engineers identify major feasibility issues and analytics gaps after stakeholders have already seen the design.
+    better: >-
+      Product, design, and engineering test onboarding assumptions weekly with prototypes and technical spikes. Only the validated slice with known analytics and feasible implementation enters delivery.
+    explanation: >-
+      The better approach keeps feasibility, desirability, viability, and measurability in the same learning loop instead of discovering conflicts at hand-off.
+  - title: Discovery is allowed to kill ideas
+    poor: >-
+      Every idea tested in discovery becomes a backlog item because stakeholders interpret prototypes as commitments.
+    better: >-
+      The team labels discovery artefacts as options, records decision outcomes, and celebrates invalidated assumptions that prevented delivery waste.
+    explanation: >-
+      Dual-track only works when discovery has permission to reduce the backlog as well as feed it. Otherwise it becomes a slower route to the same output factory.
+related_practice_patterns:
+  - pattern: opportunity-solution-tree
+    reason: >-
+      Opportunity Solution Trees provide a practical structure for the discovery track and its links to solutions and experiments.
+  - pattern: definition-of-ready-done
+    reason: >-
+      Ready criteria define when discovery output is mature enough to enter delivery without pretending all uncertainty is gone.
+  - pattern: feature-flag-experimentation
+    reason: >-
+      Delivery can ship discovery-backed bets behind flags so real behavioural evidence feeds the next discovery cycle.
+related_philosophies:
+  - philosophy: dual-track-agile
+    reason: >-
+      This pattern is the day-to-day operating practice derived from the Dual-Track Agile philosophy.
+  - philosophy: continuous-discovery
+    reason: >-
+      Continuous discovery supplies the customer learning cadence that keeps the discovery track alive.
+  - philosophy: empowered-product-teams
+    reason: >-
+      Dual-track work assumes a cross-functional team empowered to decide what to test, build, and discard.
+related_software_patterns:
+  - pattern: feature-toggle
+    reason: >-
+      Feature toggles help delivery expose validated slices safely and learn from real users without big-bang releases.
+  - pattern: prototype
+    reason: >-
+      Prototypes are common discovery artefacts for testing desirability and usability before delivery commitment.
+tags:
+  - discovery
+  - delivery
+  - product-ops
+  - continuous-learning
+product_stages:
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 4
+    notes: >-
+      Strong for early teams if kept lightweight, because it prevents wasting scarce capacity on unvalidated features while still shipping.
+  growth:
+    score: 5
+    notes: >-
+      Ideal when teams have enough customers, traffic, and delivery pressure to need disciplined parallel learning and shipping.
+  enterprise:
+    score: 4
+    notes: >-
+      Valuable but harder to sustain because governance, dependencies, and specialist silos can pull discovery and delivery apart.
+references:
+  - title: "Dual-Track Development is not Duel-Track"
+    author: Jeff Patton
+    url: "https://www.jpattonassociates.com/dual-track-development/"
+  - title: "Continuous Discovery Habits"
+    author: Teresa Torres
+    year: 2021

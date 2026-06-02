@@ -1,0 +1,102 @@
+id: moscow-prioritization
+title: MoSCoW Prioritization
+discipline: product
+category: prioritization
+maturity: time-tested
+short_description: >-
+  Sort scope into Must, Should, Could and Won't-have bands so delivery discussions distinguish minimum success from desirable additions and explicit non-goals.
+description: >-
+  MoSCoW prioritisation classifies requirements or roadmap items into four bands: Must have, Should have, Could have and Won't have for this timeframe. It is especially useful when a fixed date, budget or release boundary forces scope negotiation. The pattern's value is the shared definition of minimum viable scope. Must items are required for the release to be worthwhile or compliant; Should items are important but not fatal if deferred; Could items are optional improvements; Won't items are consciously excluded.
+problem: >-
+  Delivery plans blur mandatory work, important improvements and optional nice-to-haves, so teams discover too late that the date cannot hold unless scope is cut in a politically painful scramble.
+context: >-
+  Best for release planning, procurement-style requirement sets, migration cutovers and deadline-driven initiatives where scope bands need to be negotiated explicitly.
+solution: >-
+  Agree precise definitions for each MoSCoW band before classifying work. Cap Must-have scope to the minimum release that still achieves the intended outcome or obligation, and require a concrete consequence for anything labelled Must. Revisit the bands as evidence and estimates change, and make Won't-have items visible so exclusion is deliberate rather than silent neglect.
+forces:
+  - >-
+    Stakeholders overuse Must because the category feels like the only safe way to protect their needs.
+  - >-
+    Fixed dates need flexible scope, but organisations often pretend both are fixed.
+  - >-
+    The method communicates priority bands well but does not itself measure value or effort.
+when_to_use:
+  - >-
+    A release or project has a fixed timebox and negotiable scope.
+  - >-
+    Stakeholders need a common vocabulary for scope trade-offs.
+  - >-
+    Requirements must distinguish launch blockers from desirable follow-ups.
+anti_patterns:
+  - >-
+    Allowing more than half the scope to become Must-have, eliminating useful trade-off space.
+  - >-
+    Treating Won't-have as rejection forever rather than exclusion for the current decision horizon.
+  - >-
+    Using MoSCoW instead of value discovery, leaving all bands based on opinion.
+metrics:
+  - >-
+    Percentage of Must-have items with explicit launch-blocker rationale.
+  - >-
+    Ratio of Must-have scope to total release capacity.
+  - >-
+    Number of late scope escalations caused by misclassified items.
+  - >-
+    Release predictability after Could and Should items are deferred.
+examples:
+  - title: Defining Must-have
+    poor: >-
+      In planning, each department marks its favourite feature as Must-have because nobody wants their work deferred, leaving 90% of the backlog in the top band.
+    better: >-
+      The team defines Must-have as legally required, technically required for launch, or essential to the target outcome; everything else must justify why the release fails without it.
+    explanation: >-
+      The better approach preserves the meaning of Must-have and creates real trade-off space when delivery pressure arrives.
+  - title: Making Won't explicit
+    poor: >-
+      Optional reporting enhancements fall out of the sprint silently, and stakeholders later assume the team forgot them.
+    better: >-
+      The roadmap lists those enhancements as Won't-have for the launch with a note that they will be reconsidered after adoption data is reviewed.
+    explanation: >-
+      Explicit Won't-have decisions reduce ambiguity and make deferral a managed product choice, not a hidden delivery failure.
+related_practice_patterns:
+  - pattern: release-train
+    reason: >-
+      Release trains often use MoSCoW bands to decide what boards the current train and what waits for the next.
+  - pattern: now-next-later-roadmap
+    reason: >-
+      MoSCoW can clarify what belongs in Now versus what should be deferred to Next or Later.
+related_software_patterns:
+  - pattern: feature-toggle
+    reason: >-
+      Feature toggles can separate required release readiness from optional functionality that can stay hidden.
+related_philosophies:
+  - philosophy: empowered-product-teams
+    reason: >-
+      The technique works best when teams can negotiate scope around outcomes rather than simply accept stakeholder lists.
+tags:
+  - prioritization
+  - scope
+  - release-planning
+  - stakeholder-alignment
+product_stages:
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 3
+    notes: >-
+      Useful for launch scoping, but early teams often need sharper discovery than requirement banding.
+  growth:
+    score: 4
+    notes: >-
+      Helps growing teams manage deadline pressure and stakeholder trade-offs without heavy process.
+  enterprise:
+    score: 5
+    notes: >-
+      Strong fit where many stakeholders, release windows and compliance needs require explicit scope bands.
+references:
+  - title: "DSDM Agile Project Framework Handbook"
+    author: Agile Business Consortium
+  - title: "Agile Project Management with Scrum"
+    author: Ken Schwaber
+    year: 2004

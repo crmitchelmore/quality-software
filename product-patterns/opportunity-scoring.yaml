@@ -1,0 +1,102 @@
+id: opportunity-scoring
+title: Opportunity Scoring
+discipline: product
+category: prioritization
+maturity: established
+short_description: >-
+  Rank customer opportunities by how important they are and how underserved they remain, focusing product effort where unmet need is strongest.
+description: >-
+  Opportunity scoring prioritises product opportunities by asking customers how important an outcome, job or need is and how satisfied they are with current solutions. Opportunities that are highly important and poorly satisfied are strong candidates for product investment; low-importance or already-satisfied areas are less attractive. Popularised in outcome-driven innovation and product discovery practice, the pattern shifts prioritisation away from feature requests and towards underserved needs.
+problem: >-
+  Teams prioritise feature ideas without knowing whether the underlying customer need is important, underserved, or already solved well enough by existing behaviour.
+context: >-
+  Useful after discovery has produced a set of customer needs or jobs and the team needs to choose which opportunity to address before designing solutions.
+solution: >-
+  Express opportunities as customer outcomes or needs, then collect importance and satisfaction evidence from the target segment. Prioritise opportunities with high importance and low satisfaction, validate the result against behavioural data and interviews, and feed the chosen opportunities into solution discovery rather than jumping straight from score to feature.
+forces:
+  - >-
+    Survey scores help compare opportunities but can detach from rich qualitative context.
+  - >-
+    Stated importance may diverge from observed behaviour, especially for aspirational needs.
+  - >-
+    Different segments may produce different opportunity rankings and should not always be averaged.
+when_to_use:
+  - >-
+    Discovery has produced many needs and the team must decide where to focus.
+  - >-
+    Customer requests conflict and you need to compare the underlying opportunity, not the requested feature.
+  - >-
+    A market or segment is mature enough for customers to judge importance and satisfaction.
+anti_patterns:
+  - >-
+    Scoring feature ideas instead of customer opportunities, recreating a feature popularity contest.
+  - >-
+    Averaging across unlike customer segments and hiding a valuable underserved niche.
+  - >-
+    Treating survey numbers as complete truth without qualitative follow-up.
+metrics:
+  - >-
+    Share of roadmap items linked to high-importance, low-satisfaction opportunities.
+  - >-
+    Improvement in satisfaction scores for targeted opportunities after release.
+  - >-
+    Reduction in work started without a validated opportunity.
+  - >-
+    Agreement between scored opportunities and observed behavioural pain.
+examples:
+  - title: Need before feature
+    poor: >-
+      Customers ask for CSV export, so the team scores build CSV export as an opportunity and ships it.
+    better: >-
+      Interviews reveal the opportunity is to share weekly status with finance without manual reformatting; the team scores that need, then compares CSV, scheduled email and accounting integration solutions.
+    explanation: >-
+      The better approach keeps opportunity and solution separate, preventing the first requested feature from masquerading as the customer need.
+  - title: Segment-specific ranking
+    poor: >-
+      A broad survey shows mediocre importance for audit trails, so the team deprioritises them for everyone.
+    better: >-
+      Segment analysis shows audit trails are highly important and underserved for regulated enterprise accounts, so the opportunity is prioritised for that segment.
+    explanation: >-
+      Opportunity scores are only meaningful for a target market. Segment averages can erase the opportunities that drive purchase decisions.
+related_practice_patterns:
+  - pattern: opportunity-solution-tree
+    reason: >-
+      Opportunity scoring helps choose which branch of an opportunity solution tree deserves solution work.
+  - pattern: kano-model
+    reason: >-
+      Kano classification enriches opportunity scoring by showing whether an underserved need is a basic, performance attribute or delighter.
+related_philosophies:
+  - philosophy: jobs-to-be-done
+    reason: >-
+      Jobs-to-be-Done provides a strong framing for the outcomes whose importance and satisfaction are scored.
+  - philosophy: continuous-discovery
+    reason: >-
+      Continuous discovery keeps scored opportunities grounded in current customer evidence.
+tags:
+  - prioritization
+  - discovery
+  - customer-needs
+  - opportunity
+product_stages:
+  - early
+  - growth
+ratings:
+  early:
+    score: 4
+    notes: >-
+      Strong for focusing scarce effort, though sample sizes may be small and qualitative evidence should carry more weight.
+  growth:
+    score: 5
+    notes: >-
+      Excellent once the team has enough customers to compare opportunities by segment and outcome.
+  enterprise:
+    score: 4
+    notes: >-
+      Useful in mature portfolios, but requires careful segmentation and governance to avoid averaged scores.
+references:
+  - title: "What Customers Want"
+    author: Anthony W. Ulwick
+    year: 2005
+  - title: "Continuous Discovery Habits"
+    author: Teresa Torres
+    year: 2021

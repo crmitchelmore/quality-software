@@ -1,0 +1,93 @@
+id: hypothesis-statement
+title: Hypothesis Statement
+discipline: product
+category: problem-framing
+maturity: established
+short_description: >-
+  Express a product belief as a falsifiable statement linking a customer, change, expected behaviour and measurable outcome so discovery and experiments can prove or disprove it.
+description: >-
+  A Hypothesis Statement turns assumptions into testable product bets. Instead of saying "build this feature", the team states what it believes will happen, for whom, why, and how success will be measured. Good hypotheses are specific, falsifiable and connected to a decision: if the evidence contradicts the statement, the team should change course. They bridge problem framing, experimentation and roadmap learning.
+problem: >-
+  Teams ship ideas without naming what must be true for them to work. After release, ambiguous metrics make it easy to rationalise any outcome as success.
+context: >-
+  Use before experiments, MVPs, discovery tests, feature launches and strategy bets where uncertainty is material.
+forces:
+  - A hypothesis must be narrow enough to test but meaningful enough to affect a product decision.
+  - Teams may choose easy-to-move proxy metrics rather than metrics that reflect real customer or business value.
+  - Falsifiability is emotionally difficult when stakeholders are invested in the idea.
+solution: >-
+  Write the belief in a structure such as: "We believe [customer/segment] will [behaviour] when [change] because [reason]. We will know this is true when [metric/threshold] without harming [guardrail]." Define the decision rule before testing and connect the hypothesis back to the assumption or opportunity it addresses.
+when_to_use:
+  - A product bet needs evidence before full investment.
+  - Assumption mapping has identified a risky belief to test.
+  - Experiments are producing data but not clear decisions.
+anti_patterns:
+  - Writing unfalsifiable statements such as "users will like the new experience".
+  - Changing the metric after seeing results.
+  - Running tests with no pre-defined decision threshold or guardrail.
+metrics:
+  - Percentage of experiments with pre-declared hypothesis, primary metric and decision rule.
+  - Number of hypotheses invalidated early enough to change investment decisions.
+  - Learning velocity from hypothesis creation to decision.
+examples:
+  - title: Falsifiable metric
+    poor: >-
+      "We believe users will prefer the new onboarding."
+    better: >-
+      "We believe first-time team admins will invite at least two colleagues during onboarding if permissions are explained in plain language; success is a 15% lift in team invites with no increase in support contacts."
+    explanation: >-
+      The better statement names customer, change, behaviour, threshold and guardrail. It can be proven wrong.
+  - title: Decision rule
+    poor: >-
+      After launch, the team searches dashboards until one metric improved and calls the feature successful.
+    better: >-
+      Before launch, the team declares the primary metric and agrees to roll back, iterate or scale based on specified thresholds.
+    explanation: >-
+      Hypotheses prevent post-hoc storytelling by defining success before evidence arrives.
+related_practice_patterns:
+  - pattern: assumption-mapping
+    reason: >-
+      Assumption mapping identifies which beliefs should become hypotheses first.
+  - pattern: feature-flag-experimentation
+    reason: >-
+      Feature-flag experiments are a common way to test product hypotheses with behavioural data.
+related_software_patterns:
+  - pattern: given-when-then
+    reason: >-
+      Both hypothesis statements and Given-When-Then scenarios express expected outcomes in a structured, testable form.
+  - pattern: structured-output
+    reason: >-
+      Structured hypotheses make experiment intent machine- and team-readable, reducing ambiguity in tracking and analysis.
+related_philosophies:
+  - philosophy: hypothesis-driven-development
+    reason: >-
+      The hypothesis statement is the core artefact of hypothesis-driven development.
+  - philosophy: lean-startup
+    reason: >-
+      It expresses the learning loop as a falsifiable bet rather than an output commitment.
+tags:
+  - hypothesis
+  - experimentation
+  - assumptions
+  - metrics
+product_stages:
+  - early
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 5
+    notes: >-
+      Excellent for reducing waste when most product beliefs remain uncertain.
+  growth:
+    score: 5
+    notes: >-
+      Essential for disciplined experimentation and roadmap learning across multiple teams.
+  enterprise:
+    score: 4
+    notes: >-
+      Valuable for governance and investment decisions, though bureaucracy can make hypotheses performative.
+references:
+  - title: "Lean Analytics"
+    author: Alistair Croll and Benjamin Yoskovitz
+    year: 2013

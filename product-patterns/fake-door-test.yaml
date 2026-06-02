@@ -1,0 +1,106 @@
+id: fake-door-test
+title: Fake Door Test
+discipline: product
+category: experimentation
+maturity: established
+short_description: >-
+  Present a realistic entry point to a not-yet-built feature and measure intent before investing in full delivery, while being transparent once users engage.
+description: >-
+  A Fake Door Test adds a visible but non-functional or not-yet-available entry point, such as a button, menu item or plan card, to measure whether users try to access a proposed capability. When a user engages, the product explains that the feature is not available yet, may invite feedback or a waitlist, and avoids pretending the action completed. The pattern cheaply tests demand in a real context, but it must be used sparingly and ethically because it can disappoint users if the door feels deceptive.
+problem: >-
+  Teams build expensive features based on stated interest or stakeholder confidence, only to discover that few users try to use them when they appear in the product.
+context: >-
+  Best for demand validation where the main uncertainty is whether users will notice and choose a proposed capability in the real product context.
+solution: >-
+  Add the smallest realistic entry point to the target workflow, instrument impressions and engagement, and route users who click to an honest explanation, feedback prompt or waitlist. Predefine the demand threshold and guardrails for complaints or support contacts. If demand is strong, follow with concierge, prototype or implementation experiments that test value delivery.
+forces:
+  - >-
+    Real in-product intent is more reliable than survey interest, but the test can frustrate users.
+  - >-
+    The entry point must be realistic enough to measure demand but not so misleading that it damages trust.
+  - >-
+    Click intent does not prove willingness to pay, repeat use or technical feasibility.
+when_to_use:
+  - >-
+    The main risk is demand or discoverability, not whether the team can build the feature.
+  - >-
+    You can expose the door without interrupting critical tasks or harming trust.
+  - >-
+    A click, waitlist signup or follow-up interview is a meaningful signal for the decision.
+anti_patterns:
+  - >-
+    Letting users complete a long flow before revealing the feature does not exist.
+  - >-
+    Counting curiosity clicks as validated demand without a threshold or follow-up.
+  - >-
+    Running fake doors in high-stakes, regulated or trust-sensitive workflows.
+metrics:
+  - >-
+    Door impression-to-click rate for the target segment.
+  - >-
+    Waitlist, interview opt-in or follow-up conversion after the disclosure.
+  - >-
+    Complaint, support contact or trust-impact rate from exposed users.
+  - >-
+    Percentage of fake-door tests that lead to clear build, iterate or stop decisions.
+examples:
+  - title: Choosing the experiment
+    poor: >-
+      The team treats a weak signal as proof and commits to building the whole feature without a decision threshold or follow-up learning step.
+    better: >-
+      The team names the riskiest assumption, sets a threshold and guardrail, runs the smallest ethical test, and chooses the next experiment based on the result.
+    explanation: >-
+      The better approach keeps experimentation tied to a decision and avoids confusing curiosity, delivery or activity with validated learning.
+  - title: Protecting trust
+    poor: >-
+      Users are surprised by an unavailable or manually operated experience in a critical workflow and have no clear explanation or recovery path.
+    better: >-
+      The test is limited to a safe cohort, explains the state honestly when users engage, and provides a fallback or contact path when the feature is not available.
+    explanation: >-
+      Experiment speed must not come at the cost of user trust. Ethical boundaries and guardrails make the learning usable.
+related_practice_patterns:
+  - pattern: painted-door-test
+    reason: >-
+      Painted Door Test is a close variant; both measure demand through a realistic not-yet-built entry point.
+  - pattern: concierge-mvp
+    reason: >-
+      Strong fake-door demand often graduates into concierge delivery to test whether the value can be fulfilled.
+  - pattern: feature-flag-experimentation
+    reason: >-
+      Flags can limit fake-door exposure to a safe cohort and remove the door quickly if guardrails move.
+related_software_patterns:
+  - pattern: feature-toggle
+    reason: >-
+      A feature toggle is the natural mechanism for exposing and withdrawing the test entry point safely.
+related_philosophies:
+  - philosophy: lean-startup
+    reason: >-
+      The test is a minimum viable experiment for validated learning about demand.
+tags:
+  - experimentation
+  - demand-validation
+  - mvp
+  - discovery
+product_stages:
+  - early
+  - growth
+ratings:
+  early:
+    score: 5
+    notes: >-
+      Very strong for cheaply testing demand before committing scarce engineering capacity, if trust is protected.
+  growth:
+    score: 4
+    notes: >-
+      Useful for segment and placement validation, though guardrails matter more as the customer base grows.
+  enterprise:
+    score: 2
+    notes: >-
+      Riskier where trust, contracts and regulated workflows make unavailable features politically sensitive.
+references:
+  - title: "The Lean Startup"
+    author: Eric Ries
+    year: 2011
+  - title: "Testing Business Ideas"
+    author: David J. Bland and Alexander Osterwalder
+    year: 2019

@@ -1,0 +1,92 @@
+id: problem-statement-framing
+title: Problem Statement Framing
+aka:
+  - Product Problem Statement
+discipline: product
+category: problem-framing
+maturity: established
+short_description: >-
+  Write a clear, evidence-backed problem statement that names the affected customer, context, pain, consequence and desired outcome before exploring solutions.
+description: >-
+  Problem Statement Framing converts discovery evidence into a shared definition of the problem worth solving. A strong statement identifies who experiences the problem, when it occurs, what makes it painful, why it matters, and how success would be recognised. It deliberately avoids prescribing the solution. The pattern gives teams a stable reference point for ideation, prioritisation and experiment design.
+problem: >-
+  Teams begin with solution ideas or vague complaints, so stakeholders disagree about what is actually wrong and whether proposed features solve it.
+context: >-
+  Use after initial discovery, before ideation, during strategy reviews, or whenever a team needs to align around a problem rather than a feature request.
+forces:
+  - Specificity improves actionability but can exclude adjacent opportunities if framed too narrowly.
+  - Stakeholders may smuggle solutions into the problem statement.
+  - Evidence must cover consequence and frequency, not just customer frustration.
+solution: >-
+  Synthesise evidence into a concise statement: customer or segment, situation, problem, consequence and outcome. Add supporting evidence and constraints separately. Review it with stakeholders and customers where possible, then use it to evaluate ideas: a solution is relevant only if it addresses the stated problem and moves the desired outcome.
+when_to_use:
+  - A feature request needs to be reframed as the underlying customer or business problem.
+  - Discovery evidence is scattered and the team needs a common problem definition.
+  - Ideation is starting and you want to keep solutions anchored.
+anti_patterns:
+  - Writing "the problem is we need a dashboard".
+  - Framing the problem so broadly that every idea appears relevant.
+  - Omitting the consequence, making the problem impossible to prioritise.
+metrics:
+  - Percentage of solution ideas explicitly mapped to the problem statement.
+  - Stakeholder agreement on problem clarity before and after framing.
+  - Outcome metric movement for solutions selected against the framed problem.
+examples:
+  - title: Solution disguised as problem
+    poor: >-
+      "Users need an export button on the orders page."
+    better: >-
+      "Operations managers cannot reconcile shipped orders with finance records at month-end, causing manual spreadsheet work and delayed invoicing."
+    explanation: >-
+      The poor version prescribes an interface element. The better version names the user, situation, pain and consequence while leaving multiple solutions possible.
+  - title: Consequence matters
+    poor: >-
+      "Customers find onboarding confusing."
+    better: >-
+      "New administrators abandon onboarding when permissions setup requires security knowledge they lack, delaying team activation by several days."
+    explanation: >-
+      Consequence and context make a problem prioritiseable and testable.
+related_practice_patterns:
+  - pattern: how-might-we
+    reason: >-
+      A good problem statement can be transformed into focused How Might We prompts for ideation.
+  - pattern: opportunity-solution-tree
+    reason: >-
+      Problem statements often become opportunity nodes that connect needs to solutions and experiments.
+related_software_patterns:
+  - pattern: problem-details
+    reason: >-
+      Both patterns make problems explicit and structured so downstream responses are clearer and less ad hoc.
+related_philosophies:
+  - philosophy: design-thinking
+    reason: >-
+      Design thinking emphasises defining the problem before ideating solutions.
+  - philosophy: outcome-over-output
+    reason: >-
+      The statement focuses teams on solving a problem rather than shipping a requested output.
+tags:
+  - problem-framing
+  - discovery
+  - alignment
+  - outcomes
+product_stages:
+  - early
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 5
+    notes: >-
+      Essential for avoiding premature solution commitment when evidence is still forming.
+  growth:
+    score: 5
+    notes: >-
+      Strong for aligning cross-functional teams around opportunities rather than stakeholder feature requests.
+  enterprise:
+    score: 4
+    notes: >-
+      Valuable for governance and investment decisions, though statements must avoid bureaucratic templates.
+references:
+  - title: "Sprint"
+    author: Jake Knapp, John Zeratsky and Braden Kowitz
+    year: 2016

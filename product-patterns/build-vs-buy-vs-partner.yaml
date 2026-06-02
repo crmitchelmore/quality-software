@@ -1,0 +1,95 @@
+id: build-vs-buy-vs-partner
+title: Build vs Buy vs Partner
+aka:
+  - Make Buy Partner Decision
+discipline: product
+category: product-strategy
+maturity: established
+short_description: >-
+  Decide whether a capability should be built internally, purchased from a vendor, or delivered through a partner by comparing differentiation, speed, cost, control and risk.
+description: >-
+  Build vs Buy vs Partner is a strategic sourcing pattern for product capabilities. It prevents teams from defaulting to engineering everything, buying everything that looks commoditised, or outsourcing decisions that define product differentiation. The decision balances whether the capability is core to advantage, how fast it is needed, what lifecycle control is required, and what integration, vendor and partner risks the organisation can tolerate.
+problem: >-
+  Teams make capability decisions piecemeal: engineers build commodities, executives mandate vendors for core differentiators, or partnerships create dependencies that later constrain the product.
+context: >-
+  Use when a roadmap requires a major capability, when entering a new market, or when a platform dependency could materially affect speed, margin, data ownership or strategic control.
+forces:
+  - Building maximises control and learning but consumes scarce engineering capacity.
+  - Buying accelerates delivery but can limit differentiation, data access and roadmap influence.
+  - Partnering can unlock channels or expertise but creates shared incentives and dependency risk.
+solution: >-
+  Classify the capability by strategic importance and market maturity. Build when it is core to differentiation or requires deep product learning. Buy when it is commodity, mature and faster to integrate than maintain. Partner when value depends on another party's reach, expertise or complementary asset. Document assumptions, exit options, integration costs, data rights and success metrics before committing.
+when_to_use:
+  - A required capability is expensive enough to affect roadmap or platform strategy.
+  - Vendors or partners can provide speed, compliance, data or distribution advantages.
+  - The team needs to protect differentiation while avoiding unnecessary custom build.
+anti_patterns:
+  - Building because the team enjoys the technical problem even though the capability is commodity.
+  - Buying a vendor solution for a capability that defines the product's unique value.
+  - Ignoring switching costs, data ownership and roadmap dependency until renewal time.
+metrics:
+  - Time-to-market difference between options and actual time saved.
+  - Total cost of ownership over the expected capability lifecycle.
+  - Strategic dependency risk score, including data access, switching cost and roadmap control.
+examples:
+  - title: Commodity capability
+    poor: >-
+      The team spends six months building billing infrastructure because subscriptions are important to revenue.
+    better: >-
+      They buy a mature billing platform because billing is necessary but not differentiating, reserving engineering effort for usage insights that customers value.
+    explanation: >-
+      Importance is not the same as differentiation. The better choice preserves scarce capacity for product advantage.
+  - title: Core learning loop
+    poor: >-
+      A recommendation product outsources its ranking engine entirely and receives only black-box results.
+    better: >-
+      The team builds the ranking model internally while buying commodity data pipelines, because ranking quality and learning are the product's moat.
+    explanation: >-
+      Capabilities that create strategic learning and differentiation usually require control, even if buying is faster.
+related_practice_patterns:
+  - pattern: platform-strategy
+    reason: >-
+      Platform strategy often depends on which shared capabilities should be built as internal platforms versus bought.
+  - pattern: moat-and-differentiation
+    reason: >-
+      Differentiation analysis identifies which capabilities are too strategic to outsource casually.
+related_software_patterns:
+  - pattern: adapter
+    reason: >-
+      Purchased or partner capabilities usually need adapters to isolate vendor APIs and preserve switching options.
+  - pattern: anti-corruption-layer
+    reason: >-
+      Strategic systems use an anti-corruption layer to prevent vendor models leaking into the core domain.
+related_philosophies:
+  - philosophy: lean-startup
+    reason: >-
+      Buying or partnering can accelerate validated learning when the capability is not the core hypothesis.
+  - philosophy: domain-driven-design
+    reason: >-
+      DDD helps distinguish core domain capabilities worth building from supporting or generic subdomains.
+tags:
+  - sourcing
+  - strategy
+  - differentiation
+  - partnerships
+product_stages:
+  - early
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 4
+    notes: >-
+      Critical for speed and focus, though early teams may over-buy before understanding their core learning loop.
+  growth:
+    score: 5
+    notes: >-
+      Very valuable as capacity constraints and differentiation choices become explicit.
+  enterprise:
+    score: 5
+    notes: >-
+      Essential because vendor risk, procurement, security and integration costs become major strategic factors.
+references:
+  - title: "The Innovator's Solution"
+    author: Clayton Christensen and Michael Raynor
+    year: 2003

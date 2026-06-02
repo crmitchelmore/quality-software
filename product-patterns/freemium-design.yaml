@@ -1,0 +1,118 @@
+id: freemium-design
+title: Freemium Design
+discipline: product
+category: pricing-packaging
+maturity: established
+short_description: >-
+  Offer a permanently useful free tier that creates adoption and learning while reserving clear, value-based
+  reasons for qualified users or teams to upgrade.
+description: >-
+  Freemium design is the deliberate packaging of a free product experience as part of a monetisation and
+  growth system. The free tier must be genuinely valuable enough to attract and activate the right users,
+  but it cannot give away every reason to pay or create unsustainable service costs. Good freemium design
+  chooses the free boundary around segments, usage limits, collaboration, scale, support, governance,
+  automation or advanced outcomes. It connects the free experience to product-led growth: users reach value,
+  build habits, invite others or create artefacts, then encounter upgrade moments that feel like natural
+  continuation rather than ransom.
+problem: >-
+  Teams launch a free tier that either gives away too much and never converts, gives away too little and
+  feels like a crippled demo, or attracts low-fit users whose support and infrastructure cost overwhelm the business.
+context: >-
+  Useful for products with low marginal distribution cost, self-serve onboarding, broad user populations,
+  collaboration or usage expansion, and clear paid value levers.
+forces:
+  - The free tier must prove value, but paid tiers must retain compelling upgrade reasons.
+  - Free users create learning and distribution but also support, abuse and infrastructure costs.
+  - Upgrade prompts must be timely and fair, not constant interruptions.
+  - Individual free adoption may need to convert into team or enterprise value later.
+solution: >-
+  Define the free tier's strategic job: acquisition, activation, network effects, education, developer
+  adoption or category leadership. Choose limits that preserve core value while reserving scale,
+  collaboration, governance, automation, advanced usage or support for paid tiers. Instrument activation,
+  retention, conversion and cost-to-serve, and design upgrade prompts around moments when users understand
+  the value of the paid capability.
+when_to_use:
+  - Users can self-serve to meaningful value without high onboarding or marginal support cost.
+  - The product benefits from broad adoption, sharing, collaboration or bottom-up entry.
+  - There are clear paid expansion reasons beyond the first free value moment.
+anti_patterns:
+  - Offering a free tier that is so constrained users cannot experience the product's promise.
+  - Giving away the full team or enterprise value and hoping users will pay out of goodwill.
+  - Treating free users as unimportant, then being surprised when they do not convert or refer.
+  - Measuring free sign-ups while ignoring activation, retained usage, conversion and cost-to-serve.
+metrics:
+  - Free-user activation and retention to the core value moment.
+  - Free-to-paid conversion by segment, cohort and upgrade trigger.
+  - Cost-to-serve free users and abuse or support burden.
+  - Team expansion, invite, collaboration or usage growth from free accounts.
+examples:
+  - title: Useful free, clear paid
+    poor: >-
+      A design tool's free tier allows opening sample files only, so users cannot complete real work and
+      leave before understanding the product.
+    better: >-
+      The free tier lets individuals create real designs with sensible limits, while team libraries,
+      version history, admin controls and larger collaboration require paid plans.
+    explanation: >-
+      The better tier demonstrates core value and leaves paid reasons tied to scale and collaboration. The
+      poor tier is a demo, not freemium.
+  - title: Upgrade at the value boundary
+    poor: >-
+      Upgrade modals appear every few minutes regardless of what the user is doing, increasing annoyance
+      and abandonment.
+    better: >-
+      Upgrade prompts appear when a user hits a meaningful limit, such as adding a fourth collaborator or
+      needing shared governance, and explain the value unlocked.
+    explanation: >-
+      Freemium conversion is strongest when the paywall marks a fair value boundary, not a random interruption.
+related_practice_patterns:
+  - pattern: product-led-growth-motion
+    reason: >-
+      Freemium is a common PLG packaging choice because it lets the product acquire and activate users before purchase.
+  - pattern: good-better-best-tiering
+    reason: >-
+      Freemium often sits below a paid tier ladder and must connect coherently to good, better and best packages.
+  - pattern: aha-moment-activation
+    reason: >-
+      A free tier must help users reach the aha moment before expecting conversion or referral.
+related_software_patterns:
+  - pattern: feature-toggle
+    reason: >-
+      Freemium entitlements are commonly implemented through feature toggles that expose capabilities by plan or usage state.
+  - pattern: throttling
+    reason: >-
+      Usage caps and throttles can preserve free-tier economics while keeping the product available.
+related_philosophies:
+  - philosophy: product-led-growth
+    reason: >-
+      Freemium operationalises product-led growth by letting product value drive adoption, advocacy and upgrade intent.
+  - philosophy: lean-startup
+    reason: >-
+      Freemium cohorts create behavioural evidence about activation, value boundaries and willingness to pay.
+tags:
+  - freemium
+  - packaging
+  - plg
+  - monetisation
+product_stages:
+  - growth
+ratings:
+  early:
+    score: 3
+    notes: >-
+      Can accelerate learning and adoption, but risky before activation, support cost and paid value boundaries are understood.
+  growth:
+    score: 5
+    notes: >-
+      Strong fit for self-serve products with clear activation and expansion paths.
+  enterprise:
+    score: 3
+    notes: >-
+      Useful for bottom-up entry into enterprise accounts, but admin, security and procurement requirements often require paid controls.
+references:
+  - title: "Free: The Future of a Radical Price"
+    author: Chris Anderson
+    year: 2009
+  - title: "Product-Led Growth"
+    author: Wes Bush
+    year: 2019

@@ -1,0 +1,116 @@
+id: good-better-best-tiering
+title: Good-Better-Best Tiering
+aka:
+  - GBB Packaging
+  - Three-Tier Packaging
+discipline: product
+category: pricing-packaging
+maturity: established
+short_description: >-
+  Package an offer into progressively richer tiers that map to customer segments and value differences,
+  making trade-offs clear without overwhelming buyers.
+description: >-
+  Good-Better-Best tiering presents a product in a small number of ascending packages. The good tier solves
+  an entry-level job, the better tier serves the mainstream target with the strongest value balance, and the
+  best tier captures advanced, high-value, scale, governance or premium needs. The pattern reduces choice
+  complexity while allowing price discrimination by value. Good tiering is not arbitrary feature slicing;
+  each tier should correspond to a recognisable segment, willingness-to-pay band, or sophistication level.
+  The gaps between tiers should create clear upgrade reasons without crippling the lower tier's ability to
+  deliver promised value.
+problem: >-
+  Buyers face either one flat offer that under-monetises high-value customers or a confusing menu of add-ons
+  and custom packages. Teams move features between packages opportunistically, causing churn, sales friction
+  and unclear upgrade paths.
+context: >-
+  Useful for SaaS, subscriptions, developer tools, consumer apps and service bundles where customers differ
+  in needs, scale, sophistication or willingness to pay.
+forces:
+  - Simplicity for buyers competes with the nuance of many segments and edge cases.
+  - Entry tiers must be useful enough to build trust but constrained enough to leave upgrade reasons.
+  - Feature placement affects perceived fairness, not only revenue optimisation.
+  - Sales and self-serve motions may need tier language that works in both contexts.
+solution: >-
+  Segment customers by jobs, scale, sophistication and value, then define a small tier ladder with a clear
+  target user and promise for each tier. Put core value in every paid tier, reserve advanced scale,
+  governance, collaboration, automation or support for higher tiers, and communicate differences in buyer
+  language. Monitor tier mix, upgrade paths, downgrades, discounting and support signals, and revise tiers
+  when customer needs or economics change.
+when_to_use:
+  - Customers cluster into recognisable value or sophistication levels.
+  - A single price leaves money on the table or blocks lower-value customers.
+  - The team needs clearer self-serve comparison and sales packaging.
+anti_patterns:
+  - Creating tiers by randomly withholding essential features from lower packages.
+  - Offering so many packages and add-ons that buyers cannot compare options.
+  - Naming tiers aspirationally while the included capabilities do not match segment needs.
+  - Moving features between tiers without migration, communication or fairness considerations.
+metrics:
+  - Tier selection mix by segment and acquisition channel.
+  - Upgrade, downgrade and expansion rates between tiers.
+  - Conversion and churn by tier.
+  - Support, confusion and sales-cycle signals related to packaging clarity.
+examples:
+  - title: Segment-aligned tiers
+    poor: >-
+      A SaaS product puts reporting in the highest tier only because it is popular, leaving small teams
+      unable to understand their own usage and increasing churn.
+    better: >-
+      Basic reporting exists in all paid tiers, while advanced audit exports, governance and multi-team
+      analytics are placed in the best tier for larger organisations.
+    explanation: >-
+      The better packaging preserves core value while reserving scale and governance value for customers who need it.
+  - title: Avoiding choice overload
+    poor: >-
+      Buyers must compare seven packages, fourteen add-ons and custom exceptions before understanding what
+      the product costs.
+    better: >-
+      The team simplifies to good, better and best tiers, with add-ons only for genuinely independent value
+      drivers that do not belong in the main ladder.
+    explanation: >-
+      GBB works because it makes trade-offs legible. Too many options recreate the confusion tiering should solve.
+related_practice_patterns:
+  - pattern: value-based-pricing
+    reason: >-
+      Tier boundaries should reflect differences in customer value and willingness to pay, not only internal feature categories.
+  - pattern: freemium-design
+    reason: >-
+      Freemium often sits below a good-better-best paid ladder and must create a coherent path into paid tiers.
+related_software_patterns:
+  - pattern: feature-toggle
+    reason: >-
+      Tier entitlements are commonly enforced through feature flags or entitlement toggles across packages.
+  - pattern: strategy
+    reason: >-
+      Pricing and entitlement logic often uses strategy-like variation by package while preserving one product flow.
+related_philosophies:
+  - philosophy: jobs-to-be-done
+    reason: >-
+      Tier promises are strongest when they map to different customer jobs and progress levels.
+tags:
+  - packaging
+  - tiers
+  - pricing
+  - monetisation
+product_stages:
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 3
+    notes: >-
+      Useful once willingness to pay is emerging, but premature tier complexity can slow learning before clear segments exist.
+  growth:
+    score: 5
+    notes: >-
+      Strong fit as customer segments and expansion paths become clearer and self-serve packaging matters.
+  enterprise:
+    score: 4
+    notes: >-
+      Valuable for clarity, though enterprise deals often require overlays such as custom contracts, add-ons or account-level entitlements.
+references:
+  - title: "Good-Better-Best: Using Three-Tiered Choice to Boost Sales and Customer Satisfaction"
+    author: Rafi Mohammed
+    year: 2018
+  - title: "Monetizing Innovation"
+    author: Madhavan Ramanujam and Georg Tacke
+    year: 2016

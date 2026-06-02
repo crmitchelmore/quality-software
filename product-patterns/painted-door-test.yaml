@@ -1,0 +1,106 @@
+id: painted-door-test
+title: Painted Door Test
+discipline: product
+category: experimentation
+maturity: established
+short_description: >-
+  Add a lightweight visible affordance for a proposed capability and measure real user interest before building what sits behind it.
+description: >-
+  A Painted Door Test places a visible signifier for a potential feature where the real capability would later live. The door is painted rather than built: clicking it reveals a truthful message, waitlist, contact option or research invitation. The method tests discoverability and intent in situ, often as a lower-cost precursor to prototypes or MVPs.
+problem: >-
+  Teams rely on interview enthusiasm or stakeholder conviction and do not know whether users would notice or choose a capability when it appears in the actual product surface.
+context: >-
+  Useful for testing entry-point demand, packaging interest, navigation placement or market appetite before committing design and engineering capacity.
+solution: >-
+  Choose the real surface where the future capability would be discovered, add the smallest credible door, and instrument impressions, clicks and follow-up intent. On click, explain that the feature is being explored, collect the user need or consent for follow-up, and route urgent needs to a safe alternative. Decide in advance what signal merits further investment.
+forces:
+  - >-
+    The door must look real enough to test behaviour but reveal the truth quickly enough to protect trust.
+  - >-
+    Placement affects results; a poor location may invalidate a good concept.
+  - >-
+    Interest at the door does not prove successful fulfilment or retention.
+when_to_use:
+  - >-
+    You need evidence of in-product interest before designing or building the capability.
+  - >-
+    The proposed feature can be represented by a small affordance without disrupting critical workflows.
+  - >-
+    You can handle disappointed users transparently and safely.
+anti_patterns:
+  - >-
+    Using painted doors for essential, high-stakes actions where an unavailable feature would harm users.
+  - >-
+    Running multiple doors indefinitely and cluttering the product with unbuilt promises.
+  - >-
+    Declaring victory on click-through alone without learning why users clicked.
+metrics:
+  - >-
+    Impression-to-click rate by segment and placement.
+  - >-
+    Follow-up conversion such as waitlist signup, interview opt-in or manual workaround request.
+  - >-
+    Negative feedback, complaint or support rate after disclosure.
+  - >-
+    Decision rate from painted-door tests within the planned experiment window.
+examples:
+  - title: Choosing the experiment
+    poor: >-
+      The team treats a weak signal as proof and commits to building the whole feature without a decision threshold or follow-up learning step.
+    better: >-
+      The team names the riskiest assumption, sets a threshold and guardrail, runs the smallest ethical test, and chooses the next experiment based on the result.
+    explanation: >-
+      The better approach keeps experimentation tied to a decision and avoids confusing curiosity, delivery or activity with validated learning.
+  - title: Protecting trust
+    poor: >-
+      Users are surprised by an unavailable or manually operated experience in a critical workflow and have no clear explanation or recovery path.
+    better: >-
+      The test is limited to a safe cohort, explains the state honestly when users engage, and provides a fallback or contact path when the feature is not available.
+    explanation: >-
+      Experiment speed must not come at the cost of user trust. Ethical boundaries and guardrails make the learning usable.
+related_practice_patterns:
+  - pattern: fake-door-test
+    reason: >-
+      Fake Door Test is the closest related pattern, sharing the same demand-validation mechanism and trust risks.
+  - pattern: ab-test-design
+    reason: >-
+      Painted doors can be designed as controlled tests of messaging, placement or segment demand.
+  - pattern: feature-flag-experimentation
+    reason: >-
+      Feature flags control which cohorts see the door and make removal fast.
+related_software_patterns:
+  - pattern: feature-toggle
+    reason: >-
+      A toggle is a safe way to expose, target and withdraw the painted-door affordance.
+related_philosophies:
+  - philosophy: lean-startup
+    reason: >-
+      The pattern embodies minimum viable learning before building the full feature.
+tags:
+  - experimentation
+  - demand-validation
+  - ui-test
+  - mvp
+product_stages:
+  - early
+  - growth
+ratings:
+  early:
+    score: 5
+    notes: >-
+      Excellent for checking real demand cheaply, so long as the team avoids deceptive or high-stakes doors.
+  growth:
+    score: 4
+    notes: >-
+      Useful for segment and placement tests; requires governance to avoid clutter and user frustration.
+  enterprise:
+    score: 2
+    notes: >-
+      Trust, procurement and support expectations make unavailable affordances risky outside controlled pilots.
+references:
+  - title: "The Lean Startup"
+    author: Eric Ries
+    year: 2011
+  - title: "Testing Business Ideas"
+    author: David J. Bland and Alexander Osterwalder
+    year: 2019

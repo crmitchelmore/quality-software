@@ -1,0 +1,112 @@
+id: ab-test-design
+title: A/B Test Design
+discipline: product
+category: experimentation
+maturity: established
+short_description: >-
+  Design controlled product experiments with a clear hypothesis, random assignment, primary metric, guardrails and stopping rule before exposing users.
+description: >-
+  A/B Test Design is the product discipline of planning an online controlled experiment so the result can support a decision. It defines the hypothesis, population, randomisation unit, variants, primary success metric, guardrail metrics, sample size, duration, segmentation plan and decision rule before launch. Good design prevents common experiment failure modes such as peeking, underpowered tests, novelty effects and instrumentation gaps.
+problem: >-
+  Teams ship variants to cohorts and read dashboards opportunistically, but the results are ambiguous because the test lacked a pre-declared metric, sufficient sample, stable assignment or guardrails.
+context: >-
+  Best for digital products with enough traffic to detect meaningful effects and instrumentation reliable enough to measure the intended behaviour.
+solution: >-
+  Write an experiment plan before launch: hypothesis, target population, variants, randomisation unit, primary metric, guardrails, minimum detectable effect, sample size or duration, analysis segments and the decision rule. Instrument and QA assignment before exposure. Read the result at the planned stopping point, document the decision, and retire or roll forward the variant cleanly.
+forces:
+  - >-
+    Statistical rigour slows impulsive decisions but prevents false positives and costly rollouts.
+  - >-
+    Primary metrics focus the decision, while guardrails protect against local optimisation.
+  - >-
+    Low-traffic products may be unable to resolve small effects and need qualitative experiments instead.
+when_to_use:
+  - >-
+    A change effect on user behaviour is uncertain and enough traffic exists to measure it.
+  - >-
+    The decision is reversible and can be exposed safely to randomised cohorts.
+  - >-
+    Stakeholders need evidence stronger than opinion or before-and-after comparison.
+anti_patterns:
+  - >-
+    Stopping early when the dashboard looks favourable and ignoring the planned sample size.
+  - >-
+    Running multiple overlapping tests on the same users without understanding interactions.
+  - >-
+    Optimising a conversion metric while guardrails such as refunds, latency or retention deteriorate.
+metrics:
+  - >-
+    Percentage of experiments with pre-registered hypothesis, primary metric and stopping rule.
+  - >-
+    Experiment decisions reached without instrumentation defects or sample-ratio mismatch.
+  - >-
+    Primary metric effect with confidence interval or credible interval.
+  - >-
+    Guardrail metric health during and after rollout.
+examples:
+  - title: Choosing the experiment
+    poor: >-
+      The team treats a weak signal as proof and commits to building the whole feature without a decision threshold or follow-up learning step.
+    better: >-
+      The team names the riskiest assumption, sets a threshold and guardrail, runs the smallest ethical test, and chooses the next experiment based on the result.
+    explanation: >-
+      The better approach keeps experimentation tied to a decision and avoids confusing curiosity, delivery or activity with validated learning.
+  - title: Protecting trust
+    poor: >-
+      Users are surprised by an unavailable or manually operated experience in a critical workflow and have no clear explanation or recovery path.
+    better: >-
+      The test is limited to a safe cohort, explains the state honestly when users engage, and provides a fallback or contact path when the feature is not available.
+    explanation: >-
+      Experiment speed must not come at the cost of user trust. Ethical boundaries and guardrails make the learning usable.
+related_practice_patterns:
+  - pattern: feature-flag-experimentation
+    reason: >-
+      Feature flags commonly provide the controlled exposure mechanism for A/B tests.
+  - pattern: holdout-group
+    reason: >-
+      Holdouts are a specific control design used when measuring long-running or programme-level effects.
+  - pattern: guardrail-metrics
+    reason: >-
+      Guardrail metrics protect the experiment from optimising the primary metric while harming system health or users.
+related_software_patterns:
+  - pattern: feature-toggle
+    reason: >-
+      Toggles implement stable cohort assignment and variant exposure in many experimentation systems.
+  - pattern: evaluation-harness
+    reason: >-
+      Reliable experiment analysis depends on instrumentation, assignment checks and metric computation.
+related_philosophies:
+  - philosophy: hypothesis-driven-development
+    reason: >-
+      A/B test design operationalises hypothesis-driven product work with explicit decision rules.
+  - philosophy: lean-startup
+    reason: >-
+      Controlled experiments are a rigorous build-measure-learn mechanism when sufficient traffic exists.
+tags:
+  - experimentation
+  - ab-testing
+  - metrics
+  - statistics
+product_stages:
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 2
+    notes: >-
+      Often underpowered before traffic grows; use qualitative or demand experiments unless the effect is very large.
+  growth:
+    score: 5
+    notes: >-
+      Ideal once traffic and instrumentation support reliable decisions on contested product changes.
+  enterprise:
+    score: 5
+    notes: >-
+      Essential at scale, though governance is needed for overlapping tests, privacy and metric consistency.
+references:
+  - title: "The Lean Startup"
+    author: Eric Ries
+    year: 2011
+  - title: "Testing Business Ideas"
+    author: David J. Bland and Alexander Osterwalder
+    year: 2019

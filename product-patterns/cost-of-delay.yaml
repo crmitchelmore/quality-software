@@ -1,0 +1,102 @@
+id: cost-of-delay
+title: Cost of Delay
+discipline: product
+category: prioritization
+maturity: established
+short_description: >-
+  Estimate the value lost by waiting to deliver or learn, making time an explicit economic factor in product prioritisation and sequencing.
+description: >-
+  Cost of Delay expresses the economic impact of postponing a product decision, feature, fix or experiment. It combines lost revenue, deferred risk reduction, missed market windows, continued support burden, compliance exposure and delayed learning into a time-sensitive view of value. The core insight is that two equally valuable items are not equally urgent if one loses value quickly while the other can wait. Cost of Delay gives teams a language for urgency grounded in economics rather than volume or stakeholder pressure.
+problem: >-
+  Roadmaps treat time as neutral, so teams defer urgent opportunities, risk reductions or learning loops without seeing the value being lost each week or month.
+context: >-
+  Useful when deadlines, market windows, operational pain, compliance dates or learning velocity affect the value of work, especially in constrained portfolios.
+solution: >-
+  For each candidate item, ask what is lost if it ships or is learned one week or month later. Capture the components of delay cost, estimate them as ranges or relative scores, and identify time windows where the cost changes sharply. Use the result to sequence work, feed WSJF, or justify capacity for urgent risk-reduction and learning work.
+forces:
+  - >-
+    Exact financial estimates are difficult, but no estimate at all hides the real economics of waiting.
+  - >-
+    Time-critical work can crowd out important long-term investments if urgency is not separated from value.
+  - >-
+    Some delay cost is reputational or strategic and must be reasoned qualitatively.
+when_to_use:
+  - >-
+    A decision involves market windows, deadlines, support cost, compliance exposure or learning speed.
+  - >-
+    Stakeholders disagree about urgency and need to separate importance from time sensitivity.
+  - >-
+    Portfolio queues are long enough that waiting materially changes value.
+anti_patterns:
+  - >-
+    Calling every item urgent without explaining what value decays over time.
+  - >-
+    Ignoring qualitative delay costs such as trust erosion because they are harder to price.
+  - >-
+    Using cost of delay once and never updating it as windows close or evidence changes.
+metrics:
+  - >-
+    Number of prioritisation decisions with explicit delay-cost rationale.
+  - >-
+    Estimated value preserved by accelerating time-critical items.
+  - >-
+    Reduction in missed market, compliance or customer-commitment windows.
+  - >-
+    Age of high-delay-cost items in backlog or portfolio queues.
+examples:
+  - title: Deadline economics
+    poor: >-
+      A tax-reporting update is ranked below a dashboard redesign because both are labelled medium value and the dashboard has louder sponsors.
+    better: >-
+      The team estimates the tax update delay cost rises sharply after the filing deadline, so it moves ahead of the redesign even though the redesign has higher eventual upside.
+    explanation: >-
+      Cost of Delay separates total value from urgency. Time-sensitive work can deserve priority because waiting destroys value.
+  - title: Learning delay
+    poor: >-
+      The team postpones a one-week pricing experiment until after a quarter of feature delivery, losing the chance to shape what gets built.
+    better: >-
+      They quantify the delay as three months of building without willingness-to-pay evidence and run the experiment before committing the roadmap.
+    explanation: >-
+      Delay cost includes delayed learning, not only delayed revenue. Early evidence can prevent much larger waste downstream.
+related_practice_patterns:
+  - pattern: weighted-shortest-job-first
+    reason: >-
+      WSJF operationalises Cost of Delay by dividing it by job size to create a sequence.
+  - pattern: ab-test-design
+    reason: >-
+      Experiments have delay cost because each postponed test delays validated learning and subsequent decisions.
+related_philosophies:
+  - philosophy: continuous-delivery-lean
+    reason: >-
+      Lean product flow treats delay as waste, making Cost of Delay a direct economic expression of that philosophy.
+  - philosophy: lean-startup
+    reason: >-
+      Lean Startup values fast learning; Cost of Delay quantifies the price of postponing that learning.
+tags:
+  - prioritization
+  - economics
+  - urgency
+  - lean
+product_stages:
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 3
+    notes: >-
+      Helpful for time-sensitive learning and launches, but exact economics are usually unavailable pre-PMF.
+  growth:
+    score: 4
+    notes: >-
+      Strong fit as queues grow and delayed opportunities, retention fixes and learning loops become costly.
+  enterprise:
+    score: 5
+    notes: >-
+      Essential for portfolio governance where delay spans revenue, risk, compliance and operational cost.
+references:
+  - title: "The Principles of Product Development Flow"
+    author: Donald G. Reinertsen
+    year: 2009
+  - title: "Cost of Delay: How to quantify the cost of postponing a project"
+    author: Joshua Arnold
+    url: "https://blackswanfarming.com/cost-of-delay/"

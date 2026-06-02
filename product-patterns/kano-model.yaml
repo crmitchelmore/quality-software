@@ -1,0 +1,102 @@
+id: kano-model
+title: Kano Model
+discipline: product
+category: prioritization
+maturity: time-tested
+short_description: >-
+  Classify needs as basic, performance, delighter, indifferent or dissatisfier so prioritisation accounts for non-linear customer satisfaction rather than feature count.
+description: >-
+  The Kano Model explains how different kinds of product attributes affect customer satisfaction. Basic needs are expected and only noticed when absent; performance needs increase satisfaction roughly in proportion to how well they are met; delighters pleasantly surprise customers but become expected over time; indifferent attributes do not move satisfaction; dissatisfiers actively hurt. Product teams use Kano analysis to avoid over-investing in visible delighters while neglecting basics, and to find targeted opportunities for differentiation once table stakes are reliable.
+problem: >-
+  Teams assume every feature adds equal value, so they chase flashy additions while unresolved basics create dissatisfaction, or they over-polish table stakes that no longer differentiate the product.
+context: >-
+  Useful when customer satisfaction, retention or differentiation is more important than pure feature throughput, especially in markets where expectations evolve quickly.
+solution: >-
+  Research customer reactions to the presence and absence of candidate attributes, classify each need by satisfaction effect, and prioritise accordingly. Ensure basics are dependable before investing heavily in delighters, use performance attributes where measurable improvement matters, and revisit classifications as the market matures. Treat Kano as a lens on satisfaction, not as a complete business-case model.
+forces:
+  - >-
+    Basic needs rarely generate praise, making them easy to underfund despite being essential.
+  - >-
+    Delighters decay into expected features as competitors copy them and customers acclimatise.
+  - >-
+    Segment expectations differ; one user's delighter may be another user's basic need.
+when_to_use:
+  - >-
+    Customer satisfaction or retention is weak and feature requests are pulling in many directions.
+  - >-
+    You need to distinguish table stakes from differentiating investments.
+  - >-
+    A product is entering a mature market with established user expectations.
+anti_patterns:
+  - >-
+    Shipping delighters while reliability, trust or core workflow basics remain broken.
+  - >-
+    Assuming a Kano category is permanent instead of checking whether expectations have shifted.
+  - >-
+    Averaging all segments together and missing a critical segment's basic needs.
+metrics:
+  - >-
+    Customer satisfaction movement by attribute category.
+  - >-
+    Reduction in complaints tied to basic needs.
+  - >-
+    Adoption and retention lift from delighter or performance investments.
+  - >-
+    Reclassification cadence for ageing delighters becoming basics.
+examples:
+  - title: Basics before delighters
+    poor: >-
+      A banking app adds animated spending insights while login failures and confusing transfer statuses remain frequent sources of support tickets.
+    better: >-
+      The team first stabilises login and transfer confirmation as basic needs, then tests whether spending insights delight a target segment once trust is restored.
+    explanation: >-
+      Delighters cannot compensate for missing basics. Kano helps the team sequence reliability and trust before novelty.
+  - title: Segment-aware classification
+    poor: >-
+      A project-management product labels advanced permissions as indifferent because most small-team users do not ask for them.
+    better: >-
+      The team classifies permissions as a basic need for enterprise buyers and indifferent for small teams, then gates the investment to the enterprise segment.
+    explanation: >-
+      Kano categories are segment-relative; averaging them hides buyer-specific expectations that may decide adoption.
+related_practice_patterns:
+  - pattern: opportunity-scoring
+    reason: >-
+      Opportunity scoring can quantify how important and underserved each Kano-classified need is.
+  - pattern: value-vs-effort-matrix
+    reason: >-
+      Once needs are classified, the matrix helps compare the effort of satisfying basics or delighters.
+related_philosophies:
+  - philosophy: jobs-to-be-done
+    reason: >-
+      Jobs-to-be-Done research helps reveal the expectations and outcomes behind each Kano category.
+  - philosophy: outcome-over-output
+    reason: >-
+      Kano steers teams towards satisfaction outcomes rather than a larger list of shipped features.
+tags:
+  - prioritization
+  - customer-satisfaction
+  - differentiation
+  - research
+product_stages:
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 3
+    notes: >-
+      Helpful for understanding expectations, but early products may not yet have enough usage or segments for stable classification.
+  growth:
+    score: 5
+    notes: >-
+      Strong fit as markets and segments become clearer and teams must balance basics with differentiation.
+  enterprise:
+    score: 4
+    notes: >-
+      Useful for large portfolios, though segment complexity makes research design and interpretation harder.
+references:
+  - title: "Attractive Quality and Must-Be Quality"
+    author: Noriaki Kano, Nobuhiku Seraku, Fumio Takahashi and Shinichi Tsuji
+    year: 1984
+  - title: "The Lean Product Playbook"
+    author: Dan Olsen
+    year: 2015

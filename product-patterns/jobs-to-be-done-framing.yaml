@@ -1,0 +1,95 @@
+id: jobs-to-be-done-framing
+title: Jobs-to-be-Done Framing
+aka:
+  - JTBD Framing
+discipline: product
+category: problem-framing
+maturity: established
+short_description: >-
+  Frame opportunities around the progress customers seek in a situation, including functional, emotional and social dimensions, rather than around features or demographics.
+description: >-
+  Jobs-to-be-Done Framing translates discovery evidence into job statements and forces of progress. It defines the situation in which a customer struggles, the progress they seek, and the outcomes they use to judge success. The frame helps teams see competitors, workarounds and product opportunities through the customer's goal rather than through the company's category or feature taxonomy.
+problem: >-
+  Product opportunities are framed as features, personas or market segments, obscuring the reason customers change behaviour and the alternatives they actually consider.
+context: >-
+  Use after JTBD interviews, during proposition design, opportunity mapping, onboarding work or churn analysis.
+forces:
+  - A job must be stable enough to guide strategy but specific enough to inform product choices.
+  - Functional outcomes are visible, while social and emotional outcomes are often decisive but under-stated.
+  - Different actors in B2B may have different jobs within one purchase.
+solution: >-
+  Synthesise interview evidence into job frames such as "When [situation], I want to [progress], so I can [outcome]". Add forces pushing toward change, habits pulling back, anxieties, alternatives and success criteria. Use the frame to evaluate solutions, messaging and onboarding against the progress customers are trying to make.
+when_to_use:
+  - Customer research reveals repeated struggles but the team lacks a clear opportunity frame.
+  - The product is compared with unexpected alternatives or workarounds.
+  - Segmentation by role or company size does not explain adoption behaviour.
+anti_patterns:
+  - 'Writing jobs as features: "When I log in, I want a dashboard".'
+  - Treating JTBD as a slogan and skipping evidence from real customer stories.
+  - Ignoring buyer, user and approver jobs in complex purchases.
+metrics:
+  - Activation or conversion lift for flows redesigned around a validated job.
+  - Percentage of top opportunities expressed as job frames with supporting evidence.
+  - Reduction in roadmap items framed primarily as feature requests.
+examples:
+  - title: Progress over feature
+    poor: >-
+      "When I use the product, I want reports, so I can see reports."
+    better: >-
+      "When month-end closes, I want to explain revenue anomalies quickly, so I can answer finance questions before leadership review."
+    explanation: >-
+      The better frame describes a situation, progress and outcome. It leaves room for multiple solutions beyond reports.
+  - title: Alternatives from the job
+    poor: >-
+      The team analyses only direct reporting-tool competitors.
+    better: >-
+      The job frame reveals the customer currently uses analyst Slack threads and spreadsheet checks, so those alternatives shape product requirements.
+    explanation: >-
+      JTBD defines competition by the progress sought, not by software category.
+related_practice_patterns:
+  - pattern: jobs-to-be-done-interview
+    reason: >-
+      JTBD framing depends on evidence from interviews about real switching or struggle situations.
+  - pattern: value-proposition-canvas
+    reason: >-
+      Job frames can populate and sharpen the customer jobs side of a value proposition canvas.
+related_software_patterns:
+  - pattern: ubiquitous-language
+    reason: >-
+      A strong job frame captures customer language that should inform domain and interface terminology.
+  - pattern: domain-model
+    reason: >-
+      Product opportunities framed by jobs can reveal domain concepts and workflows that the software model should support.
+related_philosophies:
+  - philosophy: jobs-to-be-done
+    reason: >-
+      The pattern is a direct application of the JTBD philosophy to problem framing.
+  - philosophy: domain-driven-design
+    reason: >-
+      Both approaches seek models grounded in real domain activity and language rather than internal categories.
+tags:
+  - jtbd
+  - problem-framing
+  - customer-jobs
+  - outcomes
+product_stages:
+  - early
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 5
+    notes: >-
+      Excellent for clarifying why customers would switch and what product-market fit must satisfy.
+  growth:
+    score: 5
+    notes: >-
+      Strong for segment expansion, onboarding and differentiation as customer situations diversify.
+  enterprise:
+    score: 4
+    notes: >-
+      Valuable but requires careful separation of buyer, user and administrator jobs.
+references:
+  - title: "Competing Against Luck"
+    author: Clayton Christensen et al.
+    year: 2016

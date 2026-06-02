@@ -1,0 +1,103 @@
+id: weighted-shortest-job-first
+title: Weighted Shortest Job First
+discipline: product
+category: prioritization
+maturity: established
+short_description: >-
+  Sequence work by dividing cost of delay by job size, so teams do the most economically urgent small jobs first and reduce the cost of queues.
+description: >-
+  Weighted Shortest Job First is an economic prioritisation method popularised in lean product development and SAFe. It compares work by estimating the cost of delaying an item and dividing that by the job duration or size. High cost-of-delay, small-size items rise to the top because they deliver urgent value quickly; large items must justify the queue time they impose. WSJF is especially useful when work is queued through constrained delivery capacity and waiting has a measurable economic impact.
+problem: >-
+  Teams prioritise large strategic initiatives ahead of smaller urgent work, or execute by stakeholder rank, causing high-value short jobs to wait in queues while cost of delay accumulates unseen.
+context: >-
+  Suits portfolio, programme and platform planning where many jobs compete for constrained teams and delay cost can be estimated at least relatively.
+solution: >-
+  Estimate each job cost of delay using user/business value, time criticality and risk reduction or opportunity enablement, then divide by job size. Prioritise the highest WSJF items while checking for dependencies, capacity constraints and strategic coherence. Use relative scoring when absolute economics are unavailable, and revisit scores as time windows, risks and estimates change.
+forces:
+  - >-
+    Economic sequencing requires honest job size estimates, which can be politically uncomfortable.
+  - >-
+    Cost of delay is hard to quantify precisely but ignoring it makes queues appear free.
+  - >-
+    Breaking work down can improve WSJF, but over-slicing can lose coherence and increase coordination cost.
+when_to_use:
+  - >-
+    Multiple sizeable initiatives are queued behind constrained delivery capacity.
+  - >-
+    Delay has real economic, regulatory, learning or risk-reduction consequences.
+  - >-
+    Teams can estimate relative job size and cost of delay collaboratively.
+anti_patterns:
+  - >-
+    Treating WSJF scores as precise finance when they are rough economic heuristics.
+  - >-
+    Inflating cost of delay for executive-sponsored items to force a preferred order.
+  - >-
+    Ignoring dependencies and sequencing prerequisites because the formula says otherwise.
+metrics:
+  - >-
+    Queue time reduction for high cost-of-delay items.
+  - >-
+    Economic value delivered per unit of delivery capacity.
+  - >-
+    Age of delayed high-WSJF items in the portfolio queue.
+  - >-
+    Accuracy of job-size estimates after completion.
+examples:
+  - title: Seeing queue cost
+    poor: >-
+      A six-month platform rewrite consumes the whole team while a two-week compliance change with a fixed deadline waits until it becomes an emergency.
+    better: >-
+      The team scores the compliance change as high cost of delay and small job size, pulls it forward, and then resumes the rewrite with the deadline risk removed.
+    explanation: >-
+      WSJF makes waiting economically visible. Small urgent work should not sit behind large bets simply because the large bet sounds strategic.
+  - title: Relative scoring
+    poor: >-
+      Planning stalls for weeks because nobody can calculate exact pounds-per-week delay for each feature.
+    better: >-
+      The group uses relative scoring for delay and size, then revisits the few items where the rank is sensitive to assumptions.
+    explanation: >-
+      WSJF is a decision aid. Relative economics usually beats paralysis, as long as uncertain scores are discussed rather than hidden.
+related_practice_patterns:
+  - pattern: cost-of-delay
+    reason: >-
+      Cost of Delay is the numerator in WSJF and supplies the economic urgency behind the sequence.
+  - pattern: release-train
+    reason: >-
+      Release trains often use WSJF to decide which work boards a constrained upcoming increment.
+related_software_patterns:
+  - pattern: strangler-fig
+    reason: >-
+      Strangler migrations create smaller jobs that can score better than a single large replacement effort.
+related_philosophies:
+  - philosophy: continuous-delivery-lean
+    reason: >-
+      WSJF reflects lean flow thinking by reducing queues and delivering economically valuable increments sooner.
+tags:
+  - prioritization
+  - economics
+  - lean
+  - portfolio
+product_stages:
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 2
+    notes: >-
+      Often too heavy before queues and cost-of-delay economics are visible, though the intuition is useful.
+  growth:
+    score: 4
+    notes: >-
+      Valuable as delivery capacity becomes constrained and teams need transparent economic sequencing.
+  enterprise:
+    score: 5
+    notes: >-
+      Strong fit for portfolio and programme planning, provided governance does not turn relative scoring into false precision.
+references:
+  - title: "The Principles of Product Development Flow"
+    author: Donald G. Reinertsen
+    year: 2009
+  - title: "SAFe Lean-Agile Principles: Weighted Shortest Job First"
+    author: Scaled Agile
+    url: "https://scaledagileframework.com/wsjf/"

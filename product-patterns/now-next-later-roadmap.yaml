@@ -1,0 +1,102 @@
+id: now-next-later-roadmap
+title: Now-Next-Later Roadmap
+discipline: product
+category: roadmapping
+maturity: established
+short_description: >-
+  Communicate roadmap intent in horizons — now, next and later — so teams show direction without pretending uncertain future work has fixed dates.
+description: >-
+  A Now-Next-Later roadmap organises product direction by confidence horizon rather than calendar precision. Now contains committed work actively being delivered or discovered, Next contains the most likely upcoming problems or opportunities, and Later captures longer-range bets, questions and themes. The pattern helps teams align stakeholders on direction while preserving flexibility as evidence changes.
+problem: >-
+  Traditional roadmap timelines imply that uncertain future items have firm dates, leading stakeholders to treat guesses as promises and teams to defend outdated plans instead of adapting to learning.
+context: >-
+  Fits product teams operating under uncertainty, especially empowered teams that can update sequencing as discovery, delivery and market evidence changes.
+solution: >-
+  Define clear horizon meanings, list work as outcomes, problems or themes where possible, and reserve dates for items that are genuinely committed. Review the roadmap on a regular cadence, moving items between horizons as confidence increases or evidence weakens. Pair each item with the reason it matters and the signal that would change its priority.
+forces:
+  - >-
+    Stakeholders want predictability, while product learning makes distant commitments unreliable.
+  - >-
+    Too little detail feels evasive; too much detail becomes a promise.
+  - >-
+    Horizons must be updated regularly or Later becomes a graveyard of unexamined wishes.
+when_to_use:
+  - >-
+    Future work is uncertain and date commitments would be misleading.
+  - >-
+    Stakeholders need directional visibility without locking teams into premature scope.
+  - >-
+    Discovery and delivery are running continuously and priorities may change with evidence.
+anti_patterns:
+  - >-
+    Hiding firm commitments in vague horizons when dates are actually required by customers or compliance.
+  - >-
+    Filling Later with every idea ever mentioned, making it indistinguishable from a backlog.
+  - >-
+    Treating Now, Next and Later as fixed quarters under different labels.
+metrics:
+  - >-
+    Stakeholder understanding of committed versus exploratory work.
+  - >-
+    Frequency of roadmap updates driven by new evidence rather than political churn.
+  - >-
+    Reduction in missed-date escalations for uncommitted future items.
+  - >-
+    Share of roadmap entries tied to outcomes or opportunities rather than feature names.
+examples:
+  - title: Avoiding false dates
+    poor: >-
+      The roadmap shows an AI assistant launching on 15 October even though discovery has not validated the problem or technical feasibility.
+    better: >-
+      The roadmap places reduce support ticket drafting time in Later, with discovery in Next and no launch date until the solution and feasibility are clearer.
+    explanation: >-
+      The better roadmap communicates direction and learning intent without converting uncertainty into a promise stakeholders will later enforce.
+  - title: Keeping horizons alive
+    poor: >-
+      Later becomes a dumping ground of old executive requests that nobody reviews, but stakeholders assume they are still planned.
+    better: >-
+      The team reviews Later monthly, removes stale items, and annotates each remaining bet with the evidence needed to promote it.
+    explanation: >-
+      Horizons only preserve trust when they are actively curated. Otherwise the roadmap becomes a softer form of backlog bloat.
+related_practice_patterns:
+  - pattern: outcome-based-roadmap
+    reason: >-
+      Now-Next-Later is strongest when each horizon is expressed as outcomes rather than committed features.
+  - pattern: value-vs-effort-matrix
+    reason: >-
+      Matrix triage can help decide which opportunities belong in Now, Next or Later.
+related_philosophies:
+  - philosophy: outcome-over-output
+    reason: >-
+      The roadmap avoids output promises by communicating the outcomes or problems each horizon pursues.
+  - philosophy: dual-track-agile
+    reason: >-
+      Discovery findings from the Next horizon can flow into delivery work in Now.
+tags:
+  - roadmap
+  - uncertainty
+  - alignment
+  - communication
+product_stages:
+  - early
+  - growth
+ratings:
+  early:
+    score: 5
+    notes: >-
+      Excellent where learning changes direction quickly and fixed-date roadmaps would be fiction.
+  growth:
+    score: 5
+    notes: >-
+      Strong fit for scaling teams needing shared direction without losing adaptability.
+  enterprise:
+    score: 3
+    notes: >-
+      Useful for product areas, but enterprise customers and governance may still require dated commitments for some obligations.
+references:
+  - title: "Product Roadmaps Relaunched"
+    author: C. Todd Lombardo, Bruce McCarthy, Evan Ryan and Michael Connors
+    year: 2017
+  - title: "Escaping the Build Trap"
+    author: Melissa Perri
+    year: 2018

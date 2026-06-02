@@ -1,0 +1,90 @@
+id: customer-advisory-board
+title: Customer Advisory Board
+aka:
+  - CAB
+discipline: product
+category: customer-discovery
+maturity: established
+short_description: >-
+  Convene a representative group of customers to provide strategic feedback, market insight and relationship depth without mistaking their preferences for representative demand.
+description: >-
+  A Customer Advisory Board is a structured forum where selected customers discuss strategic direction, emerging needs, roadmap themes and market changes with the product organisation. It is not a requirements committee; its value is rich context, relationship building and early signal from important customers. Done well, a CAB balances candour with facilitation, makes member selection explicit, and feeds insights into discovery rather than directly into commitments.
+problem: >-
+  Product strategy is shaped either by scattered account escalations or by internal assumptions, with no structured channel for high-context customer perspective.
+context: >-
+  Common in B2B, enterprise and platform products where strategic customers have complex workflows, long buying cycles and valuable market context.
+forces:
+  - Advisory customers are influential but not necessarily representative.
+  - Relationship value can pressure teams into over-promising roadmap commitments.
+  - Senior participants need strategic discussion, not tactical backlog grooming.
+solution: >-
+  Define the CAB's purpose, membership criteria and operating cadence. Select customers across relevant segments, facilitate discussions around problems, trends and outcomes, and separate insight capture from roadmap commitment. Share back what was learned and how it influenced decisions, while validating CAB signals against broader discovery and usage data.
+when_to_use:
+  - Enterprise or strategic customers have insight into market shifts and complex needs.
+  - Account feedback is noisy and needs a structured forum.
+  - The product team needs deeper executive relationships without turning customers into product owners.
+anti_patterns:
+  - Treating CAB votes as binding roadmap prioritisation.
+  - Filling the board only with the largest or loudest customers.
+  - Using CAB meetings as sales presentations rather than listening sessions.
+metrics:
+  - Number of strategic insights or assumptions generated and later validated outside the CAB.
+  - CAB member retention, participation and satisfaction.
+  - Revenue retention or expansion among CAB accounts without disproportionate custom commitments.
+examples:
+  - title: Advisory, not ownership
+    poor: >-
+      The CAB ranks feature requests and the product team commits to the top three for the next quarter.
+    better: >-
+      The CAB discusses industry pressures and workflow problems; the team uses those insights to shape discovery themes, then validates them with broader customer evidence before roadmap decisions.
+    explanation: >-
+      CABs provide context and signal, not governance over the roadmap. Binding votes overweight a small sample.
+  - title: Representative membership
+    poor: >-
+      Only the three biggest accounts attend, each pushing bespoke enterprise requirements.
+    better: >-
+      Membership includes strategic accounts across segments, maturity levels and use cases, with clear renewal and rotation rules.
+    explanation: >-
+      Member design shapes the signal. A broader board reduces the risk of mistaking one account's needs for market demand.
+related_practice_patterns:
+  - pattern: continuous-interviewing
+    reason: >-
+      CAB insights should feed a broader continuous-interviewing pipeline rather than replace regular customer conversations.
+  - pattern: sales-product-feedback-loop
+    reason: >-
+      CAB themes can be compared with sales and account feedback to identify recurring market signals.
+related_software_patterns:
+  - pattern: customer-supplier
+    reason: >-
+      The CAB mirrors a customer-supplier relationship where downstream needs inform upstream direction without dictating implementation.
+related_philosophies:
+  - philosophy: customer-development
+    reason: >-
+      CABs are one structured channel for learning from customers about problems, markets and business value.
+  - philosophy: empowered-product-teams
+    reason: >-
+      The team remains accountable for product decisions while using advisory input as evidence.
+tags:
+  - advisory-board
+  - b2b
+  - enterprise
+  - customer-feedback
+product_stages:
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 2
+    notes: >-
+      Usually too heavy before there are enough customers; direct interviews are faster and less performative.
+  growth:
+    score: 4
+    notes: >-
+      Useful once strategic accounts and segments emerge, provided CAB input is not over-weighted.
+  enterprise:
+    score: 5
+    notes: >-
+      Very valuable for relationship depth and market insight, with strong facilitation and expectation management.
+references:
+  - title: "Customer Advisory Board Best Practices"
+    author: ProductPlan

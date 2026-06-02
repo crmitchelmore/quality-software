@@ -1,0 +1,104 @@
+id: churn-prediction-intervention
+title: Churn Prediction & Intervention
+aka:
+  - Churn Risk Scoring
+  - Retention Intervention
+discipline: product
+category: lifecycle-retention
+maturity: established
+short_description: >-
+  Identify users or accounts showing churn risk signals and trigger proportionate product, success, or lifecycle interventions before the relationship is lost.
+description: >-
+  Churn Prediction and Intervention combines behavioural, commercial, support, and sentiment signals to estimate which users or accounts are likely to stop using or renewing, then applies targeted actions to reduce that risk. Prediction may be a simple rules-based score or a statistical model, but the product pattern is only complete when it connects risk to an intervention playbook: education, activation nudges, customer-success outreach, pricing review, usability fixes, reliability remediation, or feature guidance. Done well, it makes retention proactive and evidence-based. Done poorly, it spams unhappy users or creates opaque scores that no team trusts.
+problem: >-
+  Teams notice churn after cancellation or non-renewal, when options are limited. Customer success relies on anecdote, product sees only aggregate metrics, and lifecycle messages are sent broadly without knowing who is at risk or why.
+context: >-
+  Useful for SaaS, subscription, marketplace, and product-led growth businesses where behaviour changes, adoption gaps, support issues, or renewal signals can be observed before churn.
+forces:
+  - Prediction accuracy competes with explainability; teams need to know why an account is at risk to choose the right intervention.
+  - Automation scales outreach but can feel tone-deaf when the cause is a serious product or relationship problem.
+  - False positives waste effort; false negatives lose customers.
+  - Product, data, customer success, and go-to-market need shared ownership or churn becomes everyone's concern and nobody's system.
+solution: >-
+  Define churn events and leading indicators for each customer segment. Start with interpretable signals such as usage drop, missed activation, unresolved support issues, failed payments, declining breadth of account use, or negative feedback. Create a risk score or segment that names the likely reason for risk, not just a number. Match each risk pattern to a specific intervention and owner, then measure whether intervention cohorts improve retention against comparable holdouts. Feed recurring churn reasons back into roadmap and onboarding decisions rather than treating outreach as the whole solution.
+when_to_use:
+  - Churn is material and there are observable signals before users or accounts leave.
+  - Customer success or lifecycle teams need prioritised, explainable retention plays.
+  - Product wants to connect behavioural analytics to concrete retention improvements.
+anti_patterns:
+  - Building a sophisticated black-box churn model before agreeing what intervention would follow each risk signal.
+  - Sending generic discount or "we miss you" messages to every at-risk user regardless of churn reason.
+  - Optimising for saved accounts while ignoring whether the underlying product problem was fixed.
+  - Letting customer success own churn intervention without product reviewing repeated root causes.
+metrics:
+  - Precision and recall of churn-risk segments against observed churn or renewal outcomes.
+  - Intervention lift versus holdout or matched control for retention, renewal, or reactivation.
+  - Time from risk signal detection to appropriate intervention.
+  - Top churn reasons converted into product, onboarding, support, or pricing changes.
+examples:
+  - title: Reason-coded risk
+    poor: >-
+      A dashboard labels 600 accounts as "high churn risk" based on a machine-learning score. Customer success receives the list but cannot tell whether to train, escalate, discount, or ignore each account.
+    better: >-
+      The score is decomposed into risk reasons such as adoption stalled after import, champion left, unresolved reliability tickets, or declining seat breadth. Each reason maps to a specific playbook and owner.
+    explanation: >-
+      Prediction only creates product value when it is actionable. The better version trades some scoring mystique for interventions teams can actually perform.
+  - title: Testing interventions
+    poor: >-
+      Every at-risk user receives a discount email. Churn falls slightly, but the team cannot tell whether discounts helped, cannibalised revenue, or simply reached users who would have stayed.
+    better: >-
+      The team runs matched holdouts for different intervention types, measuring saved revenue, retention lift, support cost, and downstream product adoption.
+    explanation: >-
+      Retention interventions need the same causal discipline as acquisition experiments. Otherwise the team may mistake activity for effectiveness.
+related_practice_patterns:
+  - pattern: retention-curve-analysis
+    reason: >-
+      Retention curves reveal the lifecycle moments and segments where churn-risk signals should be monitored.
+  - pattern: lifecycle-messaging
+    reason: >-
+      Lifecycle messaging is one intervention channel for risk segments, especially where education or reminders address the churn cause.
+  - pattern: cohort-analysis
+    reason: >-
+      Cohort analysis helps compare intervention outcomes against similar users or accounts that did not receive the play.
+related_philosophies:
+  - philosophy: product-led-growth
+    reason: >-
+      Product-led growth depends on proactive retention and expansion signals drawn from product usage.
+  - philosophy: north-star-framework
+    reason: >-
+      Churn indicators should be grounded in the product's value metric so interventions focus on restoring value, not just preventing cancellation.
+related_software_patterns:
+  - pattern: event-driven-architecture
+    reason: >-
+      Event-driven systems can trigger risk detection and intervention workflows when relevant behavioural or account events occur.
+  - pattern: wire-tap
+    reason: >-
+      Capturing copies of behavioural and support events for analytics can support churn scoring without disrupting operational flows.
+tags:
+  - churn
+  - retention
+  - prediction
+  - intervention
+product_stages:
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 2
+    notes: >-
+      Early teams often lack enough churn data for prediction; direct conversations with churned users usually teach more.
+  growth:
+    score: 5
+    notes: >-
+      Strong fit once churn materially affects growth and enough behavioural data exists to detect risk before cancellation.
+  enterprise:
+    score: 5
+    notes: >-
+      Essential for account health, renewal management, and prioritised customer-success effort, with governance needed around model use and outreach.
+references:
+  - title: "Customer Success"
+    author: Nick Mehta, Dan Steinman, Lincoln Murphy
+    year: 2016
+  - title: "Lean Analytics"
+    author: Alistair Croll, Benjamin Yoskovitz
+    year: 2013

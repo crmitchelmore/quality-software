@@ -1,0 +1,116 @@
+id: cohort-analysis
+title: Cohort Analysis
+discipline: product
+category: metrics-analytics
+maturity: established
+short_description: >-
+  Compare groups of users who share a starting event or attribute over time, so retention, activation and
+  monetisation changes are visible instead of hidden in blended averages.
+description: >-
+  Cohort analysis groups users, accounts, or transactions by a shared characteristic — often signup week,
+  first purchase month, acquisition channel, plan, region, or feature exposure — and tracks their behaviour
+  over subsequent periods. It turns time-series averages into longitudinal evidence. Instead of asking
+  whether total active users are up, the team asks whether the users acquired in March retained better than
+  those acquired in February, or whether accounts activated through a new onboarding flow expand faster
+  after 90 days. The pattern is essential whenever improvements affect future behaviour but aggregate
+  dashboards are confounded by growth, seasonality, or mix shifts.
+problem: >-
+  Blended metrics can look healthy while new users are retaining worse, a channel is degrading, or a
+  product change helped one segment and hurt another. Teams make decisions from averages that mix old and
+  new behaviour and cannot isolate whether changes are improving customer outcomes.
+context: >-
+  Useful for products with repeat usage, subscriptions, marketplaces, ecommerce, onboarding flows and any
+  situation where behaviour unfolds over time.
+forces:
+  - Cohorts reveal longitudinal truth, but small cohorts produce noisy conclusions.
+  - Too many cohort dimensions create analysis paralysis and false stories from sparse data.
+  - Calendar time, user age and product-version effects overlap and must be separated carefully.
+  - Choosing the cohort anchor determines what question the analysis can answer.
+solution: >-
+  Define the decision question first, then choose the cohort anchor and segmentation that answer it. Track
+  each cohort's relevant behaviour over consistent intervals, such as day 1, week 4, month 3, or renewal.
+  Compare cohorts against prior cohorts, control cohorts, or expected curves, and pair quantitative changes
+  with qualitative investigation when a cohort diverges. Preserve cohort definitions so later teams can
+  compare like with like.
+when_to_use:
+  - Retention, monetisation, activation or churn needs to be understood over user age.
+  - Aggregate metrics are changing but the team cannot tell whether new or old users drove the movement.
+  - A launch, channel or onboarding change should affect future cohorts more than historical users.
+anti_patterns:
+  - Looking only at totals while the composition of users changes underneath the metric.
+  - Creating dozens of thin cohorts until every comparison is underpowered.
+  - Changing the cohort definition mid-analysis and comparing unlike groups.
+  - Interpreting correlation by cohort as causation without checking channel, seasonality or segment mix.
+metrics:
+  - Retention curves by acquisition or activation cohort.
+  - Activation, conversion or expansion rates at fixed user-age intervals.
+  - Cohort lifetime value, payback or churn by segment and channel.
+  - Variance between cohorts after major launches or lifecycle interventions.
+examples:
+  - title: Aggregate growth hiding retention decay
+    poor: >-
+      A consumer app celebrates rising monthly active users while each new signup cohort retains worse than
+      the previous one because paid acquisition keeps filling the top of the bucket.
+    better: >-
+      The team reviews weekly signup cohorts and sees week-four retention falling for paid channels, then
+      pauses spend and fixes the activation path before scaling again.
+    explanation: >-
+      Cohorts separate growth from quality. The poor view confuses more new users with a healthier product.
+  - title: Measuring an onboarding change
+    poor: >-
+      After changing onboarding, the team compares this month's total activation rate with last month's and
+      ignores that the acquisition mix also changed.
+    better: >-
+      Users exposed to the new onboarding are tracked as a cohort and compared with similar prior cohorts
+      by channel, segment and user age.
+    explanation: >-
+      The better approach isolates the change more cleanly and avoids attributing channel mix effects to
+      product design.
+related_practice_patterns:
+  - pattern: retention-curve-analysis
+    reason: >-
+      Retention curves are a specialised cohort analysis focused on whether usage stabilises or decays over time.
+  - pattern: funnel-analysis
+    reason: >-
+      Funnel improvements should often be evaluated by cohorts to see whether better conversion produces
+      durable users rather than low-quality volume.
+related_software_patterns:
+  - pattern: materialized-view
+    reason: >-
+      Cohort dashboards often rely on precomputed materialized views so longitudinal slices remain fast and consistent.
+  - pattern: event-sourcing
+    reason: >-
+      Event histories make it possible to reconstruct cohorts and analyse behaviour from the original user events.
+related_philosophies:
+  - philosophy: lean-startup
+    reason: >-
+      Cohort analysis is a core actionable-metrics practice for validated learning in Lean Startup.
+tags:
+  - analytics
+  - retention
+  - segmentation
+  - lifecycle
+product_stages:
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 3
+    notes: >-
+      Conceptually useful, but cohorts may be too small for precision; qualitative follow-up is usually
+      needed to interpret the signal.
+  growth:
+    score: 5
+    notes: >-
+      Essential once acquisition, onboarding and retention changes are frequent enough that blended metrics mislead.
+  enterprise:
+    score: 5
+    notes: >-
+      Critical for mature products with many segments, channels and plans, provided definitions are governed consistently.
+references:
+  - title: "Lean Analytics"
+    author: Alistair Croll and Benjamin Yoskovitz
+    year: 2013
+  - title: Cohort Analysis
+    author: Reforge
+    url: "https://www.reforge.com/blog/cohort-analysis"

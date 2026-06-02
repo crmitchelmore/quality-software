@@ -1,0 +1,92 @@
+id: continuous-interviewing
+title: Continuous Customer Interviewing
+aka:
+  - Continuous Discovery Interviews
+discipline: product
+category: customer-discovery
+maturity: established
+short_description: >-
+  Maintain a regular cadence of customer conversations so product decisions are continuously informed by current needs, behaviours and evidence.
+description: >-
+  Continuous Customer Interviewing is the habit of speaking with customers or prospects every week and feeding what is learned into product decisions. Unlike one-off research, it creates a standing evidence stream that helps teams notice changing needs, validate assumptions and correct roadmap drift. The practice works best when interviews focus on real behaviour and recent situations, notes are synthesised quickly, and insights connect to opportunities, hypotheses and metrics.
+problem: >-
+  Teams make months of product decisions between research projects. By the time formal research arrives, the roadmap is already committed and customer understanding has gone stale.
+context: >-
+  Use by empowered product teams practising continuous discovery, especially in early and growth products where assumptions change quickly.
+forces:
+  - Cadence matters, but interview quality matters more than merely filling the calendar.
+  - Teams need enough structure to synthesise learning without turning conversations into surveys.
+  - Recruiting must be sustainable or the habit collapses under operational friction.
+solution: >-
+  Establish a weekly interview cadence owned by the product trio. Recruit from relevant segments, ask about recent concrete experiences, capture evidence in a shared repository, and synthesise themes into opportunities or assumptions. Review the evidence during planning so interviews change what the team explores, builds or stops.
+when_to_use:
+  - Teams own outcomes and need a current view of customer needs.
+  - Product decisions rely on old research, anecdotal sales feedback or internal opinion.
+  - You want discovery to run continuously alongside delivery.
+anti_patterns:
+  - Asking customers to design the solution or predict whether they would use a hypothetical feature.
+  - Interviewing only the loudest customers or friendliest accounts.
+  - Collecting notes without synthesis or decision impact.
+metrics:
+  - Number of relevant customer interviews completed per team per month.
+  - Percentage of roadmap decisions citing recent interview evidence.
+  - Time from interview insight to updated opportunity, assumption or experiment.
+examples:
+  - title: Cadence with synthesis
+    poor: >-
+      The PM talks to customers occasionally, stores notes privately and shares memorable quotes when arguing for a feature.
+    better: >-
+      The product trio interviews two target customers each week, tags evidence by opportunity, and reviews themes before prioritising discovery bets.
+    explanation: >-
+      Continuous interviewing is a team learning system, not a private anecdote stream. Synthesis and decision use make the cadence valuable.
+  - title: Behaviour over speculation
+    poor: >-
+      The team asks "Would you use a dashboard that predicts churn?" and treats enthusiastic answers as validation.
+    better: >-
+      The team asks about the last time the customer discovered churn risk, what signals they used, what happened next and what the cost was.
+    explanation: >-
+      Recent behaviour is stronger evidence than predicted intent. It reveals the real job, context and constraints.
+related_practice_patterns:
+  - pattern: opportunity-solution-tree
+    reason: >-
+      Continuous interviews provide the evidence stream that keeps an opportunity solution tree current.
+  - pattern: the-mom-test
+    reason: >-
+      The Mom Test improves interview quality by avoiding leading questions and speculative compliments.
+related_software_patterns:
+  - pattern: event-driven-architecture
+    reason: >-
+      Product teams can pair interview evidence with behavioural events to understand stated and observed behaviour.
+related_philosophies:
+  - philosophy: continuous-discovery
+    reason: >-
+      Continuous interviewing is one of the core habits of continuous discovery.
+  - philosophy: lean-startup
+    reason: >-
+      Regular interviews shorten the build-measure-learn loop by testing assumptions before and after delivery.
+tags:
+  - discovery
+  - interviewing
+  - customer-evidence
+  - cadence
+product_stages:
+  - early
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 5
+    notes: >-
+      Essential before product-market fit because most assumptions are still unproven.
+  growth:
+    score: 5
+    notes: >-
+      Keeps teams close to changing customer needs as scale and segmentation increase.
+  enterprise:
+    score: 4
+    notes: >-
+      Valuable, though access, account ownership and compliance can make recruiting harder.
+references:
+  - title: "Continuous Discovery Habits"
+    author: Teresa Torres
+    year: 2021

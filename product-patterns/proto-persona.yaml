@@ -1,0 +1,91 @@
+id: proto-persona
+title: Proto-Persona
+aka:
+  - Assumption Persona
+discipline: product
+category: customer-discovery
+maturity: established
+short_description: >-
+  Sketch an explicit, assumption-based persona early in discovery so the team can align on who they think they serve and then validate or replace that model with evidence.
+description: >-
+  A Proto-Persona is a lightweight persona created from team assumptions, existing knowledge and fragments of evidence before formal research is complete. Its purpose is not to pretend certainty; it makes implicit beliefs about users, goals, behaviours, pains and context visible so they can be tested. A good proto-persona is clearly labelled as provisional and includes evidence gaps and validation questions.
+problem: >-
+  Teams carry unstated and conflicting pictures of the user. Decisions are made for an imagined average customer, but no one has documented the assumptions or tested whether that customer exists.
+context: >-
+  Use at the start of discovery, during workshops, or when entering a new segment and needing a temporary alignment artefact before deeper research.
+forces:
+  - The artefact aligns teams quickly but can ossify into false certainty if not challenged.
+  - Demographics are easy to invent; behaviours, contexts and goals are more useful.
+  - Stakeholders may prefer polished persona stories over messy evidence gaps.
+solution: >-
+  Create a brief persona for a specific suspected segment: role, context, goals, behaviours, pains, triggers and assumptions. Mark confidence levels and evidence sources. Derive research questions from the weakest assumptions and replace or split the proto-persona as interviews, analytics and field research provide evidence.
+when_to_use:
+  - A team needs initial alignment on a user segment before research is complete.
+  - Stakeholders hold conflicting assumptions about who the product serves.
+  - You need to plan recruitment and interview guides for discovery.
+anti_patterns:
+  - Treating invented personas as research findings.
+  - Focusing on names, stock photos and demographics instead of behaviours and contexts.
+  - Keeping a proto-persona unchanged after contradictory evidence appears.
+metrics:
+  - Percentage of persona claims marked with evidence source and confidence level.
+  - Number of high-risk persona assumptions validated, invalidated or split into new segments.
+  - Recruitment accuracy for discovery sessions using the proto-persona criteria.
+examples:
+  - title: Provisional by design
+    poor: >-
+      A workshop outputs "Marketing Mary, 35, likes coffee" and the team treats her as the validated customer.
+    better: >-
+      The team documents "regional marketing manager coordinating campaigns across five offices" with assumed pains, confidence ratings and interview questions to test the segment.
+    explanation: >-
+      Proto-personas are useful when they expose assumptions about behaviour and context. Decorative demographics create false empathy.
+  - title: Updating from evidence
+    poor: >-
+      Research shows two distinct user groups, but the team keeps one persona because it is already in the deck.
+    better: >-
+      The persona is split into self-serve operators and approval-seeking managers, with different jobs and success metrics.
+    explanation: >-
+      A proto-persona should be cheap to change. Evidence has to win over workshop artefacts.
+related_practice_patterns:
+  - pattern: assumption-mapping
+    reason: >-
+      Proto-persona claims are assumptions that can be mapped by importance and evidence before research.
+  - pattern: continuous-interviewing
+    reason: >-
+      Regular interviews validate, refine or retire provisional persona assumptions.
+related_software_patterns:
+  - pattern: state
+    reason: >-
+      Behavioural personas often reveal distinct user states or lifecycle stages that product flows and software state models must respect.
+related_philosophies:
+  - philosophy: design-thinking
+    reason: >-
+      Proto-personas are an empathy-starting artefact, but design thinking requires replacing assumptions with evidence.
+  - philosophy: continuous-discovery
+    reason: >-
+      Continuous discovery keeps provisional personas from becoming stale stereotypes.
+tags:
+  - personas
+  - assumptions
+  - segmentation
+  - discovery
+product_stages:
+  - early
+  - growth
+ratings:
+  early:
+    score: 4
+    notes: >-
+      Useful for fast alignment and recruitment, as long as it is clearly treated as provisional.
+  growth:
+    score: 3
+    notes: >-
+      Helpful for new segments, but growth products should increasingly rely on richer research and behavioural data.
+  enterprise:
+    score: 2
+    notes: >-
+      Too lightweight for mature enterprise segmentation unless used only as an initial workshop input.
+references:
+  - title: "Lean UX"
+    author: Jeff Gothelf and Josh Seiden
+    year: 2013

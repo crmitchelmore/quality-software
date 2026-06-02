@@ -1,0 +1,102 @@
+id: outcome-based-roadmap
+title: Outcome-Based Roadmap
+discipline: product
+category: roadmapping
+maturity: established
+short_description: >-
+  Roadmap the customer and business outcomes to change, not the features to ship, giving teams room to find the best solution while keeping strategy measurable.
+description: >-
+  An Outcome-Based Roadmap organises product direction around measurable changes in user behaviour, customer value or business results. Instead of promising a list of features, it states the outcomes the team intends to influence, the opportunities believed to drive them, and the evidence that will show progress. This shifts the roadmap from an output contract to a strategy and learning tool.
+problem: >-
+  Feature roadmaps create a build trap: success is judged by shipping promised outputs even when those outputs do not improve customer behaviour, retention, revenue or strategic position.
+context: >-
+  Best for empowered product teams with measurable goals, active discovery and enough stakeholder trust to discuss outcomes before feature commitments.
+solution: >-
+  Start with a strategic goal or North Star, derive team-level outcomes that are observable and influenceable, and map opportunities and candidate bets under each outcome. Communicate confidence, assumptions and decision points. Review progress by outcome movement and learning, not by whether a pre-selected feature shipped exactly as imagined.
+forces:
+  - >-
+    Outcomes create autonomy but require stakeholders to let go of feature-level control.
+  - >-
+    Metrics must be influenceable by the team; broad company goals are too distant to guide daily choices.
+  - >-
+    Some commitments still need explicit deliverables, especially contractual or regulatory obligations.
+when_to_use:
+  - >-
+    The team owns a metric, behaviour change or customer problem rather than a fixed scope list.
+  - >-
+    Stakeholders care about results but currently manage through feature commitments.
+  - >-
+    Discovery may reveal multiple possible solutions to the same goal.
+anti_patterns:
+  - >-
+    Renaming feature epics as outcomes without defining measurable behaviour change.
+  - >-
+    Choosing metrics the team cannot plausibly influence.
+  - >-
+    Ignoring necessary delivery commitments and pretending every obligation can be reframed as discovery.
+metrics:
+  - >-
+    Share of roadmap items tied to measurable, team-influenceable outcomes.
+  - >-
+    Outcome metric movement per roadmap review cycle.
+  - >-
+    Number of shipped features changed, replaced or cancelled because learning found a better path.
+  - >-
+    Stakeholder confidence in outcome progress versus feature completion.
+examples:
+  - title: Framing the work
+    poor: >-
+      The team lists a feature or date without explaining the customer behaviour or strategic reason it is meant to change.
+    better: >-
+      The team states the intended outcome, the evidence behind the priority and the conditions that would change the plan.
+    explanation: >-
+      The better approach keeps the roadmap useful as a decision and learning artefact rather than a static promise.
+  - title: Updating with evidence
+    poor: >-
+      The roadmap remains unchanged after discovery invalidates a major assumption because changing it would be awkward.
+    better: >-
+      The team reviews the evidence, updates the item or horizon, and explains the decision to stakeholders with the metric or customer signal that changed.
+    explanation: >-
+      Roadmaps create trust when they adapt transparently to evidence, not when they preserve outdated certainty.
+related_practice_patterns:
+  - pattern: opportunity-solution-tree
+    reason: >-
+      Opportunity Solution Trees connect each roadmap outcome to the opportunities and experiments that may move it.
+  - pattern: north-star-metric
+    reason: >-
+      A North Star Metric helps align several outcome-based roadmaps to a shared product strategy.
+related_philosophies:
+  - philosophy: outcome-over-output
+    reason: >-
+      This roadmap is the direct planning expression of judging product work by outcomes rather than outputs.
+  - philosophy: north-star-framework
+    reason: >-
+      North Star thinking provides the metric hierarchy that keeps team outcomes aligned with product value.
+tags:
+  - roadmap
+  - outcomes
+  - strategy
+  - empowered-teams
+product_stages:
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 4
+    notes: >-
+      Powerful for avoiding build-trap habits, though metrics may shift rapidly before product-market fit.
+  growth:
+    score: 5
+    notes: >-
+      Ideal as teams scale and need autonomy aligned to measurable product strategy.
+  enterprise:
+    score: 4
+    notes: >-
+      Valuable for portfolio alignment, but requires education where stakeholders expect feature-date commitments.
+references:
+  - title: "Escaping the Build Trap"
+    author: Melissa Perri
+    year: 2018
+  - title: "Product Roadmaps Relaunched"
+    author: C. Todd Lombardo, Bruce McCarthy, Evan Ryan and Michael Connors
+    year: 2017

@@ -1,0 +1,112 @@
+id: holdout-group
+title: Holdout Group
+discipline: product
+category: experimentation
+maturity: established
+short_description: >-
+  Reserve a stable control cohort from exposure to a change so teams can measure incremental long-term impact rather than relying on before-and-after trends.
+description: >-
+  A Holdout Group is a deliberately unexposed cohort used as a control while a feature, campaign, model or programme rolls out to others. Unlike a short A/B test, a holdout may persist for weeks or months to measure durable incremental impact, cannibalisation, retention, revenue or model drift. The pattern is powerful when global rollouts make it hard to know what changed because of the product versus seasonality, marketing or market conditions.
+problem: >-
+  Teams roll out changes to everyone and later cannot tell whether metric movement came from the change, an external trend, a marketing campaign or normal variation.
+context: >-
+  Useful for lifecycle programmes, pricing changes, recommendation systems, growth campaigns, AI models and features expected to have long-term or network-level effects.
+solution: >-
+  Define the population, randomisation unit, holdout size, duration, primary incremental metric, guardrails and ethical boundaries before launch. Keep assignment stable, prevent leakage across accounts or devices, and monitor guardrails for both exposed and held-out cohorts. End the holdout when it has answered the decision question or when continuing would be unfair or unsafe.
+forces:
+  - >-
+    Measurement quality improves when a control is held out, but withholding a beneficial change can feel unfair.
+  - >-
+    Long-running holdouts require stable assignment and protection from accidental exposure.
+  - >-
+    Holdout size trades statistical power against the opportunity cost of non-exposure.
+when_to_use:
+  - >-
+    You need to measure incremental impact over time rather than immediate variant performance.
+  - >-
+    Before-and-after trends are likely to be confounded by seasonality, campaigns or market changes.
+  - >-
+    The change can ethically and contractually be withheld from a small cohort.
+anti_patterns:
+  - >-
+    Keeping holdouts forever after the decision is clear, creating unnecessary customer inequity.
+  - >-
+    Allowing sales, support or account teams to manually override assignment and contaminate the control.
+  - >-
+    Using a holdout where withholding the change creates safety, legal or accessibility harm.
+metrics:
+  - >-
+    Incremental lift versus holdout for the primary outcome.
+  - >-
+    Guardrail differences between exposed and holdout cohorts.
+  - >-
+    Assignment leakage or contamination rate.
+  - >-
+    Opportunity cost of holdout non-exposure and time to decision.
+examples:
+  - title: Choosing the experiment
+    poor: >-
+      The team treats a weak signal as proof and commits to building the whole feature without a decision threshold or follow-up learning step.
+    better: >-
+      The team names the riskiest assumption, sets a threshold and guardrail, runs the smallest ethical test, and chooses the next experiment based on the result.
+    explanation: >-
+      The better approach keeps experimentation tied to a decision and avoids confusing curiosity, delivery or activity with validated learning.
+  - title: Protecting trust
+    poor: >-
+      Users are surprised by an unavailable or manually operated experience in a critical workflow and have no clear explanation or recovery path.
+    better: >-
+      The test is limited to a safe cohort, explains the state honestly when users engage, and provides a fallback or contact path when the feature is not available.
+    explanation: >-
+      Experiment speed must not come at the cost of user trust. Ethical boundaries and guardrails make the learning usable.
+related_practice_patterns:
+  - pattern: ab-test-design
+    reason: >-
+      Holdout groups are a control design that extends A/B testing principles to longer-running impact measurement.
+  - pattern: feature-flag-experimentation
+    reason: >-
+      Feature flags are commonly used to keep holdout assignment stable and prevent accidental exposure.
+  - pattern: cohort-analysis
+    reason: >-
+      Cohort analysis is often used to read holdout effects over retention, revenue or lifecycle windows.
+related_software_patterns:
+  - pattern: feature-toggle
+    reason: >-
+      Stable toggles or targeting rules keep the holdout separated from exposed cohorts.
+  - pattern: audit-logging
+    reason: >-
+      Assignment and exposure audit logs help diagnose leakage and preserve experiment integrity.
+related_philosophies:
+  - philosophy: hypothesis-driven-development
+    reason: >-
+      The holdout expresses a falsifiable hypothesis about incremental impact over time.
+  - philosophy: lean-startup
+    reason: >-
+      It supports validated learning when changes need a durable control to distinguish signal from trend.
+tags:
+  - experimentation
+  - control-group
+  - causal-inference
+  - metrics
+product_stages:
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 2
+    notes: >-
+      Usually too traffic-constrained and ethically costly for young products unless the effect is large.
+  growth:
+    score: 4
+    notes: >-
+      Valuable for lifecycle and growth programmes with enough users to support stable controls.
+  enterprise:
+    score: 5
+    notes: >-
+      Strong fit for mature experimentation platforms, provided governance handles fairness, compliance and leakage.
+references:
+  - title: "The Lean Startup"
+    author: Eric Ries
+    year: 2011
+  - title: "Testing Business Ideas"
+    author: David J. Bland and Alexander Osterwalder
+    year: 2019

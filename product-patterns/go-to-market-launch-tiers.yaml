@@ -1,0 +1,114 @@
+id: go-to-market-launch-tiers
+title: Go-to-Market Launch Tiers
+aka:
+  - Launch Tiering
+  - Tiered Launch Planning
+discipline: product
+category: go-to-market
+maturity: established
+short_description: >-
+  Classify launches by customer impact, strategic importance and operational risk so product, marketing,
+  sales and support invest the right amount of go-to-market effort.
+description: >-
+  Go-to-market launch tiers create a shared scale for deciding how much cross-functional launch work a
+  release deserves. A tier-one launch may need positioning, analyst or press work, sales enablement,
+  customer migration, support readiness and executive reporting. A tier-three improvement may need only
+  release notes and in-product education. Tiering prevents two common failures: under-launching important
+  changes that require adoption support, and over-launching minor features that consume the organisation.
+  The tier is not a prestige label; it is an operating agreement about audience, readiness, channels,
+  risks, owners and success metrics.
+problem: >-
+  Every release is either treated as a major launch, exhausting go-to-market teams, or shipped quietly with
+  no enablement, causing customers, sales and support to be surprised. Product impact and launch effort are
+  negotiated ad hoc each time.
+context: >-
+  Useful for organisations releasing frequently across multiple customer segments, channels or product
+  lines, especially when marketing, sales, customer success and support must coordinate.
+forces:
+  - Teams want visibility for their work, but launch effort must match market and customer impact.
+  - Strategic announcements need narrative polish, while operational changes need readiness and risk controls.
+  - Tiering must be lightweight enough not to slow small releases.
+  - A launch can be low marketing tier but high customer-risk tier, such as a migration or deprecation.
+solution: >-
+  Define launch tiers with criteria such as revenue impact, customer-visible change, risk, migration effort,
+  competitive importance and required enablement. For each tier, specify required artefacts, approval points,
+  channels, owners and success metrics. Review tier assignment early, revisit it when scope changes, and
+  hold post-launch reviews proportional to the tier.
+when_to_use:
+  - Multiple functions need a predictable way to plan launches and readiness work.
+  - Minor releases are being over-marketed or major launches are being under-supported.
+  - A product portfolio releases often enough that ad hoc launch planning creates confusion.
+anti_patterns:
+  - Treating tier one as a status symbol rather than a workload and risk classification.
+  - Letting launch tier be decided after engineering is complete, when enablement is already late.
+  - Using only marketing reach to tier launches and ignoring support, migration or customer-risk needs.
+  - Creating so many tiers and gates that small releases slow down unnecessarily.
+metrics:
+  - Launch readiness completion by required tier artefacts and dates.
+  - Adoption, revenue, activation or retention outcomes against tier-specific launch goals.
+  - Sales, support and customer-success preparedness indicators before launch.
+  - Post-launch issue volume, customer confusion and enablement-gap findings by tier.
+examples:
+  - title: Matching effort to impact
+    poor: >-
+      A minor settings rename receives a press-style campaign while a breaking workflow change ships with
+      only a changelog entry, surprising support and customers.
+    better: >-
+      The settings rename is a low-tier release note; the workflow change is tiered for customer readiness,
+      with migration messaging, support scripts and success metrics.
+    explanation: >-
+      Tiering allocates attention to customer and business impact, not internal excitement or feature size alone.
+  - title: Early tier decision
+    poor: >-
+      Marketing learns two days before launch that a feature needs sales enablement and customer migration guidance.
+    better: >-
+      The tier is assigned at discovery exit, so positioning, enablement and migration work are planned
+      alongside delivery and updated as scope changes.
+    explanation: >-
+      Launch work is product work. Deciding tier early prevents readiness from becoming a last-minute scramble.
+related_practice_patterns:
+  - pattern: beta-program
+    reason: >-
+      Higher-tier launches often use beta programmes to validate positioning, readiness and customer impact before broad release.
+  - pattern: sales-product-feedback-loop
+    reason: >-
+      Tiered launches depend on sales and customer-facing feedback to prepare enablement and spot launch risks.
+related_software_patterns:
+  - pattern: feature-toggle
+    reason: >-
+      Feature toggles allow staged release, customer targeting and rollback for launches whose tier warrants controlled exposure.
+  - pattern: api-versioning
+    reason: >-
+      API or integration launches often need versioning strategy and customer migration planning as part of launch tiering.
+related_philosophies:
+  - philosophy: working-backwards
+    reason: >-
+      Launch tiering benefits from starting with the customer announcement, FAQ and readiness needs before delivery completes.
+tags:
+  - launch
+  - go-to-market
+  - enablement
+  - release-planning
+product_stages:
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 3
+    notes: >-
+      Useful for discipline, but very early teams should keep tiering lightweight to avoid process overhead.
+  growth:
+    score: 5
+    notes: >-
+      Strong fit as release volume and cross-functional coordination demands increase.
+  enterprise:
+    score: 5
+    notes: >-
+      Essential where launches affect many customers, regions, sales teams and support channels.
+references:
+  - title: "Obviously Awesome"
+    author: April Dunford
+    year: 2019
+  - title: "Crossing the Chasm"
+    author: Geoffrey A. Moore
+    year: 1991

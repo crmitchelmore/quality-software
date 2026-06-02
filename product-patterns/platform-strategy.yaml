@@ -1,0 +1,94 @@
+id: platform-strategy
+title: Platform Strategy
+aka:
+  - Product Platform Strategy
+discipline: product
+category: product-strategy
+maturity: established
+short_description: >-
+  Design a product as a platform with shared capabilities, APIs, extension points and ecosystem incentives so others can create value on top of it.
+description: >-
+  Platform Strategy treats the product not only as an end-user experience but as a foundation for internal teams, partners, developers or customers to build upon. It requires choices about which capabilities become stable platform services, which interfaces are exposed, how governance works, and how the platform creates value for both producers and consumers. Successful platforms balance openness with coherence.
+problem: >-
+  Products that should scale through ecosystems or shared capabilities remain a collection of bespoke features, integrations and internal services. Every new use case requires custom work.
+context: >-
+  Use when multiple teams need shared capabilities, customers demand integrations or extensions, or ecosystem value could become a strategic advantage.
+forces:
+  - Platform consumers need stable contracts, while the core product still needs to evolve.
+  - Openness increases adoption but also increases support, security and governance burden.
+  - Network effects require enough valuable producers and consumers; platforms fail when one side has no reason to join.
+solution: >-
+  Define the platform's participants, core value exchange and governance model. Choose a small set of stable, high-leverage capabilities to expose through APIs, SDKs, extension points or internal services. Invest in documentation, onboarding, quality controls and metrics. Grow openness deliberately, protecting trust and coherence while reducing custom work.
+when_to_use:
+  - Repeated integrations or extensions suggest a common platform capability.
+  - Internal teams duplicate enabling capabilities that could be shared.
+  - Partners or developers can create complementary value that the product team cannot build alone.
+anti_patterns:
+  - Declaring a platform before there is clear demand from producers and consumers.
+  - Exposing unstable internals as public APIs and then being trapped by accidental contracts.
+  - Optimising for ecosystem growth while ignoring trust, safety, quality and support costs.
+metrics:
+  - Number of active platform consumers and producer adoption over time.
+  - Percentage of integrations or extensions using standard platform interfaces instead of bespoke work.
+  - Time for a new internal team, partner or developer to build a supported use case.
+examples:
+  - title: Platform from repeated demand
+    poor: >-
+      Each enterprise customer receives a custom integration built directly against internal services.
+    better: >-
+      After seeing repeated integration patterns, the team exposes a stable integration API with clear scopes, documentation, sandbox tooling and support commitments.
+    explanation: >-
+      Platforms should emerge around repeated value exchanges. The better version turns custom work into a reusable product surface.
+  - title: Stable contracts
+    poor: >-
+      Internal database fields are documented as the partner API because it is quick.
+    better: >-
+      The platform exposes a versioned API that reflects partner jobs while hiding internal model changes.
+    explanation: >-
+      A platform is a promise. Exposing internals creates brittle dependency and prevents the core product from evolving.
+related_practice_patterns:
+  - pattern: build-vs-buy-vs-partner
+    reason: >-
+      Platform capabilities often require explicit decisions about which parts to build, buy or partner for.
+  - pattern: moat-and-differentiation
+    reason: >-
+      A platform can become a moat through ecosystem, data, switching costs or network effects.
+related_software_patterns:
+  - pattern: open-host-service
+    reason: >-
+      Open Host Service exposes a stable protocol others can use without bespoke integration.
+  - pattern: published-language
+    reason: >-
+      Platforms need a published language so partners and internal teams share stable semantics.
+related_philosophies:
+  - philosophy: domain-driven-design
+    reason: >-
+      Strategic domain boundaries help decide what the platform should expose and what remains internal.
+  - philosophy: conways-law-team-topologies
+    reason: >-
+      Platform strategy must align with team boundaries, ownership and enabling-team structures.
+tags:
+  - platform
+  - ecosystem
+  - api
+  - network-effects
+product_stages:
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 2
+    notes: >-
+      Usually premature unless the product itself is a developer or marketplace platform from day one.
+  growth:
+    score: 4
+    notes: >-
+      Valuable once repeated integration and extension needs appear and the product has stable core use cases.
+  enterprise:
+    score: 5
+    notes: >-
+      Often essential for scale, reuse and ecosystem leverage, though governance and compatibility costs are high.
+references:
+  - title: "Platform Revolution"
+    author: Geoffrey Parker, Marshall Van Alstyne and Sangeet Paul Choudary
+    year: 2016

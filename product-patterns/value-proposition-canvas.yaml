@@ -1,0 +1,91 @@
+id: value-proposition-canvas
+title: Value Proposition Canvas
+aka:
+  - VPC
+discipline: product
+category: product-strategy
+maturity: established
+short_description: >-
+  Map customer jobs, pains and gains against product pain relievers, gain creators and offerings so value is grounded in what customers are trying to achieve.
+description: >-
+  The Value Proposition Canvas is a two-sided strategy tool: one side describes a customer profile through jobs, pains and gains; the other describes the product's value map through products, pain relievers and gain creators. Fit emerges when the value map addresses important, evidenced customer jobs rather than generic benefits. It translates discovery evidence into positioning, MVP scope and sales narratives.
+problem: >-
+  Teams describe value from the inside out — features, technical capabilities and benefits they hope matter — without a disciplined view of the customer's job, pain intensity or desired gains.
+context: >-
+  Use during product discovery, positioning, proposition design and early go-to-market work for a specific customer segment.
+forces:
+  - Customer jobs can be functional, social and emotional; over-focusing on functional jobs misses why buyers act.
+  - Product teams are tempted to list every feature, but fit depends on the few pains and gains that matter most.
+  - Evidence quality varies; interview quotes should be separated from assumptions.
+solution: >-
+  Choose one segment. Populate the customer profile from interviews, sales calls and support evidence, ranking jobs, pains and gains by importance. Then map the product only to the highest-priority items, explicitly naming which features relieve which pains or create which gains. Use gaps to drive discovery, MVP cuts or positioning changes.
+when_to_use:
+  - You need to clarify why a segment would choose your product over alternatives.
+  - Discovery has produced many observations and you need to turn them into a proposition.
+  - Marketing, sales and product disagree about which benefits matter.
+anti_patterns:
+  - Creating one canvas for all customers instead of one per meaningful segment.
+  - Starting with the product side and inventing customer pains to fit existing features.
+  - Treating every listed pain as equally important.
+metrics:
+  - Conversion or win-rate change for the target segment after proposition changes.
+  - Percentage of top-ranked pains and gains supported by primary evidence.
+  - Message resonance score from interviews, landing pages or sales feedback.
+examples:
+  - title: Customer-first fit
+    poor: >-
+      The product side lists "AI summaries, dashboards and notifications" and the customer side is filled in afterwards with broad pains such as "needs insights".
+    better: >-
+      Interviews show managers fear missing regulatory exceptions. The canvas ranks "avoid undetected compliance breaches" as a top job, then maps summaries and alerts specifically to that pain.
+    explanation: >-
+      The poor version reverse-engineers need from features. The better version begins with a costly job and explains why particular capabilities matter.
+  - title: Segment specificity
+    poor: >-
+      One canvas tries to cover administrators, executives, frontline users and procurement.
+    better: >-
+      The team creates separate canvases for frontline coordinators and economic buyers, then reconciles user value and buyer value.
+    explanation: >-
+      Different actors hire the product for different reasons. Combining them hides conflicts that strategy must resolve.
+related_practice_patterns:
+  - pattern: product-vision-board
+    reason: >-
+      The canvas deepens the vision board's customer and value-proposition sections.
+  - pattern: jobs-to-be-done-interview
+    reason: >-
+      JTBD interviews produce job, pain and gain evidence that makes the canvas real.
+related_software_patterns:
+  - pattern: ubiquitous-language
+    reason: >-
+      Customer jobs and pains captured in customers' words should influence product and domain language.
+related_philosophies:
+  - philosophy: customer-development
+    reason: >-
+      The canvas turns customer-development learning into an explicit proposition hypothesis.
+  - philosophy: jobs-to-be-done
+    reason: >-
+      Jobs, pains and gains align with JTBD's focus on progress customers seek in a situation.
+tags:
+  - proposition
+  - positioning
+  - customer-jobs
+  - fit
+product_stages:
+  - early
+  - growth
+ratings:
+  early:
+    score: 5
+    notes: >-
+      Very strong for finding and explaining early product-market fit, provided the canvas is evidence-backed.
+  growth:
+    score: 4
+    notes: >-
+      Useful for segment expansion and repositioning, though mature products need multiple canvases.
+  enterprise:
+    score: 3
+    notes: >-
+      Helpful in enterprise go-to-market, but buying committees require additional stakeholder and economic analysis.
+references:
+  - title: "Value Proposition Design"
+    author: Alexander Osterwalder et al.
+    year: 2014

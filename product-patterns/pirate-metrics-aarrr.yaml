@@ -1,0 +1,119 @@
+id: pirate-metrics-aarrr
+title: Pirate Metrics (AARRR)
+aka:
+  - AARRR
+  - Acquisition Activation Retention Referral Revenue
+discipline: product
+category: metrics-analytics
+maturity: established
+short_description: >-
+  Structure growth measurement around acquisition, activation, retention, referral and revenue so teams
+  can locate where the customer journey leaks before choosing interventions.
+description: >-
+  Pirate Metrics, popularised by Dave McClure, is a compact lifecycle model for product and growth
+  analytics. It divides the customer journey into five questions: how people find the product, whether
+  they reach first value, whether they come back, whether they bring others, and whether the business
+  captures value. The model is deliberately simple. Its strength is not that every product has exactly
+  five stages, but that it forces teams to diagnose the journey end-to-end instead of over-investing in
+  top-of-funnel acquisition while activation or retention is broken. Good use adapts the definitions to
+  the product's real value moments and segments metrics by channel and cohort.
+problem: >-
+  Growth work is often reduced to getting more traffic or sign-ups. Teams spend money filling a funnel
+  without knowing whether users activate, return, refer others, or generate sustainable revenue, so spend
+  masks rather than solves product-market-fit problems.
+context: >-
+  Useful for digital products with observable user journeys, especially when a team needs a first shared
+  analytics map before building deeper lifecycle models.
+forces:
+  - The framework is memorable, but its simplicity can hide product-specific lifecycle complexity.
+  - Acquisition is easiest to buy, while activation and retention usually require harder product work.
+  - Stage conversion rates differ sharply by segment and channel; aggregate averages can mislead.
+  - Referral and revenue may arrive before or after retention depending on the business model.
+solution: >-
+  Define each AARRR stage in product-specific behavioural terms, instrument the transitions, and review
+  stage metrics by cohort and acquisition channel. Identify the narrowest constraint before launching
+  growth initiatives. Use qualitative research to explain the leaks the numbers reveal, then connect
+  improvement work to activation, retention, referral, or revenue hypotheses rather than treating AARRR as
+  a reporting taxonomy only.
+when_to_use:
+  - A team needs an understandable lifecycle analytics model for a product or growth motion.
+  - Growth is stalling and the team needs to locate the journey stage causing the constraint.
+  - Acquisition spend is rising but downstream value creation is unclear.
+anti_patterns:
+  - Treating sign-up as activation even when the customer has not experienced the product's value.
+  - Reporting blended AARRR averages that hide a broken channel or customer segment.
+  - Jumping to referral mechanics before retention shows the product is worth referring.
+  - Optimising every stage at once instead of fixing the current limiting constraint.
+metrics:
+  - Acquisition volume and quality by channel.
+  - Activation rate to a defined first-value behaviour.
+  - Retention curves by cohort and segment.
+  - Referral invitation, acceptance and successful referred activation rates.
+  - Revenue conversion, expansion and payback by cohort.
+examples:
+  - title: Finding the real leak
+    poor: >-
+      A SaaS team sees slow revenue growth and doubles paid acquisition because sign-ups are the most
+      visible metric in the weekly dashboard.
+    better: >-
+      The team maps AARRR and discovers that users from paid channels activate at half the rate of organic
+      users, then fixes onboarding and channel targeting before increasing spend.
+    explanation: >-
+      The better approach treats growth as a system. More acquisition would only amplify the activation
+      leak; diagnosing stages first prevents waste.
+  - title: Defining activation honestly
+    poor: >-
+      A marketplace counts account creation as activation, so the dashboard looks healthy while buyers
+      never contact sellers.
+    better: >-
+      Activation is redefined as "first qualified seller contact" because that is the first moment where
+      the buyer experiences marketplace value.
+    explanation: >-
+      AARRR only helps if each stage maps to meaningful behaviour. Administrative milestones inflate the
+      funnel without showing whether value has been reached.
+related_practice_patterns:
+  - pattern: funnel-analysis
+    reason: >-
+      AARRR is often implemented as a lifecycle funnel, and funnel analysis provides the mechanics for
+      measuring stage-to-stage leakage.
+  - pattern: aha-moment-activation
+    reason: >-
+      Activation in AARRR should be grounded in the product's aha moment rather than in a superficial sign-up event.
+related_philosophies:
+  - philosophy: lean-startup
+    reason: >-
+      AARRR supports Lean Startup's actionable metrics by replacing vanity totals with lifecycle learning.
+  - philosophy: product-led-growth
+    reason: >-
+      Product-led growth teams use AARRR-style lifecycle metrics to connect self-serve usage to revenue expansion.
+tags:
+  - growth
+  - lifecycle
+  - funnel
+  - analytics
+product_stages:
+  - early
+  - growth
+ratings:
+  early:
+    score: 4
+    notes: >-
+      A useful first analytics map, as long as definitions stay qualitative and learning-oriented before
+      volumes are large enough for precise optimisation.
+  growth:
+    score: 5
+    notes: >-
+      Excellent for scaling teams that need to decide whether acquisition, activation, retention, referral
+      or revenue is the current constraint.
+  enterprise:
+    score: 3
+    notes: >-
+      Still useful for product lines, but enterprise journeys often involve sales, procurement and success
+      motions that require additional lifecycle stages.
+references:
+  - title: Startup Metrics for Pirates
+    author: Dave McClure
+    year: 2007
+  - title: "Lean Analytics"
+    author: Alistair Croll and Benjamin Yoskovitz
+    year: 2013

@@ -1,0 +1,106 @@
+id: wizard-of-oz-mvp
+title: Wizard of Oz MVP
+discipline: product
+category: experimentation
+maturity: established
+short_description: >-
+  Simulate an automated product with humans behind the curtain to test user behaviour before building the expensive automation.
+description: >-
+  A Wizard of Oz MVP presents users with an interface that appears automated while humans perform some or all of the work behind the scenes. The goal is to observe whether users understand, trust and repeatedly use the experience before the team invests in automation, machine learning or complex integrations. Unlike a concierge MVP, the user experience is closer to the intended self-serve product, which can produce stronger behavioural evidence.
+problem: >-
+  Teams build costly automation or AI systems before validating whether the proposed interaction model and outcome will be valuable in real use.
+context: >-
+  Useful for AI, matching, recommendation, workflow automation and integration-heavy concepts where humans can safely approximate the backend for a small cohort.
+solution: >-
+  Build the smallest credible front-end experience and manually operate the backend for a limited cohort, with privacy and safety boundaries agreed in advance. Instrument user behaviour, manual fulfilment cost, quality and failure modes. Use the results to decide whether to automate, change the interaction model, or stop because users do not value the experience.
+forces:
+  - >-
+    Realistic self-serve behaviour creates strong evidence, but hidden manual work can raise trust concerns.
+  - >-
+    Manual fulfilment speed and quality may not match eventual automation economics.
+  - >-
+    Operators need clear playbooks so inconsistent human judgement does not distort the test.
+when_to_use:
+  - >-
+    Automation is expensive and the user behaviour risk is higher than the technical risk.
+  - >-
+    Humans can safely and consistently emulate the intended system for a small sample.
+  - >-
+    The team needs evidence from an experience that feels close to the final product.
+anti_patterns:
+  - >-
+    Using hidden humans in privacy-sensitive contexts without consent or proper controls.
+  - >-
+    Measuring only whether humans can fulfil requests, not whether users find the self-serve experience valuable.
+  - >-
+    Letting manual operators improvise so each user effectively receives a different product.
+metrics:
+  - >-
+    Task completion, repeat use and retention in the simulated automated experience.
+  - >-
+    Manual fulfilment time, cost and error rate per request.
+  - >-
+    User trust, satisfaction and complaint signals during the simulation.
+  - >-
+    Percentage of manual steps that can be standardised or automated after the experiment.
+examples:
+  - title: Choosing the experiment
+    poor: >-
+      The team treats a weak signal as proof and commits to building the whole feature without a decision threshold or follow-up learning step.
+    better: >-
+      The team names the riskiest assumption, sets a threshold and guardrail, runs the smallest ethical test, and chooses the next experiment based on the result.
+    explanation: >-
+      The better approach keeps experimentation tied to a decision and avoids confusing curiosity, delivery or activity with validated learning.
+  - title: Protecting trust
+    poor: >-
+      Users are surprised by an unavailable or manually operated experience in a critical workflow and have no clear explanation or recovery path.
+    better: >-
+      The test is limited to a safe cohort, explains the state honestly when users engage, and provides a fallback or contact path when the feature is not available.
+    explanation: >-
+      Experiment speed must not come at the cost of user trust. Ethical boundaries and guardrails make the learning usable.
+related_practice_patterns:
+  - pattern: concierge-mvp
+    reason: >-
+      Both use manual work before automation; concierge is transparent while Wizard of Oz more closely simulates self-serve automation.
+  - pattern: feature-flag-experimentation
+    reason: >-
+      Flags can restrict the simulated experience to a small cohort and provide a fast emergency shutoff.
+related_software_patterns:
+  - pattern: human-in-the-loop
+    reason: >-
+      Humans intentionally perform system functions while the product team learns what should later be automated.
+  - pattern: proxy
+    reason: >-
+      The manual backend acts as a proxy for a future automated service behind the same interface.
+related_philosophies:
+  - philosophy: lean-startup
+    reason: >-
+      Wizard of Oz MVPs test riskiest assumptions with the least automation needed for validated learning.
+tags:
+  - experimentation
+  - mvp
+  - automation
+  - ai
+product_stages:
+  - early
+  - growth
+ratings:
+  early:
+    score: 5
+    notes: >-
+      Very strong when automation would be expensive and the team needs behavioural evidence quickly.
+  growth:
+    score: 4
+    notes: >-
+      Useful for new AI or automation bets, though operational controls and cohort management become important.
+  enterprise:
+    score: 2
+    notes: >-
+      Often constrained by privacy, compliance and trust requirements; viable mainly in explicit pilots.
+references:
+  - title: "The Lean Startup"
+    author: Eric Ries
+    year: 2011
+  - title: "Testing Business Ideas"
+    author: David J. Bland and Alexander Osterwalder
+    year: 2019

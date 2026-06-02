@@ -1,0 +1,105 @@
+id: concierge-mvp
+title: Concierge MVP
+discipline: product
+category: experimentation
+maturity: established
+short_description: >-
+  Deliver the proposed value manually to a small set of customers before automating it, learning whether the outcome is valuable and how the service should work.
+description: >-
+  A Concierge MVP tests a product concept by manually providing the service or result that a future product would automate. Customers know there is human involvement; the team uses that high-touch delivery to learn what customers value, where the workflow breaks, what language they use, and which parts merit automation. The pattern trades scale for depth of learning.
+problem: >-
+  Teams automate a complex workflow before proving that customers value the outcome, understand the process, or will change behaviour enough to use it repeatedly.
+context: >-
+  Best for early-stage products, new workflows, services becoming software, or AI/data products where manual fulfilment can approximate the future value.
+solution: >-
+  Select a narrow target segment and manually deliver the promised outcome with clear expectations. Observe every step, measure whether customers return, pay, save time or achieve the desired outcome, and identify which parts are repetitive enough to automate. Stop or pivot if customers do not value the result even with high-touch help.
+forces:
+  - >-
+    Manual delivery creates rich learning but does not prove the economics of automation at scale.
+  - >-
+    Customers may value the human service more than the eventual self-serve product.
+  - >-
+    The team must be honest about the concierge nature to avoid misleading customers.
+when_to_use:
+  - >-
+    You can manually simulate the value proposition for a small number of customers.
+  - >-
+    The riskiest assumption is desirability or workflow fit, not whether automation is technically possible.
+  - >-
+    Deep learning from a few customers is more valuable than broad traffic measurement.
+anti_patterns:
+  - >-
+    Hiding human work and presenting the service as fully automated when that affects trust or expectations.
+  - >-
+    Scaling manual operations without deciding what evidence will trigger automation or stopping.
+  - >-
+    Optimising the concierge service so much that it no longer resembles the intended product economics.
+metrics:
+  - >-
+    Customer activation, repeat use or retention during concierge delivery.
+  - >-
+    Willingness to pay or renewal intent for the manually delivered outcome.
+  - >-
+    Time and cost per manual fulfilment, broken down by workflow step.
+  - >-
+    Number of product requirements learned from direct service interactions.
+examples:
+  - title: Choosing the experiment
+    poor: >-
+      The team treats a weak signal as proof and commits to building the whole feature without a decision threshold or follow-up learning step.
+    better: >-
+      The team names the riskiest assumption, sets a threshold and guardrail, runs the smallest ethical test, and chooses the next experiment based on the result.
+    explanation: >-
+      The better approach keeps experimentation tied to a decision and avoids confusing curiosity, delivery or activity with validated learning.
+  - title: Protecting trust
+    poor: >-
+      Users are surprised by an unavailable or manually operated experience in a critical workflow and have no clear explanation or recovery path.
+    better: >-
+      The test is limited to a safe cohort, explains the state honestly when users engage, and provides a fallback or contact path when the feature is not available.
+    explanation: >-
+      Experiment speed must not come at the cost of user trust. Ethical boundaries and guardrails make the learning usable.
+related_practice_patterns:
+  - pattern: wizard-of-oz-mvp
+    reason: >-
+      Both use manual work before automation, but Wizard of Oz hides the manual mechanism while concierge is transparent.
+  - pattern: fake-door-test
+    reason: >-
+      A fake-door signal can identify interested customers to invite into a concierge MVP.
+related_software_patterns:
+  - pattern: human-in-the-loop
+    reason: >-
+      The manual service layer is a deliberate human-in-the-loop substitute for future automation.
+related_philosophies:
+  - philosophy: lean-startup
+    reason: >-
+      Concierge delivery is a classic Lean Startup MVP for maximising learning with minimal product build.
+  - philosophy: customer-development
+    reason: >-
+      The pattern creates direct customer interaction that supports discovery of real problems and buying triggers.
+tags:
+  - experimentation
+  - mvp
+  - manual-service
+  - learning
+product_stages:
+  - early
+ratings:
+  early:
+    score: 5
+    notes: >-
+      Excellent for pre-PMF learning because it substitutes attention and service for premature engineering.
+  growth:
+    score: 3
+    notes: >-
+      Useful for new product lines or segments, but expensive and hard to scale in core workflows.
+  enterprise:
+    score: 2
+    notes: >-
+      Possible in innovation units or pilot programmes, though procurement and service expectations can make the experiment heavy.
+references:
+  - title: "The Lean Startup"
+    author: Eric Ries
+    year: 2011
+  - title: "Testing Business Ideas"
+    author: David J. Bland and Alexander Osterwalder
+    year: 2019

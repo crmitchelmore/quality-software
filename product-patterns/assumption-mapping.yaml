@@ -1,0 +1,95 @@
+id: assumption-mapping
+title: Assumption Mapping
+aka:
+  - Riskiest Assumption Mapping
+discipline: product
+category: customer-discovery
+maturity: established
+short_description: >-
+  Make product, customer, business and technical assumptions explicit, then prioritise the riskiest ones for discovery or experimentation.
+description: >-
+  Assumption Mapping turns hidden beliefs into a visible portfolio of risks. Teams list what must be true for a product idea, feature or strategy to succeed, then assess each assumption by importance and evidence. High importance with low evidence becomes the discovery priority. The pattern keeps teams from spending effort polishing solutions while foundational desirability, viability, feasibility or usability assumptions remain untested.
+problem: >-
+  Teams argue about solutions without surfacing the beliefs underneath them. The riskiest assumptions stay implicit until a launch fails or a customer rejects the product.
+context: >-
+  Use at the start of discovery, before experiments, during strategy reviews, or whenever a team is about to invest in a bet with uncertain evidence.
+forces:
+  - Important assumptions can be uncomfortable because they threaten favoured ideas.
+  - Teams may over-test easy assumptions while avoiding existential ones.
+  - Evidence must be judged honestly; internal confidence is not customer proof.
+solution: >-
+  List assumptions across customer need, value, behaviour, channel, business model, technical feasibility and organisational constraints. Score each by how critical it is and how much evidence exists. Select the riskiest assumptions and design the smallest research activity or experiment that could change the team's confidence. Re-map after learning.
+when_to_use:
+  - A product idea has enthusiasm but unclear evidence.
+  - Discovery work needs prioritising around the biggest unknowns.
+  - Teams need to align on what they believe versus what they know.
+anti_patterns:
+  - Mapping assumptions but then building the original solution unchanged.
+  - Choosing tests for assumptions that are easy to measure but not decision-critical.
+  - Treating stakeholder conviction as evidence.
+metrics:
+  - Count of high-risk assumptions converted into evidence or invalidated per discovery cycle.
+  - Percentage of experiments linked to a named assumption.
+  - Reduction in late-stage pivots caused by previously hidden assumptions.
+examples:
+  - title: Finding the riskiest belief
+    poor: >-
+      The team tests button copy while assuming customers will trust an automated financial recommendation.
+    better: >-
+      The map identifies trust in automation as high-importance and low-evidence, so the first discovery test explores past decisions, trust triggers and required explanations.
+    explanation: >-
+      The riskiest assumption is the one that could end the product, not the one easiest to test.
+  - title: Evidence honesty
+    poor: >-
+      "Sales thinks customers want it" is marked as strong evidence.
+    better: >-
+      The team marks sales feedback as weak directional signal and schedules interviews with recent lost deals and active users to test the assumption.
+    explanation: >-
+      Assumption mapping only works when evidence quality is judged honestly.
+related_practice_patterns:
+  - pattern: hypothesis-statement
+    reason: >-
+      High-risk assumptions are often converted into hypothesis statements for experiments or discovery tests.
+  - pattern: opportunity-solution-tree
+    reason: >-
+      Assumptions under solutions in an opportunity solution tree can be prioritised using assumption mapping.
+related_software_patterns:
+  - pattern: feature-toggle
+    reason: >-
+      Product assumptions can be tested safely through controlled, flag-gated releases when behavioural evidence is needed.
+  - pattern: evaluation-harness
+    reason: >-
+      AI or algorithmic product assumptions often need an evaluation harness to turn vague confidence into measured evidence.
+related_philosophies:
+  - philosophy: hypothesis-driven-development
+    reason: >-
+      Assumption mapping supplies the raw material for hypothesis-driven development.
+  - philosophy: lean-startup
+    reason: >-
+      It focuses validated learning on the riskiest beliefs before building too much.
+tags:
+  - assumptions
+  - risk
+  - discovery
+  - experiments
+product_stages:
+  - early
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 5
+    notes: >-
+      Extremely useful because early-stage products are mostly assumptions and scarce resources must target the riskiest ones.
+  growth:
+    score: 5
+    notes: >-
+      Strong for prioritising discovery across many bets and preventing confident scaling of untested ideas.
+  enterprise:
+    score: 4
+    notes: >-
+      Valuable for major initiatives, though facilitation must overcome hierarchy and political certainty.
+references:
+  - title: "Testing Business Ideas"
+    author: David J. Bland and Alexander Osterwalder
+    year: 2019

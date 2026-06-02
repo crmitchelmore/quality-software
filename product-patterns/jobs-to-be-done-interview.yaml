@@ -1,0 +1,95 @@
+id: jobs-to-be-done-interview
+title: Jobs-to-be-Done Interview
+aka:
+  - JTBD Switch Interview
+discipline: product
+category: customer-discovery
+maturity: established
+short_description: >-
+  Interview customers about a recent switch or struggle to uncover the progress they sought, the forces that moved them, and the alternatives they considered.
+description: >-
+  A Jobs-to-be-Done Interview investigates the circumstances in which a customer hired, fired or considered a product or workaround. Rather than asking for feature preferences, it reconstructs the timeline of a real decision: first thought, passive looking, active looking, trigger, purchase, use and outcome. The interview exposes functional, social and emotional forces, competing alternatives and anxieties that shape adoption.
+problem: >-
+  Teams segment by demographics or ask customers what they want, missing the underlying progress customers are trying to make and the situational forces that cause switching.
+context: >-
+  Use for proposition design, onboarding, positioning, churn research and discovering non-obvious competitors or alternatives.
+forces:
+  - Customers often rationalise decisions after the fact; the interviewer must anchor on concrete moments.
+  - The real competitor may be a spreadsheet, manual process, colleague or doing nothing.
+  - Emotional and social dimensions can feel softer than functional needs but often drive the switch.
+solution: >-
+  Recruit people who recently switched, nearly switched, churned or solved the problem another way. Reconstruct the story in chronological detail, asking what was happening, what alternatives were considered, what pushed them forward, what held them back and what outcome they hoped for. Synthesise patterns into job statements, forces of progress and opportunity areas.
+when_to_use:
+  - You need to understand why customers adopt, abandon or ignore a product.
+  - Existing segmentation does not explain buying or usage behaviour.
+  - Positioning or onboarding needs to speak to the customer's real struggle.
+anti_patterns:
+  - Asking "what job do you hire our product for?" as a direct survey question.
+  - Interviewing people with no recent relevant experience and collecting opinions.
+  - Reducing JTBD to a feature request list.
+metrics:
+  - Number of recent switch interviews synthesised into validated job patterns.
+  - Adoption, activation or conversion lift after applying JTBD insights.
+  - Share of messaging and onboarding claims tied to documented job forces.
+examples:
+  - title: Reconstructing the switch
+    poor: >-
+      The interviewer asks "What features would make you buy our project tool?" and records a wishlist.
+    better: >-
+      The interviewer asks about the last time the customer changed project tools: what broke, who was involved, which alternatives they tried, what worried them, and why they finally switched.
+    explanation: >-
+      JTBD interviews reveal the forces behind real choices. Wishlists rarely expose trigger, anxiety, inertia or alternatives.
+  - title: Broad alternatives
+    poor: >-
+      The team compares only direct SaaS competitors.
+    better: >-
+      Interviews show the main alternative is a weekly spreadsheet ritual, so the team studies why that workaround feels trusted despite its inefficiency.
+    explanation: >-
+      Customers hire whatever helps them make progress. The relevant competitive set is defined by the job, not category labels.
+related_practice_patterns:
+  - pattern: jobs-to-be-done-framing
+    reason: >-
+      Interview findings are translated into job statements and forces through JTBD framing.
+  - pattern: value-proposition-canvas
+    reason: >-
+      JTBD interviews provide concrete jobs, pains and gains for the canvas.
+related_software_patterns:
+  - pattern: ubiquitous-language
+    reason: >-
+      Customers' job language should shape product language and domain terminology.
+  - pattern: bounded-context
+    reason: >-
+      Distinct jobs may imply distinct product contexts and models rather than one generic experience.
+related_philosophies:
+  - philosophy: jobs-to-be-done
+    reason: >-
+      The interview is the primary research method for understanding the progress customers seek.
+  - philosophy: domain-driven-design
+    reason: >-
+      Both JTBD and DDD value language and context drawn from the domain rather than internal assumptions.
+tags:
+  - jtbd
+  - interviews
+  - switching
+  - customer-jobs
+product_stages:
+  - early
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 5
+    notes: >-
+      Excellent for discovering why anyone would switch from current alternatives before product-market fit.
+  growth:
+    score: 5
+    notes: >-
+      Strong for improving activation, onboarding, positioning and segment expansion.
+  enterprise:
+    score: 4
+    notes: >-
+      Valuable but more complex because user, buyer and approver jobs may differ across the buying committee.
+references:
+  - title: "Competing Against Luck"
+    author: Clayton Christensen et al.
+    year: 2016

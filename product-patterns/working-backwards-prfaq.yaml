@@ -1,0 +1,102 @@
+id: working-backwards-prfaq
+title: Working-Backwards PR/FAQ
+aka:
+  - PRFAQ
+  - Press Release and FAQ
+discipline: product
+category: stakeholder-alignment
+maturity: established
+short_description: >-
+  Start from the future customer-facing announcement and hard questions before committing to build, so alignment forms around the promised customer value rather than an internal feature plan.
+description: >-
+  A Working-Backwards PR/FAQ is a product alignment artefact that describes a proposed product or major feature as if it has already launched successfully. The press release explains the customer problem, the value delivered, the target customer, and why the launch matters in plain customer language. The FAQ then answers the difficult questions that would otherwise surface late: who it is for, what it will not do, how it works, what trade-offs it makes, how success is measured, and what risks remain. By forcing the team to write the customer story before the execution plan, it exposes weak value propositions, vague scope, and unresolved stakeholder assumptions while the idea is still cheap to change.
+problem: >-
+  Teams often align around a roadmap item name or executive request without agreeing what customer outcome the work must create. Disagreements then emerge during delivery, when changing direction is expensive and stakeholders defend different implied versions of the product.
+context: >-
+  Useful for substantial bets, new product lines, high-visibility launches, or ambiguous ideas that need cross-functional agreement before entering detailed planning.
+forces:
+  - Customer clarity competes with internal complexity; the document must translate technical and commercial detail into a story customers would recognise.
+  - Early alignment needs enough specificity to reveal disagreements, but not so much delivery detail that teams mistake the PR/FAQ for a fixed specification.
+  - Strong narratives can oversell weak evidence unless the FAQ explicitly names assumptions and metrics.
+  - Stakeholders want their concerns represented; the FAQ must include hard objections rather than becoming marketing copy.
+solution: >-
+  Draft a one-page future press release naming the customer, the problem, the differentiated promise, and the evidence that the product matters. Pair it with an FAQ covering customer questions, business questions, operational questions, launch constraints, non-goals, risks, and success metrics. Review it with the accountable stakeholders before committing delivery capacity. Iterate until the unresolved objections are explicit and the team can say what would make the launch successful, what is out of scope, and which assumptions must be tested first.
+when_to_use:
+  - A proposed initiative is large enough that misunderstanding its value would waste meaningful time or budget.
+  - Stakeholders agree on the label of an idea but disagree on audience, scope, or success criteria.
+  - The team needs a customer-centred decision record before prioritising discovery or delivery work.
+anti_patterns:
+  - Writing the press release after the roadmap decision has already been made, reducing it to post-hoc justification.
+  - Filling the document with internal architecture, programme names, or executive jargon instead of customer language.
+  - Avoiding the uncomfortable FAQ questions about pricing, support, migration, privacy, or operational readiness.
+  - Treating the first draft as approval to build rather than as a way to expose assumptions for discovery.
+metrics:
+  - Share of approved initiatives with a named customer, problem, promise, non-goals, and success metric in the PR/FAQ.
+  - Number of material scope or audience disagreements discovered before delivery commitment rather than during build.
+  - Stakeholder review cycle time from first draft to decision.
+  - Post-launch comparison between promised outcomes in the PR/FAQ and measured customer or business results.
+examples:
+  - title: Customer promise before scope
+    poor: >-
+      A team writes "launch admin dashboard v2" on the roadmap and opens epics for charts, filters, exports, and permissions. Sales expects executive reporting, support expects troubleshooting tools, and engineering builds a generic analytics page that satisfies none of them.
+    better: >-
+      The PR/FAQ says, "Operations managers can spot blocked orders in under two minutes and assign an owner before customers call support." The FAQ names executive reporting as a non-goal, defines the launch metric as time-to-diagnosis, and records sales' reporting request as a separate opportunity.
+    explanation: >-
+      The better version aligns stakeholders on the customer job and success measure before discussing feature inventory. It prevents one vague dashboard idea from carrying several incompatible expectations.
+  - title: Hard questions in the FAQ
+    poor: >-
+      The FAQ contains only friendly questions about benefits and launch timing. Migration, support burden, pricing impact, and data privacy are left for later because they make the proposal look risky.
+    better: >-
+      The FAQ includes direct questions such as "What happens to existing saved reports?", "Which customers are excluded from beta?", and "What privacy review is required before launch?" Each answer names an owner or an assumption test.
+    explanation: >-
+      A PR/FAQ is valuable because it surfaces the uncomfortable issues early. Sanitising the FAQ preserves temporary consensus while storing up late delivery conflict.
+related_practice_patterns:
+  - pattern: narrative-memo
+    reason: >-
+      The PR/FAQ is a specific narrative memo format optimised for product launch alignment and customer-backwards decision-making.
+  - pattern: stakeholder-mapping
+    reason: >-
+      Stakeholder mapping identifies whose objections and decision rights must be represented in the FAQ review.
+  - pattern: opportunity-solution-tree
+    reason: >-
+      Opportunities discovered in research can feed the customer problem section, while the PR/FAQ tests whether a proposed solution story is coherent.
+related_philosophies:
+  - philosophy: working-backwards
+    reason: >-
+      The pattern is the operational artefact most associated with the Working Backwards philosophy.
+  - philosophy: outcome-over-output
+    reason: >-
+      A strong PR/FAQ frames the launch around customer and business outcomes rather than a list of outputs to ship.
+related_software_patterns:
+  - pattern: contract-first-api
+    reason: >-
+      Both practices force agreement on externally visible behaviour before implementation details take over.
+tags:
+  - alignment
+  - launch-planning
+  - customer-value
+  - decision-record
+product_stages:
+  - early
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 4
+    notes: >-
+      Very useful for preventing founders and early teams from building internally exciting but externally unclear ideas, though the format should stay lightweight when evidence is thin.
+  growth:
+    score: 5
+    notes: >-
+      Excellent at growth stage because cross-functional stakeholders multiply and the cost of misaligned initiatives rises sharply.
+  enterprise:
+    score: 5
+    notes: >-
+      Highly valuable for large, visible bets and regulated launches, provided the document remains a crisp decision artefact rather than a bureaucratic approval pack.
+references:
+  - title: "Working Backwards"
+    author: Colin Bryar, Bill Carr
+    year: 2021
+  - title: "Inspired"
+    author: Marty Cagan
+    year: 2017
