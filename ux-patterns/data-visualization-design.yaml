@@ -1,0 +1,115 @@
+id: data-visualization-design
+title: Data Visualization Design
+aka:
+  - Information Visualisation
+  - Chart Design
+discipline: ux
+category: visual-interface-design
+maturity: time-tested
+short_description: >-
+  Choose visual encodings, chart forms, annotations, and interaction so people can accurately understand data, compare values, and act on evidence.
+description: >-
+  Data visualization design turns data into visual representations that support judgement. It chooses what
+  question the chart answers, which data is included, which visual encoding carries each variable, and how
+  uncertainty, scale, context, and annotation are shown. The pattern favours accuracy and task fit over
+  novelty: position and length usually support precise comparison better than area or colour; labels and
+  captions should explain the point; interaction should reveal detail without hiding the main message. Good
+  visualisation makes the important pattern easier to see while making distortion harder.
+problem: >-
+  Poor charts exaggerate differences, hide uncertainty, use decorative encodings, or require users to decode
+  legends and axes before they can answer their real question. Decisions are then made from misunderstood
+  or selectively framed data.
+context: >-
+  Applies to dashboards, reports, analytics products, operational monitoring, research readouts, and any
+  interface where users need to compare, diagnose, forecast, or explain quantitative information.
+forces:
+  - Executive summaries need simplicity, while analysts may need detail, filters, and uncertainty.
+  - Visual impact can conflict with statistical honesty when truncated axes, 3D effects, or cherry-picked ranges look persuasive.
+  - Accessibility requires alternatives to colour-only encodings and support for screen readers or data tables.
+  - Real-time dashboards emphasise speed, but reflective analysis needs context and caveats.
+solution: >-
+  Start with the user's analytic question, then choose the simplest chart type and encoding that answers it
+  accurately. Use position, length, and aligned scales for precise comparison; reserve colour for grouping,
+  status, or emphasis and pair it with labels or shape. Show baselines, units, sample sizes, and uncertainty
+  where they affect interpretation. Annotate the key takeaway, provide access to underlying data or text
+  alternatives when needed, and test whether users draw the intended conclusion without coaching.
+when_to_use:
+  - Users must compare quantities, trends, distributions, relationships, or parts of a whole.
+  - A dashboard or report is being used to make operational, product, or strategic decisions.
+  - Existing visualisations are attractive but misunderstood, inaccessible, or hard to act on.
+anti_patterns:
+  - Choosing a novel chart because it looks impressive rather than because it answers the user's question.
+  - Using colour as the only way to distinguish series, statuses, or risk levels.
+  - Truncating axes or omitting denominators in ways that exaggerate a story.
+  - Filling dashboards with charts that have no owner, decision, or follow-up action.
+heuristics:
+  - "Name the decision or question before choosing the chart type."
+  - "Prefer encodings people judge accurately: position and length before area, angle, or colour."
+  - "Make uncertainty, units, baselines, and sample size visible when they affect interpretation."
+  - "Every colour-coded meaning needs a non-colour cue and a textual explanation."
+examples:
+  - title: A retention dashboard
+    poor: >-
+      A 3D pie chart compares retained and churned users across several cohorts, using similar colours and
+      no sample sizes, so leaders overreact to a small visual slice change.
+    better: >-
+      A cohort retention line chart uses aligned axes, direct labels, sample sizes, and an annotation marking
+      the onboarding change that may explain a divergence.
+    explanation: >-
+      The better chart matches the question: how retention changes over time by cohort. It supports comparison
+      and context instead of relying on decorative impact.
+related_practice_patterns:
+  - pattern: color-contrast
+    reason: >-
+      Chart encodings must meet contrast needs and avoid colour-only distinctions for accessibility and accuracy.
+  - pattern: progressive-disclosure
+    reason: >-
+      Complex analytics often need summary-first views with detail, filters, and raw data disclosed on demand.
+  - pattern: system-usability-scale
+    reason: >-
+      Quantitative usability findings often need careful visualisation so teams interpret scores and trends responsibly.
+related_software_patterns:
+  - pattern: materialized-view
+    reason: >-
+      Analytical interfaces often depend on precomputed views that make complex data fast enough to visualise interactively.
+  - pattern: pagination
+    reason: >-
+      Tables paired with visualisations may need pagination or sampling strategies to keep dense data usable.
+related_philosophies:
+  - philosophy: design-of-everyday-things
+    reason: >-
+      Clear visual encodings and feedback help users form an accurate conceptual model of the data.
+  - philosophy: nielsen-usability-heuristics
+    reason: >-
+      Visibility of system status and match with the real world apply directly to how charts label units, scales, and state.
+tags:
+  - charts
+  - analytics
+  - decision-support
+  - accessibility
+product_stages:
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 3
+    notes: >-
+      Early teams need simple evidence displays, but elaborate dashboards can distract from qualitative learning and core product work.
+  growth:
+    score: 5
+    notes: >-
+      Strong fit once product decisions, experiments, and operations depend on shared interpretation of metrics.
+  enterprise:
+    score: 5
+    notes: >-
+      Essential for governance, reporting, and operational control; accuracy, accessibility, and auditability become high-stakes.
+references:
+  - title: "The Visual Display of Quantitative Information"
+    author: Edward R. Tufte
+    year: 1983
+  - title: "Show Me the Numbers"
+    author: Stephen Few
+    year: 2004
+  - title: "Visualization Analysis and Design"
+    author: Tamara Munzner
+    year: 2014

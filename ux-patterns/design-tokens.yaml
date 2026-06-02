@@ -1,0 +1,105 @@
+id: design-tokens
+title: Design Tokens
+aka:
+  - Tokenised Design Decisions
+  - Design Variables
+discipline: ux
+category: design-systems
+maturity: established
+short_description: >-
+  Store design decisions such as colour, typography, spacing, radius, motion, and elevation as named tokens that can be shared consistently across design and code.
+description: >-
+  Design tokens are named, platform-agnostic values that capture the smallest design decisions in a system. Instead of hard-coding a blue hex value or a spacing number into each mock-up and codebase, teams use semantic names such as colour.action.primary or space.inline.medium that can be transformed for web, mobile, documentation, and design tools. Tokens separate intent from implementation value: a brand colour, role colour, or component-specific alias can change centrally while product surfaces keep a stable meaning. Done well, tokens make consistency, theming, accessibility, and multi-platform delivery much easier.
+problem: >-
+  Visual decisions are copied as raw values across design files and code, causing drift, inaccessible combinations, slow rebranding, and inconsistent theming across platforms.
+context: >-
+  Use when a product has repeated visual decisions, multiple platforms, themes, brands, or teams that need the same design language expressed in design tools and production code.
+forces:
+  - Semantic names improve intent, but too many aliases can become hard to understand.
+  - Global consistency competes with local component needs and brand exceptions.
+  - Tokens must serve designers and engineers, so naming and distribution need shared ownership.
+  - A token change is small technically but can have large visual and accessibility impact.
+solution: >-
+  Define token layers for base values, semantic roles, and component aliases where needed. Name tokens by purpose rather than current appearance, document their intended use, and publish them through an automated source of truth that feeds design tools and code. Include accessibility constraints such as contrast pairs and state colours. Treat token changes as design-system releases with review, migration notes, and visual regression checks where available.
+when_to_use:
+  - Teams repeatedly copy raw colours, sizes, typography, or motion values.
+  - A product supports theming, white-labelling, dark mode, or multiple platforms.
+  - Designers and engineers need one source of truth for design decisions.
+  - Accessibility or brand updates must be applied consistently at scale.
+anti_patterns:
+  - Naming tokens after their current value, such as blue-500, when the product needs semantic meaning.
+  - Creating a token for every one-off value, turning the token set into noise.
+  - Changing token values without reviewing downstream components and accessibility.
+  - Keeping tokens in design files only, so production code continues to drift.
+heuristics:
+  - "Tokenise repeated decisions and semantic roles, not every accidental pixel value."
+  - "Prefer names that describe intent; values change more often than purpose."
+  - "Separate base, semantic, and component token layers so flexibility does not destroy clarity."
+  - "Ship tokens through the same source of truth to design tools, code, and documentation."
+examples:
+  - title: Semantic colour tokens
+    poor: >-
+      Designers specify #0066CC in Figma, web uses a similar blue constant, and mobile copies a slightly different value for primary actions.
+    better: >-
+      The system defines colour.action.primary with platform outputs for design tools, CSS variables, and mobile resources, plus contrast guidance for text and backgrounds.
+    explanation: >-
+      The better version captures the design decision once and distributes it by meaning, reducing drift and making accessibility review possible.
+  - title: Rebrand without rewriting screens
+    poor: >-
+      A brand refresh requires hundreds of component overrides because colours and radius values were hard-coded throughout products.
+    better: >-
+      Brand tokens map to semantic tokens, so the refresh changes approved source values and affected components update through controlled releases.
+    explanation: >-
+      Tokens make system-wide visual change manageable when the naming model separates intent from raw value.
+related_practice_patterns:
+  - pattern: atomic-design-components
+    reason: >-
+      Tokens supply the primitive design decisions consumed by atomic components and composed interface patterns.
+  - pattern: component-variants-states
+    reason: >-
+      Variants and states need semantic tokens for hover, focus, disabled, destructive, success, and other interaction meanings.
+  - pattern: dark-mode-theming
+    reason: >-
+      Dark mode is usually implemented by remapping semantic tokens rather than redesigning each component separately.
+related_software_patterns:
+  - pattern: options-object
+    reason: >-
+      Token bundles often act like named configuration objects that pass design decisions into components without long primitive parameter lists.
+  - pattern: registry
+    reason: >-
+      A token source of truth behaves like a registry of approved design values that tools and components resolve by stable name.
+related_philosophies:
+  - philosophy: atomic-design
+    reason: >-
+      Tokens are the lowest-level design decisions that support Atomic Design's compositional component system.
+  - philosophy: inclusive-design
+    reason: >-
+      Well-governed tokens encode accessibility constraints such as contrast and reduced-motion choices so inclusive defaults scale.
+tags:
+  - tokens
+  - theming
+  - design-systems
+  - accessibility
+product_stages:
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 3
+    notes: >-
+      A small token set is helpful, but elaborate token architecture can slow exploration before the visual language stabilises.
+  growth:
+    score: 5
+    notes: >-
+      High leverage as teams, themes, and platforms multiply; tokens prevent visual drift and speed systematic change.
+  enterprise:
+    score: 5
+    notes: >-
+      Essential for multi-brand, multi-platform, and accessibility-governed organisations, provided changes are released carefully.
+references:
+  - title: "Design Tokens Community Group Format Module"
+    author: W3C Design Tokens Community Group
+    url: "https://design-tokens.github.io/community-group/format/"
+  - title: "Design Systems Handbook"
+    author: Marco Suarez, Jina Anne, Katie Sylor-Miller, Diana Mounter, Roy Stanfield
+    year: 2017

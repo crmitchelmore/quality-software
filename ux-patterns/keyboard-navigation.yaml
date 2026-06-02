@@ -1,0 +1,113 @@
+id: keyboard-navigation
+title: Keyboard Navigation
+aka:
+  - Keyboard Operability
+  - Non-Pointer Navigation
+discipline: ux
+category: accessibility-inclusive-design
+maturity: established
+short_description: >-
+  Ensure every interactive task can be discovered, reached, operated, and escaped using the keyboard alone with a predictable focus order.
+description: >-
+  Keyboard navigation makes an interface operable without a mouse, touch, or precise pointer. It supports
+  users with motor disabilities, screen-reader users, power users, switch devices, remote controls, and
+  situations where pointing is inconvenient. Good keyboard design is not merely that Tab eventually reaches
+  controls; focus order should follow the task, visible focus should be unmistakable, custom widgets should
+  use expected key bindings, and users should never become trapped. Native controls provide much of this
+  behaviour for free, while custom components must intentionally recreate it.
+problem: >-
+  Pointer-only interfaces exclude users who cannot use a mouse or touch screen and frustrate users who rely
+  on keyboard speed. Hidden focus, illogical tab order, keyboard traps, and custom widgets that ignore arrow
+  keys make basic tasks impossible.
+context: >-
+  Applies to all interactive digital products, especially forms, modals, menus, data grids, drag-and-drop
+  alternatives, command palettes, and applications with dense professional workflows.
+forces:
+  - Rich custom interactions can improve pointer use but often break native keyboard behaviour if not designed deliberately.
+  - Short tab paths improve speed, but skipped controls can make functionality undiscoverable.
+  - Power-user shortcuts are valuable, yet they must not conflict with browser, assistive-technology, or operating-system commands.
+  - Visual design sometimes hides focus indicators, but focus visibility is essential for orientation and conformance.
+solution: >-
+  Prefer native controls and semantic patterns that already support keyboard operation. Define tab order from
+  the user's task sequence, provide visible focus on every interactive element, and implement expected keys
+  for composite widgets such as arrow navigation in menus, listboxes, and grids. Provide keyboard alternatives
+  for pointer gestures, make shortcuts discoverable and remappable where needed, and test every core flow
+  without touching a pointer.
+when_to_use:
+  - Any interface has interactive controls, navigation, form fields, or custom widgets.
+  - A product includes modals, menus, popovers, data grids, drag-and-drop, or keyboard shortcuts.
+  - Accessibility testing finds keyboard traps, missing focus, or pointer-only functionality.
+anti_patterns:
+  - Removing focus outlines because they look untidy, without providing an equally visible replacement.
+  - Building custom buttons, tabs, or menus from divs with click handlers only.
+  - Sending focus through decorative, hidden, or off-screen elements before the main task.
+  - Offering drag-and-drop without a keyboard-accessible alternative.
+heuristics:
+  - "Unplug the mouse: every core task should still be possible, understandable, and reversible."
+  - "Focus order should match visual and task order, not incidental DOM or implementation order."
+  - "Use native controls first; custom widgets inherit the full keyboard contract of the role they imitate."
+  - "Never hide focus; users should always know where the next key press will act."
+examples:
+  - title: A filter menu
+    poor: >-
+      Clicking the filter icon opens a custom menu, but Tab skips inside unpredictably, arrow keys do nothing,
+      Escape does not close it, and focus disappears behind the overlay.
+    better: >-
+      The trigger is a real button, focus moves into the menu, arrow keys move between options, Space selects,
+      Escape closes, and focus returns to the trigger with a visible focus ring.
+    explanation: >-
+      The better version follows users' expectations for a menu and preserves orientation. It is faster for
+      keyboard users and accessible to assistive technologies.
+related_practice_patterns:
+  - pattern: focus-management
+    reason: >-
+      Keyboard navigation depends on deliberate focus movement, trapping, restoration, and visibility.
+  - pattern: wcag-conformance
+    reason: >-
+      WCAG requires keyboard operability and no keyboard traps for interactive content.
+  - pattern: keyboard-shortcuts
+    reason: >-
+      Shortcuts extend keyboard use for expert speed, while baseline keyboard navigation ensures universal operability.
+related_software_patterns:
+  - pattern: state-machine-ui
+    reason: >-
+      Complex widgets often need explicit state transitions to keep keyboard focus and open/closed states predictable.
+  - pattern: command
+    reason: >-
+      Keyboard shortcuts commonly dispatch commands, separating input gestures from application actions.
+related_philosophies:
+  - philosophy: inclusive-design
+    reason: >-
+      Keyboard support recognises diverse motor abilities, devices, and contexts of use.
+  - philosophy: universal-design
+    reason: >-
+      Operability through a standard keyboard broadens access without requiring a specialised mode.
+tags:
+  - accessibility
+  - keyboard
+  - operability
+  - focus
+product_stages:
+  - early
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 4
+    notes: >-
+      Choosing native controls early prevents expensive rewrites and immediately broadens access, even with modest UI complexity.
+  growth:
+    score: 5
+    notes: >-
+      As custom components proliferate, keyboard contracts must be standardised to prevent systemic exclusion.
+  enterprise:
+    score: 5
+    notes: >-
+      Mandatory for compliance, procurement, and professional productivity, especially in data-heavy tools used all day.
+references:
+  - title: "WAI-ARIA Authoring Practices Guide"
+    author: W3C Web Accessibility Initiative
+    url: "https://www.w3.org/WAI/ARIA/apg/"
+  - title: "Web Content Accessibility Guidelines (WCAG) 2.2"
+    author: W3C Web Accessibility Initiative
+    year: 2023

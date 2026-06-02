@@ -1,0 +1,133 @@
+id: input-masking
+title: Input Masking
+discipline: ux
+category: forms-input
+maturity: established
+short_description: >-
+  Guide structured data entry by showing and applying the expected format as the user types, reducing
+  formatting errors without fighting natural input.
+description: >-
+  Input masking constrains or formats an input into a known pattern such as a phone number, credit-card
+  number, date, postcode, currency amount, or serial code. A mask can show placeholders, insert separators,
+  group characters, or restrict impossible characters so users understand the required shape of the value.
+  Done well, it reduces ambiguity and makes review easier. Done badly, it traps users in one locale, blocks
+  copy-paste, confuses screen readers, or rejects valid values that do not match the designer's narrow
+  example. The pattern should assist entry, not turn the field into a puzzle.
+problem: >-
+  Structured values are easy to mistype or format inconsistently, leading to validation errors and support
+  costs. But rigid masks can reject legitimate formats and make correction harder than free text.
+context: >-
+  Best for values with stable, predictable structure and visible grouping benefits: payment cards, short
+  codes, dates in a fixed business context, currency, and national identifiers where format is known.
+forces:
+  - >-
+    Format guidance reduces errors, but over-constraining the field can exclude valid international or
+    assistive-technology input.
+  - >-
+    Automatic separators improve readability, but cursor movement and deletion must remain predictable.
+  - >-
+    Business systems may require canonical storage, while users need flexible, forgiving entry.
+solution: >-
+  Use masks only where the accepted structure is well understood. Show the expected format before entry,
+  allow paste and deletion naturally, and normalise the value behind the scenes rather than forcing users to
+  type separators. Prefer forgiving parsing for variable international formats, and test with keyboard,
+  mobile, screen-reader, and copy-paste workflows.
+when_to_use:
+  - >-
+    The field has a stable, finite format and grouping helps users check accuracy.
+  - >-
+    Incorrect formatting is a common cause of failed submission.
+  - >-
+    You can support expected locales and input methods without blocking legitimate values.
+anti_patterns:
+  - >-
+    Forcing a single national phone-number mask on an international product.
+  - >-
+    Preventing paste into password, one-time-code, or card fields in the name of security.
+  - >-
+    Moving the caret unpredictably when the user edits the middle of a masked value.
+heuristics:
+  - >-
+    Mask for readability, but store a clean canonical value separately.
+  - >-
+    Allow users to paste, delete, and edit in the middle without surprising caret jumps.
+  - >-
+    Prefer examples and forgiving parsing when a format varies by country or organisation.
+  - >-
+    Test masks with assistive technology before treating them as harmless polish.
+examples:
+  - title: Credit-card number
+    poor: >-
+      The card field requires users to type spaces manually and rejects the entry if they paste a continuous
+      sixteen-digit number.
+    better: >-
+      The field accepts pasted digits, groups them visually as the user types, and sends only the canonical
+      digits to the payment processor.
+    explanation: >-
+      The better version helps visual review without making the formatting itself part of the user's task.
+  - title: International phone number
+    poor: >-
+      A global signup form uses a fixed United States phone mask, so users with different country codes or
+      number lengths cannot enter valid numbers.
+    better: >-
+      The form asks for country first, adapts guidance to that country where possible, and otherwise accepts
+      a broad international number with clear example text.
+    explanation: >-
+      Masks are useful only when the domain shape is known; for variable data, forgiving input is more
+      inclusive than rigid control.
+related_practice_patterns:
+  - pattern: inline-validation
+    reason: >-
+      Masks guide entry before validation, while inline validation explains remaining problems after the
+      user has entered a value.
+  - pattern: microcopy
+    reason: >-
+      Example text and field hints often communicate expected format more safely than a rigid mask.
+related_software_patterns:
+  - pattern: input-validation
+    reason: >-
+      The mask should align with the validation and normalisation rules that decide whether submitted data
+      is acceptable.
+  - pattern: canonical-data-model
+    reason: >-
+      User-friendly formatted entry should be converted into a canonical representation for storage and
+      downstream processing.
+related_philosophies:
+  - philosophy: inclusive-design
+    reason: >-
+      Inclusive design cautions against assuming one locale, device, or input method is universal.
+  - philosophy: design-of-everyday-things
+    reason: >-
+      A good mask is a signifier and constraint that makes the correct action easier without creating new
+      errors.
+tags:
+  - forms
+  - structured-input
+  - localisation
+  - accessibility
+product_stages:
+  - early
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 3
+    notes: >-
+      Useful for obvious structured inputs, but early teams should avoid elaborate masks before they know
+      their audience and locales.
+  growth:
+    score: 4
+    notes: >-
+      More valuable as scale exposes formatting errors, mobile usage, and internationalisation needs.
+  enterprise:
+    score: 4
+    notes: >-
+      Important for high-volume operational forms, though enterprise data diversity makes overly rigid masks
+      risky.
+references:
+  - title: "Form Design Patterns"
+    author: Adam Silver
+    year: 2018
+  - title: "Input Masks"
+    author: Nielsen Norman Group
+    url: "https://www.nngroup.com/articles/input-masks/"

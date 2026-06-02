@@ -1,0 +1,105 @@
+id: frontstage-backstage-alignment
+title: Frontstage-Backstage Alignment
+aka:
+  - Promise-to-Operations Alignment
+  - Frontstage Backstage Fit
+discipline: ux
+category: service-design
+maturity: established
+short_description: >-
+  Align what customers see and are promised with the backstage policies, data, staffing, and systems that must deliver it, so service interactions stay credible and reliable.
+description: >-
+  Frontstage-backstage alignment is the practice of designing customer-facing touchpoints together with the operational capabilities that fulfil them. The frontstage includes UI, messaging, staff scripts, notifications, and visible service actions. The backstage includes workflows, tools, decision rules, data quality, queues, staffing, and integrations. The pattern prevents teams from designing experiences that look polished but cannot be honoured, and from operating efficient internal processes that feel confusing or uncaring to customers. It is a bridge between UX, service design, product operations, and delivery.
+problem: >-
+  The interface promises simplicity, speed, or certainty that backstage systems and teams cannot provide, causing broken expectations, manual workarounds, support escalations, and loss of trust.
+context: >-
+  Use when customer-facing design depends on fulfilment, support, approvals, compliance, logistics, or other operational work that is not controlled by the interface team alone.
+forces:
+  - A compelling frontstage promise can drive conversion, but overpromising creates downstream failure.
+  - Backstage teams optimise for efficiency and compliance, while customers judge clarity and emotional impact.
+  - Operational constraints are often real but invisible to designers until late in delivery.
+  - Exposing every backstage constraint to users creates clutter; hiding them all creates surprise.
+solution: >-
+  For each important customer promise, identify the backstage capability that must make it true. Involve operations, support, policy, data, and engineering in design decisions before the promise is shipped. Make constraints visible only where they affect user decisions, and design graceful recovery when backstage work fails. Maintain a shared view of promises, owners, service levels, and exception paths so frontstage changes trigger the necessary backstage changes.
+when_to_use:
+  - A new experience depends on human operations, fulfilment, approvals, or compliance decisions.
+  - Support volume shows that users were promised something the organisation could not deliver.
+  - Internal processes are changing and the customer-facing experience must remain coherent.
+  - Service-level expectations need to be communicated honestly without overwhelming the user.
+anti_patterns:
+  - Designing a beautiful frontstage prototype and discovering operational impossibility only during implementation.
+  - Letting backstage process language leak directly into customer-facing copy.
+  - Hiding delays or uncertainty until customers contact support.
+  - Optimising internal efficiency in ways that create visible confusion or anxiety for users.
+heuristics:
+  - "Every customer promise needs a named backstage owner and evidence that it can be delivered."
+  - "Expose constraints as decision-helping information, not organisational excuses."
+  - "Design the exception path with the same care as the happy path."
+  - "Invite operations and support before the prototype is final, not after launch."
+examples:
+  - title: Delivery promise
+    poor: >-
+      A checkout page promises next-day delivery because it improves conversion, while warehouse cut-offs and carrier coverage make the promise impossible for many orders.
+    better: >-
+      The checkout calculates eligibility from inventory, carrier, location, and cut-off data, then explains the earliest reliable delivery date before payment.
+    explanation: >-
+      The better version aligns the frontstage promise with backstage capability, protecting trust even when the answer is less exciting.
+  - title: Internal wording leak
+    poor: >-
+      A customer sees the status "manual exception queue pending L2 review" because that is what the operations tool calls the state.
+    better: >-
+      The customer sees "We are reviewing one detail and will update you by Friday", while the backstage retains the operational queue name.
+    explanation: >-
+      Alignment does not mean exposing internal process literally. It means translating operational reality into useful customer understanding.
+related_practice_patterns:
+  - pattern: service-blueprint
+    reason: >-
+      Service blueprints make frontstage and backstage layers explicit, giving teams the artefact needed to inspect alignment.
+  - pattern: omnichannel-continuity
+    reason: >-
+      Continuity across channels requires each frontstage touchpoint to draw on aligned backstage data, policy, and recovery processes.
+  - pattern: customer-journey-map
+    reason: >-
+      Journey maps identify the moments where misaligned promises create the most customer frustration.
+related_software_patterns:
+  - pattern: anti-corruption-layer
+    reason: >-
+      Backstage systems often expose language or constraints that should be translated before they reach the customer-facing frontstage.
+  - pattern: saga
+    reason: >-
+      Long-running service promises frequently require coordinated backstage steps and compensations, which saga models at implementation level.
+related_philosophies:
+  - philosophy: service-design-thinking
+    reason: >-
+      The pattern directly applies service-design thinking's frontstage/backstage distinction to keep service promises operationally credible.
+  - philosophy: design-of-everyday-things
+    reason: >-
+      Honest feedback and a clear conceptual model help users understand service state without seeing the whole backstage process.
+tags:
+  - service-design
+  - operations
+  - trust
+  - service-promises
+product_stages:
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 3
+    notes: >-
+      Important when a startup relies on manual fulfilment or concierge operations, but lighter-weight alignment may be enough at small scale.
+  growth:
+    score: 5
+    notes: >-
+      High leverage as growth teams make stronger promises and backstage teams struggle to keep pace.
+  enterprise:
+    score: 5
+    notes: >-
+      Critical where policy, regulation, legacy systems, and many departments can undermine customer-facing promises if not aligned.
+references:
+  - title: "This Is Service Design Thinking"
+    author: Marc Stickdorn and Jakob Schneider
+    year: 2011
+  - title: "Service Blueprinting: A Practical Technique for Service Innovation"
+    author: Mary Jo Bitner, Amy L. Ostrom, Felicia N. Morgan
+    year: 2008

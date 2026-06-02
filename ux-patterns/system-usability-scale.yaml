@@ -1,0 +1,110 @@
+id: system-usability-scale
+title: System Usability Scale (SUS)
+aka:
+  - SUS Questionnaire
+  - System Usability Score
+discipline: ux
+category: usability-evaluation
+maturity: time-tested
+short_description: >-
+  Use the ten-item System Usability Scale after representative use to track perceived usability with a lightweight, comparable questionnaire.
+description: >-
+  The System Usability Scale is a ten-item questionnaire developed by John Brooke for measuring perceived
+  usability after users interact with a system. Respondents rate alternating positive and negative statements
+  on a five-point agreement scale, producing a score from 0 to 100. SUS is quick, technology-agnostic, and
+  widely benchmarked, making it useful for comparing releases, products, or design alternatives. It does not
+  diagnose the cause of usability problems; it should be paired with observation, task outcomes, and qualitative
+  feedback to explain why a score changed.
+problem: >-
+  Teams often rely on anecdotes or isolated task success when they need a lightweight, repeatable signal of
+  perceived usability. Without a standard instrument, scores from different studies or releases are hard to compare.
+context: >-
+  Best used after participants complete realistic tasks in a usability study, beta, pilot, or longitudinal
+  product evaluation where perceived ease and confidence matter.
+forces:
+  - SUS is fast and comparable, but a single number can hide which parts of the experience are broken.
+  - Benchmarking is helpful, yet domain, user expertise, and task difficulty affect interpretation.
+  - Repeated measurement shows trends, but survey fatigue and small samples can make changes noisy.
+  - The questionnaire measures perception after use, not objective performance or accessibility conformance.
+solution: >-
+  Administer the standard ten SUS items immediately after representative product use, keeping wording and
+  scale intact so scores remain comparable. Calculate the score consistently, report sample size and context,
+  and interpret results alongside task completion, errors, time, comments, and observed friction. Use SUS to
+  track perceived usability over time or compare alternatives, not as the sole decision criterion.
+when_to_use:
+  - A team wants a lightweight, standardised usability perception measure after representative use.
+  - Product or design changes need trend tracking across releases or variants.
+  - Stakeholders need a comparable usability signal alongside qualitative findings.
+anti_patterns:
+  - Changing item wording or scale labels, then comparing the result to standard SUS benchmarks.
+  - Reporting a SUS score without sample size, participant type, task context, or confidence about noise.
+  - Treating a high score as proof that accessibility, learnability, and task success are all acceptable.
+  - Asking SUS before users have performed meaningful tasks with the system.
+heuristics:
+  - "Keep the ten standard items and scoring method unchanged if you want comparability."
+  - "Administer SUS after representative use, not after a concept explanation or marketing demo."
+  - "Pair the score with observed task evidence and user comments to explain what to improve."
+  - "Report context, sample, and trend; a standalone score is easy to overinterpret."
+examples:
+  - title: Measuring a redesign
+    poor: >-
+      After showing a prototype walkthrough, the team asks three custom satisfaction questions, averages them,
+      and announces that usability is 92 out of 100 compared with SUS benchmarks.
+    better: >-
+      After participants complete the same key tasks in old and new designs, the team administers the standard
+      SUS, reports sample and task context, and interprets score movement alongside observed errors.
+    explanation: >-
+      The better version preserves the instrument's validity and uses SUS for what it can answer: perceived
+      usability after use, not diagnosis by itself.
+related_practice_patterns:
+  - pattern: usability-testing-session
+    reason: >-
+      SUS is commonly administered after usability test tasks to add a standard perceived-usability measure.
+  - pattern: heuristic-evaluation
+    reason: >-
+      Heuristic evaluation can generate fixes, while SUS can track whether perceived usability improves after release.
+  - pattern: data-visualization-design
+    reason: >-
+      SUS results need careful visualisation and annotation so stakeholders do not overread small or noisy changes.
+related_software_patterns:
+  - pattern: evaluation-harness
+    reason: >-
+      SUS acts as a repeatable human-evaluation instrument, analogous to a lightweight evaluation harness for perceived usability.
+related_philosophies:
+  - philosophy: human-centered-design
+    reason: >-
+      SUS keeps evaluation grounded in users' reported experience after interacting with the product.
+  - philosophy: nielsen-usability-heuristics
+    reason: >-
+      SUS complements heuristic inspection by measuring perceived usability rather than expert-detected violations.
+tags:
+  - usability
+  - questionnaire
+  - measurement
+  - research
+product_stages:
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 3
+    notes: >-
+      Can help compare prototypes, but small samples and fast-changing scope mean qualitative observation usually matters more.
+  growth:
+    score: 4
+    notes: >-
+      Useful for tracking perceived usability as flows mature and releases need comparable evidence.
+  enterprise:
+    score: 5
+    notes: >-
+      Strong fit for portfolio benchmarking, procurement evidence, and longitudinal UX quality tracking when interpreted responsibly.
+references:
+  - title: "SUS: A 'Quick and Dirty' Usability Scale"
+    author: John Brooke
+    year: 1996
+  - title: "Measuring the User Experience"
+    author: William Albert and Thomas Tullis
+    year: 2013
+  - title: "A Practical Guide to the System Usability Scale"
+    author: Jeff Sauro
+    year: 2011

@@ -1,0 +1,134 @@
+id: multi-step-form
+title: Multi-Step Form
+discipline: ux
+category: forms-input
+maturity: established
+short_description: >-
+  Break a long or complex form into labelled stages so users can focus on one coherent chunk at a time and
+  understand their progress.
+description: >-
+  A multi-step form divides a large task into a sequence of screens or sections, often with progress
+  indication, save/resume support, and review before submission. It reduces perceived complexity by grouping
+  related questions and delaying later details until earlier prerequisites are complete. It is not simply a
+  long form chopped into arbitrary pages: each step should represent a meaningful user goal, preserve context
+  when moving forward or back, and make requirements clear before the user commits time.
+problem: >-
+  Long forms can overwhelm users, especially when they mix unrelated questions, conditional logic, or
+  high-stakes data. But splitting a form poorly can hide scope, make correction hard, and create needless
+  navigation.
+context: >-
+  Common in checkout, onboarding, applications, tax or compliance flows, setup wizards, and any form where
+  later questions depend on earlier answers.
+forces:
+  - >-
+    Chunking reduces cognitive load, but extra pages add navigation cost and can obscure the full task.
+  - >-
+    Conditional steps personalise the path, but users need confidence that they are not missing required
+    information.
+  - >-
+    Validation per step catches errors early, but final review is still needed for cross-step consistency.
+solution: >-
+  Group fields into meaningful steps based on the user's mental model, not internal database tables. Show
+  where the user is, what remains, and whether they can save or return later. Validate each step before
+  advancing when possible, allow backtracking without data loss, and provide a final review for important
+  submissions.
+when_to_use:
+  - >-
+    A form is long enough that one page feels intimidating or contains distinct phases.
+  - >-
+    Later questions depend on earlier answers and should not be shown prematurely.
+  - >-
+    The user may need to gather information, pause, or review before final submission.
+anti_patterns:
+  - >-
+    Splitting a short form into many screens to manufacture a funnel metric.
+  - >-
+    Hiding total effort until late in the flow, creating a sense of bait-and-switch.
+  - >-
+    Losing entered data when the user navigates back or reloads.
+heuristics:
+  - >-
+    Each step should have a name users recognise and a purpose they can complete.
+  - >-
+    Show progress honestly; do not use vague dots when step count or effort matters.
+  - >-
+    Let users move back without losing state, and show what has already been completed.
+  - >-
+    Use a final review when the consequences of submission are significant.
+examples:
+  - title: Insurance quote
+    poor: >-
+      The quote form presents forty questions on one page, including vehicle, driver, payment, and legal
+      declarations, so users abandon before understanding the task.
+    better: >-
+      The flow groups questions into Vehicle, Drivers, Cover, Review, and Payment, with a progress indicator
+      and autosaved answers between steps.
+    explanation: >-
+      Meaningful steps make the work legible and give users a clear sense of advancement without losing
+      the overall path.
+  - title: Arbitrary pagination
+    poor: >-
+      A newsletter signup asks for name on screen one, email on screen two, job title on screen three, and
+      confirmation on screen four.
+    better: >-
+      The same simple signup stays on one page, with optional profile details deferred until after the user
+      has subscribed.
+    explanation: >-
+      Multi-step forms solve complexity; applying them to trivial tasks adds friction for no user benefit.
+related_practice_patterns:
+  - pattern: single-column-form
+    reason: >-
+      Each step should usually preserve a single-column completion path for clarity and accessibility.
+  - pattern: progress-indicator
+    reason: >-
+      Multi-step flows need honest status so users know where they are and what remains.
+  - pattern: progressive-disclosure
+    reason: >-
+      Step sequencing is a form of disclosure that reveals information only when it becomes relevant.
+related_software_patterns:
+  - pattern: state-machine-ui
+    reason: >-
+      Step-based flows are often best modelled as explicit UI states and transitions rather than ad hoc page
+      conditions.
+  - pattern: saga
+    reason: >-
+      Complex multi-step submissions may coordinate several backend operations that need compensation if a
+      later step fails.
+related_philosophies:
+  - philosophy: nielsen-usability-heuristics
+    reason: >-
+      The pattern supports visibility of system status, recognition over recall, and user control through
+      clear step navigation.
+  - philosophy: dont-make-me-think
+    reason: >-
+      Good step names and progress reduce the need for users to infer the structure of a complex task.
+tags:
+  - forms
+  - flow
+  - progress
+  - complexity-management
+product_stages:
+  - early
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 3
+    notes: >-
+      Valuable when the core task is inherently complex, but many early products should simplify the form
+      rather than build a wizard.
+  growth:
+    score: 5
+    notes: >-
+      Strong fit as onboarding, checkout, and setup flows accumulate conditional complexity.
+  enterprise:
+    score: 5
+    notes: >-
+      Essential for regulated and operational workflows, with save/resume, review, and audit expectations.
+references:
+  - title: "Web Form Design: Filling in the Blanks"
+    author: Luke Wroblewski
+    year: 2008
+  - title: "Wizard Design Pattern"
+    author: Nielsen Norman Group
+    url: "https://www.nngroup.com/articles/wizards/"

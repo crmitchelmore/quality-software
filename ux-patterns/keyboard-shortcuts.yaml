@@ -1,0 +1,118 @@
+id: keyboard-shortcuts
+title: Keyboard Shortcuts
+aka:
+  - Hotkeys
+  - Accelerator Keys
+discipline: ux
+category: interaction-design
+maturity: time-tested
+short_description: >-
+  Provide memorable keyboard paths for frequent actions, while preserving visible controls and accessible
+  alternatives for every capability.
+description: >-
+  Keyboard shortcuts let users invoke actions without moving through visible controls. They are a major
+  productivity accelerator in text-heavy, expert, and high-frequency workflows, and they also support users
+  who navigate primarily by keyboard. Good shortcuts build on platform conventions, avoid conflicts with
+  assistive technology and browser defaults, and are taught progressively through menus, tooltips, command
+  palettes, and cheat sheets. They should never be the only way to perform an action; shortcuts are an
+  additional path that rewards practice, not a hidden requirement.
+problem: >-
+  Frequent actions become slow and fatiguing when users must repeatedly reach for the mouse, open menus,
+  or traverse several controls for operations they perform hundreds of times a day.
+context: >-
+  Applies to editors, developer tools, design tools, dashboards, customer-support consoles, and any product
+  where skilled users repeat a compact set of actions often.
+forces:
+  - Speed for experts competes with learnability for novices who do not know shortcuts yet.
+  - Global shortcuts can conflict with operating system, browser, and assistive technology commands.
+  - Too many shortcuts create memorisation burden; too few leave high-frequency work slow.
+solution: >-
+  Start with shortcuts for the most frequent, low-risk, and conventionally named actions. Follow platform
+  norms, expose shortcuts beside menu items and in command-palette results, provide a searchable shortcut
+  reference, and allow customisation where expert workflows differ. Test with keyboard and assistive
+  technology users to avoid conflicts, and ensure every shortcuted action also has a visible accessible control.
+when_to_use:
+  - Users perform the same actions repeatedly in a focused workflow.
+  - The product has an expert-user segment that values speed and flow.
+  - Actions can be named and grouped consistently enough to be learnable.
+anti_patterns:
+  - Making critical actions available only through undocumented key combinations.
+  - Overriding browser or assistive technology shortcuts without strong reason and mitigation.
+  - Inventing shortcuts that conflict across product areas or change between screens.
+heuristics:
+  - "Shortcut the frequent path first, not every possible command."
+  - "Use platform conventions unless there is a compelling product-specific reason."
+  - "Teach shortcuts at the moment of use through menus, tooltips, and palettes."
+  - "Never make a shortcut the sole accessible path to an action."
+examples:
+  - title: Teaching an accelerator
+    poor: >-
+      A support console supports "assign to me" with a keyboard shortcut, but the only documentation is a
+      release note from six months ago.
+    better: >-
+      The action button says "Assign to me" and its tooltip and command-palette row show the shortcut, with
+      a shortcut reference available from help.
+    explanation: >-
+      Shortcuts become useful when they are discoverable in context and reinforced by repeated exposure.
+  - title: Handling conflicts
+    poor: >-
+      A web app binds a global shortcut that overrides a browser or screen-reader command, making the page
+      faster for some users and unusable for others.
+    better: >-
+      The app avoids reserved combinations, scopes shortcuts to the active workspace, and lets users disable
+      or remap advanced shortcuts.
+    explanation: >-
+      Shortcut design must respect the broader input environment, not just the product's internal command list.
+related_software_patterns:
+  - pattern: command
+    reason: >-
+      Shortcuts should invoke the same command objects or handlers as visible controls so behaviour stays consistent.
+  - pattern: state-machine-ui
+    reason: >-
+      Shortcut availability often depends on the current UI state, selection, focus, and mode.
+related_practice_patterns:
+  - pattern: command-palette
+    reason: >-
+      Command palettes teach, search, and execute shortcuts while providing an alternate keyboard path.
+  - pattern: keyboard-navigation
+    reason: >-
+      Shortcuts complement but do not replace systematic keyboard navigation through focusable controls.
+  - pattern: contextual-tooltips
+    reason: >-
+      Tooltips can teach accelerators at the exact control where users already understand the action.
+related_philosophies:
+  - philosophy: design-of-everyday-things
+    reason: >-
+      Visible signifiers and feedback help turn invisible keyboard commands into learnable controls.
+  - philosophy: inclusive-design
+    reason: >-
+      Inclusive design requires shortcuts to coexist with assistive technologies and multiple input methods.
+tags:
+  - productivity
+  - accessibility
+  - keyboard
+  - expert-use
+product_stages:
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 2
+    notes: >-
+      A few conventional shortcuts may help, but broad shortcut systems are usually premature before workflows stabilise.
+  growth:
+    score: 4
+    notes: >-
+      Valuable once repeated expert workflows emerge and the product can teach shortcuts consistently.
+  enterprise:
+    score: 4
+    notes: >-
+      Important for power users in complex tools, with added governance needed for localisation, remapping,
+      and accessibility conflicts.
+references:
+  - title: "WAI-ARIA Authoring Practices Guide"
+    author: W3C
+    url: "https://www.w3.org/WAI/ARIA/apg/"
+  - title: "About Face: The Essentials of Interaction Design"
+    author: Alan Cooper, Robert Reimann, David Cronin, Christopher Noessel
+    year: 2014

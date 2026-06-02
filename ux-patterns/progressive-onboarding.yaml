@@ -1,0 +1,128 @@
+id: progressive-onboarding
+title: Progressive Onboarding
+discipline: ux
+category: onboarding-education
+maturity: established
+short_description: >-
+  Teach capabilities gradually at the moment they become useful, helping users build competence through use
+  rather than front-loaded instruction.
+description: >-
+  Progressive onboarding spreads education across the user's journey. Instead of a single exhaustive tour,
+  it reveals guidance, defaults, prompts, and practice tasks when the user reaches a relevant context or
+  maturity level. The pattern recognises that users learn by doing and retain information best when they
+  have a goal. It can combine empty states, checklists, contextual tooltips, templates, and just-in-time
+  prompts, but it must remain respectful: guidance should be dismissible, adaptive, and tied to genuine user
+  value rather than product team desire to advertise features.
+problem: >-
+  Users forget front-loaded training and can be overwhelmed by advanced features before they understand the
+  basics, while products still need to teach depth over time.
+context: >-
+  Best for products with layered capability, repeated use, multiple roles, or a path from novice to expert
+  where learning everything at first login is unrealistic.
+forces:
+  - >-
+    Gradual teaching improves retention, but hidden guidance can delay discovery if triggers are poorly
+    chosen.
+  - >-
+    Personalised prompts feel relevant, but over-targeting can become intrusive or manipulative.
+  - >-
+    Teams want feature adoption, while users want help only when it serves their current goal.
+solution: >-
+  Map the user's journey from first value to deeper competence, then attach guidance to moments where a
+  concept is needed. Start with the minimum needed for activation, use behaviour and role to reveal later
+  help, and let users dismiss, replay, or seek guidance on demand. Measure learning by successful task
+  completion rather than exposure to prompts.
+when_to_use:
+  - >-
+    The product has advanced capabilities that are valuable only after foundational use.
+  - >-
+    Users return repeatedly and can learn over multiple sessions.
+  - >-
+    Context is available to decide which guidance is relevant now.
+anti_patterns:
+  - >-
+    Sprinkling tooltips everywhere and calling it onboarding.
+  - >-
+    Optimising for feature exposure rather than successful user outcomes.
+  - >-
+    Re-showing dismissed guidance because the system cannot remember user preference.
+heuristics:
+  - >-
+    Teach at the moment of need, not at the moment of product launch.
+  - >-
+    Move from first value to deeper mastery in observable stages.
+  - >-
+    Let users dismiss, defer, and rediscover help.
+  - >-
+    Trigger guidance from user goals and behaviour, not internal feature priorities.
+examples:
+  - title: Project-management product
+    poor: >-
+      First login forces a fifteen-slide overview of boards, automations, reports, permissions, and billing.
+    better: >-
+      The product first helps the user create a project and task; automation guidance appears later after
+      they have repeated a manual workflow several times.
+    explanation: >-
+      The better flow teaches depth when the user has a reason to care and enough context to understand it.
+  - title: Advanced search
+    poor: >-
+      The search page permanently displays all advanced operators above the input, intimidating casual users.
+    better: >-
+      Basic search stays simple; after users refine searches repeatedly, a contextual hint introduces one
+      useful operator with an example.
+    explanation: >-
+      Progressive education adds power without burdening every search with expert syntax.
+related_practice_patterns:
+  - pattern: progressive-disclosure
+    reason: >-
+      Progressive onboarding applies staged disclosure over time to learning rather than only to controls.
+  - pattern: contextual-tooltips
+    reason: >-
+      Tooltips are one delivery mechanism for just-in-time onboarding prompts.
+  - pattern: checklist-onboarding
+    reason: >-
+      Checklists can structure the early stage before later contextual learning takes over.
+related_software_patterns:
+  - pattern: feature-toggle
+    reason: >-
+      Feature flags can target onboarding prompts by cohort or maturity without changing the whole product.
+  - pattern: state-machine-ui
+    reason: >-
+      User onboarding stages can be modelled as states so guidance appears predictably and respectfully.
+related_philosophies:
+  - philosophy: design-of-everyday-things
+    reason: >-
+      The pattern builds a conceptual model through timely feedback and visible affordances.
+  - philosophy: human-centered-design
+    reason: >-
+      It starts from users' learning needs and contexts rather than a product-centric feature tour.
+tags:
+  - onboarding
+  - education
+  - activation
+  - progressive-disclosure
+product_stages:
+  - early
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 4
+    notes: >-
+      Useful when the product has real depth, though early teams should first find the shortest path to
+      first value.
+  growth:
+    score: 5
+    notes: >-
+      Excellent fit as segments, roles, and advanced capabilities expand.
+  enterprise:
+    score: 5
+    notes: >-
+      Essential for complex tools where roles, permissions, and workflows require staged learning.
+references:
+  - title: "User Onboarding"
+    author: Samuel Hulick
+    year: 2014
+  - title: "Progressive Disclosure"
+    author: Nielsen Norman Group
+    url: "https://www.nngroup.com/articles/progressive-disclosure/"

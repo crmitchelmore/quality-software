@@ -1,0 +1,108 @@
+id: atomic-design-components
+title: Atomic Design Components
+aka:
+  - Atomic Component Model
+  - Atoms Molecules Organisms
+discipline: ux
+category: design-systems
+maturity: established
+short_description: >-
+  Structure interface components from small primitives through composed patterns so teams can design and build consistent, reusable experiences at multiple levels of complexity.
+description: >-
+  Atomic design components organise a design system into levels of composition: atoms such as colour, typography, icons, and basic controls; molecules such as labelled inputs or search fields; organisms such as headers or cards; templates and pages that assemble those parts into product experiences. The pattern gives designers and engineers a shared language for discussing reuse without pretending every interface can be reduced to tiny parts alone. It makes consistency easier, exposes where a component should live, and keeps complex screens traceable to maintained building blocks.
+problem: >-
+  Teams create one-off UI elements that look similar but behave differently, while shared component libraries become either too granular to be useful or too page-specific to be reusable.
+context: >-
+  Use when multiple teams or product areas need a common component vocabulary, especially when design and frontend implementation must stay aligned over time.
+forces:
+  - Fine-grained primitives maximise consistency, but product teams need higher-level components to move quickly.
+  - Too much abstraction can make components rigid; too little creates duplication and drift.
+  - Designers think in experience patterns while engineers need clear component boundaries and APIs.
+  - A taxonomy helps governance, but real products often need exceptions and evolution.
+solution: >-
+  Define a layered component model that starts with primitives and builds up to reusable compositions. Give each level a purpose, ownership, documentation standard, and implementation counterpart. Promote a pattern only when it repeats across contexts, and split or demote components that become too specialised. Use the taxonomy as a conversation aid, not a law of nature, and keep examples tied to real product usage.
+when_to_use:
+  - A design system needs a shared structure for components and examples.
+  - Teams duplicate similar UI patterns with inconsistent behaviour or naming.
+  - Designers and engineers need to discuss reuse at different levels of granularity.
+  - Product surfaces are expanding and consistency depends on maintained compositions.
+anti_patterns:
+  - Treating atomic levels as a rigid hierarchy that every component must fit perfectly.
+  - Shipping only atoms and expecting product teams to compose complex experiences from scratch.
+  - Creating page-specific organisms that cannot be reused or governed.
+  - Letting visual similarity hide behavioural differences such as validation, focus, or loading states.
+heuristics:
+  - "Name components by role and behaviour, not only by visual appearance."
+  - "Promote from product usage into the system after repetition, not from speculation."
+  - "Support both primitives and useful compositions; teams need LEGO bricks and prebuilt assemblies."
+  - "Document anatomy, states, variants, accessibility, and usage examples at the level where decisions are made."
+examples:
+  - title: Useful levels of reuse
+    poor: >-
+      The design system offers buttons, icons, and spacing tokens, but each product team invents its own search box, filter bar, and account header.
+    better: >-
+      The system includes primitives, a reusable search-field molecule, a filter-toolbar organism, and templates showing how they work in listing pages.
+    explanation: >-
+      Atomic design is valuable because it supports composition at several useful levels, not because it stops at the smallest pieces.
+  - title: Behavioural consistency
+    poor: >-
+      Two teams use visually identical cards, but one is clickable, one has nested buttons, and each handles loading and errors differently.
+    better: >-
+      The card component defines its anatomy, interaction rules, loading state, error state, and when to use nested actions versus a separate layout.
+    explanation: >-
+      Reuse must include behaviour and accessibility, not just surface appearance.
+related_practice_patterns:
+  - pattern: design-tokens
+    reason: >-
+      Tokens provide the primitive values that atomic components consume for colour, spacing, typography, and motion.
+  - pattern: component-variants-states
+    reason: >-
+      Atomic components remain reusable only when their variants and states are modelled deliberately rather than improvised per screen.
+  - pattern: pattern-library-governance
+    reason: >-
+      A component taxonomy needs governance to decide when patterns enter, change, or leave the library.
+related_software_patterns:
+  - pattern: atomic-design
+    reason: >-
+      The software catalogue includes atomic-design as the frontend implementation analogue of this UX design-system pattern.
+  - pattern: composite
+    reason: >-
+      Atomic component hierarchies often use composite structures where complex components are assembled from simpler parts.
+  - pattern: component-based-ui
+    reason: >-
+      Component-based UI implementation provides the technical foundation for maintaining atomic design components in product code.
+related_philosophies:
+  - philosophy: atomic-design
+    reason: >-
+      Brad Frost's Atomic Design philosophy is the direct source of this component taxonomy and its compositional vocabulary.
+  - philosophy: design-of-everyday-things
+    reason: >-
+      Consistent components strengthen affordances, mappings, and feedback by making similar actions behave similarly across the product.
+tags:
+  - design-systems
+  - components
+  - reuse
+  - composition
+product_stages:
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 3
+    notes: >-
+      Useful once a young product has repeated patterns, but a full taxonomy can be premature before the product language stabilises.
+  growth:
+    score: 5
+    notes: >-
+      Excellent fit as teams scale and need reusable components that preserve consistency without slowing delivery.
+  enterprise:
+    score: 5
+    notes: >-
+      Essential across suites and brands, though governance and migration strategy become as important as the component model itself.
+references:
+  - title: "Atomic Design"
+    author: Brad Frost
+    year: 2016
+  - title: "Design Systems Handbook"
+    author: Marco Suarez, Jina Anne, Katie Sylor-Miller, Diana Mounter, Roy Stanfield
+    year: 2017

@@ -1,0 +1,131 @@
+id: single-column-form
+title: Single-Column Form
+discipline: ux
+category: forms-input
+maturity: established
+short_description: >-
+  Arrange form fields in one vertical path so users can scan, complete, and review them without zig-zagging
+  across the page.
+description: >-
+  A single-column form places labels, inputs, help text, and errors in a linear vertical sequence. It gives
+  the form a clear reading order and a predictable completion path, which is especially helpful on mobile,
+  for keyboard navigation, and for users with cognitive or visual processing needs. The pattern does not
+  mean every field must be one enormous page; related short fields can sometimes be grouped, and long flows
+  may be split into steps. Its main value is removing layout ambiguity so the user always knows which field
+  comes next.
+problem: >-
+  Multi-column forms make users scan in multiple directions, miss fields, enter related information out of
+  order, and struggle when responsive layouts rearrange the page.
+context: >-
+  Applies to most data-entry forms, especially signup, checkout, contact, configuration, profile, and
+  administrative forms that must work across screen sizes and assistive technologies.
+forces:
+  - >-
+    A single path improves comprehension, but very long forms can feel imposing without grouping or steps.
+  - >-
+    Horizontal layouts save vertical space, but they increase scan complexity and responsive breakpoints.
+  - >-
+    Operational users may value dense layouts, while first-time users benefit from clarity and breathing room.
+solution: >-
+  Put each label and field in a single vertical sequence, with labels close to their controls and help text
+  or errors immediately below. Group related fields with headings and whitespace rather than placing them in
+  competing columns. Use multi-step forms or progressive disclosure when the resulting column becomes too
+  long, and only use side-by-side fields where the relationship is obvious and robust on small screens.
+when_to_use:
+  - >-
+    The form is used by first-time or infrequent users who need a clear completion path.
+  - >-
+    The form must be responsive and accessible without layout-specific workarounds.
+  - >-
+    Field order matters or missed fields are costly.
+anti_patterns:
+  - >-
+    Creating two columns simply to reduce page height, causing users to read left-right then down in an
+    unclear order.
+  - >-
+    Placing help text in a distant right rail where it loses connection to the field.
+  - >-
+    Reflowing a desktop multi-column form into a different mobile order that changes meaning.
+heuristics:
+  - >-
+    One primary visual path beats a compact grid for most human completion tasks.
+  - >-
+    Keep labels, controls, help, and errors in the same vertical unit.
+  - >-
+    Group by meaning, not by visual convenience.
+  - >-
+    Split long forms into coherent steps before resorting to dense multi-column layouts.
+examples:
+  - title: Account creation
+    poor: >-
+      Signup fields are arranged in two columns to fit above the fold, so users tab through a different
+      order from the one their eyes follow.
+    better: >-
+      The form uses one column with clear section headings and a single primary action at the end.
+    explanation: >-
+      The better version aligns visual order, keyboard order, and reading order, reducing missed inputs and
+      confusion.
+  - title: Address entry
+    poor: >-
+      Address line, city, postcode, and country are scattered across a compact grid with labels squeezed to
+      the side.
+    better: >-
+      The fields appear as a vertical address block, with postcode and city optionally grouped only when the
+      locale's convention makes that relationship clear.
+    explanation: >-
+      Vertical grouping preserves context while allowing small, meaningful exceptions for tightly related
+      fields.
+related_practice_patterns:
+  - pattern: multi-step-form
+    reason: >-
+      When one column becomes too long, a multi-step form keeps the linear path while reducing perceived
+      burden.
+  - pattern: visual-hierarchy
+    reason: >-
+      Section headings, spacing, and action placement make a single column scannable rather than monotonous.
+  - pattern: focus-management
+    reason: >-
+      Linear layout should be matched by predictable keyboard focus order and error focus behaviour.
+related_software_patterns:
+  - pattern: component-based-ui
+    reason: >-
+      Form rows, field groups, and error states are often implemented as reusable components to preserve
+      layout consistency.
+related_philosophies:
+  - philosophy: dont-make-me-think
+    reason: >-
+      A single path removes unnecessary decisions about where to look next.
+  - philosophy: inclusive-design
+    reason: >-
+      Linear forms support a broader range of screen sizes, zoom levels, assistive technologies, and reading
+      behaviours.
+tags:
+  - forms
+  - layout
+  - accessibility
+  - mobile
+product_stages:
+  - early
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 5
+    notes: >-
+      Cheap, robust, and immediately improves comprehension for young products without requiring complex
+      design-system investment.
+  growth:
+    score: 5
+    notes: >-
+      Helps teams standardise forms across surfaces as the product grows.
+  enterprise:
+    score: 4
+    notes: >-
+      Still valuable, though dense expert workflows may need carefully tested exceptions for speed.
+references:
+  - title: "Web Form Design: Filling in the Blanks"
+    author: Luke Wroblewski
+    year: 2008
+  - title: "Form Design Patterns"
+    author: Adam Silver
+    year: 2018

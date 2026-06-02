@@ -1,0 +1,112 @@
+id: reduced-motion
+title: Reduced Motion
+aka:
+  - Motion Sensitivity Support
+  - Prefers Reduced Motion
+discipline: ux
+category: accessibility-inclusive-design
+maturity: established
+short_description: >-
+  Respect motion sensitivity by reducing or replacing non-essential animation while preserving orientation, feedback, and meaning.
+description: >-
+  Reduced motion adapts animation and movement for users who experience vestibular discomfort, distraction,
+  nausea, migraines, cognitive load, or preference-based fatigue from motion. It does not mean removing all
+  feedback or making the interface lifeless. Instead, essential state changes remain clear through opacity,
+  instant transitions, position-preserving changes, text, icons, or subtle fades. The pattern respects system
+  settings such as prefers-reduced-motion and gives teams criteria for when motion informs, delights, or harms.
+problem: >-
+  Parallax, zooming, auto-playing animation, large sliding transitions, and motion-heavy loading states can
+  make products uncomfortable or unusable. Teams often add animation for polish without alternatives for users
+  who have explicitly requested less motion.
+context: >-
+  Applies to web and mobile interfaces with page transitions, carousels, parallax, skeletons, loading
+  indicators, charts, onboarding tours, animated illustrations, or microinteractions.
+forces:
+  - Motion can guide attention and explain spatial relationships, but the same movement can trigger discomfort.
+  - Brand delight and perceived polish compete with user control and sustained concentration.
+  - Removing motion entirely can hide state change unless alternative feedback is designed.
+  - System preferences vary by platform and must be respected consistently across design and code.
+solution: >-
+  Classify motion as essential, supportive, or decorative. Respect system reduced-motion preferences by
+  disabling decorative motion and replacing large spatial movement with instant changes, short fades, or
+  non-motion cues. Keep essential feedback, but reduce distance, duration, looping, and acceleration. Avoid
+  auto-playing or parallax effects by default, and provide controls for animation that lasts, repeats, or
+  distracts from the task.
+when_to_use:
+  - A product uses animation, parallax, animated illustrations, carousels, page transitions, or moving charts.
+  - Users may work for long sessions or in contexts where motion is distracting or harmful.
+  - Accessibility standards or platform guidelines require respecting reduced-motion preferences.
+anti_patterns:
+  - Treating prefers-reduced-motion as a way to turn off only one animation while leaving large transitions elsewhere.
+  - Removing animation without replacing the feedback that told users something changed.
+  - Using auto-playing, looping decorative motion near primary tasks or reading content.
+  - Making essential information available only through animation timing or movement.
+heuristics:
+  - "Respect the user's reduced-motion setting globally, not one component at a time."
+  - "Replace motion with another cue for state change, such as text, icon, opacity, or position-stable feedback."
+  - "Avoid large zoom, parallax, and sweeping movement for task-critical interfaces."
+  - "Let users pause, stop, or hide motion that starts automatically or repeats."
+examples:
+  - title: A route transition
+    poor: >-
+      Navigating between sections triggers a full-screen slide and zoom effect lasting half a second, even
+      for users whose operating system asks for reduced motion.
+    better: >-
+      Default users see a brief spatial transition, while reduced-motion users get an immediate content swap
+      with a short fade and a focused heading confirming the new section.
+    explanation: >-
+      The better version keeps orientation and feedback but removes the movement most likely to cause discomfort.
+      It respects user preference without making the interface ambiguous.
+related_practice_patterns:
+  - pattern: wcag-conformance
+    reason: >-
+      WCAG includes requirements for pausing moving content and avoiding harmful flashing or motion-triggered interactions.
+  - pattern: focus-management
+    reason: >-
+      Reduced-motion transitions still need focus movement to orient users when visual motion cues are removed.
+  - pattern: optimistic-ui-feedback
+    reason: >-
+      Immediate feedback can be conveyed without excessive animation when optimistic changes need to feel responsive.
+related_software_patterns:
+  - pattern: debounce-throttle-ui
+    reason: >-
+      Throttling rapid UI updates can reduce distracting motion and visual churn during frequent interaction.
+  - pattern: state-machine-ui
+    reason: >-
+      Explicit UI states help provide non-motion feedback for transitions that would otherwise rely on animation.
+related_philosophies:
+  - philosophy: inclusive-design
+    reason: >-
+      Reduced motion accounts for permanent, temporary, and situational sensitivity to movement and distraction.
+  - philosophy: calm-technology
+    reason: >-
+      Motion restraint helps interfaces stay in the periphery and avoid unnecessary attention capture.
+tags:
+  - accessibility
+  - motion
+  - animation
+  - preferences
+product_stages:
+  - early
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 3
+    notes: >-
+      If animation is minimal, the pattern is light; if motion is central to the brand, early support prevents later redesign.
+  growth:
+    score: 4
+    notes: >-
+      As polish and microinteractions increase, reduced-motion rules keep experience quality from excluding sensitive users.
+  enterprise:
+    score: 5
+    notes: >-
+      Important for compliance, employee tools, and long-session applications where distraction and discomfort accumulate.
+references:
+  - title: "Web Content Accessibility Guidelines (WCAG) 2.2"
+    author: W3C Web Accessibility Initiative
+    year: 2023
+  - title: "Using the prefers-reduced-motion media query"
+    author: MDN Web Docs
+    url: "https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion"

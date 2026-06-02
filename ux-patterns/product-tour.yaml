@@ -1,0 +1,125 @@
+id: product-tour
+title: Product Tour
+discipline: ux
+category: onboarding-education
+maturity: established
+short_description: >-
+  Introduce a product's core concepts and first actions in a short, skippable sequence that orients users
+  without delaying real use.
+description: >-
+  A product tour is a guided introduction shown near first use or after a major change. It highlights the
+  product's purpose, main areas, or first valuable actions through a small number of screens, coach marks,
+  or interactive steps. A good tour is selective and contextual: it explains enough to reduce disorientation,
+  then hands the user back to the product with a clear next action. A poor tour tries to teach every feature
+  before the user has motivation or context, becoming a slideshow users skip and forget.
+problem: >-
+  New users can arrive with little understanding of where to start, but front-loading a complete explanation
+  delays value and creates information they cannot yet retain.
+context: >-
+  Best for products with unfamiliar concepts, multiple navigation regions, or a first-run setup path that
+  benefits from orientation before doing.
+forces:
+  - >-
+    Orientation reduces anxiety, but passive instruction before need is quickly forgotten.
+  - >-
+    Tours can draw attention to important capabilities, but they can also block exploration.
+  - >-
+    Product teams want to showcase breadth, while users want the shortest path to value.
+solution: >-
+  Keep the tour short, skippable, and anchored to the first meaningful outcome. Use plain language, show one
+  idea per step, and prefer interactive doing over passive reading. Offer a way to revisit the tour later,
+  and follow it with contextual onboarding that appears when the user reaches a relevant feature.
+when_to_use:
+  - >-
+    First-time users need orientation before they can safely or confidently act.
+  - >-
+    A major redesign changes navigation or mental models for existing users.
+  - >-
+    The product has one or two core concepts that unlock the rest of the experience.
+anti_patterns:
+  - >-
+    Forcing a long, unskippable tour before users can inspect the product.
+  - >-
+    Explaining advanced features before the user has completed a first meaningful task.
+  - >-
+    Using tours to compensate for confusing navigation that should be redesigned.
+heuristics:
+  - >-
+    Teach only what the user needs for the next valuable action.
+  - >-
+    Make every tour skippable and easy to replay.
+  - >-
+    Prefer interactive steps over passive slides where the product can safely support them.
+  - >-
+    Stop before attention drops; three to five focused steps is often enough.
+examples:
+  - title: Analytics dashboard
+    poor: >-
+      First login opens a twelve-step overlay describing every chart, export, filter, and administrative
+      feature before the dashboard can be used.
+    better: >-
+      A three-step tour explains the dashboard's main question, the date filter, and the first report to
+      open, then leaves advanced exports to contextual help.
+    explanation: >-
+      The better tour orients the user to immediate value without pretending they can retain the whole
+      product at once.
+  - title: Redesign announcement
+    poor: >-
+      After a navigation redesign, users see a marketing modal saying the product is "new and improved"
+      but not where familiar actions moved.
+    better: >-
+      A concise tour points to the relocated search, settings, and create button, with a persistent "What
+      changed?" link for later reference.
+    explanation: >-
+      The tour focuses on reducing disruption rather than celebrating internal design work.
+related_practice_patterns:
+  - pattern: progressive-onboarding
+    reason: >-
+      Product tours should be the opening orientation, not the entire onboarding strategy.
+  - pattern: contextual-tooltips
+    reason: >-
+      Tooltips can teach secondary features later when users encounter the relevant context.
+related_software_patterns:
+  - pattern: feature-toggle
+    reason: >-
+      Tours for new features or redesigns are often released gradually alongside the feature itself.
+  - pattern: state-machine-ui
+    reason: >-
+      Guided tours benefit from explicit step states so users can skip, resume, or replay reliably.
+related_philosophies:
+  - philosophy: dont-make-me-think
+    reason: >-
+      A tour should reduce initial uncertainty, not add another interface users must decipher.
+  - philosophy: nielsen-usability-heuristics
+    reason: >-
+      It supports help and documentation while preserving user control through skip and replay.
+tags:
+  - onboarding
+  - education
+  - first-run
+  - guidance
+product_stages:
+  - early
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 3
+    notes: >-
+      Helpful when the product is novel, but early teams should prioritise making the first task obvious.
+  growth:
+    score: 4
+    notes: >-
+      Useful as acquisition channels diversify and new cohorts need faster orientation.
+  enterprise:
+    score: 4
+    notes: >-
+      Valuable for complex suites and redesigns, though tours must coexist with training, roles, and
+      documentation.
+references:
+  - title: "User Onboarding"
+    author: Samuel Hulick
+    year: 2014
+  - title: "Don't Make Me Think, Revisited"
+    author: Steve Krug
+    year: 2014

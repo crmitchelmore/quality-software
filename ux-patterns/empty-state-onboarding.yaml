@@ -1,0 +1,122 @@
+id: empty-state-onboarding
+title: Empty State Onboarding
+discipline: ux
+category: onboarding-education
+maturity: established
+short_description: >-
+  Turn empty screens into helpful starting points that explain value, set expectations, and guide users to a
+  first meaningful action.
+description: >-
+  Empty state onboarding treats the absence of content as an opportunity for guidance rather than a dead
+  end. A new project with no tasks, an inbox with no messages, or a dashboard with no data can explain what
+  will appear there, why it matters, and what the user can do next. Good empty states are specific to the
+  user's context, avoid blame, and include a clear primary action. They should disappear gracefully once real
+  content exists and reappear in different form when a filter, error, or permission issue causes apparent
+  emptiness.
+problem: >-
+  New users often encounter blank screens before they have created data, making the product feel broken,
+  unvaluable, or unclear about what to do next.
+context: >-
+  Useful wherever a feature depends on user-created content, imported data, collaboration, configuration,
+  or permissions before its normal interface becomes meaningful.
+forces:
+  - >-
+    Guidance can convert emptiness into action, but generic illustrations and vague copy waste the moment.
+  - >-
+    Empty states should encourage creation without pressuring users into setup they are not ready for.
+  - >-
+    True empty, filtered empty, error, and no-permission states can look similar but require different help.
+solution: >-
+  Identify why the state is empty and write copy for that cause. Explain what will appear here, why it is
+  useful, and the smallest next action the user can take. Offer sample data or templates only when they help
+  users understand the future populated state, and ensure the state changes once content exists.
+when_to_use:
+  - >-
+    A page or component has no user data yet and the next action is knowable.
+  - >-
+    Users need to understand the value of creating, importing, inviting, or connecting something.
+  - >-
+    Different causes of emptiness can be distinguished by the system.
+anti_patterns:
+  - >-
+    Displaying a blank table with no explanation or action.
+  - >-
+    Using the same empty message for no data, no search results, failed loading, and missing permissions.
+  - >-
+    Filling the state with marketing copy that does not help the user proceed.
+heuristics:
+  - >-
+    Say what belongs here, why it helps, and what to do next.
+  - >-
+    Match the message to the cause of emptiness.
+  - >-
+    Prefer one clear action over a menu of setup options.
+  - >-
+    Use sample content carefully; mark it clearly and remove it when real content exists.
+examples:
+  - title: New project task list
+    poor: >-
+      A newly created project shows an empty table with column headers and no explanation.
+    better: >-
+      The page says "No tasks yet. Create your first task to track work in this project" with a primary
+      "Create task" button and a small example of a useful task title.
+    explanation: >-
+      The better version turns the blank area into a clear starting point tied to the feature's value.
+  - title: Filtered empty result
+    poor: >-
+      A filtered issues list says "You have no issues" even though removing the filter would show many.
+    better: >-
+      The state says "No issues match these filters" and offers "Clear filters" before suggesting creation.
+    explanation: >-
+      Correctly naming the cause avoids misleading users and gives them the right recovery action.
+related_practice_patterns:
+  - pattern: empty-state-content
+    reason: >-
+      Empty state onboarding depends on strong content design tailored to the cause and next action.
+  - pattern: checklist-onboarding
+    reason: >-
+      Empty states can launch or reinforce checklist tasks such as create, invite, or import.
+related_software_patterns:
+  - pattern: special-case
+    reason: >-
+      Empty states are a deliberate special-case representation rather than treating absence as a broken
+      normal view.
+  - pattern: null-object
+    reason: >-
+      A well-designed empty state provides safe behaviour when the expected content collection is empty.
+related_philosophies:
+  - philosophy: dont-make-me-think
+    reason: >-
+      The pattern removes the need to infer what an empty screen means or how to proceed.
+  - philosophy: inclusive-design
+    reason: >-
+      Clear empty states support users who lack domain knowledge, confidence, or organisational context.
+tags:
+  - onboarding
+  - empty-states
+  - content-design
+  - activation
+product_stages:
+  - early
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 5
+    notes: >-
+      Very high leverage because early products often have sparse data and need to teach value quickly.
+  growth:
+    score: 5
+    notes: >-
+      Important as more features and segments create many distinct empty and filtered states.
+  enterprise:
+    score: 4
+    notes: >-
+      Still valuable, especially for role-based permissions and configuration-heavy products.
+references:
+  - title: "Designing Empty States"
+    author: Nielsen Norman Group
+    url: "https://www.nngroup.com/articles/empty-state-interface/"
+  - title: "Microcopy: The Complete Guide"
+    author: Kinneret Yifrah
+    year: 2017

@@ -1,0 +1,119 @@
+id: plain-language
+title: Plain Language
+aka:
+  - Plain English
+  - Clear Language
+discipline: ux
+category: content-design
+maturity: time-tested
+short_description: >-
+  Write interface and product content so users can understand it the first time they read it and act on it
+  confidently.
+description: >-
+  Plain language is the practice of choosing words, sentence structures, and information order that help
+  readers find, understand, and use content quickly. In UX, it means writing for the user's task rather than
+  the organisation's internal vocabulary: familiar words, active voice, concrete examples, short sentences,
+  and headings that answer real questions. Plain language is not oversimplification; it is precision in the
+  reader's context. It is especially important for errors, consent, payments, healthcare, government,
+  finance, and any moment where misunderstanding has consequences.
+problem: >-
+  Users abandon tasks, make wrong choices, or need support when content is written in jargon, legalese,
+  marketing abstractions, or organisation-centric terms they do not share.
+context: >-
+  Applies to labels, forms, help, policies, notifications, onboarding, error messages, product education,
+  and cross-functional vocabulary across a service.
+forces:
+  - Legal, compliance, or domain precision may require exact terms, but unexplained precision can become exclusionary jargon.
+  - Brevity helps scanning, but removing necessary context can make content ambiguous.
+  - Internal stakeholders may prefer brand or expert terminology that users do not recognise.
+solution: >-
+  Start with the user's question and put the answer first. Use common words, active voice, concrete nouns,
+  and short sentences. Define necessary technical or legal terms at the point of use, remove ornamental
+  phrasing, and test content with people who resemble the audience. Maintain a shared vocabulary so the
+  same concept is named consistently across product, support, and documentation.
+when_to_use:
+  - Users must understand content to make a decision, complete a task, or give informed consent.
+  - Research or support logs show confusion caused by terminology or sentence complexity.
+  - The product crosses expertise levels, languages, literacy levels, or regulatory contexts.
+anti_patterns:
+  - Replacing clear task language with marketing slogans in functional UI.
+  - Copying legal or technical wording into the interface without explanation.
+  - Using different names for the same concept across product, help, and support.
+heuristics:
+  - "Put the user's task or answer first; background comes later."
+  - "Prefer familiar words over impressive words unless precision truly requires the term."
+  - "Define necessary jargon where it appears, not in a separate glossary only."
+  - "Read content aloud; if it sounds like a policy memo, simplify it."
+examples:
+  - title: Consent wording
+    poor: >-
+      A consent screen says "Authorise third-party data processing for service optimisation purposes" with
+      no explanation of what data or benefit is involved.
+    better: >-
+      The screen says "Allow Acme Analytics to use your usage data to show performance reports. You can
+      turn this off in settings.".
+    explanation: >-
+      The better version keeps the necessary meaning while using concrete actors, data, purpose, and control.
+  - title: Navigation label
+    poor: >-
+      A customer portal labels a section "Entitlements", a term used internally by billing teams but not by customers.
+    better: >-
+      The section is labelled "Plans and licences", matching the language customers use when managing access.
+    explanation: >-
+      Plain language aligns labels with users' vocabulary so navigation does not require translation.
+related_software_patterns:
+  - pattern: ubiquitous-language
+    reason: >-
+      Plain language and ubiquitous language both depend on consistent shared vocabulary, with UX prioritising user comprehension.
+  - pattern: problem-details
+    reason: >-
+      Human-readable problem titles and details should be written plainly so API-driven errors can become useful UI messages.
+related_practice_patterns:
+  - pattern: microcopy
+    reason: >-
+      Microcopy is where plain-language choices most visibly shape moment-by-moment comprehension.
+  - pattern: error-message-design
+    reason: >-
+      Error messages must be plain enough for users to recover without support or technical translation.
+  - pattern: content-first-design
+    reason: >-
+      Content-first work uses plain language to clarify structure and task intent before visual design hardens.
+related_philosophies:
+  - philosophy: dont-make-me-think
+    reason: >-
+      Plain language reduces the mental translation users must perform before acting.
+  - philosophy: human-centered-design
+    reason: >-
+      Writing from the user's vocabulary and context is a direct human-centred design practice.
+  - philosophy: nielsen-usability-heuristics
+    reason: >-
+      Nielsen's match between system and real world heuristic calls for user language rather than system terms.
+tags:
+  - clarity
+  - ux-writing
+  - accessibility
+  - comprehension
+product_stages:
+  - early
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 5
+    notes: >-
+      One of the cheapest ways to improve activation, trust, and support load from the beginning.
+  growth:
+    score: 5
+    notes: >-
+      Essential as more teams write product content and inconsistent terminology starts to fragment the experience.
+  enterprise:
+    score: 5
+    notes: >-
+      Critical in regulated and global contexts, though legal review, localisation, and domain terminology require governance.
+references:
+  - title: "Federal Plain Language Guidelines"
+    author: Plain Language Action and Information Network
+    url: "https://www.plainlanguage.gov/guidelines/"
+  - title: "Letting Go of the Words"
+    author: Janice Redish
+    year: 2012

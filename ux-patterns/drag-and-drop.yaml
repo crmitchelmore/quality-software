@@ -1,0 +1,121 @@
+id: drag-and-drop
+title: Drag and Drop
+aka:
+  - Direct Manipulation Reordering
+  - Drag Interaction
+discipline: ux
+category: interaction-design
+maturity: established
+short_description: >-
+  Let users move, reorder, group, or upload items by directly dragging them, while providing accessible
+  alternatives and clear drop feedback.
+description: >-
+  Drag and drop lets users act on objects by picking them up, moving them, and releasing them onto a
+  target. It can make spatial tasks such as reordering, arranging, grouping, and uploading feel tangible
+  because the action resembles the intended outcome. The pattern is powerful but fragile: targets must be
+  discoverable, the item must visibly follow the pointer, valid and invalid destinations must be obvious,
+  and the final result must be reversible. Because dragging is difficult or impossible for some users and
+  devices, a production-quality design always includes keyboard, menu, or button alternatives with the
+  same capability.
+problem: >-
+  Some interactions are cumbersome when expressed only as forms or menus: users must specify source,
+  destination, and order indirectly even though they can see exactly where the object should go.
+context: >-
+  Common in kanban boards, file uploads, list reordering, layout builders, map tools, media editors, and
+  any interface where objects have a meaningful spatial or ordered relationship.
+forces:
+  - Directness and delight compete with precision, especially on small screens or dense targets.
+  - Pointer-based interaction is not universally accessible, so equivalent non-drag controls are required.
+  - Immediate visual movement can hide data loss unless invalid drops and rollback are designed carefully.
+solution: >-
+  Use drag and drop only where movement or placement is central to the task. Provide clear drag handles or
+  affordances, preview the dragged item and potential insertion point, distinguish valid from invalid drop
+  targets, and confirm the resulting state. Support cancellation, undo, and keyboard or menu-based
+  alternatives. For destructive or cross-context moves, explain the consequence before or immediately after
+  drop and make reversal obvious.
+when_to_use:
+  - Users need to reorder, group, arrange, or upload items in a visible workspace.
+  - Spatial placement or order is easier to express directly than through fields.
+  - Equivalent accessible alternatives can be provided without reducing capability.
+anti_patterns:
+  - Making drag and drop the only way to complete a critical task.
+  - Providing no insertion preview, so users cannot tell where an item will land.
+  - Triggering destructive moves on drop with no confirmation, undo, or visible result.
+heuristics:
+  - "Use visible handles when dragging competes with clicking, selecting, or scrolling."
+  - "Show the destination before the user releases, not only after the drop."
+  - "Every drag operation needs an equivalent keyboard or command path."
+  - "Make cancellation and undo obvious because slips are common in pointer movement."
+examples:
+  - title: Reordering a backlog
+    poor: >-
+      A backlog allows cards to be dragged but shows no insertion marker; when the user releases a card,
+      it jumps to an unexpected position and the previous order cannot be restored.
+    better: >-
+      The card lifts visually, a clear line marks the insertion point, invalid areas are dimmed, and an
+      undo toast appears after the reorder is saved.
+    explanation: >-
+      The better version keeps the user's mental model aligned with the system state before and after the
+      drop, and it treats ordering slips as recoverable.
+  - title: Uploading files
+    poor: >-
+      A page says "drop files anywhere" but nothing changes as the user drags a file over it, and unsupported
+      file types fail only after upload completes.
+    better: >-
+      The drop zone highlights on drag-over, states accepted file types, rejects invalid files immediately,
+      and also offers a standard "Choose files" button.
+    explanation: >-
+      Feedback and alternatives turn a gesture into a reliable interaction rather than a hidden shortcut.
+related_software_patterns:
+  - pattern: state-machine-ui
+    reason: >-
+      Drag interactions have distinct idle, dragging, over-target, dropped, cancelled, and error states that
+      benefit from explicit state modelling.
+  - pattern: optimistic-ui
+    reason: >-
+      Reordering and moving items are often reflected immediately and later reconciled with the server.
+related_practice_patterns:
+  - pattern: keyboard-navigation
+    reason: >-
+      Drag and drop needs keyboard equivalents so users who cannot perform pointer dragging can still move items.
+  - pattern: undo-redo
+    reason: >-
+      Movement errors are common, so reversible drag operations protect users from costly slips.
+  - pattern: system-status-visibility
+    reason: >-
+      Users need continuous feedback about what is being dragged, where it can go, and whether the result saved.
+related_philosophies:
+  - philosophy: design-of-everyday-things
+    reason: >-
+      The pattern is a direct application of natural mapping and immediate feedback.
+  - philosophy: inclusive-design
+    reason: >-
+      Inclusive design pushes drag and drop beyond pointer gestures to equivalent alternatives for diverse abilities.
+tags:
+  - direct-manipulation
+  - reordering
+  - accessibility
+  - spatial-interaction
+product_stages:
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 2
+    notes: >-
+      Often expensive relative to simpler controls unless spatial manipulation is the core product value.
+  growth:
+    score: 4
+    notes: >-
+      Good fit for productivity surfaces where speed and perceived control matter, provided accessibility is not deferred.
+  enterprise:
+    score: 4
+    notes: >-
+      Useful in complex work management and design tools, but must meet stricter accessibility, audit, and error-recovery needs.
+references:
+  - title: "Designing Interfaces"
+    author: Jenifer Tidwell, Charles Brewer, Aynne Valencia
+    year: 2020
+  - title: "WAI-ARIA Authoring Practices Guide"
+    author: W3C
+    url: "https://www.w3.org/WAI/ARIA/apg/"

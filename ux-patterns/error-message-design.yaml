@@ -1,0 +1,119 @@
+id: error-message-design
+title: Error Message Design
+aka:
+  - Helpful Error Messages
+  - Recovery Copy
+discipline: ux
+category: content-design
+maturity: time-tested
+short_description: >-
+  Explain what went wrong, why it matters, and how to recover in language users can act on immediately.
+description: >-
+  Error message design treats errors as recovery moments, not blame moments. A good error message is
+  specific, local to the problem where possible, calm in tone, and paired with a next step the user can
+  take. It distinguishes validation problems the user can fix, system failures they cannot fix, permission
+  limits, connectivity issues, and irreversible constraints. The goal is not merely to report failure but
+  to keep the user oriented and able to continue. Strong error messages require collaboration between
+  content, design, and engineering because useful copy depends on accurate error classification and data.
+problem: >-
+  Generic, technical, or blaming errors leave users stuck: they do not know whether their work is saved,
+  what caused the failure, or what they should do next.
+context: >-
+  Applies to forms, authentication, payments, uploads, integrations, destructive actions, network failures,
+  and any point where the product cannot complete the user's intended action.
+forces:
+  - Specificity helps recovery, but exposing internal details can confuse users or create security risk.
+  - Local errors are easier to fix, while global failures need reassurance about state and next steps.
+  - Engineering error codes are precise for systems but rarely meaningful for people.
+solution: >-
+  Classify errors by user impact and recovery path, then write messages that state the problem, preserve
+  dignity, and offer the next action. Place field-level messages beside the field, show summaries for
+  multi-error forms, and explain system failures with status and retry guidance. Preserve user input,
+  include support references only when useful, and keep technical detail in logs rather than primary copy.
+when_to_use:
+  - Users can fail validation, lose connectivity, lack permission, or hit a service failure.
+  - Support tickets show that people cannot recover from current errors unaided.
+  - A flow has high stakes, such as payment, healthcare, finance, or identity.
+anti_patterns:
+  - Displaying raw exception text, stack traces, or backend codes as the main user message.
+  - Saying "Something went wrong" without explaining whether retrying is useful.
+  - Blaming the user with hostile phrasing such as "You entered an invalid value" when the rule was unclear.
+heuristics:
+  - "Say what happened, where it happened, and what the user can do next."
+  - "Preserve user input unless keeping it would be unsafe."
+  - "Use technical codes as support aids, not as the message."
+  - "Match placement to fix location: field errors near fields, system errors near system state."
+examples:
+  - title: Payment failure
+    poor: >-
+      A checkout page shows "Error 402" in a red banner and clears the form, forcing the user to re-enter
+      billing details without knowing what failed.
+    better: >-
+      The page keeps the entered details and says "Your bank declined this card. Try another card or contact
+      your bank. You have not been charged.".
+    explanation: >-
+      The better message explains the source, reassures about money, and provides realistic next steps.
+  - title: Form validation
+    poor: >-
+      On submit, a profile form jumps to the top and says "Invalid input" while several fields remain visually unchanged.
+    better: >-
+      The form summary says "Fix 3 fields to save your profile" and each field explains its specific issue
+      beside the input.
+    explanation: >-
+      Users need both a global summary and local guidance so they can find and correct every problem.
+related_software_patterns:
+  - pattern: problem-details
+    reason: >-
+      Problem Details provides structured machine-readable error information that can drive consistent user-facing messages.
+  - pattern: input-validation
+    reason: >-
+      Validation logic and error-message design must agree so constraints are explained at the point of correction.
+  - pattern: either-result
+    reason: >-
+      Explicit success-or-error return types help teams handle recoverable failures deliberately instead of falling through to generic errors.
+related_practice_patterns:
+  - pattern: inline-validation
+    reason: >-
+      Inline validation depends on clear, local error messages that help users correct input before submission.
+  - pattern: microcopy
+    reason: >-
+      Error messages are specialised microcopy where clarity, tone, and actionability are especially important.
+  - pattern: system-status-visibility
+    reason: >-
+      Users need to know whether a failure is local, temporary, saved, retrying, or complete.
+related_philosophies:
+  - philosophy: nielsen-usability-heuristics
+    reason: >-
+      Nielsen explicitly calls for error messages in plain language that precisely indicate the problem and suggest a solution.
+  - philosophy: design-of-everyday-things
+    reason: >-
+      Norman's error-recovery stance frames errors as design responsibilities rather than user failures.
+tags:
+  - errors
+  - recovery
+  - ux-writing
+  - forms
+product_stages:
+  - early
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 5
+    notes: >-
+      High leverage and relatively cheap; helpful errors reduce abandonment and support even in a young product.
+  growth:
+    score: 5
+    notes: >-
+      Essential as more flows, integrations, and edge cases create more opportunities for failure.
+  enterprise:
+    score: 5
+    notes: >-
+      Critical for trust, compliance, support deflection, and operational clarity in high-stakes systems.
+references:
+  - title: "Error Message Guidelines (Nielsen Norman Group)"
+    author: Jakob Nielsen
+    url: "https://www.nngroup.com/articles/error-message-guidelines/"
+  - title: "Strategic Writing for UX"
+    author: Torrey Podmajersky
+    year: 2019

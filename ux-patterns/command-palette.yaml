@@ -1,0 +1,118 @@
+id: command-palette
+title: Command Palette
+aka:
+  - Command Menu
+  - Spotlight Command Search
+discipline: ux
+category: interaction-design
+maturity: established
+short_description: >-
+  Provide a searchable overlay of actions, destinations, and shortcuts so users can invoke capabilities
+  quickly without navigating menus.
+description: >-
+  A command palette is a keyboard-friendly overlay that lets users search for and execute commands from
+  anywhere in a product. It compresses menus, navigation, settings, and expert actions into a single recall
+  surface: type a few characters, see matching actions with context and shortcuts, then run one. It is
+  especially useful in complex productivity tools where capabilities are spread across many screens. The
+  palette should augment, not replace, visible navigation; users still need discoverable paths while they
+  learn the product. Done well, it becomes both a power-user accelerator and a teachable index of what the
+  product can do.
+problem: >-
+  As products grow, commands become buried in menus, panels, and settings; experienced users know what
+  they want but spend time navigating to the place where that action is exposed.
+context: >-
+  Common in developer tools, design tools, document editors, admin consoles, and data products with many
+  actions or destinations and a substantial keyboard-using audience.
+forces:
+  - Search accelerates known-item retrieval but can hide capability if it becomes the only entry point.
+  - A global palette is powerful only if command names, permissions, and contexts are consistent.
+  - Showing too many results creates noise; over-filtering makes commands feel missing.
+solution: >-
+  Expose a global, fast keyboard shortcut that opens a labelled command overlay. Index commands,
+  destinations, and help topics using user-language synonyms, show context, permissions, and keyboard
+  shortcuts in results, and execute only actions valid in the current state. Keep visible navigation and
+  menus as the primary learning path, while the palette accelerates users who know their intent.
+when_to_use:
+  - A product has many commands, views, or settings that are costly to navigate manually.
+  - Users often work from the keyboard and can benefit from intent-based action search.
+  - Commands can be named consistently and constrained by the current context.
+anti_patterns:
+  - Using a command palette to hide important actions that have no visible UI elsewhere.
+  - Returning ambiguous commands with no context about where they apply or what they affect.
+  - Indexing implementation names rather than user-facing action language.
+heuristics:
+  - "The palette is an accelerator, not a substitute for discoverable navigation."
+  - "Match on user intent and synonyms, not only exact command labels."
+  - "Show scope, consequence, and shortcut in the result row before execution."
+  - "Keep it fast enough that opening, typing, and acting feels cheaper than navigation."
+examples:
+  - title: Finding a hidden setting
+    poor: >-
+      A user wants to enable two-factor authentication but must guess which settings page contains it;
+      the command palette only matches the internal command name "Configure MFA".
+    better: >-
+      Typing "two factor", "2FA", or "MFA" returns "Security settings — Set up two-factor authentication"
+      with the destination and required permission shown.
+    explanation: >-
+      The better result uses the language users bring to the task and explains where the command will take them.
+  - title: Running contextual commands
+    poor: >-
+      The palette always shows "Merge selected records" even when no records are selected, then fails after
+      activation with a generic error.
+    better: >-
+      The palette either hides the command or shows it disabled with "Select at least two records to merge".
+    explanation: >-
+      A command surface should reflect current state so users learn prerequisites before committing.
+related_software_patterns:
+  - pattern: command
+    reason: >-
+      The palette is a user-facing command dispatcher, and each result should map to a well-defined action.
+  - pattern: mediator
+    reason: >-
+      A central palette often coordinates commands across independent parts of the interface without each
+      component knowing about every other component.
+related_practice_patterns:
+  - pattern: keyboard-shortcuts
+    reason: >-
+      Command palettes are commonly opened by a shortcut and teach the shortcuts for frequent commands.
+  - pattern: search-as-navigation
+    reason: >-
+      Both use search as an intent-based path to destinations, with the palette extending that idea to actions.
+  - pattern: progressive-disclosure
+    reason: >-
+      Palettes keep advanced commands one searchable step away without exposing every control at once.
+related_philosophies:
+  - philosophy: dont-make-me-think
+    reason: >-
+      A good palette lets users express intent directly instead of remembering where the product put a command.
+  - philosophy: design-of-everyday-things
+    reason: >-
+      Result labels, constraints, and feedback make abstract commands discoverable and predictable.
+tags:
+  - productivity
+  - keyboard
+  - search
+  - navigation
+product_stages:
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 2
+    notes: >-
+      Usually premature before the product has enough commands or keyboard-heavy users to justify a global index.
+  growth:
+    score: 4
+    notes: >-
+      Valuable as feature depth increases and experienced users need faster access across surfaces.
+  enterprise:
+    score: 5
+    notes: >-
+      Strong fit for complex suites, provided permissions, terminology, and command governance are consistent.
+references:
+  - title: "Designing Interfaces"
+    author: Jenifer Tidwell, Charles Brewer, Aynne Valencia
+    year: 2020
+  - title: "Don't Make Me Think, Revisited"
+    author: Steve Krug
+    year: 2014

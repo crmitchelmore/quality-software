@@ -1,0 +1,112 @@
+id: cognitive-walkthrough
+title: Cognitive Walkthrough
+aka:
+  - Learnability Walkthrough
+  - Task Walkthrough
+discipline: ux
+category: usability-evaluation
+maturity: time-tested
+short_description: >-
+  Step through a task from a new user's perspective, asking whether each action is discoverable, understandable, and clearly confirmed.
+description: >-
+  A cognitive walkthrough evaluates learnability by simulating how a first-time or infrequent user would
+  attempt a task. Reviewers define the user's goal, knowledge, and context, then examine each step through
+  questions such as whether the user will know what to do, see the right control, connect it to their goal,
+  and understand the feedback after acting. The method is especially useful for onboarding, setup, forms,
+  and complex workflows where users cannot rely on prior familiarity. It finds gaps in signposting, labels,
+  conceptual models, and feedback before those gaps become support tickets or failed launches.
+problem: >-
+  Teams familiar with a product assume users will recognise internal terminology, hidden affordances, and
+  multi-step logic. New users then fail because the next action is not visible or the result of an action is unclear.
+context: >-
+  Best for evaluating specific tasks, first-use flows, setup, permissions, unfamiliar enterprise workflows,
+  or redesigned interactions where learnability matters more than expert efficiency.
+forces:
+  - Walking every path can be time-consuming, so task selection must focus on critical or risky flows.
+  - Reviewers need empathy for novice knowledge; internal experts easily smuggle in what they already know.
+  - The method predicts learnability issues but cannot fully replace observing real first-time users.
+  - Simplifying first use can conflict with exposing power-user capability and efficiency.
+solution: >-
+  Define a persona or user segment, their goal, and what they plausibly know before starting. Break the task
+  into intended actions. At each step ask whether the user will form the correct intention, notice the right
+  control, understand that it matches their intention, and interpret the feedback. Record breakdowns with the
+  step, evidence, likely consequence, and design change. Prioritise issues that block progress or teach the
+  wrong model.
+when_to_use:
+  - A flow must be learnable by first-time, occasional, or lower-confidence users.
+  - A product uses domain-specific language, permissions, setup steps, or unfamiliar interaction patterns.
+  - A team needs a structured pre-test review focused on task discovery rather than broad heuristic coverage.
+anti_patterns:
+  - Asking whether the reviewer can complete the task, rather than whether the target user would know how.
+  - Skipping feedback questions and focusing only on whether the next button exists.
+  - Reviewing screens out of task order, missing failures that occur between steps.
+  - Treating documentation or training as the default fix for unclear interface cues.
+heuristics:
+  - "At each step, ask what the user is trying to do, what they can see, and why they would choose the intended action."
+  - "Assume only the knowledge the target user plausibly has before this moment."
+  - "Feedback after an action must confirm progress in the user's language, not the system's internal state."
+  - "Prioritise breakdowns that prevent the user from forming the next correct intention."
+examples:
+  - title: Connecting a calendar integration
+    poor: >-
+      Reviewers familiar with OAuth click through setup and declare it simple because every screen has a button,
+      ignoring that new users do not know why scopes are requested or what happens after granting access.
+    better: >-
+      The walkthrough models a first-time admin, step by step, and finds that scope language, account switching,
+      and post-connection confirmation fail to explain progress in the admin's terms.
+    explanation: >-
+      The better version evaluates learnability rather than expert completion. It reveals where the interface
+      needs signifiers, plain language, and feedback.
+related_practice_patterns:
+  - pattern: heuristic-evaluation
+    reason: >-
+      Heuristic evaluation provides broader usability criteria, while cognitive walkthrough examines step-by-step learnability.
+  - pattern: progressive-onboarding
+    reason: >-
+      Walkthrough findings often become onboarding changes that teach concepts at the moment of need.
+  - pattern: microcopy
+    reason: >-
+      Clear labels, explanations, and confirmations are frequent fixes for cognitive walkthrough breakdowns.
+related_software_patterns:
+  - pattern: state-machine-ui
+    reason: >-
+      Explicit UI states help reviewers reason about what feedback and next actions users receive at each step.
+related_philosophies:
+  - philosophy: nielsen-usability-heuristics
+    reason: >-
+      The walkthrough often uses heuristics such as match with the real world and visibility of system status to interpret step failures.
+  - philosophy: design-of-everyday-things
+    reason: >-
+      The method directly examines Norman's gulfs of execution and evaluation at each task step.
+tags:
+  - usability
+  - learnability
+  - walkthrough
+  - task-analysis
+product_stages:
+  - early
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 5
+    notes: >-
+      Excellent for young products because first-use comprehension is critical and walkthroughs can be run before recruitment.
+  growth:
+    score: 4
+    notes: >-
+      Valuable for new flows and onboarding, though teams should pair it with behavioural data and user testing.
+  enterprise:
+    score: 4
+    notes: >-
+      Useful for complex workflows and training reduction, but needs domain context to avoid naive reviewer assumptions.
+references:
+  - title: "The Cognitive Walkthrough Method: A Practitioner's Guide"
+    author: Cathleen Wharton, John Rieman, Clayton Lewis, Peter Polson
+    year: 1994
+  - title: "Task-Centered User Interface Design"
+    author: Clayton Lewis and John Rieman
+    year: 1993
+  - title: "The Design of Everyday Things, revised and expanded edition"
+    author: Don Norman
+    year: 2013

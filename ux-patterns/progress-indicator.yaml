@@ -1,0 +1,126 @@
+id: progress-indicator
+title: Progress Indicator
+discipline: ux
+category: feedback-status
+maturity: time-tested
+short_description: >-
+  Show how far a task has advanced and what remains, reducing uncertainty during multi-step flows or
+  operations that take noticeable time.
+description: >-
+  A progress indicator communicates status over time: steps completed in a wizard, percent of a file upload,
+  phases of account setup, or the queue position of a background job. Its purpose is to turn opaque waiting
+  into understandable waiting. The best indicators are honest about what can be known. Determinate progress
+  uses a real denominator such as bytes uploaded or steps completed; indeterminate progress admits that work
+  is happening but cannot yet be measured. Misstated precision, fake progress, and indicators that reach
+  ninety-nine percent then stall quickly destroy trust.
+problem: >-
+  Users abandon or repeat actions when they cannot tell whether a process is progressing, stuck, or close
+  to completion.
+context: >-
+  Applies to multi-step forms, uploads, imports, checkout, onboarding, background processing, installation,
+  and any task where waiting or sequencing is part of the user experience.
+forces:
+  - >-
+    Specific progress reassures users, but only if the system can measure it accurately.
+  - >-
+    Indicators reduce anxiety, but extra chrome can slow down very short interactions.
+  - >-
+    Long-running work may need cancellation, backgrounding, or notification rather than a captive wait.
+solution: >-
+  Choose the indicator that matches the work: stepper for known stages, percentage or bar for measurable
+  continuous work, spinner or activity indicator for short unknown waits, and status text for long phases.
+  Label the current state, expose the next step when helpful, and provide recovery or cancellation for
+  operations that may fail or take longer than expected.
+when_to_use:
+  - >-
+    A task takes long enough that users may wonder whether anything is happening.
+  - >-
+    The flow has known steps or measurable work units.
+  - >-
+    Users need to decide whether to wait, cancel, or continue elsewhere.
+anti_patterns:
+  - >-
+    Displaying a precise percentage that is not tied to real progress.
+  - >-
+    Hiding errors behind an endlessly spinning control.
+  - >-
+    Using a progress indicator for a sub-second action where immediate completion feedback would suffice.
+heuristics:
+  - >-
+    Use determinate progress only when the denominator is real.
+  - >-
+    Name the current step in human language, not internal job names.
+  - >-
+    Offer cancellation or backgrounding when waiting is long enough to interrupt work.
+  - >-
+    Escalate from activity to explanation when the operation exceeds user expectations.
+examples:
+  - title: File upload
+    poor: >-
+      Uploading a large video shows a spinner and the text "Please wait" for five minutes.
+    better: >-
+      The interface shows upload percentage, remaining time when reliable, the current file name, and a
+      cancel option.
+    explanation: >-
+      Measurable work should show measurable progress, giving users control and confidence during the wait.
+  - title: Account setup wizard
+    poor: >-
+      A setup flow has four pages but no indication of where the user is or how much is left.
+    better: >-
+      A labelled stepper shows Profile, Team, Preferences, Review, with the current step and completed
+      steps marked clearly.
+    explanation: >-
+      Step progress reduces uncertainty and supports orientation in a sequence.
+related_practice_patterns:
+  - pattern: multi-step-form
+    reason: >-
+      Multi-step forms rely on progress indicators to make sequence and remaining effort visible.
+  - pattern: system-status-visibility
+    reason: >-
+      Progress indication is one of the clearest expressions of making system status visible.
+related_software_patterns:
+  - pattern: process-manager
+    reason: >-
+      Long-running workflows often need a process manager whose states can be translated into user-facing
+      progress.
+  - pattern: state-machine-ui
+    reason: >-
+      Step and progress displays should reflect explicit UI states and legal transitions.
+related_philosophies:
+  - philosophy: nielsen-usability-heuristics
+    reason: >-
+      Visibility of system status is the primary heuristic embodied by progress indicators.
+  - philosophy: design-of-everyday-things
+    reason: >-
+      Progress feedback closes the gulf of evaluation by showing the effect and continuation of an action.
+tags:
+  - progress
+  - feedback
+  - loading
+  - flow
+product_stages:
+  - early
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 4
+    notes: >-
+      Simple and valuable wherever onboarding or uploads take time, though early products should not invent
+      elaborate progress models without need.
+  growth:
+    score: 5
+    notes: >-
+      Critical as flows, imports, and background operations become common across a larger user base.
+  enterprise:
+    score: 5
+    notes: >-
+      Essential for long-running regulated workflows, batch jobs, and administrative operations with audit
+      and cancellation expectations.
+references:
+  - title: "Response Times: The 3 Important Limits"
+    author: Jakob Nielsen
+    url: "https://www.nngroup.com/articles/response-times-3-important-limits/"
+  - title: "Designing Interfaces"
+    author: Jenifer Tidwell, Charles Brewer, and Aynne Valencia
+    year: 2020

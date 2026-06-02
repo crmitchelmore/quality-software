@@ -1,0 +1,108 @@
+id: component-variants-states
+title: Component Variants & States
+aka:
+  - Component State Matrix
+  - Variant Modelling
+discipline: ux
+category: design-systems
+maturity: established
+short_description: >-
+  Define each component's intentional variants and interaction states so teams can reuse it consistently without inventing behaviour for every screen.
+description: >-
+  Component variants and states turn a component from a static picture into a governed interaction contract. Variants describe legitimate forms of a component, such as primary, secondary, destructive, compact, or with icon. States describe how it behaves through interaction and system conditions, such as default, hover, focus, active, disabled, loading, selected, error, empty, and success. Modelling them explicitly helps designers, engineers, QA, and accessibility reviewers reason about coverage. It also prevents component APIs from becoming a dumping ground for one-off flags.
+problem: >-
+  Teams reuse components visually but improvise variants, loading behaviour, errors, focus, and disabled states in each product surface, creating inconsistent and inaccessible experiences.
+context: >-
+  Use for any shared component that appears across screens or products, especially inputs, buttons, navigation, cards, tables, dialogs, and status components.
+forces:
+  - Coverage reduces ambiguity, but enumerating every possible combination can create an unmanageable state explosion.
+  - Product teams need flexibility, while the design system must protect meaning and consistency.
+  - Some states are interaction-driven, others data-driven, and some are accessibility obligations.
+  - Variant names become API and design language, so poor naming is costly to undo.
+solution: >-
+  For each component, define the supported variants, states, and meaningful combinations in a state matrix. Document anatomy, usage rules, accessibility behaviour, content guidance, and token usage for each. Make unsupported combinations explicit rather than silently letting teams improvise. Use component APIs and design-tool variants that reflect the same model, and review new variant requests against demonstrated product needs.
+when_to_use:
+  - A component is shared by more than one team or appears in multiple contexts.
+  - Designers hand off static default states and engineers guess the rest.
+  - Accessibility reviews find inconsistent focus, disabled, or error behaviour.
+  - Variant props are multiplying without a clear conceptual model.
+anti_patterns:
+  - Designing only the default state and leaving hover, focus, error, empty, and loading to implementation guesses.
+  - Adding a new variant for every product request instead of identifying reusable intent.
+  - Allowing illegal combinations, such as disabled plus loading plus destructive, with no defined priority.
+  - Naming variants by colour or stakeholder preference instead of user-facing purpose.
+heuristics:
+  - "Design default, focus, disabled, loading, error, and empty states before calling a component reusable."
+  - "Constrain combinations deliberately; not every variant should support every state."
+  - "Name variants by role, hierarchy, or intent rather than by visual treatment."
+  - "Keep design-tool variants and code props aligned so the contract is the same in both places."
+examples:
+  - title: Button variant sprawl
+    poor: >-
+      Product teams request blueButton, bigBlueButton, marketingBlueButton, and dangerBlueButton, each with slightly different hover and disabled behaviour.
+    better: >-
+      The system defines primary, secondary, tertiary, and destructive variants, each with specified default, hover, focus, active, disabled, and loading states.
+    explanation: >-
+      The better model gives variation meaningful boundaries and keeps behaviour consistent across contexts.
+  - title: Error state as first-class design
+    poor: >-
+      A shared input component has a default and focused design, but each team invents its own validation error copy, icon, colour, and screen-reader announcement.
+    better: >-
+      The input component includes error, warning, success, disabled, readonly, and loading states with accessible descriptions and content guidance.
+    explanation: >-
+      States are part of the experience contract. Designing them centrally prevents the most stressful moments from becoming inconsistent.
+related_practice_patterns:
+  - pattern: atomic-design-components
+    reason: >-
+      Atomic components become reliable building blocks only when their supported variants and states are explicit.
+  - pattern: design-tokens
+    reason: >-
+      State and variant styling should be driven by semantic tokens so meaning remains consistent across themes.
+  - pattern: pattern-library-governance
+    reason: >-
+      Governance decides when a new variant is generally useful enough to enter the shared system.
+related_software_patterns:
+  - pattern: state
+    reason: >-
+      Interactive components often implement explicit state-dependent behaviour that mirrors the design state matrix.
+  - pattern: type-state
+    reason: >-
+      Type-state can encode legal component states and prevent invalid combinations in typed frontend APIs.
+  - pattern: component-based-ui
+    reason: >-
+      Shared UI components need variant and state contracts to remain reusable in component-based applications.
+related_philosophies:
+  - philosophy: atomic-design
+    reason: >-
+      Variant and state modelling is what makes atomic components usable in real, dynamic product interfaces.
+  - philosophy: nielsen-usability-heuristics
+    reason: >-
+      Visibility of system status, error prevention, and consistency are directly served by well-defined states.
+tags:
+  - component-states
+  - variants
+  - accessibility
+  - design-systems
+product_stages:
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 3
+    notes: >-
+      Important for core controls, but a young product should avoid over-modelling components that may not survive.
+  growth:
+    score: 5
+    notes: >-
+      Excellent fit when multiple teams reuse components and need clear contracts for behaviour, accessibility, and theming.
+  enterprise:
+    score: 5
+    notes: >-
+      Essential for governed systems with compliance, accessibility, and many product surfaces; state coverage prevents costly inconsistency.
+references:
+  - title: "Atomic Design"
+    author: Brad Frost
+    year: 2016
+  - title: "Design Systems Handbook"
+    author: Marco Suarez, Jina Anne, Katie Sylor-Miller, Diana Mounter, Roy Stanfield
+    year: 2017

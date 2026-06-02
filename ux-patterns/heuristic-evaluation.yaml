@@ -1,0 +1,112 @@
+id: heuristic-evaluation
+title: Heuristic Evaluation
+aka:
+  - Expert Usability Review
+  - Heuristic Review
+discipline: ux
+category: usability-evaluation
+maturity: time-tested
+short_description: >-
+  Have evaluators inspect an interface against established usability heuristics to find likely problems quickly before or between user studies.
+description: >-
+  Heuristic evaluation is a structured expert review in which one or more evaluators inspect an interface
+  against recognised usability principles, most commonly Nielsen's ten heuristics. It is fast, inexpensive,
+  and useful early because it does not require recruiting participants. Evaluators move through key flows,
+  note where the design violates a heuristic, describe likely user impact, and rate severity. The method is
+  not a substitute for observing real users, but it efficiently catches preventable issues such as missing
+  feedback, inconsistent terminology, weak error recovery, hidden system status, and excessive memory burden.
+problem: >-
+  Teams often wait for a full usability test or launch before discovering obvious design defects. Conversely,
+  informal expert opinions can become subjective lists of preferences unless grounded in shared criteria.
+context: >-
+  Useful for prototypes, production screens, design-system components, competitive reviews, and pre-test
+  quality passes where time or recruitment constraints make immediate user research difficult.
+forces:
+  - Expert review is fast, but it can miss domain-specific problems that only real users reveal.
+  - Multiple evaluators find more issues, yet coordinating and de-duplicating findings takes effort.
+  - Heuristics bring rigour, but severity ratings still require judgement about task frequency and impact.
+  - Teams may over-fix expert findings before validating the most consequential ones with users.
+solution: >-
+  Select an appropriate heuristic set, define representative tasks, and have evaluators inspect the interface
+  independently before consolidating findings. For each issue, record the violated heuristic, evidence from
+  the interface, affected users or task, and severity based on frequency, impact, and persistence. Prioritise
+  fixes that block task completion, create errors, or recur across components, and feed uncertain findings
+  into usability testing or cognitive walkthroughs.
+when_to_use:
+  - A team needs rapid usability feedback before investing in a full user study.
+  - A prototype or flow is mature enough to inspect but still cheap to change.
+  - A product has known friction and needs a structured review rather than a preference debate.
+anti_patterns:
+  - Having one reviewer create an unprioritised list of dislikes and calling it research.
+  - Applying generic heuristics without walking realistic tasks or considering user goals.
+  - Treating heuristic findings as proof of user behaviour rather than likely problems to prioritise and validate.
+  - Reporting only violations without severity, rationale, or recommended next step.
+heuristics:
+  - "Use a named heuristic set and cite which heuristic each finding violates."
+  - "Evaluate realistic tasks, not isolated screens, because many usability failures appear between steps."
+  - "Have evaluators inspect independently before merging findings to reduce groupthink."
+  - "Rate severity by user impact, frequency, and persistence, not by reviewer irritation."
+examples:
+  - title: Reviewing a checkout flow
+    poor: >-
+      A designer reviews checkout alone and reports that the payment page feels cluttered, the buttons are ugly,
+      and the address form should be shorter, with no connection to user goals or severity.
+    better: >-
+      Three evaluators independently walk a first-purchase task, then merge findings such as missing system
+      status after payment submission and unclear error recovery, each mapped to Nielsen heuristics and severity.
+    explanation: >-
+      The better version turns expert judgement into inspectable evidence. It helps the team prioritise likely
+      usability defects rather than debating taste.
+related_practice_patterns:
+  - pattern: cognitive-walkthrough
+    reason: >-
+      Cognitive walkthrough complements heuristic evaluation by focusing more narrowly on learnability and first-time task success.
+  - pattern: accessibility-audit
+    reason: >-
+      Accessibility audits are another expert inspection method, but they use accessibility criteria and assistive-technology checks.
+  - pattern: usability-testing-session
+    reason: >-
+      User testing validates whether heuristic findings actually affect real users and uncovers issues experts miss.
+related_software_patterns:
+  - pattern: evaluation-harness
+    reason: >-
+      Both define repeatable evaluation criteria and evidence capture rather than relying on ad hoc judgement.
+related_philosophies:
+  - philosophy: nielsen-usability-heuristics
+    reason: >-
+      The method is most closely associated with Nielsen's usability heuristics and severity-rating practice.
+  - philosophy: design-of-everyday-things
+    reason: >-
+      Many heuristics operationalise Norman's principles of feedback, constraints, mapping, and error recovery.
+tags:
+  - usability
+  - expert-review
+  - heuristics
+  - evaluation
+product_stages:
+  - early
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 5
+    notes: >-
+      Highly valuable when recruiting users is hard and design changes are still cheap, provided findings are not overclaimed.
+  growth:
+    score: 5
+    notes: >-
+      Useful as a recurring quality gate before experiments, launches, and larger usability studies.
+  enterprise:
+    score: 4
+    notes: >-
+      Valuable across portfolios, though complex regulated workflows still need domain experts and user validation.
+references:
+  - title: "Usability Engineering"
+    author: Jakob Nielsen
+    year: 1993
+  - title: "How to Conduct a Heuristic Evaluation"
+    author: Jakob Nielsen
+    url: "https://www.nngroup.com/articles/how-to-conduct-a-heuristic-evaluation/"
+  - title: "Heuristic Evaluation of User Interfaces"
+    author: Jakob Nielsen and Rolf Molich
+    year: 1990

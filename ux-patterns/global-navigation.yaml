@@ -1,0 +1,106 @@
+id: global-navigation
+title: Global Navigation
+aka:
+  - Primary Navigation
+  - Site-Wide Navigation
+discipline: ux
+category: navigation-wayfinding
+maturity: time-tested
+short_description: >-
+  Provide a persistent, high-level navigation structure that lets users understand the product's main areas, move between them, and recover orientation from anywhere.
+description: >-
+  Global navigation is the product-wide navigation system that exposes the main destinations and tasks available across most screens. It may appear as a top bar, side rail, drawer, or hybrid, but its role is constant: establish the product's information architecture, support movement between primary areas, and give users a stable frame of reference. Good global navigation is selective, labelled in user language, responsive to device constraints, and consistent enough that users can rely on it while focusing on their task.
+problem: >-
+  Users cannot understand what the product contains, where they are, or how to move to another major area because navigation is inconsistent, hidden, overloaded, or organised around internal structure.
+context: >-
+  Use for multi-screen products, content sites, dashboards, SaaS applications, and service portals where users need repeated access to several primary destinations.
+forces:
+  - Persistent navigation aids orientation, but it consumes space on small screens and focused workflows.
+  - The organisation wants every area visible, while users need a short, meaningful set of choices.
+  - Stable IA builds memory, but product growth requires evolution.
+  - Personalisation can improve relevance while making shared support and documentation harder.
+solution: >-
+  Identify the small set of primary destinations that match users' mental model and product strategy. Label them in plain, user-centred language and keep their placement stable across screens. Indicate the current location, support responsive adaptation without changing meaning, and separate global navigation from local task controls. Review analytics and research when changing labels or hierarchy, because navigation changes alter the user's map of the product.
+when_to_use:
+  - A product has multiple top-level areas or frequent cross-area movement.
+  - Users need to recover orientation from deep screens.
+  - The product is adding features and the original navigation no longer scales.
+  - Teams need a shared IA contract across product surfaces.
+anti_patterns:
+  - Putting every department's priority in global navigation until nothing feels primary.
+  - Changing labels or positions per page, forcing users to relearn the product.
+  - Hiding global navigation behind ambiguous icons on desktop without a strong reason.
+  - Organising top-level destinations by internal team names instead of user goals.
+heuristics:
+  - "Keep global navigation to the few destinations users need as a product map, not a site index."
+  - "Make the current location visible at all times."
+  - "Use user language for labels and reserve local task actions for local navigation or page controls."
+  - "Adapt layout responsively, but preserve hierarchy and meaning across devices."
+examples:
+  - title: Overloaded top bar
+    poor: >-
+      A SaaS app adds every module, admin area, report, promotion, and help link to the top bar until users scan twenty competing items.
+    better: >-
+      The global navigation exposes five primary areas based on user goals, with secondary destinations grouped inside local navigation or contextual menus.
+    explanation: >-
+      Global navigation should clarify the product's map. Overloading it turns a wayfinding aid into another source of cognitive load.
+  - title: Stable orientation
+    poor: >-
+      Navigation changes order and labels between dashboard, billing, and settings because each team owns its own header.
+    better: >-
+      A shared navigation component keeps primary destinations, order, active state, and account controls consistent across all major areas.
+    explanation: >-
+      Consistency lets users build spatial and semantic memory, reducing the effort required to move through the product.
+related_practice_patterns:
+  - pattern: breadcrumb-trail
+    reason: >-
+      Breadcrumbs complement global navigation by showing local hierarchy and the path to the current page.
+  - pattern: mega-menu
+    reason: >-
+      Large sites often use mega menus to expose deeper structure while keeping the global navigation's top level concise.
+  - pattern: wayfinding-cues
+    reason: >-
+      Active states, labels, and landmarks are wayfinding cues embedded in global navigation.
+related_software_patterns:
+  - pattern: front-controller
+    reason: >-
+      Web applications often route global navigation destinations through central routing that maps high-level areas to views.
+  - pattern: model-view-controller
+    reason: >-
+      Global navigation is a shared view concern that should reflect application state without embedding domain logic in each page.
+related_philosophies:
+  - philosophy: dont-make-me-think
+    reason: >-
+      Clear global navigation reduces the mental effort of understanding what a site or app offers and where to go next.
+  - philosophy: design-of-everyday-things
+    reason: >-
+      Persistent navigation provides signifiers and a conceptual model that help users predict where actions and content live.
+tags:
+  - navigation
+  - information-architecture
+  - orientation
+  - responsive-navigation
+product_stages:
+  - early
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 3
+    notes: >-
+      A simple primary navigation is useful, but early products should avoid cementing IA before the offering is understood.
+  growth:
+    score: 5
+    notes: >-
+      Critical as features expand and users need a stable product map across more frequent tasks.
+  enterprise:
+    score: 5
+    notes: >-
+      Essential across suites and roles, though personalisation, permissions, and legacy IA make governance harder.
+references:
+  - title: "Don't Make Me Think, Revisited"
+    author: Steve Krug
+    year: 2014
+  - title: "Information Architecture: For the Web and Beyond"
+    author: Louis Rosenfeld, Peter Morville, Jorge Arango
+    year: 2015

@@ -1,0 +1,117 @@
+id: empty-state-content
+title: Empty State Content
+aka:
+  - Blank Slate Content
+  - Zero State Content
+discipline: ux
+category: content-design
+maturity: established
+short_description: >-
+  Use moments with no data, results, or activity to orient users, explain value, and offer a meaningful
+  next step.
+description: >-
+  Empty state content appears when a screen has nothing to show yet: no projects, no search results, no
+  notifications, no activity, no permissions, or no configured integrations. These moments are not dead
+  ends; they are opportunities to teach the purpose of the space, explain why it is empty, and guide the
+  next useful action. A strong empty state distinguishes first use from cleared, filtered, failed, and
+  permission-limited states. It should be concise, honest, and actionable, with illustration or tone serving
+  comprehension rather than filling visual space.
+problem: >-
+  Blank or generic empty screens make users wonder whether the product is broken, whether they lack access,
+  or what they should do to get value from the page.
+context: >-
+  Applies to onboarding, dashboards, lists, inboxes, search results, reports, integrations, and any product
+  area where data may be absent for different reasons.
+forces:
+  - Empty states can teach value, but over-explaining every blank surface creates noise.
+  - A friendly tone can reduce anxiety, but humour can frustrate users who are blocked.
+  - The same visual emptiness may mean first use, filters too narrow, no permission, or a system failure.
+solution: >-
+  Identify why the state is empty and write content for that cause. State what belongs here, why nothing is
+  visible now, and what the user can do next. Offer the primary action when the user can change the state,
+  provide filter-reset or spelling help for no-results states, and explain permission or system limits when
+  the user cannot fix it themselves. Keep content shorter once the user is no longer new.
+when_to_use:
+  - A page, list, dashboard, or result set can legitimately have no content.
+  - First-time users need to understand how to create or connect the thing that will populate the screen.
+  - Search, filters, permissions, or failures can produce empty-looking results for different reasons.
+anti_patterns:
+  - Showing the same cheerful illustration for every empty state regardless of cause.
+  - Saying "Nothing here" without explaining what belongs there or how to proceed.
+  - Offering a primary action the user lacks permission to take.
+heuristics:
+  - "Name the reason for emptiness before prescribing the next action."
+  - "Separate first-use, no-results, filtered, permission, and failure states."
+  - "Offer one primary next step when the user can act; explain clearly when they cannot."
+  - "Reduce onboarding copy after the user has already created content once."
+examples:
+  - title: No search results
+    poor: >-
+      A search page says "No results" after a query with several filters applied, leaving the user to guess
+      whether the spelling, filters, or data set caused the failure.
+    better: >-
+      The page says "No invoices match 'Acme' with the current filters" and offers "Clear filters" plus a
+      suggestion to check spelling.
+    explanation: >-
+      The better state identifies the cause and gives the most likely recovery action.
+  - title: First project
+    poor: >-
+      A new workspace dashboard is completely blank except for the navigation frame.
+    better: >-
+      The dashboard explains "Projects organise your team's work" and offers a prominent "Create project"
+      action with a secondary link to import from an existing tool.
+    explanation: >-
+      First-use emptiness should teach the purpose of the space and move users toward first value.
+related_software_patterns:
+  - pattern: null-object
+    reason: >-
+      Empty state content is the UX counterpart to representing absence deliberately rather than letting null leak as broken UI.
+  - pattern: special-case
+    reason: >-
+      Different empty causes are special cases that deserve explicit handling instead of one generic blank state.
+related_practice_patterns:
+  - pattern: empty-state-onboarding
+    reason: >-
+      First-use empty states often become lightweight onboarding moments that guide users to activation.
+  - pattern: microcopy
+    reason: >-
+      Empty states rely on concise interface copy to explain value, cause, and next action.
+  - pattern: search-as-navigation
+    reason: >-
+      No-results states in search need recovery guidance so search remains a useful navigation path.
+related_philosophies:
+  - philosophy: dont-make-me-think
+    reason: >-
+      Good empty states remove uncertainty about whether the user, data, or system caused the blank screen.
+  - philosophy: emotional-design
+    reason: >-
+      Tone and illustration can reduce anxiety and build confidence when a product would otherwise feel inert.
+tags:
+  - onboarding
+  - ux-writing
+  - no-results
+  - activation
+product_stages:
+  - early
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 5
+    notes: >-
+      Crucial for first value because young products often have sparse data until users create or import something.
+  growth:
+    score: 4
+    notes: >-
+      Important across expanding surfaces, especially search, dashboards, and collaboration spaces with varied data density.
+  enterprise:
+    score: 4
+    notes: >-
+      Valuable but more complex because permissions, retention rules, and integrations can all create empty-looking states.
+references:
+  - title: "Designing Interfaces"
+    author: Jenifer Tidwell, Charles Brewer, Aynne Valencia
+    year: 2020
+  - title: "Strategic Writing for UX"
+    author: Torrey Podmajersky
+    year: 2019

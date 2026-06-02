@@ -1,0 +1,128 @@
+id: privacy-by-default-ux
+title: Privacy-by-Default UX
+discipline: ux
+category: trust-safety
+maturity: established
+short_description: >-
+  Make the easiest path the least exposing path, with sharing, tracking, and visibility expanded only through
+  clear user intent.
+description: >-
+  Privacy-by-default UX applies data-minimisation and secure-default thinking to the interface. New accounts,
+  fields, integrations, and sharing controls should begin from protective settings rather than public,
+  trackable, or broadly shared ones. The pattern is more than legal compliance: it shapes expectations and
+  reduces accidental exposure. Good privacy defaults are visible enough to be understood, conservative where
+  risk is high, and paired with clear controls for users who choose more openness. It avoids both dark
+  patterns that nudge oversharing and obscure settings that make privacy impossible to manage.
+problem: >-
+  Users often accept defaults without reading every setting; if defaults expose data or enable tracking,
+  people can suffer privacy harm without meaningful intent.
+context: >-
+  Applies to profiles, visibility settings, analytics consent, notifications, integrations, collaboration,
+  AI features, and any product area that collects or shares personal or sensitive data.
+forces:
+  - >-
+    Protective defaults reduce harm, but may require extra steps for users who genuinely want public sharing.
+  - >-
+    Legal compliance sets a floor, while trust often requires clearer and more conservative experiences.
+  - >-
+    Personalisation benefits can depend on data collection, but users need agency over the trade-off.
+solution: >-
+  Start from the minimum collection, visibility, and sharing needed for the user's immediate goal. Make
+  privacy-relevant defaults clear at setup and at the point of sharing, provide granular controls, and avoid
+  preselected optional data use. Where a less-private option creates value, explain the benefit and
+  consequence before the user opts in.
+when_to_use:
+  - >-
+    A setting affects who can see, use, retain, or infer personal or sensitive information.
+  - >-
+    Users may not revisit settings after setup.
+  - >-
+    The product serves vulnerable, regulated, workplace, health, financial, child, or public-facing contexts.
+anti_patterns:
+  - >-
+    Making profiles public by default because public content improves growth metrics.
+  - >-
+    Prechecking optional data-sharing or marketing consent boxes.
+  - >-
+    Hiding privacy controls several levels deep or behind ambiguous labels.
+heuristics:
+  - >-
+    If exposure could harm the user, default to private or limited visibility.
+  - >-
+    Ask for expansion of sharing at the moment it creates value, not as a blanket setup choice.
+  - >-
+    Use plain-language labels that name who can see or use the data.
+  - >-
+    Review defaults against vulnerable-user scenarios, not only average-user convenience.
+examples:
+  - title: New profile visibility
+    poor: >-
+      New user profiles are public, searchable, and show workplace and location fields unless the user finds
+      privacy settings.
+    better: >-
+      Profiles start visible only to the user's organisation, with a clear preview and explicit controls for
+      making selected fields public.
+    explanation: >-
+      The better default prevents accidental exposure while preserving deliberate sharing.
+  - title: Analytics personalisation
+    poor: >-
+      A product preselects "Share usage data with partners" during onboarding and buries the explanation in
+      a legal link.
+    better: >-
+      Optional data sharing is off by default, explains the benefit in plain language, and can be enabled
+      separately from essential service analytics.
+    explanation: >-
+      Privacy-sensitive choices require genuine intent and separation from necessary processing.
+related_practice_patterns:
+  - pattern: smart-defaults
+    reason: >-
+      Privacy-by-default is a specific high-stakes application of choosing safe defaults.
+  - pattern: consent-management
+    reason: >-
+      Consent flows should inherit privacy-protective defaults and avoid preselected optional processing.
+  - pattern: transparency-disclosure
+    reason: >-
+      Users need clear disclosure to understand what protective defaults do and what changes when they opt in.
+related_software_patterns:
+  - pattern: secure-by-default
+    reason: >-
+      The UX principle parallels software defaults that choose safe behaviour unless explicitly changed.
+  - pattern: least-privilege
+    reason: >-
+      Interfaces should ask for and expose only the access needed for the user's chosen task.
+related_philosophies:
+  - philosophy: inclusive-design
+    reason: >-
+      Protective defaults recognise that privacy risk is unevenly distributed across people and contexts.
+  - philosophy: human-centered-design
+    reason: >-
+      The pattern centres human harm, agency, and context rather than organisational appetite for data.
+tags:
+  - privacy
+  - defaults
+  - trust
+  - safety
+product_stages:
+  - early
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 5
+    notes: >-
+      Easy to establish before legacy defaults and growth incentives harden into harmful norms.
+  growth:
+    score: 5
+    notes: >-
+      Essential as data collection, sharing, and experimentation expand across more users.
+  enterprise:
+    score: 5
+    notes: >-
+      Non-negotiable in regulated and workplace contexts, often tied to procurement and compliance review.
+references:
+  - title: "Privacy by Design: The 7 Foundational Principles"
+    author: Ann Cavoukian
+    year: 2009
+  - title: "General Data Protection Regulation"
+    author: European Union
+    year: 2016

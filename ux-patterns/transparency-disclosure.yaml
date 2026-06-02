@@ -1,0 +1,132 @@
+id: transparency-disclosure
+title: Transparency Disclosure
+discipline: ux
+category: trust-safety
+maturity: established
+short_description: >-
+  Explain important system behaviour, data use, automation, sponsorship, or limitations in context so users
+  can act with informed trust.
+description: >-
+  Transparency disclosure makes hidden or non-obvious product behaviour visible when it affects user
+  decisions. It can cover data collection, algorithmic ranking, AI generation, advertising relationships,
+  content moderation, pricing limits, availability, or human review. The point is not to dump policy text
+  everywhere; it is to disclose the right information at the point where it changes what a reasonable user
+  would choose. Good disclosures are specific, plain-language, timely, and layered: a short explanation in
+  context with access to deeper detail when needed.
+problem: >-
+  Products often make consequential choices invisibly, causing users to misinterpret recommendations,
+  underestimate data use, or feel deceived when hidden behaviour is later revealed.
+context: >-
+  Applies wherever the system's source, incentives, automation, uncertainty, data use, or limitations are
+  not obvious and may affect trust or consent.
+forces:
+  - >-
+    More transparency can improve trust, but excessive detail at every moment creates fatigue and legalistic
+    noise.
+  - >-
+    Business teams may fear disclosure reduces conversion, while hidden behaviour increases long-term trust
+    and regulatory risk.
+  - >-
+    Disclosures must be understandable without oversimplifying material limitations.
+solution: >-
+  Identify moments where hidden behaviour changes user interpretation or risk. Provide a concise in-context
+  disclosure naming what is happening, why it matters, and what control or detail is available. Layer deeper
+  information behind plain-language links, keep disclosures updated with actual system behaviour, and avoid
+  using them to excuse avoidable harm.
+when_to_use:
+  - >-
+    Recommendations, rankings, prices, content, or decisions are shaped by data, sponsorship, automation, or
+    policy users would not otherwise see.
+  - >-
+    A limitation or uncertainty could affect a user's decision or safety.
+  - >-
+    Users are asked to consent to, rely on, or share information with a system.
+anti_patterns:
+  - >-
+    Hiding important data use in a privacy policy while presenting the feature as ordinary local processing.
+  - >-
+    Labelling a disclosure vaguely as "Learn more" without saying what it is about.
+  - >-
+    Using disclosure as a liability shield while leaving a confusing or harmful default unchanged.
+heuristics:
+  - >-
+    Disclose at the decision point, not only in a policy archive.
+  - >-
+    Lead with the fact that changes user understanding.
+  - >-
+    Layer detail so the first explanation is short and the deeper explanation is reachable.
+  - >-
+    Keep disclosure language aligned with real system behaviour as it changes.
+examples:
+  - title: Sponsored recommendation
+    poor: >-
+      A product list ranks paid placements above organic results without indicating sponsorship.
+    better: >-
+      Sponsored items are labelled in the list, with a short explanation of how sponsorship affects ranking
+      and a link to ad preferences.
+    explanation: >-
+      Users can interpret recommendations correctly when incentives are disclosed in the moment of use.
+  - title: AI-generated summary
+    poor: >-
+      A support tool presents an AI-generated account summary as authoritative fact with no source or
+      limitation notice.
+    better: >-
+      The summary is labelled as AI-generated, cites the source tickets used, and notes that agents should
+      verify before taking irreversible action.
+    explanation: >-
+      Transparency helps users calibrate trust and avoid over-reliance on uncertain automation.
+related_practice_patterns:
+  - pattern: consent-management
+    reason: >-
+      Consent depends on transparent explanation of purposes, parties, and consequences.
+  - pattern: permission-priming
+    reason: >-
+      Permission priming is a just-in-time disclosure about access requested for a feature.
+  - pattern: plain-language
+    reason: >-
+      Disclosures only build trust if ordinary users can understand them.
+related_software_patterns:
+  - pattern: audit-logging
+    reason: >-
+      Transparent claims about decisions and actions are easier to support when systems keep traceable logs.
+  - pattern: human-in-the-loop
+    reason: >-
+      Disclosures often need to clarify whether automation, humans, or both are involved in a decision.
+related_philosophies:
+  - philosophy: inclusive-design
+    reason: >-
+      Transparent disclosures reduce information asymmetry for people with different expertise, power, and
+      risk exposure.
+  - philosophy: calm-technology
+    reason: >-
+      Layered disclosure keeps important information available without overwhelming the primary task.
+tags:
+  - transparency
+  - trust
+  - disclosure
+  - ai
+product_stages:
+  - early
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 4
+    notes: >-
+      Easier to build transparent explanations before hidden behaviours and growth shortcuts accumulate.
+  growth:
+    score: 5
+    notes: >-
+      Vital as personalisation, ads, AI, and data use expand beyond what users can infer.
+  enterprise:
+    score: 5
+    notes: >-
+      Required for regulated, procurement-sensitive, and high-stakes products where trust and auditability
+      shape adoption.
+references:
+  - title: "The Transparency Principle"
+    author: OECD
+    url: "https://oecd.ai/en/dashboards/ai-principles/P8"
+  - title: "Plain Language Guidelines"
+    author: PlainLanguage.gov
+    url: "https://www.plainlanguage.gov/guidelines/"

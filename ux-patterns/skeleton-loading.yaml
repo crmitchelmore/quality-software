@@ -1,0 +1,135 @@
+id: skeleton-loading
+title: Skeleton Loading
+discipline: ux
+category: feedback-status
+maturity: established
+short_description: >-
+  Show lightweight placeholders shaped like the incoming content so waiting feels structured, calm, and
+  shorter than staring at a blank page or generic spinner.
+description: >-
+  Skeleton loading replaces empty regions with neutral placeholder blocks that approximate the layout of
+  content still being fetched or rendered. It tells users that the page structure exists and that content is
+  on the way, improving perceived performance for feeds, cards, dashboards, and detail views. A good
+  skeleton is brief, stable, and honest: it should not imitate real data too closely, shift the layout when
+  content arrives, or hide a genuinely stuck system. When loading is long, uncertain, or failure-prone,
+  skeletons need escalation into status, retry, or empty/error states.
+problem: >-
+  Blank screens and indefinite spinners make users wonder whether anything is happening, while full loading
+  messages can be too heavy for frequent page transitions.
+context: >-
+  Works best when the shape of the content is known, data usually arrives quickly, and preserving layout
+  continuity matters more than explaining a multi-step process.
+forces:
+  - >-
+    Skeletons make waiting calmer, but can become deceptive if content takes a long time or never arrives.
+  - >-
+    Matching the eventual layout reduces shift, but overly detailed placeholders can look like disabled
+    real content.
+  - >-
+    Animation can signal activity, but excessive shimmer distracts users and can harm people sensitive to
+    motion.
+solution: >-
+  Render simple placeholders that match the expected layout and reserve the same space as the real content.
+  Use subtle motion or static tones depending on context and reduced-motion settings. Replace skeletons as
+  soon as content is available, and switch to explicit error, retry, or empty states when loading exceeds a
+  reasonable threshold or fails.
+when_to_use:
+  - >-
+    The interface knows the content structure before the content itself arrives.
+  - >-
+    Loading is common but usually short enough that a detailed progress message would be distracting.
+  - >-
+    Layout stability and perceived speed matter for browsing or scanning.
+anti_patterns:
+  - >-
+    Showing skeletons indefinitely after a request has failed.
+  - >-
+    Using skeleton screens for unpredictable long-running jobs where users need real progress.
+  - >-
+    Animating large areas aggressively without respecting reduced-motion preferences.
+heuristics:
+  - >-
+    Match shape, not content; placeholders should reassure without pretending data exists.
+  - >-
+    Keep skeleton duration short and escalate to a meaningful status when waiting becomes exceptional.
+  - >-
+    Reserve final layout space so content arrival does not jump the page.
+  - >-
+    Use calm motion sparingly and honour reduced-motion settings.
+examples:
+  - title: Activity feed
+    poor: >-
+      Opening the feed shows a blank white page with a spinner in the centre, then cards jump into place
+      after data arrives.
+    better: >-
+      The page immediately shows card-shaped skeletons where titles, avatars, and text will appear, then
+      swaps them for real cards without layout shift.
+    explanation: >-
+      The better version gives users a stable mental model of the page and makes the wait feel purposeful.
+  - title: Slow report
+    poor: >-
+      A quarterly analytics report shows shimmering placeholders for several minutes while the backend job
+      runs.
+    better: >-
+      The report briefly shows skeleton structure, then changes to an explicit "Preparing report" status
+      with estimated steps and a notification option.
+    explanation: >-
+      Skeletons are for short, structural waits; long work needs informative progress and user control.
+related_practice_patterns:
+  - pattern: progress-indicator
+    reason: >-
+      When waiting becomes longer or measurable, a progress indicator is more informative than a skeleton.
+  - pattern: system-status-visibility
+    reason: >-
+      Skeletons are one lightweight way to keep the system's loading state visible.
+  - pattern: reduced-motion
+    reason: >-
+      Animated placeholders must respect users who prefer less motion.
+related_software_patterns:
+  - pattern: fallback
+    reason: >-
+      Skeletons act as a graceful visual fallback while the real content is temporarily unavailable.
+  - pattern: circuit-breaker
+    reason: >-
+      If upstream content repeatedly fails, the UX should stop waiting forever and surface a fallback state.
+  - pattern: lazy-load
+    reason: >-
+      Skeletons commonly pair with lazy-loaded sections that appear as data or components arrive.
+related_philosophies:
+  - philosophy: calm-technology
+    reason: >-
+      The pattern keeps waiting information in the periphery without demanding attention unnecessarily.
+  - philosophy: nielsen-usability-heuristics
+    reason: >-
+      It supports visibility of system status by showing that loading is in progress.
+tags:
+  - loading
+  - perceived-performance
+  - feedback
+  - motion
+product_stages:
+  - early
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 3
+    notes: >-
+      Useful polish for content-heavy products, but a young team should first make loading reliable and
+      reasonably fast.
+  growth:
+    score: 5
+    notes: >-
+      Highly valuable as traffic, data volume, and device variability make blank loading states more common.
+  enterprise:
+    score: 4
+    notes: >-
+      Helps complex dashboards feel stable, but long-running enterprise jobs still need explicit progress
+      and error handling.
+references:
+  - title: "Skeleton Screens: A Better Way to Load Content"
+    author: Luke Wroblewski
+    url: "https://www.lukew.com/ff/entry.asp?1797"
+  - title: "Response Times: The 3 Important Limits"
+    author: Jakob Nielsen
+    url: "https://www.nngroup.com/articles/response-times-3-important-limits/"

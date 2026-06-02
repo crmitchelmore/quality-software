@@ -1,0 +1,131 @@
+id: progressive-information-hierarchy
+title: Progressive Information Hierarchy
+aka:
+  - Layered Information Architecture
+  - Overview-to-Detail Structure
+discipline: ux
+category: information-architecture
+maturity: time-tested
+short_description: >-
+  Structure information from overview to detail so users can orient quickly, choose the right path, and dig
+  deeper only when their task requires more complexity.
+description: >-
+  Progressive information hierarchy arranges content and navigation in layers that move from broad
+  orientation to increasingly specific detail. Instead of placing every fact, control, and link at the same
+  level, the design establishes an overview, prioritises the most important distinctions, and reveals deeper
+  information through sections, summaries, drill-downs, related links, or expandable details. It is the IA
+  counterpart to progressive disclosure: the structure itself manages cognitive load by matching depth to
+  user intent. It is useful in dashboards, documentation, settings, product catalogues, onboarding,
+  reports, and complex enterprise tools.
+problem: >-
+  When information is flat, dense, or organised without priority, users cannot tell what matters first,
+  which path is appropriate, or how much detail they need. Important content competes with secondary detail
+  and the page becomes harder to scan and maintain.
+context: >-
+  Use when a domain contains layers of importance or specificity, when users arrive with different expertise
+  levels, or when an interface must support quick scanning and deep investigation in the same area.
+forces:
+  - Overview improves orientation, but hiding too much detail can frustrate expert users.
+  - Business stakeholders often want their content at the top level, competing with user priority.
+  - Too many hierarchy levels create pogo-sticking and buried content.
+  - Hierarchy must remain consistent across breakpoints and channels, not just in desktop layouts.
+solution: >-
+  Identify the user's first orientation questions, the decisions they make next, and the details needed
+  only after those decisions. Design layers such as summary, category, subcategory, detail, and related
+  actions with clear headings, labels, and visual hierarchy. Keep the most common and safety-critical
+  information near the top, provide explicit drill-down paths, and test whether users can predict what lies
+  behind each layer.
+when_to_use:
+  - Users need both quick overview and optional depth within the same information space.
+  - A page or section has become flat, crowded, or hard to scan.
+  - Different user roles need different levels of detail without separate products.
+anti_patterns:
+  - Burying primary tasks under layers because they are organisationally owned by a lower-level team.
+  - Creating nested categories whose labels are too abstract to predict their contents.
+  - Using visual size as a substitute for meaningful IA, making everything look important.
+  - Designing a hierarchy for desktop only and collapsing it into an incoherent mobile stack.
+heuristics:
+  - "Answer orientation first, choice second, detail third."
+  - "Each level should make the next level predictable; labels are promises."
+  - "Keep critical tasks shallow even when supporting detail goes deep."
+  - "Use visual hierarchy to reinforce IA hierarchy, not to compensate for a weak structure."
+examples:
+  - title: Analytics dashboard
+    poor: >-
+      A dashboard opens with twenty equal-sized charts, detailed tables, and configuration controls, leaving
+      users unsure which metric needs attention.
+    better: >-
+      The dashboard starts with a health summary and three priority signals, lets users drill into each
+      metric family, and moves raw tables and configuration into deeper detail views.
+    explanation: >-
+      The better hierarchy supports scanning first and investigation second, matching the way users monitor
+      and diagnose.
+  - title: Policy documentation
+    poor: >-
+      A policy page begins with legal detail and exception clauses before explaining who the policy affects
+      or what action readers should take.
+    better: >-
+      The page starts with applicability and required action, then provides rationale, exceptions, examples,
+      and legal text in progressively deeper sections.
+    explanation: >-
+      Progressive hierarchy respects the reader's immediate task while preserving the detail needed for
+      edge cases and compliance.
+related_practice_patterns:
+  - pattern: progressive-disclosure
+    reason: >-
+      Progressive disclosure is the interaction-level companion to this IA pattern, revealing secondary
+      controls or content only when needed.
+  - pattern: visual-hierarchy
+    reason: >-
+      Visual hierarchy makes the intended information hierarchy perceivable through size, spacing, contrast,
+      and placement.
+  - pattern: hub-and-spoke-ia
+    reason: >-
+      Hub-and-spoke structures often instantiate progressive hierarchy by moving from overview hub to
+      increasingly specific spokes.
+related_software_patterns:
+  - pattern: lazy-load
+    reason: >-
+      Detail layers that are not needed immediately can be loaded on demand, matching technical loading to
+      progressive information depth.
+  - pattern: composite
+    reason: >-
+      Layered information structures are often implemented as composed content trees with parent-child relationships.
+related_philosophies:
+  - philosophy: design-of-everyday-things
+    reason: >-
+      A clear hierarchy supports a usable conceptual model and reduces the gulf between intention and action.
+  - philosophy: nielsen-usability-heuristics
+    reason: >-
+      Prioritised layers support recognition over recall, aesthetic and minimalist design, and match with
+      users' real-world tasks.
+tags:
+  - hierarchy
+  - complexity-management
+  - scanability
+  - content-structure
+product_stages:
+  - early
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 4
+    notes: >-
+      Helpful for making early products understandable, though the hierarchy should stay simple while the
+      domain is still changing.
+  growth:
+    score: 5
+    notes: >-
+      Critical as features and content accumulate; it prevents growth from turning into flat complexity.
+  enterprise:
+    score: 5
+    notes: >-
+      Essential for dense workflows, dashboards, and documentation, with governance needed to keep layers consistent.
+references:
+  - title: "The Elements of User Experience"
+    author: Jesse James Garrett
+    year: 2010
+  - title: "Information Architecture for the World Wide Web"
+    author: Louis Rosenfeld, Peter Morville, and Jorge Arango
+    year: 2015

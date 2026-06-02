@@ -1,0 +1,130 @@
+id: contextual-tooltips
+title: Contextual Tooltips
+discipline: ux
+category: onboarding-education
+maturity: established
+short_description: >-
+  Provide brief, local explanations exactly where users encounter unfamiliar controls, terms, or first-time
+  opportunities.
+description: >-
+  Contextual tooltips are small explanatory messages attached to a specific interface element or moment.
+  They can clarify a term, explain a new feature, warn about a condition, or suggest a next action. Their
+  strength is proximity: the help appears where the question arises. Their risk is clutter and fragility:
+  too many tooltips become noise, hover-only triggers exclude touch and keyboard users, and explanations can
+  mask controls that should be self-evident. A good tooltip is short, accessible, dismissible when it is a
+  prompt, and unnecessary for understanding the core task.
+problem: >-
+  Users encounter unfamiliar labels or features in context, but sending them to documentation interrupts
+  flow and front-loaded training is forgotten.
+context: >-
+  Useful for domain terms, first-time feature discovery, compact controls, advanced settings, and just-in-time
+  coaching where a small explanation is enough.
+forces:
+  - >-
+    Local help reduces context switching, but overuse makes the interface feel noisy and underdesigned.
+  - >-
+    Hover works for mouse users, but touch, keyboard, and screen-reader users need equivalent access.
+  - >-
+    Tooltips can aid discovery, but they should not hide essential information.
+solution: >-
+  Use tooltips for concise secondary explanations, not core labels or required instructions. Place them near
+  the relevant element, make them reachable by focus and touch, and ensure they do not obscure the control
+  being explained. For onboarding prompts, allow dismissal and remember it; for persistent definitions, make
+  the trigger predictable and unobtrusive.
+when_to_use:
+  - >-
+    A user needs a short explanation of a specific control, field, or term.
+  - >-
+    The information is useful in context but too secondary for the main layout.
+  - >-
+    The product can support accessible triggers beyond hover.
+anti_patterns:
+  - >-
+    Replacing visible labels with icon-only controls that require tooltips to understand.
+  - >-
+    Showing multiple onboarding bubbles at once and blocking the page.
+  - >-
+    Making critical instructions available only on hover.
+heuristics:
+  - >-
+    If the information is essential to complete the task, put it on the page rather than in a tooltip.
+  - >-
+    Keep tooltip copy short enough to read at a glance.
+  - >-
+    Support focus, touch, escape, and screen-reader semantics, not hover alone.
+  - >-
+    Remember dismissed onboarding tooltips so help does not become harassment.
+examples:
+  - title: Domain term in settings
+    poor: >-
+      A security setting says "Enable SCIM" with no explanation, so non-specialist administrators leave it
+      untouched or search external documentation.
+    better: >-
+      The label remains visible and a help icon opens a short tooltip: "SCIM automatically provisions users
+      from your identity provider." with a documentation link.
+    explanation: >-
+      The tooltip clarifies a specific term without forcing every user through a longer explanation.
+  - title: Icon-only action
+    poor: >-
+      A toolbar uses unlabeled icons and relies on hover tooltips for all meaning, making touch and keyboard
+      use difficult.
+    better: >-
+      Primary actions have labels; secondary icons include accessible names and optional tooltips for extra
+      clarification.
+    explanation: >-
+      Tooltips should enhance comprehension, not carry the whole interface vocabulary.
+related_practice_patterns:
+  - pattern: progressive-onboarding
+    reason: >-
+      Contextual tooltips are a just-in-time delivery mechanism for progressive onboarding.
+  - pattern: microcopy
+    reason: >-
+      Tooltip value depends on concise, plain-language instructional copy.
+  - pattern: focus-management
+    reason: >-
+      Tooltip triggers and dismissal must work for keyboard users and assistive technologies.
+related_software_patterns:
+  - pattern: decorator
+    reason: >-
+      Tooltips often decorate existing controls with explanatory behaviour without changing the control's
+      primary purpose.
+  - pattern: component-based-ui
+    reason: >-
+      Accessible tooltip behaviour should be standardised as a reusable component.
+related_philosophies:
+  - philosophy: inclusive-design
+    reason: >-
+      Inclusive tooltips must work across input modes, devices, and assistive technologies.
+  - philosophy: dont-make-me-think
+    reason: >-
+      Local explanations reduce the need to leave the task or infer hidden meaning.
+tags:
+  - onboarding
+  - microcopy
+  - accessibility
+  - help
+product_stages:
+  - early
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 3
+    notes: >-
+      Useful for a few domain terms, but early products should fix confusing labels before adding many
+      tooltips.
+  growth:
+    score: 4
+    notes: >-
+      Valuable as features deepen and teams need lightweight education across surfaces.
+  enterprise:
+    score: 5
+    notes: >-
+      Strong fit for dense expert tools, provided accessibility and governance are enforced.
+references:
+  - title: "Tooltip Guidelines"
+    author: Nielsen Norman Group
+    url: "https://www.nngroup.com/articles/tooltip-guidelines/"
+  - title: "Microcopy: The Complete Guide"
+    author: Kinneret Yifrah
+    year: 2017

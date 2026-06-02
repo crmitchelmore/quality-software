@@ -1,0 +1,106 @@
+id: search-as-navigation
+title: Search as Navigation
+aka:
+  - Search-Led Navigation
+  - Findability Search
+discipline: ux
+category: navigation-wayfinding
+maturity: time-tested
+short_description: >-
+  Treat search as a primary route through the product, with helpful query support, result structure, filters, and recovery paths rather than a last-resort text box.
+description: >-
+  Search as navigation recognises that many users prefer to state what they want rather than browse a hierarchy. In content-heavy products, marketplaces, documentation, admin tools, and command-rich applications, search is not merely a database query but a navigation system. It needs prominent placement, understandable results, ranking that reflects user intent, query suggestions, filters, no-result recovery, and paths into related browsing. Good search helps users move from vague intent to a destination while maintaining orientation and control.
+problem: >-
+  Users know what they want but cannot find it through menus or categories, while the search feature returns opaque, poorly ranked results with little help refining or recovering.
+context: >-
+  Use when products contain many items, pages, records, commands, or help topics; when users arrive with specific intent; or when the IA cannot predict every user's vocabulary.
+forces:
+  - Search gives direct access, but poor ranking or empty results feel like a dead end.
+  - Users' vocabulary differs from the product's taxonomy, so synonyms and suggestions matter.
+  - Filters improve precision but can overwhelm when shown too early or in irrelevant combinations.
+  - Search analytics are valuable, but privacy and sensitive query content need care.
+solution: >-
+  Make search visible where it is a primary path, support natural user vocabulary with synonyms and suggestions, and rank results by relevance to likely intent. Structure results with clear titles, snippets, metadata, and result types. Provide facets or filters that match the result set, and design zero-result states with spelling help, broader suggestions, and alternative navigation. Use search behaviour to improve IA, content labels, and product gaps.
+when_to_use:
+  - Users often seek a known item, record, topic, command, or destination.
+  - The product has large or frequently changing content that cannot be fully exposed in menus.
+  - Different user segments use different language for the same concepts.
+  - Search logs reveal repeated queries for content or features that are hard to browse to.
+anti_patterns:
+  - Hiding search behind a small icon in a content-heavy product.
+  - Returning an empty page for no results without suggestions, spelling help, or broader paths.
+  - Sorting results by internal recency or database order instead of user relevance.
+  - Treating filters as implementation fields rather than user-understandable refinements.
+heuristics:
+  - "If search is a primary path, give it primary visual and interaction priority."
+  - "Design the result page as a navigation hub: query, results, filters, suggestions, and recovery all matter."
+  - "Use the user's vocabulary, including synonyms, misspellings, abbreviations, and domain terms."
+  - "Never let no-results be a dead end; offer broader, corrected, or browsable alternatives."
+examples:
+  - title: No-result recovery
+    poor: >-
+      A help centre search for refund timeframe returns No results because the article is titled payment reversal processing.
+    better: >-
+      Search recognises refund and reversal as related, suggests refund time, and shows a top result with a snippet explaining typical processing time.
+    explanation: >-
+      Search navigation must bridge vocabulary gaps. The better version routes intent to content, not just exact words to documents.
+  - title: Faceted refinement
+    poor: >-
+      A marketplace search for chair returns thousands of results in one list with only a sort menu.
+    better: >-
+      Results include filters for price, material, dimensions, delivery, and availability, with applied filters visible and easy to remove.
+    explanation: >-
+      Search often begins broad. Faceted refinement lets users navigate the result space without abandoning their intent.
+related_practice_patterns:
+  - pattern: faceted-navigation
+    reason: >-
+      Faceted navigation is the main companion pattern for refining broad search results into a usable result set.
+  - pattern: global-navigation
+    reason: >-
+      Search and global navigation are complementary routes through the same information architecture, one direct and one browsable.
+  - pattern: wayfinding-cues
+    reason: >-
+      Search result pages need cues such as query echoing, result counts, filters, and result types to keep users oriented.
+related_software_patterns:
+  - pattern: query-object
+    reason: >-
+      Search experiences often translate user intent and filters into structured query objects for ranking and retrieval.
+  - pattern: debounce-throttle-ui
+    reason: >-
+      Typeahead suggestions and live search need debounce or throttle behaviour so feedback is responsive without overwhelming services.
+related_philosophies:
+  - philosophy: dont-make-me-think
+    reason: >-
+      Search-led navigation lets users express intent directly and reduces the need to understand the site's hierarchy first.
+  - philosophy: nielsen-usability-heuristics
+    reason: >-
+      Recognition rather than recall, error recovery, and user control are central to effective search result and refinement design.
+tags:
+  - search
+  - findability
+  - navigation
+  - facets
+product_stages:
+  - early
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 3
+    notes: >-
+      Useful if search is central to the value proposition, but many early products should first make core IA and content clear.
+  growth:
+    score: 5
+    notes: >-
+      Strong fit as content, records, products, and feature surfaces expand beyond simple browsing.
+  enterprise:
+    score: 5
+    notes: >-
+      Essential for large knowledge bases, admin systems, and permissioned records, though ranking, privacy, and access control add complexity.
+references:
+  - title: "Search Patterns"
+    author: Peter Morville and Jeffery Callender
+    year: 2010
+  - title: "Designing Search: UX Strategies for eCommerce Success"
+    author: Greg Nudelman
+    year: 2011

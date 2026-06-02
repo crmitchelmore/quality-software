@@ -1,0 +1,119 @@
+id: wizard-stepper
+title: Wizard / Stepper
+aka:
+  - Step-by-Step Flow
+  - Guided Wizard
+discipline: ux
+category: interaction-design
+maturity: time-tested
+short_description: >-
+  Break a complex task into ordered steps with progress, validation, and review so users can complete it
+  without facing the whole form at once.
+description: >-
+  A wizard or stepper structures a multi-part task as a sequence of screens or sections. It reduces initial
+  complexity by focusing the user on one decision set at a time, while showing progress and preserving the
+  broader sense of where they are. The pattern is useful when order matters, prerequisites exist, or the
+  task would overwhelm users as one long page. Its danger is unnecessary linearity: if users need to compare
+  information across sections or jump freely, a wizard can slow them down and hide dependencies. Good
+  steppers support saving progress, moving backwards safely, clear validation, and a final review before
+  irreversible submission.
+problem: >-
+  Long, complex tasks overwhelm users when all fields and decisions appear at once, but splitting them
+  poorly can make the flow feel rigid, opaque, and hard to correct.
+context: >-
+  Common in onboarding, checkout, account setup, configuration, applications, imports, and enterprise
+  workflows with prerequisites or staged decisions.
+forces:
+  - Sequencing reduces cognitive load but can hide context users need for later decisions.
+  - Linear progress helps novices but frustrates experts who want to jump ahead or correct earlier steps.
+  - Step validation prevents late failure but can trap users if rules are unclear.
+solution: >-
+  Divide the task into meaningful steps based on user goals, not internal data models. Show where the user
+  is, what remains, and whether earlier steps are complete. Validate at the point where information becomes
+  knowably invalid, allow backtracking without data loss, save progress for longer flows, and provide a
+  review step for consequential submissions. Use a single-page form instead when the task is short or users
+  need to scan all fields together.
+when_to_use:
+  - The task has a natural order, prerequisites, or a high number of decisions.
+  - Users benefit from focusing on one topic at a time rather than scanning an entire form.
+  - The flow can preserve state and allow safe backtracking.
+anti_patterns:
+  - Turning a short form into a multi-step wizard just to look guided.
+  - Hiding errors until the final step after the user has mentally moved on.
+  - Preventing users from revisiting earlier steps or losing entered data when they go back.
+heuristics:
+  - "Steps should map to user goals, not database tables or team ownership."
+  - "Show progress, current location, and completion state throughout the flow."
+  - "Validate when the user can still fix the problem in context."
+  - "Use review and confirmation for consequential submission, not for every step."
+examples:
+  - title: Account setup
+    poor: >-
+      A setup wizard has eight steps named after internal systems, blocks progress with unexplained errors,
+      and loses previous entries when the user goes back.
+    better: >-
+      The flow groups steps as "Profile", "Team", "Security", and "Review", shows completion status, saves
+      entries automatically, and links each review item back to the step where it can be changed.
+    explanation: >-
+      The better version structures the flow around the user's mental model and supports correction without punishment.
+  - title: Short preference form
+    poor: >-
+      Three notification preferences are split across three separate steps, forcing Next and Back clicks for
+      a decision users could make at a glance.
+    better: >-
+      The preferences appear as one compact form with progressive disclosure only for advanced scheduling options.
+    explanation: >-
+      Steppers are for complexity management, not ceremony. Short tasks are often clearer on one page.
+related_software_patterns:
+  - pattern: state-machine-ui
+    reason: >-
+      Wizard steps, validation gates, backtracking, and completion states are naturally modelled as a UI state machine.
+  - pattern: process-manager
+    reason: >-
+      Long-running multi-step flows often coordinate several operations and checkpoints like a lightweight process manager.
+related_practice_patterns:
+  - pattern: progressive-disclosure
+    reason: >-
+      A wizard is a sequential form of disclosure that reveals the next part of a task only when relevant.
+  - pattern: multi-step-form
+    reason: >-
+      Multi-step form guidance provides the form-specific details for validation, persistence, and review.
+  - pattern: progress-indicator
+    reason: >-
+      Users need persistent feedback about current step, completed steps, and remaining effort.
+related_philosophies:
+  - philosophy: dont-make-me-think
+    reason: >-
+      A well-designed wizard reduces decision clutter and makes the next action obvious.
+  - philosophy: nielsen-usability-heuristics
+    reason: >-
+      Stepper design depends on visibility of system status, error prevention, and user control.
+tags:
+  - forms
+  - onboarding
+  - sequencing
+  - complexity-management
+product_stages:
+  - early
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 3
+    notes: >-
+      Useful for onboarding or setup, but early products should avoid over-structuring flows that are still changing.
+  growth:
+    score: 4
+    notes: >-
+      Strong fit as forms and setup paths grow, especially when analytics reveal abandonment at complex points.
+  enterprise:
+    score: 5
+    notes: >-
+      Often necessary for regulated or multi-party workflows, with save/resume, audit, and review requirements.
+references:
+  - title: "Progressive Disclosure (Nielsen Norman Group)"
+    author: Jakob Nielsen
+    url: "https://www.nngroup.com/articles/progressive-disclosure/"
+  - title: "Don't Make Me Think, Revisited"
+    author: Steve Krug
+    year: 2014

@@ -1,0 +1,125 @@
+id: hub-and-spoke-ia
+title: Hub-and-Spoke IA
+aka:
+  - Hub and Detail Navigation
+  - Index-and-Detail Structure
+discipline: ux
+category: information-architecture
+maturity: time-tested
+short_description: >-
+  Organise a section around a central hub that introduces, groups, and routes to related detail pages,
+  giving users a stable place to orient, branch out, and return.
+description: >-
+  Hub-and-spoke information architecture uses a central hub page as the organising point for a set of
+  related detail pages, tools, topics, or journeys. The hub explains the domain, surfaces the most important
+  routes, groups spokes into meaningful clusters, and provides a reliable return point. It is common in
+  documentation, marketing sites, product areas, learning centres, dashboards, and mobile apps where users
+  repeatedly branch from an overview into focused detail. The pattern works when the hub is more than a
+  list: it must create orientation, show relationships, highlight priority paths, and help users decide
+  which spoke matches their goal.
+problem: >-
+  Related content often grows as a flat collection of pages with weak relationships, causing users to land
+  deep, lose orientation, and miss adjacent tasks or concepts that would help them complete their goal.
+context: >-
+  Use when a topic, product area, or workflow has several related subpages that users should understand as
+  part of one domain, especially when they may need to compare routes or return to an overview.
+forces:
+  - A strong hub improves orientation, but it can become a dumping ground if every spoke receives equal weight.
+  - Deep linking is essential, so spoke pages still need local context and a path back to the hub.
+  - Hubs must serve both new users seeking orientation and returning users seeking a direct route.
+  - Maintaining hub summaries and links requires governance as spokes change.
+solution: >-
+  Define the domain the hub owns, group related spokes by user goals, and make the hub communicate scope,
+  priority routes, and relationships at a glance. Give each spoke a clear title, summary, and link, and give
+  detail pages reciprocal navigation back to the hub and across sibling spokes where useful. Keep the hub
+  curated and task-oriented rather than automatically listing everything.
+when_to_use:
+  - A product or content area has many related detail pages that need a shared overview.
+  - Users commonly compare options or branch from an overview before choosing a specific path.
+  - Deep-linked users need a way to regain context and explore adjacent material.
+anti_patterns:
+  - Turning the hub into an alphabetical link farm with no prioritisation, grouping, or explanatory context.
+  - Making the hub the only route to spokes, preventing direct links and search results from working well.
+  - Allowing obsolete spokes to remain on the hub after ownership or content changes.
+  - Using hub-and-spoke for a strict linear process where a wizard or stepper would better match the task.
+heuristics:
+  - "A hub should answer where am I, what belongs here, and which route fits my goal."
+  - "Design spokes to stand alone for deep links, then provide a clear way back to the hub."
+  - "Curate the hub by importance and task, not by organisational ownership."
+  - "Use sibling links when users naturally compare or move between spokes."
+examples:
+  - title: Documentation hub
+    poor: >-
+      A docs landing page lists every article under an API in creation order, so beginners cannot tell which
+      pages are tutorials, references, or migration guides.
+    better: >-
+      The API hub introduces the integration, groups spokes into Get started, Core concepts, Reference, and
+      Troubleshooting, and each spoke links back to the hub and next likely page.
+    explanation: >-
+      The better hub teaches the domain structure and likely paths, while the poor hub merely exposes the
+      content inventory.
+  - title: Product-area navigation
+    poor: >-
+      Users deep-link into an analytics report and cannot discover related setup, saved views, or alerting
+      pages without returning to global search.
+    better: >-
+      The report page shows it belongs to the Analytics hub, with a breadcrumb back, sibling links to setup
+      and alerts, and the hub summarising the whole analytics area.
+    explanation: >-
+      Hub-and-spoke IA gives deep-linked users local orientation and adjacent paths rather than marooning
+      them on isolated pages.
+related_practice_patterns:
+  - pattern: breadcrumb-trail
+    reason: >-
+      Breadcrumbs help users understand when a spoke sits under a hub and provide a lightweight route back
+      to the overview.
+  - pattern: global-navigation
+    reason: >-
+      Global navigation often routes to major hubs, while the hub organises the second-level spokes within a domain.
+  - pattern: progressive-information-hierarchy
+    reason: >-
+      A hub is a structural way to reveal overview first and progressively route users into more detailed layers.
+related_software_patterns:
+  - pattern: page-controller
+    reason: >-
+      Hub and spoke pages commonly map to page controllers that coordinate content, navigation, and local state.
+  - pattern: composite
+    reason: >-
+      The hub-spoke relationship is often implemented as a composed tree or graph of content nodes.
+related_philosophies:
+  - philosophy: design-of-everyday-things
+    reason: >-
+      A good hub provides a clear conceptual model of the section and signposts the available actions.
+  - philosophy: dont-make-me-think
+    reason: >-
+      Hub pages reduce navigation deliberation by making the section's structure and primary routes obvious.
+tags:
+  - navigation
+  - content-structure
+  - orientation
+  - documentation
+product_stages:
+  - early
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 3
+    notes: >-
+      Useful for organising a small number of core areas, but a young product may not yet have enough depth
+      to justify many hubs.
+  growth:
+    score: 5
+    notes: >-
+      Strong fit as product areas, docs, and feature sets expand and need stable second-level organisation.
+  enterprise:
+    score: 5
+    notes: >-
+      Essential in large portals and suites, though hub ownership and content governance must be explicit.
+references:
+  - title: "Information Architecture for the World Wide Web"
+    author: Louis Rosenfeld, Peter Morville, and Jorge Arango
+    year: 2015
+  - title: "Designing Web Navigation"
+    author: James Kalbach
+    year: 2007

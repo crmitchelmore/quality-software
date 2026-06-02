@@ -1,0 +1,116 @@
+id: accessibility-audit
+title: Accessibility Audit
+aka:
+  - Accessibility Review
+  - A11y Audit
+discipline: ux
+category: usability-evaluation
+maturity: established
+short_description: >-
+  Systematically inspect representative product flows against accessibility criteria, assistive-technology behaviour, and user impact to plan remediation.
+description: >-
+  An accessibility audit is a structured evaluation of how well a product supports disabled users and meets
+  agreed accessibility standards. It combines automated checks, manual inspection, keyboard testing,
+  screen-reader review, colour and zoom checks, content review, and sometimes disabled-user research. The
+  output is not just a defect list; it should include scope, methods, severity, affected users, evidence,
+  responsible owners, and remediation priorities. A good audit creates a credible baseline and a path to
+  improvement while avoiding the false confidence of scanner-only results.
+problem: >-
+  Organisations often do not know the accessibility state of their product until a procurement review,
+  complaint, or legal deadline exposes failures. Unscoped audits then produce overwhelming issue lists that
+  teams struggle to prioritise or fix sustainably.
+context: >-
+  Useful before major launches, procurement submissions, redesigns, design-system adoption, VPAT or accessibility
+  statement updates, and when a legacy product needs a remediation roadmap.
+forces:
+  - Broad coverage finds systemic issues, but deep manual testing of every path can exceed available time.
+  - Automated tools provide speed and repeatability, but they miss many keyboard, semantic, cognitive, and screen-reader problems.
+  - Severity should reflect user impact, legal risk, frequency, and component reuse, not only technical neatness.
+  - Audits can become performative unless findings feed backlog ownership and design-system fixes.
+solution: >-
+  Define audit scope around representative high-value flows and components, target standards, assistive
+  technologies, browsers, and user settings. Run automated scans, manual WCAG review, keyboard-only testing,
+  screen-reader checks, zoom and reflow checks, contrast review, and content inspection. Record evidence and
+  severity, group root causes by component or pattern, and produce a remediation plan that fixes systemic
+  sources before one-off pages. Re-audit changed areas and track known exceptions.
+when_to_use:
+  - A product needs an accessibility baseline, compliance evidence, or remediation roadmap.
+  - A launch, redesign, procurement process, or legal obligation requires accessibility confidence.
+  - Teams suspect systemic component or design-system accessibility defects.
+anti_patterns:
+  - Treating a green automated scan as an accessibility audit.
+  - Auditing every page superficially instead of testing representative tasks and reusable components deeply.
+  - Filing hundreds of unprioritised tickets without severity, ownership, or root-cause grouping.
+  - Keeping audit findings separate from product planning, design-system work, and release gates.
+heuristics:
+  - "Scope by user-critical flows and reusable components, then state what was not audited."
+  - "Combine automated checks with manual keyboard, screen-reader, zoom, contrast, and content review."
+  - "Prioritise by affected user impact, task criticality, recurrence, and remediation leverage."
+  - "Turn systemic findings into design-system and acceptance-criteria changes, not only page fixes."
+examples:
+  - title: Auditing a SaaS onboarding flow
+    poor: >-
+      The team runs a browser extension on the onboarding pages, exports colour and missing-alt warnings, and
+      tells sales the product passed because there are no serious automated errors.
+    better: >-
+      The audit covers account creation, invite acceptance, setup, and billing with automated scans, keyboard
+      walkthroughs, screen-reader checks, zoom and contrast review, then groups findings by component and task severity.
+    explanation: >-
+      The better audit reflects how disabled users actually move through the product and gives the team a
+      remediation plan with leverage, rather than a shallow scanner report.
+related_practice_patterns:
+  - pattern: wcag-conformance
+    reason: >-
+      Accessibility audits commonly use WCAG as the criteria set for evaluating conformance and documenting exceptions.
+  - pattern: keyboard-navigation
+    reason: >-
+      Keyboard-only walkthroughs are a core audit activity because pointer-only interactions block many users.
+  - pattern: screen-reader-semantics
+    reason: >-
+      Audits inspect accessible names, roles, states, relationships, and live announcements that automated tools often miss.
+related_software_patterns:
+  - pattern: audit-logging
+    reason: >-
+      Both practices create evidence trails, though accessibility audits document user-facing barriers rather than system events.
+  - pattern: evaluation-harness
+    reason: >-
+      Repeatable audit checklists and assistive-technology scripts function like an evaluation harness for accessibility quality.
+related_philosophies:
+  - philosophy: inclusive-design
+    reason: >-
+      Audits reveal where product decisions exclude users and guide teams toward more inclusive defaults.
+  - philosophy: universal-design
+    reason: >-
+      Audit remediation often broadens usability for many people, not only those covered by a specific criterion.
+tags:
+  - accessibility
+  - audit
+  - wcag
+  - evaluation
+product_stages:
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 3
+    notes: >-
+      Early teams should build accessible foundations, but a full formal audit may be premature unless the product is public-sector or high-risk.
+  growth:
+    score: 5
+    notes: >-
+      Valuable when product surfaces and customers expand; audits expose systemic issues before they become sales or support blockers.
+  enterprise:
+    score: 5
+    notes: >-
+      Essential for compliance, procurement, governance, and remediation planning across large product portfolios.
+references:
+  - title: "Web Content Accessibility Guidelines (WCAG) 2.2"
+    author: W3C Web Accessibility Initiative
+    year: 2023
+    url: "https://www.w3.org/TR/WCAG22/"
+  - title: "Easy Checks: A First Review of Web Accessibility"
+    author: W3C Web Accessibility Initiative
+    url: "https://www.w3.org/WAI/test-evaluate/preliminary/"
+  - title: "Accessibility for Everyone"
+    author: Laura Kalbag
+    year: 2017

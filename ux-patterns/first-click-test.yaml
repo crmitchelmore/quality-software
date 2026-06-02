@@ -1,0 +1,130 @@
+id: first-click-test
+title: First-Click Test
+aka:
+  - First Click Testing
+  - Initial Click Test
+discipline: ux
+category: user-research
+maturity: established
+short_description: >-
+  Measure where users click first when given a task, because the first committed step strongly indicates
+  whether labels, hierarchy, and affordances point them in the right direction.
+description: >-
+  A first-click test asks participants to complete a task by making only the first click or tap they would
+  take on a screen, wireframe, prototype, or navigation structure. The method focuses on the moment of
+  initial commitment: do users recognise the right path, or do labels and layout send them elsewhere? It is
+  faster and narrower than a full usability test, but highly diagnostic for navigation, calls to action,
+  dashboard entry points, category pages, and task starts. The result is useful because early wrong turns
+  often cascade into longer paths, lower confidence, and abandonment even if users eventually recover.
+problem: >-
+  A flow can contain the right destination but still fail because users do not know where to begin. Teams
+  often discover this only in full-session testing or analytics after people have already wandered through
+  several wrong paths.
+context: >-
+  Best for screens where choosing the first route is the main uncertainty: global navigation, landing pages,
+  settings pages, dashboards, product categories, and prototypes with competing calls to action.
+forces:
+  - A first click isolates entry-point clarity, but it does not prove the rest of the task is usable.
+  - Static screenshots make tests easy to run, yet they cannot evaluate dynamic cues or hover states well.
+  - Task wording must avoid repeating the target label or it will test word matching rather than comprehension.
+  - Users may click a plausible but unsupported route, indicating the product should consider alternate paths.
+solution: >-
+  Give participants a realistic task, show the relevant screen or prototype state, and record their first
+  click, hesitation, confidence, and explanation. Compare clicks against the intended and acceptable paths,
+  looking for scatter, consistent wrong choices, and misleading affordances. Revise labels, layout,
+  hierarchy, or redundancy, then use full usability testing for the remainder of the journey.
+when_to_use:
+  - Users must choose among several possible paths to begin a task.
+  - Navigation labels, page hierarchy, or calls to action are under debate.
+  - The team wants quick evidence before committing to a full prototype or navigation redesign.
+anti_patterns:
+  - Declaring a design usable because the first click is correct while later steps still fail.
+  - Writing tasks that include the exact destination label, making the answer obvious.
+  - Counting only whether the intended element was clicked and ignoring high scatter across other plausible elements.
+  - Testing with internal users who know the product's structure and cannot represent first-time orientation.
+heuristics:
+  - "The first click should feel obvious; hesitation and scatter are signals even when some users choose correctly."
+  - "Avoid label leakage in task wording, or the test becomes a vocabulary matching exercise."
+  - "Treat plausible wrong clicks as IA feedback: users may be revealing a missing path."
+  - "Use first-click data to improve entry points, then test the full task flow separately."
+examples:
+  - title: Finding billing settings
+    poor: >-
+      The task says, "Click Billing to update your invoice address," so nearly everyone clicks Billing and
+      the team concludes the settings page is clear.
+    better: >-
+      The task says, "Your company has moved offices and future invoices need a different address. Where
+      would you start?" The team sees many users choose Company Profile instead of Billing.
+    explanation: >-
+      The better task reveals that the user's mental model splits between billing and company information,
+      suggesting the design needs clearer labels or multiple routes.
+  - title: Acting on scattered clicks
+    poor: >-
+      Only 45% of participants click the intended "Import" button, but because it is the largest single
+      group the team keeps the design.
+    better: >-
+      The team notices clicks are scattered across Upload, Add data, and New source, then consolidates the
+      terminology and makes Import the dominant action.
+    explanation: >-
+      First-click tests are most useful when scatter is treated as evidence of competing affordances, not
+      when the largest minority is accepted as success.
+related_practice_patterns:
+  - pattern: tree-testing
+    reason: >-
+      Tree testing examines first choices in a hierarchy, while first-click testing applies the same concern
+      to visual screens and prototypes.
+  - pattern: five-second-test
+    reason: >-
+      Five-second tests reveal what users understand at a glance; first-click tests show whether that first
+      impression leads to the intended action.
+  - pattern: global-navigation
+    reason: >-
+      Global navigation should make the first route to high-value tasks predictable, making it a common
+      subject for first-click testing.
+related_software_patterns:
+  - pattern: state-machine-ui
+    reason: >-
+      Entry-point choices often move a UI into a new state; first-click evidence helps ensure visible state
+      transitions match user expectations.
+  - pattern: command
+    reason: >-
+      Prominent UI actions represent user commands, and first-click testing checks whether users can find
+      the right command for their intention.
+related_philosophies:
+  - philosophy: dont-make-me-think
+    reason: >-
+      A clear first click is a practical test of whether the interface avoids unnecessary deliberation.
+  - philosophy: design-of-everyday-things
+    reason: >-
+      The method evaluates whether signifiers and mappings make the next possible action visible.
+tags:
+  - navigation-testing
+  - entry-points
+  - click-testing
+  - affordances
+product_stages:
+  - early
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 4
+    notes: >-
+      Cheap and quick for validating prototype entry points, though it should not distract from broader
+      product-market learning.
+  growth:
+    score: 5
+    notes: >-
+      Strong fit for optimising navigation and conversion paths as more features and audiences create
+      competing starting points.
+  enterprise:
+    score: 4
+    notes: >-
+      Valuable for portals and admin tools, but complex permissioned workflows often need full task testing too.
+references:
+  - title: "First Click Testing"
+    author: Jeff Sauro
+    url: "https://measuringu.com/first-click-testing/"
+  - title: "Don't Make Me Think, Revisited"
+    author: Steve Krug
+    year: 2014

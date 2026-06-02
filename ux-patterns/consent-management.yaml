@@ -1,0 +1,129 @@
+id: consent-management
+title: Consent Management
+discipline: ux
+category: trust-safety
+maturity: established
+short_description: >-
+  Let users understand, grant, refuse, review, and change consent for optional data use through clear,
+  granular, and durable controls.
+description: >-
+  Consent management is the experience layer for optional data processing, tracking, communications,
+  integrations, and sensitive permissions. It should make consent informed, specific, freely given, and easy
+  to withdraw. Good consent management separates necessary service functions from optional purposes, avoids
+  bundled or preselected choices, records the user's decision, and exposes a settings surface where people
+  can change their mind later. It is both a trust pattern and a governance pattern: the interface, copy, and
+  backend records must agree about what was asked and what was granted.
+problem: >-
+  Consent requests are often vague, bundled, or manipulative, leaving users unsure what they agreed to and
+  leaving organisations with fragile trust and compliance risk.
+context: >-
+  Applies to cookies, analytics, marketing, profiling, AI training, third-party sharing, health or financial
+  processing, and communication preferences.
+forces:
+  - >-
+    Granularity gives control, but too many choices can overwhelm users.
+  - >-
+    Business teams want broad consent, while valid consent requires a real ability to refuse.
+  - >-
+    Consent is a user experience and a durable record; both must remain synchronised.
+solution: >-
+  Present consent at the point where it is relevant, with plain-language purposes and equal-weight accept,
+  reject, and manage paths. Separate required processing from optional purposes, avoid preselected optional
+  boxes, and persist a record of the choice. Provide a settings area where users can review, change, or
+  withdraw consent with effects explained.
+when_to_use:
+  - >-
+    Data use is optional, sensitive, or legally requires consent.
+  - >-
+    Users need to distinguish service necessity from additional business purposes.
+  - >-
+    The product must honour consent consistently across channels and systems.
+anti_patterns:
+  - >-
+    Using a banner with a bright "Accept all" button and a hidden reject path.
+  - >-
+    Bundling unrelated purposes into one all-or-nothing consent.
+  - >-
+    Letting users withdraw consent in the UI while downstream systems continue processing.
+heuristics:
+  - >-
+    Make refusal as easy and visible as acceptance.
+  - >-
+    Ask for purposes users can understand, not legal abstractions.
+  - >-
+    Separate necessary processing from optional use.
+  - >-
+    Treat withdrawal as a first-class flow with clear consequences and confirmation.
+examples:
+  - title: Cookie consent
+    poor: >-
+      A banner says "We value your privacy" with a large Accept button, while rejection requires opening a
+      settings panel and toggling twenty vendors individually.
+    better: >-
+      The banner offers Accept optional cookies, Reject optional cookies, and Manage preferences, with clear
+      categories and no preselected optional tracking.
+    explanation: >-
+      The better design makes consent a real choice rather than a maze.
+  - title: AI feature data use
+    poor: >-
+      A writing assistant enables training on customer documents by default under broad terms of service.
+    better: >-
+      The assistant explains optional model-improvement use separately from core processing, leaves it off
+      by default, and records account-level consent with an easy withdrawal path.
+    explanation: >-
+      Sensitive secondary use requires explicit, understandable, and durable consent.
+related_practice_patterns:
+  - pattern: privacy-by-default-ux
+    reason: >-
+      Consent management should start from protective defaults and optional opt-in rather than assumed use.
+  - pattern: transparency-disclosure
+    reason: >-
+      Clear disclosure of purposes, parties, and consequences is necessary for informed consent.
+  - pattern: permission-priming
+    reason: >-
+      Permission prompts and consent flows both require contextual explanation and respect for refusal.
+related_software_patterns:
+  - pattern: audit-logging
+    reason: >-
+      Consent decisions need durable records of what was presented and what the user chose.
+  - pattern: gatekeeper
+    reason: >-
+      Consent preferences must be enforced by the systems that control access to processing or sharing.
+related_philosophies:
+  - philosophy: inclusive-design
+    reason: >-
+      Consent must be understandable and usable for people with different literacy, language, ability, and
+      risk contexts.
+  - philosophy: human-centered-design
+    reason: >-
+      The pattern respects human agency over organisational convenience in data use.
+tags:
+  - consent
+  - privacy
+  - trust
+  - governance
+product_stages:
+  - early
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 4
+    notes: >-
+      Important as soon as optional tracking or marketing exists; simpler early data use keeps the surface
+      manageable.
+  growth:
+    score: 5
+    notes: >-
+      Critical as analytics, lifecycle messaging, and integrations multiply.
+  enterprise:
+    score: 5
+    notes: >-
+      Required for regulated procurement, regional compliance, and account-level governance.
+references:
+  - title: "General Data Protection Regulation"
+    author: European Union
+    year: 2016
+  - title: "Deceived by Design"
+    author: Forbrukerrådet
+    year: 2018

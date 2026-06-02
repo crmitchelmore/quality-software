@@ -1,0 +1,120 @@
+id: bulk-actions
+title: Bulk Actions
+aka:
+  - Batch Actions
+  - Multi-Select Operations
+discipline: ux
+category: interaction-design
+maturity: established
+short_description: >-
+  Let users select many items and apply one action once, with clear scope, preview, progress, and recovery
+  for high-volume work.
+description: >-
+  Bulk actions turn repetitive item-by-item work into a single operation across a selected set. They are
+  essential in administrative, data-management, commerce, support, and productivity tools where users need
+  to archive, assign, tag, approve, delete, export, or update many records at once. The pattern's risk is
+  scope ambiguity: users must know exactly which items are selected, whether selection spans pages or
+  filters, what the action will change, and how partial failures are handled. A good bulk-action design
+  makes selection visible, previews consequences when stakes are high, shows progress for long operations,
+  and provides undo or a detailed result summary.
+problem: >-
+  Users waste time and make mistakes repeating the same action across many items, yet applying actions to
+  a large set can cause serious damage if the selected scope is unclear.
+context: >-
+  Works in lists, tables, inboxes, asset libraries, issue trackers, moderation queues, and any interface
+  where people manage sets of similar objects.
+forces:
+  - Efficiency increases with larger scope, but so does the cost of a mistaken selection.
+  - Selection across filters and pagination is powerful but easy to misunderstand.
+  - Long-running or partially successful operations need progress and reconciliation, not a single success toast.
+solution: >-
+  Provide deliberate multi-selection with persistent selected counts and clear affordances for selecting
+  visible items, all filtered results, or specific subsets. Disable or explain actions that do not apply to
+  every selected item. For high-stakes changes, summarise the consequence before commit. After execution,
+  show progress, success, failure, and skipped counts, with undo or remediation where possible.
+when_to_use:
+  - Users repeatedly apply the same operation to multiple similar items.
+  - The product presents list or table views with meaningful selection state.
+  - The system can report partial success and preserve enough state for recovery or audit.
+anti_patterns:
+  - Hiding whether "select all" means current page or all filtered results.
+  - Applying destructive actions to a selection with only a generic confirmation.
+  - Reporting "done" when some items failed or were skipped.
+heuristics:
+  - "Selection scope must be visible at all times once any item is selected."
+  - "For dangerous actions, preview the count, type, and representative examples before commit."
+  - "Treat partial failure as a first-class result, not an edge case."
+  - "Keep bulk controls close to the selected set and disabled until their scope is clear."
+examples:
+  - title: Selecting across pages
+    poor: >-
+      A table checkbox selects the first page of 50 users, but the toolbar says only "Delete selected";
+      the user assumes all 3,000 filtered users are selected.
+    better: >-
+      The toolbar says "50 users selected on this page" and offers a separate link to "Select all 3,000
+      users matching this filter" before enabling destructive actions.
+    explanation: >-
+      The better version makes scope explicit and separates a page-level shortcut from an all-results operation.
+  - title: Reporting batch results
+    poor: >-
+      A bulk archive action ends with "Success" even though 7 locked records could not be archived.
+    better: >-
+      The result summary says "143 archived, 7 skipped because they are locked" with links to review the
+      skipped records and undo the archived ones.
+    explanation: >-
+      Bulk work often has mixed outcomes. Reporting counts and reasons helps users reconcile the real state.
+related_software_patterns:
+  - pattern: command
+    reason: >-
+      Bulk operations can be represented as commands with clear intent, authorisation, execution, and rollback boundaries.
+  - pattern: idempotency
+    reason: >-
+      Retrying a bulk operation safely requires idempotent handling so items are not changed twice.
+  - pattern: problem-details
+    reason: >-
+      Structured error details help explain item-level failures in a batch result.
+related_practice_patterns:
+  - pattern: destructive-action-confirmation
+    reason: >-
+      Large destructive changes need stronger confirmation and consequence preview than ordinary single-item actions.
+  - pattern: progress-indicator
+    reason: >-
+      Long-running bulk work needs progress feedback so users know the operation is still active.
+  - pattern: undo-redo
+    reason: >-
+      Bulk actions are safer when the system provides a practical recovery path for mistaken operations.
+related_philosophies:
+  - philosophy: nielsen-usability-heuristics
+    reason: >-
+      Bulk actions rely on visibility of status, error prevention, and user control over large state changes.
+  - philosophy: design-of-everyday-things
+    reason: >-
+      Clear mappings between selection, action, and result prevent users from applying power tools blindly.
+tags:
+  - productivity
+  - batch-work
+  - selection
+  - administration
+product_stages:
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 2
+    notes: >-
+      Usually unnecessary until users have enough volume for repetitive management work; can add risk before value.
+  growth:
+    score: 4
+    notes: >-
+      Strong fit as customer datasets grow and operational efficiency becomes a differentiator.
+  enterprise:
+    score: 5
+    notes: >-
+      Often essential for large-scale administration, with extra investment needed in permissions, audit, and partial-failure reporting.
+references:
+  - title: "Designing Interfaces"
+    author: Jenifer Tidwell, Charles Brewer, Aynne Valencia
+    year: 2020
+  - title: "User Control and Freedom (Nielsen Norman Group)"
+    author: Jakob Nielsen
+    url: "https://www.nngroup.com/articles/ten-usability-heuristics/"

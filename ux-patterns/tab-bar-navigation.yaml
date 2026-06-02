@@ -1,0 +1,106 @@
+id: tab-bar-navigation
+title: Tab Bar Navigation
+aka:
+  - Bottom Navigation
+  - Tab Navigation
+discipline: ux
+category: navigation-wayfinding
+maturity: time-tested
+short_description: >-
+  Use a small, persistent set of peer-level tabs to make the most important sections of a mobile or compact interface directly reachable with clear current-state feedback.
+description: >-
+  Tab bar navigation presents a small number of top-level, mutually exclusive destinations as persistent tabs, commonly at the bottom of mobile screens or near the top of desktop panes. It works best when the destinations are peers that users switch between frequently. Because tab bars are always visible and spatially stable, they create strong wayfinding and fast access. Their constraint is also their strength: there is room for only a few items, so every tab must earn its place and be labelled clearly.
+problem: >-
+  Users need frequent access to a handful of primary sections on a small screen, but menu drawers or deep navigation make switching slow and obscure the product's structure.
+context: >-
+  Use for mobile apps, compact web apps, or product areas with three to five peer destinations that users revisit often and can understand from short labels and icons.
+forces:
+  - Persistent tabs improve reachability and orientation, but consume valuable screen space.
+  - Few tabs are memorable; too many tabs become cramped and ambiguous.
+  - Icons save space but often need text labels for clarity and accessibility.
+  - A tab implies peer-level destinations, not steps in a process or arbitrary actions.
+solution: >-
+  Choose three to five primary peer destinations based on user goals and frequency. Keep the tab bar persistent at the same level, show a clear selected state, and use concise labels with icons only where they genuinely help recognition. Preserve each tab's navigation stack when users switch, and avoid hiding important destinations behind a vague more tab unless the information architecture truly requires it.
+when_to_use:
+  - Users regularly switch between a small set of top-level areas.
+  - Mobile reachability and persistent orientation are more important than maximising vertical space.
+  - Destinations are peers rather than a linear sequence.
+  - The product can commit to stable, short labels for primary areas.
+anti_patterns:
+  - Using tabs for wizard steps, where users need progress and validation rather than peer switching.
+  - Adding six or more tabs until labels truncate and icons become cryptic.
+  - Placing one-off actions such as create or scan as peer destinations without clarifying their role.
+  - Resetting a tab's internal state every time the user switches away and back.
+heuristics:
+  - "Use tabs for three to five peer destinations that users visit often."
+  - "Show text labels; icons alone are rarely self-explanatory enough."
+  - "Keep selected state unmistakable and preserve each tab's local history."
+  - "Do not use tab bars for sequential tasks or infrequent destinations."
+examples:
+  - title: Peer destinations, not process steps
+    poor: >-
+      A loan application uses bottom tabs labelled Details, Documents, Review, and Submit, letting users jump around and miss required validation.
+    better: >-
+      The application uses a stepper for the sequential flow, while the app's tab bar remains Home, Applications, Messages, and Profile.
+    explanation: >-
+      Tabs communicate peer-level switching. A process needs progress and completion rules, not global navigation semantics.
+  - title: Label clarity
+    poor: >-
+      A finance app uses five unlabeled icons in the tab bar, and users mistake the insights icon for notifications.
+    better: >-
+      The tab bar uses Home, Spend, Save, Insights, and Profile labels with supporting icons and a clear active state.
+    explanation: >-
+      Labels reduce recognition errors, especially for abstract destinations where icon meaning is not universal.
+related_practice_patterns:
+  - pattern: global-navigation
+    reason: >-
+      A mobile tab bar is often the compact expression of a product's global navigation for the most important destinations.
+  - pattern: wayfinding-cues
+    reason: >-
+      Selected states, labels, and stable placement make tab bars strong wayfinding cues.
+  - pattern: wizard-stepper
+    reason: >-
+      Wizard steppers are the better pattern when the apparent tabs are really ordered steps in a task.
+related_software_patterns:
+  - pattern: state-machine-ui
+    reason: >-
+      Tab selection, preserved stacks, and disabled or badge states often map to explicit UI state transitions.
+  - pattern: model-view-viewmodel
+    reason: >-
+      Mobile tab screens commonly bind persistent navigation state and per-tab view models in MVVM-style architectures.
+related_philosophies:
+  - philosophy: dont-make-me-think
+    reason: >-
+      Clear, persistent tabs reduce the effort of choosing where to go in compact interfaces.
+  - philosophy: design-of-everyday-things
+    reason: >-
+      Tab bars rely on visible signifiers, stable mappings, and immediate feedback for the selected destination.
+tags:
+  - mobile-navigation
+  - tabs
+  - wayfinding
+  - primary-navigation
+product_stages:
+  - early
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 4
+    notes: >-
+      Good for simple mobile products with a few core destinations, but should not lock in unproven IA too early.
+  growth:
+    score: 5
+    notes: >-
+      Strong fit as mobile usage grows and frequent switching between primary areas becomes common.
+  enterprise:
+    score: 4
+    notes: >-
+      Useful in enterprise mobile apps, though role-based complexity and many modules often exceed what a tab bar can hold.
+references:
+  - title: "Human Interface Guidelines: Tab Bars"
+    author: Apple
+    url: "https://developer.apple.com/design/human-interface-guidelines/tab-bars"
+  - title: "Material Design: Navigation Bar"
+    author: Google
+    url: "https://m3.material.io/components/navigation-bar/overview"

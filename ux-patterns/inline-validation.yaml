@@ -1,0 +1,145 @@
+id: inline-validation
+title: Inline Validation
+discipline: ux
+category: forms-input
+maturity: established
+short_description: >-
+  Validate form input close to the field and close to the moment of entry, helping users correct mistakes
+  while context is fresh rather than after a failed submission.
+description: >-
+  Inline validation gives users field-level feedback as they complete a form, usually after a field loses
+  focus or once enough characters have been entered to judge the value. It shortens the distance between
+  action and correction: the user sees that an email is malformed, a password rule is unmet, or a date is
+  impossible while they are still thinking about that field. Good inline validation is supportive rather
+  than punitive. It waits until the user has had a fair chance to type, distinguishes warnings from errors,
+  preserves the entered value, and explains how to recover in plain language. It is especially powerful
+  when paired with server-side validation and accessible error summaries, so fast feedback never becomes
+  the only safety net.
+problem: >-
+  If validation happens only after submit, users must search the page for what failed, remember what they
+  were trying to enter, and repeat work. Conversely, over-eager validation that fires while typing creates
+  noise and makes the form feel hostile.
+context: >-
+  Works best on forms where individual fields have clear, local validity rules: account creation, checkout,
+  profile details, scheduling, identifiers, and structured business data.
+forces:
+  - >-
+    Early feedback reduces wasted effort, but validating too early interrupts typing and can show false
+    errors for incomplete input.
+  - >-
+    Client-side checks feel instant, but server-side rules remain authoritative and may disagree unless
+    messages are kept consistent.
+  - >-
+    Field-level messages are precise, but users using assistive technology also need focus, semantics, and
+    a summary path after submit.
+solution: >-
+  Validate locally when the user leaves a field, pauses, or enters enough information to make a reliable
+  judgement. Place feedback adjacent to the field, identify the field state visually and semantically, and
+  write messages that explain the problem and the next action. Defer complex or server-dependent checks
+  until submit or an explicit availability check, and always retain a submit-time validation path for final
+  authority.
+when_to_use:
+  - >-
+    A field has clear constraints that can be checked independently, such as format, requiredness, range,
+    length, or availability.
+  - >-
+    Form completion is important enough that reducing rework and abandonment matters.
+  - >-
+    The team can maintain consistent client and server validation copy.
+anti_patterns:
+  - >-
+    Showing red error messages while the user is still typing the first characters of a valid value.
+  - >-
+    Replacing the user's input with a corrected value without explanation or a way to review it.
+  - >-
+    Relying on inline validation alone and omitting submit-time errors, summaries, or accessible states.
+heuristics:
+  - >-
+    Validate after intent is visible, not after every keystroke unless the field is explicitly live-searching.
+  - >-
+    Put the message next to the control it describes and make it programmatically associated with that control.
+  - >-
+    Say how to fix the value, not merely that it is invalid.
+  - >-
+    Keep success states quiet; reserve persistent visual weight for problems that need action.
+examples:
+  - title: Email address entry
+    poor: >-
+      The form shows "Invalid email" in red as soon as the user types the first letter, then flickers between
+      errors while they complete the address.
+    better: >-
+      The form waits until the user leaves the email field, then says "Enter an email address in the format
+      name@example.com" if the value is still malformed.
+    explanation: >-
+      The better version gives the user time to complete a normal input and then provides a concrete repair
+      instruction at the point of need.
+  - title: Password rules
+    poor: >-
+      A password field rejects submission with a generic banner reading "Password invalid" and clears the
+      value, forcing the user to start again.
+    better: >-
+      The field lists the password requirements beside it, marks each requirement as it is satisfied, and
+      preserves the typed password on failed submit.
+    explanation: >-
+      Validation becomes guidance rather than punishment; the user can see progress against the rules and
+      does not lose work.
+related_practice_patterns:
+  - pattern: error-message-design
+    reason: >-
+      Inline validation depends on clear, specific error copy; poor message design turns precise placement
+      into frustration.
+  - pattern: microcopy
+    reason: >-
+      Short instructional text before and during entry often prevents the validation error from happening.
+  - pattern: wcag-conformance
+    reason: >-
+      Validation states must be conveyed through accessible names, descriptions, and focus behaviour rather
+      than colour alone.
+related_software_patterns:
+  - pattern: input-validation
+    reason: >-
+      The UX pattern is the human-facing layer over the software validation rules that determine whether a
+      value is acceptable.
+  - pattern: problem-details
+    reason: >-
+      Structured server validation errors can be mapped back to inline field messages consistently.
+related_philosophies:
+  - philosophy: design-of-everyday-things
+    reason: >-
+      Immediate, local feedback closes Norman's gulf of evaluation by making the result of input visible.
+  - philosophy: nielsen-usability-heuristics
+    reason: >-
+      The pattern applies error prevention, recognition rather than recall, and help users recognise and
+      recover from errors.
+tags:
+  - forms
+  - validation
+  - error-recovery
+  - accessibility
+product_stages:
+  - early
+  - growth
+  - enterprise
+ratings:
+  early:
+    score: 4
+    notes: >-
+      High leverage for conversion and trust even in small products, provided the team avoids building a
+      bespoke validation framework too early.
+  growth:
+    score: 5
+    notes: >-
+      Essential as forms proliferate and user segments diversify; consistent validation reduces support
+      load and abandonment.
+  enterprise:
+    score: 5
+    notes: >-
+      Critical for complex regulated workflows, but requires design-system rules and backend error contracts
+      so behaviour stays consistent across teams.
+references:
+  - title: "Form Design Patterns"
+    author: Adam Silver
+    year: 2018
+  - title: "Error Message Guidelines"
+    author: Nielsen Norman Group
+    url: "https://www.nngroup.com/articles/error-message-guidelines/"
