@@ -1,0 +1,107 @@
+# Viral Loop
+
+> Build a sharing or invitation cycle where current users expose the product to new users, who then reach value and invite others for product-native reasons.
+
+**Discipline:** Product Management · **Category:** growth · **Maturity:** established
+
+## Description
+
+A viral loop is a growth loop driven by user-to-user transmission. A current user invites collaborators, shares content, sends a file, publishes a result, or otherwise exposes non-users to the product. Some of those recipients activate, experience value, and repeat the behaviour. The pattern is strongest when the sharing action is intrinsic to the user's job rather than an artificial demand to spam contacts. Viral loops are measured by conversion, cycle time and viral coefficient, but they survive only when recipients receive context, trust and value from the invitation or shared artefact.
+
+**Problem.** Teams add generic "invite friends" buttons and incentives but users do not share because the action is disconnected from product value. Worse, low-context invitations annoy recipients and damage trust or deliverability.
+
+**Context.** Best for collaboration tools, communication products, marketplaces, content platforms, productivity tools and consumer products where sharing is part of completing the user's task.
+
+## Forces
+
+- Viral mechanics need enough recipient value to avoid becoming spam.
+- The inviter's incentive can conflict with recipient trust if rewards are too aggressive.
+- Viral coefficient matters, but retention of invited users determines whether the loop creates durable growth.
+- Privacy and permission expectations vary across contacts, workspaces and social graphs.
+
+## Solution
+
+Identify a product-native sharing moment that helps the current user complete a task and gives the recipient clear context and value. Reduce friction in the invitation or share, make the recipient's first experience directly related to what was shared, and measure activation and retention of invited users. Use incentives sparingly and add permission, frequency and quality guardrails to protect trust.
+
+## When to use
+
+- The product's value naturally involves other people, shared artefacts or network participation.
+- Current users have a reason to expose non-users to the product while completing their own task.
+- Recipient activation can be designed around a specific shared context.
+
+## Metrics
+
+Signals that tell you whether this pattern is working:
+
+- Invitations or shares sent per active user at the product-native moment.
+- Recipient open, acceptance, activation and retention rates.
+- Viral coefficient and loop cycle time by segment or channel.
+- Spam complaints, unsubscribe rates and blocked-domain or deliverability guardrails.
+
+## Ratings by organisation stage
+
+| Stage | Score | Notes |
+| --- | --- | --- |
+| Early (pre-PMF / <10 people) | ●●●○○ 3/5 | Can be powerful if sharing is intrinsic, but premature viral prompts before activation usually harm trust. |
+| Growth (scaling team & users) | ●●●●● 5/5 | Strong fit once the value moment is clear and the team can tune recipient activation and guardrails. |
+| Enterprise (mature org / regulated) | ●●●○○ 3/5 | Useful for collaborative enterprise tools, but permissions, admin controls and domain trust constraints limit tactics. |
+
+## Examples
+
+### Contextual collaboration invite
+
+**❌ Poorer approach**
+
+A project tool prompts new users to invite their whole address book during signup before any project exists.
+
+**✅ Better approach**
+
+After a user creates a project plan, the product suggests inviting named collaborators to review the specific plan, with a message that shows the project context.
+
+*The better loop helps the inviter complete work and gives recipients a reason to join. The poor loop asks for social capital before value exists.*
+
+### Measuring quality, not just sends
+
+**❌ Poorer approach**
+
+A referral dashboard celebrates invitations sent, so the team increases prompts despite flat recipient activation.
+
+**✅ Better approach**
+
+The team optimises for invited users who complete the first shared workflow and remain active after a week.
+
+*Viral growth is durable only when recipients become successful users, not when messages are merely emitted.*
+
+## Anti-patterns
+
+- Asking users to import their address book before they have received value.
+- Rewarding invites regardless of recipient activation or quality.
+- Sending vague invitations that give recipients no reason to trust or understand the request.
+- Ignoring privacy, consent and channel deliverability while chasing viral coefficient.
+
+## Relationships
+
+**Related product / UX patterns**
+
+- [Growth Loops](../product-patterns/growth-loops.md) — A viral loop is a specialised growth loop whose output is exposure to new users through current-user sharing.
+- [Referral Program](../product-patterns/referral-program.md) — Referral programmes add explicit incentives to viral transmission and should be designed around the same trust dynamics.
+
+**Related software patterns**
+
+- [Webhook](../patterns/api-design/webhook.md) — Webhooks often propagate product events to external collaboration surfaces, extending viral exposure beyond the app.
+- [Rate Limiting](../patterns/resilience/rate-limiting.md) — Viral invitation systems need rate limits to prevent abuse, spam and deliverability damage.
+
+**Related philosophies**
+
+- [Product-Led Growth](../philosophies/product-led-growth.md) — Product-led growth often depends on product-native sharing loops rather than sales-led acquisition alone.
+
+## Tags
+
+- **Tags:** viral-growth, sharing, referrals, collaboration
+- **Product stages:** growth
+
+## References
+
+- Jonah Berger, Contagious, (2013)
+- Sean Ellis and Morgan Brown, Hacking Growth, (2017)
+

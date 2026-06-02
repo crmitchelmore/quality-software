@@ -1,0 +1,111 @@
+# Customer Journey Map
+
+> Visualise a customer's steps, goals, emotions, questions, and pain points across a journey so teams can improve the experience from the user's point of view.
+
+**Discipline:** UX Design · **Category:** service-design · **Maturity:** time-tested
+
+**Also known as:** Journey Map, Experience Map
+
+## Description
+
+A customer journey map is a research-based representation of what a person does, thinks, feels, and needs while pursuing a goal over time. It follows the customer across stages and touchpoints rather than mirroring the organisation's internal structure. The map commonly captures actions, channels, emotions, questions, pain points, moments of truth, and opportunities. Its value is alignment: it gives teams a shared view of where the experience helps, where it fails, and which moments matter most to customers. It should be grounded in evidence and used to prioritise improvements, not produced as decorative workshop output.
+
+**Problem.** Teams see the experience through their own product area or department, so they miss the cumulative friction customers feel as they move across discovery, use, support, renewal, and recovery.
+
+**Context.** Use when improving an end-to-end experience, synthesising qualitative research, aligning stakeholders around customer pain, or deciding where service and product improvements should focus.
+
+## Forces
+
+- The journey must be simple enough to communicate but specific enough to guide decisions.
+- Broad personas make a map reusable, while narrow scenarios make it more truthful.
+- Emotional highs and lows reveal opportunity, but the evidence behind them must be credible.
+- Maps can create empathy, yet empathy without ownership does not change the experience.
+
+## Solution
+
+Choose a clear persona or customer segment and a concrete goal. Build the timeline from research evidence, then describe each stage with the customer's actions, touchpoints, thoughts, feelings, questions, pain points, and needs. Highlight moments of truth and the biggest experience gaps. Attach opportunities and owners to the map so it becomes a prioritisation and alignment tool. Revisit it as research and service behaviour change.
+
+## When to use
+
+- Stakeholders disagree about where the customer experience breaks down.
+- A journey crosses multiple channels, teams, or product surfaces.
+- Qualitative research needs to be synthesised into a shared decision artefact.
+- You need to identify moments of truth before investing in service or interface changes.
+
+## Heuristics
+
+Rules of thumb for applying this pattern well:
+
+- Anchor each stage in observed customer behaviour or a clearly marked assumption.
+- Map one persona pursuing one meaningful goal; combine maps only after patterns are visible.
+- Show emotion and questions alongside actions so friction is understood, not just sequenced.
+- End with prioritised opportunities and owners, or the map will not change the service.
+
+## Ratings by organisation stage
+
+| Stage | Score | Notes |
+| --- | --- | --- |
+| Early (pre-PMF / <10 people) | ●●●●○ 4/5 | Helps a small team understand early adoption and onboarding, though evidence may still be sparse and change quickly. |
+| Growth (scaling team & users) | ●●●●● 5/5 | Excellent fit as journeys lengthen and teams need a shared customer-centred map to prioritise improvements. |
+| Enterprise (mature org / regulated) | ●●●●○ 4/5 | Valuable for breaking silos, but enterprise maps need careful scoping and governance to avoid becoming huge, generic artefacts. |
+
+## Examples
+
+### Evidence-based journey synthesis
+
+**❌ Poorer approach**
+
+A team draws a polished journey map in a workshop from what employees believe customers probably do, then uses it to justify an already planned redesign.
+
+**✅ Better approach**
+
+The team builds the map from interviews, support transcripts, analytics, and diary notes, marking uncertain steps as assumptions to test before prioritising improvements.
+
+*A journey map is only as useful as the evidence behind it. The better version makes confidence visible and prevents internal mythology from becoming strategy.*
+
+### From empathy to action
+
+**❌ Poorer approach**
+
+The map shows customers are frustrated during onboarding, but no team owns the issue and the poster remains on a wall.
+
+**✅ Better approach**
+
+The map identifies account verification as the moment of truth, links it to an onboarding opportunity, and assigns design, risk, and operations owners to redesign the step.
+
+*Journey maps create value when they focus action on priority moments, not when they merely describe feelings.*
+
+## Anti-patterns
+
+- Inventing a journey from internal assumptions instead of customer evidence.
+- Creating one generic map for every customer, goal, and context.
+- Stopping at empathy statements without linking opportunities to decisions or owners.
+- Mapping internal process steps and labelling them as the customer's journey.
+
+## Relationships
+
+**Related product / UX patterns**
+
+- [Service Blueprint](../ux-patterns/service-blueprint.md) — A journey map explains the customer's lived experience; a service blueprint extends it to the frontstage and backstage mechanisms that create that experience.
+- [Contextual Inquiry](../ux-patterns/contextual-inquiry.md) — Contextual inquiry provides rich evidence about real behaviour and environment that makes journey maps more truthful.
+- [Opportunity Solution Tree](../product-patterns/opportunity-solution-tree.md) — Pain points and needs from a journey map can become opportunity branches that connect customer evidence to product bets.
+
+**Related software patterns**
+
+- [Correlation Identifier](../patterns/enterprise-integration/correlation-identifier.md) — Journey analysis often depends on connecting events across channels; correlation identifiers are the software mechanism that lets teams trace one customer's flow.
+
+**Related philosophies**
+
+- [Service Design Thinking](../philosophies/service-design-thinking.md) — Customer journey mapping is a core service-design method for seeing services through customer goals rather than organisational silos.
+- [Human-Centred Design](../philosophies/human-centered-design.md) — The pattern embodies human-centred design by grounding decisions in what people are trying to accomplish and experience.
+
+## Tags
+
+- **Tags:** journey, empathy, research-synthesis, moments-of-truth
+- **Product stages:** early, growth, enterprise
+
+## References
+
+- James Kalbach, Mapping Experiences, (2016)
+- Marc Stickdorn and Jakob Schneider, This Is Service Design Thinking, (2011)
+

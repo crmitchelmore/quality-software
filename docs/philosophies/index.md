@@ -1,28 +1,50 @@
 # Software Design Philosophies
 
-Total philosophies: **18**
+Total philosophies: **40**
 
 Each philosophy associates patterns from the [pattern catalogue](../index.md) and records where it has reportedly been applied.
 
 | Philosophy | Discipline | Originators | Origin | Patterns |
 | --- | --- | --- | --- | :-: |
 | [A Philosophy of Software Design](a-philosophy-of-software-design.md) | software | John Ousterhout | *A Philosophy of Software Design* (2018) | 5 |
+| [Activity-Centred Design](activity-centered-design.md) | ux | Don Norman, Donald Schön | *Human-Centered Design Considered Harmful* (2005) | 2 |
+| [Atomic Design](atomic-design.md) | ux | Brad Frost | *Atomic Design* (2016) | 3 |
+| [Calm Technology](calm-technology.md) | ux | Mark Weiser, John Seely Brown, Amber Case | *Designing Calm Technology* (1995) | 3 |
 | [Clean Architecture & SOLID](clean-architecture-solid.md) | software | Robert C. Martin | *Clean Architecture: A Craftsman's Guide to Software Structure and Design* (2017) | 7 |
 | [Conceptual Integrity](conceptual-integrity.md) | software | Fred Brooks | *The Mythical Man-Month* (1975) | 6 |
 | [Continuous Delivery & Lean Software](continuous-delivery-lean.md) | software | Jez Humble, David Farley, Nicole Forsgren, Gene Kim, Mary Poppendieck, Tom Poppendieck | *Continuous Delivery and Lean Software Development* (2010) | 6 |
+| [Continuous Discovery](continuous-discovery.md) | product | Teresa Torres | *Continuous Discovery Habits* (2021) | 3 |
 | [Conway's Law & Team Topologies](conways-law-team-topologies.md) | software | Melvin Conway, Matthew Skelton, Manuel Pais | *How Do Committees Invent? and Team Topologies* (1968) | 6 |
+| [Customer Development](customer-development.md) | product | Steve Blank | *The Four Steps to the Epiphany* (2005) | 3 |
 | [Data-Oriented Design](data-oriented-design.md) | software | Mike Acton, Richard Fabian | *Data-Oriented Design and C++* (2014) | 6 |
 | [Design by Contract](design-by-contract.md) | software | Bertrand Meyer | *Object-Oriented Software Construction* (1988) | 7 |
 | [Design for Production / Stability](design-for-production.md) | software | Michael Nygard | *Release It!* (2007) | 7 |
+| [Design Thinking](design-thinking.md) | cross-cutting | IDEO, Tim Brown, Stanford d.school | *Empathize, Define, Ideate, Prototype, Test* | 3 |
 | [Domain-Driven Design](domain-driven-design.md) | software | Eric Evans | *Domain-Driven Design: Tackling Complexity in the Heart of Software* (2003) | 7 |
+| [Don't Make Me Think](dont-make-me-think.md) | ux | Steve Krug | *Don't Make Me Think* (2000) | 3 |
+| [Dual-Track Agile](dual-track-agile.md) | product | Jeff Patton, Desiree Sy, Marty Cagan | *Dual-Track Discovery and Delivery* | 3 |
+| [Emotional Design](emotional-design.md) | ux | Don Norman | *Emotional Design* (2004) | 3 |
+| [Empowered Product Teams](empowered-product-teams.md) | product | Marty Cagan, Chris Jones | *EMPOWERED* (2020) | 3 |
 | [Extreme Programming & Test-Driven Development](extreme-programming-tdd.md) | software | Kent Beck | *Extreme Programming Explained and Test-Driven Development by Example* (1999) | 7 |
 | [Functional Core & Type-Driven Design](functional-core-type-driven.md) | software | ML and Haskell traditions, Gary Bernhardt, Yaron Minsky | *ML/Haskell type-driven programming, Functional Core Imperative Shell, and Effective ML* (2012) | 7 |
+| [Human-Centred Design](human-centered-design.md) | ux | IDEO, ISO 9241-210 | *ISO 9241-210: Human-centred design for interactive systems* (2010) | 2 |
+| [Hypothesis-Driven Development](hypothesis-driven-development.md) | product | Barry O'Reilly | *Hypothesis-Driven Development* | 3 |
+| [Inclusive Design](inclusive-design.md) | ux | Microsoft Inclusive Design, Kat Holmes | *Microsoft Inclusive Design Toolkit* (2015) | 3 |
 | [Information Hiding & Modular Decomposition](information-hiding.md) | software | David Parnas | *On the Criteria To Be Used in Decomposing Systems into Modules* (1972) | 6 |
+| [Jobs to Be Done](jobs-to-be-done.md) | product | Clayton Christensen, Tony Ulwick | *Competing Against Luck* (2016) | 3 |
+| [Nielsen's Usability Heuristics](nielsen-usability-heuristics.md) | ux | Jakob Nielsen | *10 Usability Heuristics for User Interface Design* (1994) | 3 |
+| [Outcome Over Output](outcome-over-output.md) | product | Josh Seiden, Marty Cagan | *Outcomes Over Output* (2019) | 3 |
+| [Participatory Design](participatory-design.md) | ux | Kristen Nygaard, Scandinavian cooperative design tradition | *Scandinavian Cooperative Design* | 2 |
+| [Product-Led Growth](product-led-growth.md) | product | Wes Bush, OpenView Partners | *Product-Led Growth* (2019) | 3 |
+| [Service Design Thinking](service-design-thinking.md) | ux | Marc Stickdorn, Jakob Schneider | *This is Service Design Thinking* (2011) | 3 |
 | [Simple Made Easy](simple-made-easy.md) | software | Rich Hickey | *Simple Made Easy* (2011) | 7 |
 | [The Design of Everyday Things](design-of-everyday-things.md) | ux | Don Norman | *The Design of Everyday Things* (1988) | 2 |
 | [The Lean Startup](lean-startup.md) | product | Eric Ries | *The Lean Startup: How Today's Entrepreneurs Use Continuous Innovation to Create Radically Successful Businesses* (2011) | 2 |
+| [The North Star Framework](north-star-framework.md) | product | Amplitude, John Cutler, Sean Ellis | *North Star Framework* | 3 |
 | [The Unix Philosophy](unix-philosophy.md) | software | Doug McIlroy, Ken Thompson, Dennis Ritchie, Rob Pike | *The Bell System Technical Journal (Unix issue) and The Art of Unix Programming* (1978) | 5 |
 | [The Zen of Python](zen-of-python.md) | software | Tim Peters | *PEP 20 -- The Zen of Python* (2004) | 7 |
+| [Universal Design](universal-design.md) | ux | Ronald Mace, NC State Center for Universal Design | *The 7 Principles of Universal Design* (1997) | 3 |
+| [Working Backwards](working-backwards.md) | product | Amazon, Colin Bryar, Bill Carr | *Working Backwards* (2021) | 3 |
 | [Worse Is Better](worse-is-better.md) | software | Richard P. Gabriel | *The Rise of Worse Is Better* (1991) | 6 |
 
 ## Patterns and the philosophies that motivate them
