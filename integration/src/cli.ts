@@ -11,6 +11,7 @@ import { walkSourceFiles } from "./fs-util.js";
 import { buildEvidenceMap } from "./model/project-map.js";
 import { proposeProfileFromEvidence } from "./model/proposal.js";
 import { renderOnboardingReport, renderAnchorsYaml } from "./model/report.js";
+import { buildInventory, renderInventory } from "./model/inventory.js";
 import { reviewPR, changesFromGit, gitBaseContent } from "./review/pr-review.js";
 import { mkdirSync } from "node:fs";
 
@@ -167,6 +168,18 @@ function cmdOnboard(args: string[]): void {
   }
 
   const proposal = proposeProfileFromEvidence(map, catalogue);
+  const inventory = buildInventory(map, catalogue);
+
+  // `--inventory` prints ONLY the altitude-grouped pattern/philosophy inventory.
+  if (args.includes("--inventory")) {
+    process.stdout.write(renderInventory(inventory));
+    return;
+  }
+
+  // Default: lead with the inventory (the "what patterns, and where" view), then
+  // the fuller evidence preview.
+  process.stdout.write(renderInventory(inventory));
+  process.stdout.write("\n---\n\n");
   process.stdout.write(renderOnboardingReport(map, proposal));
 
   if (args.includes("--write-profile")) {
@@ -236,7 +249,7 @@ async function main(): Promise<void> {
           "  conformance hook <session-start|post-write|guard-shell|turn-end> [--runtime copilot|claude|codex|generic]\n" +
           "                                                                    (reads hook JSON on stdin)\n" +
           "  conformance init [--write]                                          (propose a candidate profile)\n" +
-          "  conformance onboard [--write-profile] [--write-anchors]             (scan codebase; print evidence preview)\n" +
+          "  conformance onboard [--inventory] [--write-profile] [--write-anchors]  (scan codebase; print pattern inventory + evidence)\n" +
           "  conformance check [--event PR_REVIEW|BATCH] [--base <ref>] [paths…] (run the engine; exit 1 on block)\n" +
           "  conformance review [--base <ref>]                                   (baseline-aware PR review; exit 1 on net-new block)\n" +
           "  conformance profile                                                 (print the resolved profile)\n",
