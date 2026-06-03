@@ -1,6 +1,7 @@
 import type { EvidenceMap } from "./project-map.js";
 import type { CapabilityCluster } from "./capabilities.js";
 import type { Catalogue, GraphNode } from "../catalogue.js";
+import { selectCorePhilosophies } from "./philosophies.js";
 
 /**
  * Altitude-grouped pattern & philosophy inventory (design 14). Turns the evidence
@@ -57,7 +58,6 @@ export function buildInventory(map: EvidenceMap, catalogue: Catalogue): Inventor
   const high: InventoryEntry[] = [];
   const medium: InventoryEntry[] = [];
   const low: InventoryEntry[] = [];
-  const philAgg = new Map<string, Set<string>>(); // philosophyId -> implying pattern ids
 
   // Deduplicate by pattern id, keeping the highest-confidence evidence.
   const seen = new Map<string, InventoryEntry>();
@@ -74,12 +74,6 @@ export function buildInventory(map: EvidenceMap, catalogue: Catalogue): Inventor
     };
     const prev = seen.get(cand.patternId);
     if (!prev || CONF_RANK[entry.confidence] > CONF_RANK[prev.confidence]) seen.set(cand.patternId, entry);
-
-    for (const phil of catalogue.philosophyForPattern.get(cand.patternId) ?? []) {
-      const set = philAgg.get(phil.philosophyId) ?? new Set<string>();
-      set.add(cand.patternId);
-      philAgg.set(phil.philosophyId, set);
-    }
   }
 
   for (const entry of seen.values()) {
@@ -93,12 +87,11 @@ export function buildInventory(map: EvidenceMap, catalogue: Catalogue): Inventor
   medium.sort(byConfThenTitle);
   low.sort(byConfThenTitle);
 
-  const philosophies: PhilosophyEntry[] = [...philAgg.entries()]
-    .map(([id, impliedBy]) => {
-      const node: GraphNode | undefined = catalogue.nodeById.get(id);
-      return { id, title: node?.title ?? id, impliedBy: [...impliedBy] };
-    })
-    .sort((a, b) => b.impliedBy.length - a.impliedBy.length || a.title.localeCompare(b.title));
+  // CORE philosophies only (reduced from all-implied to avoid contradictions).
+  const philosophies: PhilosophyEntry[] = selectCorePhilosophies(map.candidatePatterns, catalogue).map((c) => {
+    const node: GraphNode | undefined = catalogue.nodeById.get(c.id);
+    return { id: c.id, title: node?.title ?? c.id, impliedBy: c.impliedBy };
+  });
 
   return { high, medium, low, philosophies, capabilities: map.capabilityClusters };
 }

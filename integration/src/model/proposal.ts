@@ -1,5 +1,6 @@
 import type { Catalogue } from "../catalogue.js";
 import type { EvidenceMap, CandidatePattern } from "./project-map.js";
+import { selectCorePhilosophies } from "./philosophies.js";
 
 /**
  * Turn the (advisory) evidence map into a CONSERVATIVE, warn-only candidate profile
@@ -20,31 +21,23 @@ function confidenceToEnforcement(c: CandidatePattern["confidence"]): "advise" | 
 }
 
 export function proposeProfileFromEvidence(map: EvidenceMap, catalogue: Catalogue): ProfileProposal {
-  const adopt: ProfileProposal["adopt"] = [];
-  const philSet = new Map<string, string>();
-
-  // Seed adopt entries from medium+ confidence candidates only, deduped by pattern
-  // id (multiple structural hubs can imply the same pattern) keeping the strongest.
+  // Dedupe medium+ confidence, catalogue-known candidates by pattern id (keep strongest).
   const rank = { high: 3, medium: 2, low: 1 } as const;
-  const byId = new Map<string, ProfileProposal["adopt"][number]>();
+  const byId = new Map<string, CandidatePattern>();
   for (const cand of map.candidatePatterns) {
     if (cand.confidence === "low") continue;
     if (!catalogue.nodeById.get(cand.patternId)) continue;
-    const entry = {
-      id: cand.patternId,
-      enforcement: confidenceToEnforcement(cand.confidence),
-      confidence: cand.confidence,
-      reason: cand.evidence[0] ?? "structural evidence",
-    };
     const existing = byId.get(cand.patternId);
-    if (!existing || rank[cand.confidence] > rank[existing.confidence as keyof typeof rank]) {
-      byId.set(cand.patternId, entry);
-    }
-    for (const phil of catalogue.philosophyForPattern.get(cand.patternId) ?? []) {
-      if (!philSet.has(phil.philosophyId)) philSet.set(phil.philosophyId, `implied by adopted pattern ${cand.patternId}`);
-    }
+    if (!existing || rank[cand.confidence] > rank[existing.confidence]) byId.set(cand.patternId, cand);
   }
-  adopt.push(...byId.values());
+  const adoptedCands = [...byId.values()];
+
+  const adopt: ProfileProposal["adopt"] = adoptedCands.map((cand) => ({
+    id: cand.patternId,
+    enforcement: confidenceToEnforcement(cand.confidence),
+    confidence: cand.confidence,
+    reason: cand.evidence[0] ?? "structural evidence",
+  }));
 
   // Candidate canonical anchors from high/medium-confidence duplicate clusters.
   const anchors: ProfileProposal["anchors"] = [];
@@ -54,10 +47,18 @@ export function proposeProfileFromEvidence(map: EvidenceMap, catalogue: Catalogu
     }
   }
 
-  const philosophies = [...philSet.entries()].map(([id, reason]) => ({ id, reason }));
+  // CORE philosophies only — a small, well-supported set, not every implied one
+  // (mixing many philosophies creates contradictory guidance).
+  const core = selectCorePhilosophies(adoptedCands, catalogue);
+  const philosophies = core.map((c) => ({
+    id: c.id,
+    reason: `core: implied by ${c.impliedBy.slice(0, 3).join(", ")}`,
+  }));
+
   const notes: string[] = [
     "All entries are warn-only or advisory; nothing is adopted until you ratify it.",
     "No patterns are banned automatically — add bans deliberately.",
+    "Philosophies are reduced to the core set to avoid contradictory guidance; add/remove deliberately.",
   ];
   if (!adopt.length) notes.push("No medium+ confidence patterns detected; profile left intentionally minimal.");
 
