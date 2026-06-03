@@ -217,3 +217,54 @@ Remaining for a future phase before enabling live blocking: a second-pass entail
 verifier (§16.9), durable audit/replay persistence wired to a store (§16.7), real
 labelled regression/adversarial corpora, and the tree-sitter L1 Kotlin provider
 (Phase 3) for higher-fidelity deterministic evidence.
+
+## 16.15 Implementation notes (Phase 6 — multi-language detectors + baseline-aware PR review)
+
+Two pieces landed under `integration/src/`: language-neutral write-time detectors
+and a baseline-aware PR reviewer. Both keep the §16.2 invariant — only the
+certifier (§16.6) ever produces a block.
+
+- **Write-time detectors are now language-neutral** (Kotlin/Java/TypeScript/Python
+  and any provider-backed language), not TS-only. `forbidden-import`, `reuse` and
+  `banned-construct` read facts through the provider registry (`detectors/facts.ts`)
+  and classify layers via the shared `model/layers.ts` (`classifyLayer` +
+  `layerOfImportSpec`). The write-time boundary detector projects the **same**
+  boundary identity as the certifier's `forbidden-layer-edge` policy, derived from
+  the profile by `layersFromGlobs` — one boundary, two altitudes.
+- **The `heuristic` flag** (`contract.ts`) marks deterministic-but-low-confidence
+  findings (single-file FQN/package segment scanning, e.g. Kotlin
+  `import com.app.infrastructure.Db`). `engine.ts` never escalates a `heuristic`
+  finding to a block — it is capped at warning. Single-file heuristics advise; the
+  certifier, which resolves imports to real modules over the whole-project index, is
+  authoritative for blocking. Distinct from `advisory` (LLM-only).
+- **`policiesFromProfile()` (`policy/from-profile.ts`) is the profile→certifier
+  bridge.** An adopted boundary pattern (Hexagonal/Clean/Onion/Layered) yields one
+  `forbidden-layer-edge` policy per (sourceLayer → forbiddenTargetLayer), at `block`
+  severity only when the pattern's enforcement is `block`. Syntactic bans
+  (Singleton, Service Locator, Active Record) stay with `banned-construct`, not the
+  certifier.
+- **The PR reviewer (`review/pr-review.ts`) blocks on NET-NEW violations only.** It
+  derives the head evidence map from the working tree and a baseline map from a
+  reverse overlay of the change-set (Added→delete, Deleted/Modified→restore base
+  content, Renamed→swap paths) over an independently parsed module set, then
+  certifies both and blocks only on certified findings whose fingerprint is in head
+  but not base. This catches the case where the changed side is the import **target**
+  (a new infra module that makes an unchanged domain import illegal), and never
+  blocks pre-existing untouched violations.
+- **Reuse-against-baseline is symbol-diffed and advisory-only.** For a Modified file
+  only *new* declarations count (head exports − base exports of the same path); a
+  file is never compared with itself; test/barrel/generated files and `default`/
+  re-export symbols are excluded; cross-layer name collisions are softened to `info`.
+  The canonical anchor is chosen by the shared `pickCanonical` scorer.
+- **CLI `review [--base <ref>]`** wires a thin git adapter (`changesFromGit` via
+  `git diff --name-status -M`, `gitBaseContent` via `git show <base>:<path>`) and
+  exits 1 on a net-new block. The core `reviewPR` accepts injected
+  `changes`/`baseContent`, so it is unit-tested fully offline (no git, no LLM).
+
+Validated against a real Kotlin service (`standards-compliance`, 530 files):
+onboarding detected the domain layer, 26 `*Repository` interfaces and duplicate
+clusters; a crafted change-set (domain file importing a new `com.mns.infrastructure`
+class via FQN + a re-implemented `ComponentComplianceView`) was **blocked** on the
+net-new domain→infrastructure edge and raised a reuse advisory pointing at the
+canonical view — while the identical edge, when pre-existing at base, was allowed.
+
