@@ -1,0 +1,129 @@
+# Candidate conformance profile for this repository.
+# Review and ratify before treating it as a project decision. Everything starts
+# at warn/advice only; nothing here may block CI or agent writes.
+version: 1
+status: candidate
+projectSize: medium
+
+philosophies:
+  adopt:
+    - id: a-philosophy-of-software-design
+      weight: primary
+      reason: "The catalogue and conformance engine should expose deep, intention-revealing modules with stable interfaces."
+    - id: information-hiding
+      weight: primary
+      reason: "Core engines, catalogues, schemas, and adapters should hide implementation details behind narrow contracts."
+    - id: conceptual-integrity
+      weight: primary
+      reason: "The project needs one coherent model for philosophies, patterns, profiles, findings, and evidence."
+    - id: design-for-production
+      weight: secondary
+      reason: "Conformance must fail open at write time and provide reliable, evidence-bearing gates at PR time."
+    - id: simple-made-easy
+      weight: secondary
+      reason: "The product should prefer simple, composable mechanisms over clever all-in-one enforcement."
+  reject: []
+
+patterns:
+  # High altitude: application / platform structure.
+  high:
+    adopt:
+      - id: modular-monolith
+        enforcement: advise
+        reason: "The repository is a cohesive multi-part system with bounded packages for catalogue, tooling, design docs, and runtime integration."
+      - id: hexagonal-architecture
+        enforcement: warn
+        reason: "The conformance engine should remain runtime-agnostic, with Copilot/CLI/MCP/PR integrations as adapters."
+      - id: layered-architecture
+        enforcement: warn
+        reason: "Integration code is organised into contract, engine, model, detectors, policy, review, adapters, and CLI/MCP layers."
+      - id: microkernel
+        enforcement: advise
+        reason: "Hooks, skills, MCP, plugin packaging, and future runtime adapters are extension points over one core engine."
+      - id: pipes-and-filters
+        enforcement: advise
+        reason: "Detection flows from evidence extraction to candidate routing, deterministic certification, LLM advisory judgement, and findings."
+
+  # Medium altitude: component / service design.
+  medium:
+    adopt:
+      - id: adapter
+        enforcement: warn
+        reason: "Runtime-specific integration belongs in thin adapters over the canonical event/verdict contract."
+      - id: strategy
+        enforcement: advise
+        reason: "Language providers, detectors, model routing, and runtime dialects should remain swappable."
+      - id: facade
+        enforcement: advise
+        reason: "CLI and MCP surfaces should present simple commands over the deeper engine/model internals."
+      - id: factory-method
+        enforcement: advise
+        reason: "Detector, profile, inventory, and pattern-map builders centralise construction rules."
+      - id: dependency-injection
+        enforcement: advise
+        reason: "Core services should receive catalogues, profiles, LLM clients, registries, and budgets explicitly."
+      - id: contract-first-api
+        enforcement: warn
+        reason: "The canonical contract, schemas, and YAML profiles are public seams that should remain stable."
+
+  # Low altitude: method / class / file conventions.
+  low:
+    adopt:
+      - id: guard-clause
+        enforcement: advise
+        reason: "Fail-open hook and detector paths should keep invalid or missing context cheap and explicit."
+
+  ban: []
+
+testing:
+  philosophies:
+    - id: mostly-integration-testing
+      weight: primary
+      reason: "Tests should prove agent-facing flows and runtime seams rather than only implementation details."
+    - id: testing-trophy
+      weight: secondary
+      reason: "Use fast unit coverage around pure logic, with stronger integration coverage around contracts and adapters."
+    - id: classicist-tdd
+      weight: secondary
+      reason: "Prefer real boundaries and representative fixtures over excessive mocking."
+  patterns:
+    adopt:
+      - id: arrange-act-assert
+        enforcement: advise
+        reason: "Tests should stay readable and behaviour-focused."
+
+practicePatterns:
+  adopt:
+    - id: product-principles
+      enforcement: advise
+      reason: "Project-level decisions should stay tied to explicit quality and product principles."
+    - id: product-strategy-stack
+      enforcement: advise
+      reason: "Product goals, target state, enforcement model, and MVP scope should stay aligned."
+    - id: definition-of-ready-done
+      enforcement: advise
+      reason: "Conformance work needs clear readiness and completion criteria, including evidence and validation."
+    - id: guardrail-metrics
+      enforcement: advise
+      reason: "Promotion from advisory to blocking requires precision, waiver, disable, latency, and flapping metrics."
+    - id: working-backwards-prfaq
+      enforcement: advise
+      reason: "New rulepacks and integrations should be justified from user impact and adoption."
+    - id: progressive-disclosure
+      enforcement: advise
+      reason: "Findings and generated reports should show the most actionable evidence first and reveal detail on demand."
+    - id: system-status-visibility
+      enforcement: advise
+      reason: "Hooks, PR checks, and reports should make advisory vs blocking state clear."
+    - id: error-message-design
+      enforcement: advise
+      reason: "Findings should explain what happened, why it matters, and the smallest fix."
+    - id: wcag-conformance
+      enforcement: advise
+      reason: "Generated docs and future UI should remain accessible."
+
+phases:
+  write: { enabled: true, mode: advise, failMode: open, llm: false, block: false, maxFindings: 1 }
+  pr: { enabled: true, llm: true, failOn: block }
+  later: { enabled: true }
+

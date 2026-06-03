@@ -40,7 +40,8 @@ jobs:
       - name: Run conformance check
         env:
           CONFORMANCE_CATALOGUE_ROOT: ${{ github.workspace }}/.conformance-catalogue
+          BASE_REF: ${{ github.base_ref }}
         run: |
           node "$CONFORMANCE_CATALOGUE_ROOT/integration/bin/conformance.mjs" \
-            check --event PR_REVIEW --base "origin/${{ github.base_ref }}" \
+            check --event PR_REVIEW --base "origin/$BASE_REF" \
             | tee "$GITHUB_STEP_SUMMARY"

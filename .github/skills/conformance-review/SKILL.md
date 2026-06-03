@@ -53,3 +53,10 @@ conformance check src/path/new-thing.ts   # surfaces duplicate exports
 ```
 
 Prefer reusing the existing abstraction over creating a parallel one.
+
+## Avoid reuse false positives
+
+When checking shared capabilities, only flag a bypass when the change adds inline
+implementation/construction that avoids an existing canonical helper or factory. Do not
+treat declarative mechanisms (for example validation annotations) or DI type imports
+(for example injected mappers/clients) as duplication.

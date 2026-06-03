@@ -3,7 +3,7 @@
 > This document records the design changes adopted after two independent rubber-duck reviews
 > (concept + architecture). Both converged on the same core correction: **the value is a small
 > number of high-precision, project-specific constraints delivered at the moment an agent is
-> about to violate them — not a 460-item catalogue enforced by LLM taste.** Philosophies are
+> about to violate them — not the whole catalogue enforced by LLM taste.** Philosophies are
 > the *why*; patterns are the *what*; **detectors are the product.** Where earlier docs
 > conflict with this one, this document wins.
 
@@ -18,13 +18,13 @@
 
 ## 13.1 Two tiers — enforceable vs advisory
 
-The catalogue is explicitly split so nothing implies that all 460 items are equally
+The catalogue is explicitly split so nothing implies that every catalogue item is equally
 actionable:
 
 | Tier | Contents | Max action | Gate |
 | --- | --- | --- | --- |
 | **Certified enforceable rulepacks** | small set of patterns with a validated detector (import boundaries, dependency direction, banned constructs, timeout/retry/circuit-breaker/idempotency, outbox, duplicate/reuse) | may **block** (PR-time; write-time only after measured precision) | each ships fixtures + measured precision before it can block |
-| **Advisory knowledge catalogue** | the rest of the 275 patterns, all 145 PM/UX practice patterns, all 40 philosophies, the graph | **advise only** (explanation, ranking, onboarding, PR checklist) | none — never blocks |
+| **Advisory knowledge catalogue** | the rest of the 275 software patterns, 69 product patterns, 76 UX patterns, 50 philosophies, and the graph | **advise only** (explanation, ranking, onboarding, PR checklist) | none — never blocks |
 
 A pattern moves from advisory → enforceable only by acquiring a **rule pack** with fixtures and
 a measured false-positive rate (see [§13.5](#135-promotion-advise--block)). Philosophies and

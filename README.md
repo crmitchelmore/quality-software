@@ -16,6 +16,14 @@ A multi-part project:
    CLI integration (hooks, skill, MCP, plugin) + PR Action that guides agents to a project's
    selected philosophies/patterns and keeps changes aligned. See [`integration`](integration/).
 
+The product-level requirements live in [`product.md`](product.md). This repository's
+candidate, warn-only conformance profile lives in [`patterns.config.yaml`](patterns.config.yaml),
+with supporting evidence in [`patterns.map.yaml`](patterns.map.yaml),
+[`patterns.anchors.yaml`](patterns.anchors.yaml), and
+[`docs/conformance/alignment-review.md`](docs/conformance/alignment-review.md). Launch readiness is
+tracked in [`docs/launch/productionisation-roadmap.md`](docs/launch/productionisation-roadmap.md),
+with the initial pilot operating guide in [`docs/launch/pilot-rollout.md`](docs/launch/pilot-rollout.md).
+
 ## Layout
 
 ```

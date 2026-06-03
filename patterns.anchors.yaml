@@ -1,0 +1,98 @@
+# Curated candidate canonical anchors for this repository.
+# Review before trusting. These anchors are hints for agents and reviewers, not
+# proof that duplicate-looking concepts are always the same abstraction.
+version: 1
+anchors:
+  - symbol: Conformance contract
+    path: integration/src/contract.ts
+    confidence: high
+    reasons:
+      - Defines canonical events, ChangeSet, Finding, Detector, ResolvedProfile, and ConformanceVerdict.
+      - Stable seam used by engine, adapters, MCP, and PR review.
+  - symbol: Conformance engine
+    path: integration/src/engine.ts
+    confidence: high
+    reasons:
+      - Runtime-agnostic evaluator and verdict projector.
+      - Encodes write-time advisory defaults and PR-only block projection.
+  - symbol: Profile loading
+    path: integration/src/profile.ts
+    confidence: high
+    reasons:
+      - Normalises candidate profile shapes and enforces direct contradiction checks.
+      - Central home for profile coherence warnings.
+  - symbol: Codebase evidence map
+    path: integration/src/model/project-map.ts
+    confidence: high
+    reasons:
+      - Parses modules, derives dependency edges, duplicates, candidate patterns, and capabilities.
+      - Source of brownfield onboarding evidence.
+  - symbol: Pattern inventory
+    path: integration/src/model/inventory.ts
+    confidence: high
+    reasons:
+      - Groups candidate patterns by high, medium, and low altitude.
+      - Selects core implied philosophies for human review.
+  - symbol: Candidate profile proposal
+    path: integration/src/model/proposal.ts
+    confidence: high
+    reasons:
+      - Converts evidence maps into conservative warn/advisory profile YAML.
+      - Keeps testing patterns separate and never auto-bans.
+  - symbol: Pattern map rendering
+    path: integration/src/model/pattern-map.ts
+    confidence: medium
+    reasons:
+      - Documents where detected patterns live, their flavour, and candidate anchors.
+      - Excludes test files as production anchors.
+  - symbol: Onboarding report rendering
+    path: integration/src/model/report.ts
+    confidence: medium
+    reasons:
+      - Presents observed facts before advisory candidate patterns.
+      - States that nothing has been adopted or enforced.
+  - symbol: Runtime adapter
+    path: integration/src/adapters/copilot.ts
+    confidence: high
+    reasons:
+      - Canonical Copilot hook adapter and fail-open behaviour.
+      - Session priming, post-write advisory feedback, shell guard, and turn-end nudge live here.
+  - symbol: Detector selection
+    path: integration/src/detectors/index.ts
+    confidence: medium
+    reasons:
+      - Builds the active detector set from the profile instead of checking every catalogue pattern.
+  - symbol: Forbidden import detector
+    path: integration/src/detectors/forbidden-import.ts
+    confidence: high
+    reasons:
+      - Flagship deterministic boundary rulepack for architecture conformance.
+      - Separates path-resolved evidence from heuristic package/FQN signals.
+  - symbol: Reuse detector
+    path: integration/src/detectors/reuse.ts
+    confidence: medium
+    reasons:
+      - Advisory duplicate-symbol detector with noisy-name, test, barrel, and generated-code suppression.
+  - symbol: Deterministic policy certifier
+    path: integration/src/policy/certify.ts
+    confidence: high
+    reasons:
+      - Only deterministic certified violations can become block-eligible findings.
+  - symbol: LLM advisory judge
+    path: integration/src/judge/judge.ts
+    confidence: high
+    reasons:
+      - Catalogue-grounded LLM review that is explicitly advisory-only.
+      - Includes cache, budget, span-alignment, and audit records.
+  - symbol: PR review
+    path: integration/src/review/pr-review.ts
+    confidence: medium
+    reasons:
+      - Baseline-aware review surface for net-new block and reuse advisories.
+  - symbol: Behavioural integration test
+    path: integration/test/e2e-todo.test.ts
+    confidence: high
+    reasons:
+      - Simulates an agent writing a hexagonal todo app through the Copilot hook.
+      - Exercises conformant writes, drift, refactor clearing, reuse, banned constructs, and PR gate blocking.
+

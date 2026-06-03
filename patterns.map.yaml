@@ -1,0 +1,292 @@
+# patterns.map.yaml - detailed companion to the candidate patterns.config.yaml.
+# Best-effort review evidence only. Review before relying on it as canonical.
+version: 1
+meta:
+  detector: human-review-plus-codebase-onboarding
+  limitations:
+    - Shell validation and generated onboarding CLI execution were blocked by an erroring preToolUse hook in this active session.
+    - Candidate patterns below are selected from repository structure, docs, and integration code review; they are not proof of full conformance.
+    - Product and UX practices are advisory because the repository is primarily a catalogue/tooling project, not a production UI.
+
+patterns:
+  - id: modular-monolith
+    title: Modular Monolith
+    altitude: high
+    confidence: medium
+    flavour: Cohesive multi-part repository with explicit bounded areas rather than deployable services.
+    evidence:
+      - README documents catalogue, practice catalogue, validator design, and runnable integration as four project parts.
+      - Source-of-truth YAML, generated docs, tools, integration, and design docs are separated by directory.
+    anchors:
+      - README.md
+      - patterns/
+      - philosophies/
+      - product-patterns/
+      - ux-patterns/
+      - tools/src/
+      - integration/src/
+      - design/validator/
+    philosophies: [conceptual-integrity, information-hiding]
+
+  - id: hexagonal-architecture
+    title: Hexagonal Architecture
+    altitude: high
+    confidence: medium
+    flavour: Runtime-agnostic conformance core with adapters for Copilot hooks, MCP, CLI, plugin packaging, and PR workflow.
+    evidence:
+      - contract.ts defines the canonical event, change set, finding, detector, and verdict seam.
+      - engine.ts contains the shared conformance engine; adapters translate runtime payloads rather than owning conformance logic.
+      - design/validator/12-integration-contract.md states one engine, one contract, thin adapters.
+    anchors:
+      - integration/src/contract.ts
+      - integration/src/engine.ts
+      - integration/src/adapters/copilot.ts
+      - integration/src/adapters/runtimes.ts
+      - integration/src/mcp.ts
+      - design/validator/12-integration-contract.md
+    philosophies: [information-hiding, clean-architecture-solid]
+
+  - id: layered-architecture
+    title: Layered Architecture
+    altitude: high
+    confidence: medium
+    flavour: Contract, engine, model, detector, policy, review, adapter, and presentation layers within the integration package.
+    evidence:
+      - integration/src is split into contract, model, detectors, policy, review, adapters, judge, llm, cli, and mcp modules.
+      - Tests mirror these layers with engine, profile, model, policy, adapter, PR review, and judge coverage.
+    anchors:
+      - integration/src/contract.ts
+      - integration/src/model/
+      - integration/src/detectors/
+      - integration/src/policy/
+      - integration/src/review/
+      - integration/src/adapters/
+      - integration/test/
+    philosophies: [conceptual-integrity]
+
+  - id: microkernel
+    title: Microkernel
+    altitude: high
+    confidence: low
+    flavour: Core conformance engine plus plugin-like extension surfaces for hooks, skills, MCP tools, PR action, and future runtimes.
+    evidence:
+      - integration/plugin/plugin.json bundles hooks, skill, and MCP.
+      - .github/skills and adapters expose multiple runtime-specific extension points over the same core.
+    anchors:
+      - integration/plugin/plugin.json
+      - .github/hooks/conformance.json
+      - .github/skills/conformance-review/SKILL.md
+      - .github/skills/pr-pattern-review/SKILL.md
+      - integration/src/adapters/
+    philosophies: [information-hiding]
+
+  - id: pipes-and-filters
+    title: Pipes and Filters
+    altitude: high
+    confidence: low
+    flavour: Evidence extraction, candidate selection, deterministic certification, LLM advisory judgement, and finding projection as separate stages.
+    evidence:
+      - project-map.ts separates parsing modules from deriving edges, duplicates, candidates, and capabilities.
+      - judge.ts routes pattern/region pairs through prompt construction, parsing, span validation, and advisory findings.
+      - policy/certify.ts separately certifies deterministic violations.
+    anchors:
+      - integration/src/model/project-map.ts
+      - integration/src/judge/judge.ts
+      - integration/src/policy/certify.ts
+      - integration/src/engine.ts
+    philosophies: [simple-made-easy]
+
+  - id: adapter
+    title: Adapter
+    altitude: medium
+    confidence: high
+    flavour: Runtime payloads are adapted to the canonical ChangeSet/Verdict contract.
+    evidence:
+      - copilot.ts maps Copilot hook payloads to canonical events and projects verdicts back to hook JSON.
+      - runtimes.ts is the dialect expansion seam for Copilot, Claude, Codex, and generic hook payloads.
+    anchors:
+      - integration/src/adapters/copilot.ts
+      - integration/src/adapters/runtimes.ts
+      - integration/src/mcp.ts
+    philosophies: [information-hiding]
+
+  - id: strategy
+    title: Strategy
+    altitude: medium
+    confidence: medium
+    flavour: Providers, detectors, and model-routing decisions are replaceable policy objects behind common interfaces.
+    evidence:
+      - model/lang/registry.ts selects language providers for TypeScript and universal extraction.
+      - detectors/index.ts builds the active detector set from a resolved profile.
+      - llm/router.ts routes pattern judgement by scale/event and budget.
+    anchors:
+      - integration/src/model/lang/registry.ts
+      - integration/src/model/lang/types.ts
+      - integration/src/detectors/index.ts
+      - integration/src/llm/router.ts
+    philosophies: [simple-made-easy]
+
+  - id: facade
+    title: Facade
+    altitude: medium
+    confidence: medium
+    flavour: CLI and MCP provide simple operational surfaces over catalogue, profile, engine, onboarding, and review internals.
+    evidence:
+      - cli.ts exposes hook, init, onboard, check, review, and profile commands.
+      - mcp.ts exposes conformance_profile, conformance_check_change, conformance_suggest_reuse, and conformance_init.
+    anchors:
+      - integration/src/cli.ts
+      - integration/src/mcp.ts
+    philosophies: [a-philosophy-of-software-design]
+
+  - id: factory-method
+    title: Factory Method
+    altitude: medium
+    confidence: medium
+    flavour: Construction of detectors, evidence-derived profiles, inventories, and pattern maps is centralised.
+    evidence:
+      - buildDetectors(profile) selects detector variants from the resolved profile.
+      - proposeProfileFromEvidence(map, catalogue) converts evidence into a conservative candidate profile.
+      - buildPatternMap(map, catalogue) converts evidence into reviewable anchors and flavours.
+    anchors:
+      - integration/src/detectors/index.ts
+      - integration/src/model/proposal.ts
+      - integration/src/model/pattern-map.ts
+      - integration/src/model/inventory.ts
+    philosophies: [a-philosophy-of-software-design]
+
+  - id: dependency-injection
+    title: Dependency Injection
+    altitude: medium
+    confidence: medium
+    flavour: Core types receive catalogues, profiles, clients, routers, budgets, and registries explicitly.
+    evidence:
+      - Engine is constructed with a resolved profile and catalogue.
+      - LLMJudge accepts an LLM client, router, budget, cache, and audit sink through options.
+      - Evidence-map functions accept provider registries and layer-prefix options.
+    anchors:
+      - integration/src/engine.ts
+      - integration/src/judge/judge.ts
+      - integration/src/model/project-map.ts
+    philosophies: [clean-architecture-solid]
+
+  - id: contract-first-api
+    title: Contract-First API
+    altitude: medium
+    confidence: high
+    flavour: Public seams are expressed as TypeScript contracts, JSON schemas, YAML manifests, and documented hook/MCP contracts.
+    evidence:
+      - contract.ts is the runtime-agnostic event/verdict contract.
+      - schema/ defines source-of-truth pattern, practice-pattern, and philosophy schemas.
+      - design/validator/12-integration-contract.md documents canonical events and verdict fields.
+    anchors:
+      - integration/src/contract.ts
+      - schema/pattern.schema.json
+      - schema/practice-pattern.schema.json
+      - schema/philosophy.schema.json
+      - design/validator/12-integration-contract.md
+    philosophies: [conceptual-integrity]
+
+  - id: guard-clause
+    title: Guard Clause
+    altitude: low
+    confidence: medium
+    flavour: Missing profile, missing files, invalid payloads, unavailable LLM clients, and unsupported hook phases return early.
+    evidence:
+      - Copilot adapter returns empty JSON on missing profile/path/content and catches hook errors.
+      - profile.ts fails fast on missing profile and direct contradictions.
+      - judge.ts returns no findings in offline mode and rejects unaligned evidence spans.
+    anchors:
+      - integration/src/adapters/copilot.ts
+      - integration/src/profile.ts
+      - integration/src/judge/judge.ts
+      - integration/src/cli.ts
+    philosophies: [design-by-contract]
+
+  - id: arrange-act-assert
+    title: Arrange-Act-Assert
+    altitude: low
+    confidence: medium
+    flavour: Behaviour-focused node:test suites arrange fixtures, exercise real seams, and assert observable outcomes.
+    evidence:
+      - e2e-todo.test.ts simulates an agent writing files through the Copilot post-write hook.
+      - model, policy, profile, adapter, and PR review tests exercise public seams and generated artefacts.
+    anchors:
+      - integration/test/e2e-todo.test.ts
+      - integration/test/model.test.ts
+      - integration/test/profile.test.ts
+      - integration/test/pr-review.test.ts
+      - integration/test/copilot-adapter.test.ts
+    philosophies: [mostly-integration-testing, testing-trophy]
+
+capabilities:
+  - id: runtime-contract
+    title: Runtime conformance contract
+    status: canonical-bypassed
+    canonical: integration/src/contract.ts
+    usedIn: 8
+    sample:
+      - integration/src/engine.ts
+      - integration/src/adapters/copilot.ts
+      - integration/src/mcp.ts
+      - integration/src/review/pr-review.ts
+  - id: profile-resolution
+    title: Pattern profile loading and coherence
+    status: canonical-bypassed
+    canonical: integration/src/profile.ts
+    usedIn: 5
+    sample:
+      - integration/src/cli.ts
+      - integration/src/mcp.ts
+      - integration/src/adapters/copilot.ts
+      - integration/test/profile.test.ts
+  - id: codebase-evidence-map
+    title: Codebase evidence map
+    status: canonical-bypassed
+    canonical: integration/src/model/project-map.ts
+    usedIn: 7
+    sample:
+      - integration/src/cli.ts
+      - integration/src/model/inventory.ts
+      - integration/src/model/pattern-map.ts
+      - integration/src/model/proposal.ts
+  - id: catalogue-access
+    title: Catalogue and knowledge graph loading
+    status: canonical-bypassed
+    canonical: integration/src/catalogue.ts
+    usedIn: 8
+    sample:
+      - integration/src/cli.ts
+      - integration/src/mcp.ts
+      - integration/src/profile.ts
+      - integration/src/init.ts
+
+practicePatterns:
+  - id: product-principles
+    discipline: product
+    confidence: medium
+    rationale: Keep conformance scope grounded in explicit maintainability and trust principles.
+  - id: product-strategy-stack
+    discipline: product
+    confidence: medium
+    rationale: Keep product.md, validator design, integration MVP, and rulepack roadmap aligned.
+  - id: definition-of-ready-done
+    discipline: product
+    confidence: medium
+    rationale: Require evidence, ratification, and validation before moving from advisory to blocking.
+  - id: guardrail-metrics
+    discipline: product
+    confidence: high
+    rationale: Promote rulepacks only with precision, waiver, disable, latency, and flapping metrics.
+  - id: progressive-disclosure
+    discipline: ux
+    confidence: medium
+    rationale: Show high-signal findings first, then evidence and rationale.
+  - id: system-status-visibility
+    discipline: ux
+    confidence: medium
+    rationale: Make advisory, warning, blocking, and fail-open states obvious to agents and reviewers.
+  - id: error-message-design
+    discipline: ux
+    confidence: medium
+    rationale: Findings should say what happened, why it matters, and the smallest fix.

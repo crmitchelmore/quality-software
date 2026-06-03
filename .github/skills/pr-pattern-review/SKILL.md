@@ -132,5 +132,9 @@ Always tie a finding back to **why** (the adopted philosophy/pattern), state the
 - **Advisories never block.** Reuse and capability-bypass findings are guidance; the
   author may justify a deliberate exception (genuinely distinct concept, different
   layer). Hybrid architectures are legitimate.
+- **Avoid capability false positives.** Do not treat declarative mechanisms (for example
+  Jakarta validation annotations) or DI type imports (for example injected
+  `ObjectMapper`) as bypasses. Capability bypass should mean a net-new inline
+  implementation or construction that avoids an existing canonical helper/factory.
 - **Intentional deviations:** if the author confirms a deviation is deliberate, record
   the rationale in the PR thread rather than forcing the change.
