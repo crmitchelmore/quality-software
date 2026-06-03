@@ -92,6 +92,12 @@ test("evidence map: layers, dependency graph, duplicate canonical, hexagonal can
   const userMod = map.modules.find((m) => m.path === "src/domain/user.ts")!;
   assert.ok(userMod.inbound >= 1);
 
+  // modules carry language + provenance (the neutral model seam, design 15)
+  assert.equal(userMod.language, "typescript");
+  assert.equal(userMod.provenance.provider, "typescript");
+  assert.equal(userMod.provenance.tier, 2);
+  assert.ok(map.meta.extraction.providers.includes("typescript"));
+
   // duplicate symbol UserRepository across domain + infrastructure, different layers
   const dup = map.duplicateSymbols.find((d) => d.name === "UserRepository");
   assert.ok(dup, "expected UserRepository duplicate cluster");

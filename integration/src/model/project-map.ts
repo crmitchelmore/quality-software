@@ -3,7 +3,9 @@ import { join } from "node:path";
 import { execSync } from "node:child_process";
 import { walkSourceFiles } from "../fs-util.js";
 import { relPath } from "../detectors/util.js";
-import { extractFile, type ExportedSymbol } from "./extract.js";
+import type { ExportedSymbol } from "./extract.js";
+import { defaultRegistry, type ProviderRegistry } from "./lang/registry.js";
+import type { Provenance } from "./lang/types.js";
 
 /**
  * The codebase EVIDENCE MAP (design 14). Deliberately NOT an authoritative
@@ -22,12 +24,15 @@ export type Layer = "domain" | "application" | "infrastructure" | "interface" | 
 
 export interface ModuleInfo {
   path: string; // repo-relative
+  language: string;
   layer: Layer;
   isBarrel: boolean;
   isTest: boolean;
+  isGenerated: boolean;
   exports: ExportedSymbol[];
   imports: { spec: string; typeOnly: boolean; resolved?: string }[];
   inbound: number; // how many modules import this one
+  provenance: Provenance;
 }
 
 export interface CanonicalChoice {
@@ -60,7 +65,7 @@ export interface EvidenceMap {
     gitCommit?: string;
     scannerVersion: string;
     fileCount: number;
-    extraction: { method: "typescript-syntactic"; confidence: "medium"; knownLimitations: string[] };
+    extraction: { method: string; confidence: "low" | "medium" | "high"; providers: string[]; knownLimitations: string[] };
   };
   layerGlobs: Record<Layer, string[]>;
   modules: ModuleInfo[];
@@ -73,6 +78,8 @@ export interface BuildOptions {
   /** Override layer classification globs (path prefixes, repo-relative). */
   layerPrefixes?: Partial<Record<Layer, string[]>>;
   srcDirs?: string[];
+  /** Language provider registry (design 15). Defaults to the built-in set. */
+  registry?: ProviderRegistry;
 }
 
 const DEFAULT_LAYER_PREFIXES: Record<Layer, string[]> = {
@@ -97,39 +104,6 @@ function classifyLayer(rel: string, prefixes: Record<Layer, string[]>): Layer {
   return "other";
 }
 
-/** Resolve a relative import spec against the importing file to a repo-relative module path. */
-function resolveSpec(fromRel: string, spec: string, known: Set<string>): string | undefined {
-  if (!spec.startsWith(".")) return undefined;
-  const dir = fromRel.split("/").slice(0, -1);
-  for (const part of spec.split("/")) {
-    if (part === "." || part === "") continue;
-    else if (part === "..") dir.pop();
-    else dir.push(part);
-  }
-  const base = dir.join("/");
-  // ESM/TS projects import with a `.js` specifier that maps to a `.ts` source file.
-  const jsToTs = base.replace(/\.js$/, ".ts").replace(/\.jsx$/, ".tsx").replace(/\.mjs$/, ".mts");
-  const stripped = base.replace(/\.(js|jsx|mjs|cjs)$/, "");
-  const candidates = [
-    base,
-    jsToTs,
-    `${stripped}.ts`,
-    `${stripped}.tsx`,
-    `${stripped}.mts`,
-    `${base}.ts`,
-    `${base}.tsx`,
-    `${base}.js`,
-    `${base}.jsx`,
-    `${base}.mts`,
-    `${stripped}/index.ts`,
-    `${stripped}/index.tsx`,
-    `${base}/index.ts`,
-    `${base}/index.tsx`,
-    `${base}/index.js`,
-  ];
-  return candidates.find((c) => known.has(c));
-}
-
 function gitCommit(repoRoot: string): string | undefined {
   try {
     return execSync(`git -C "${repoRoot}" rev-parse --short HEAD`, { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim();
@@ -142,41 +116,50 @@ export function buildEvidenceMap(repoRoot: string, opts: BuildOptions = {}): Evi
   const prefixes: Record<Layer, string[]> = { ...DEFAULT_LAYER_PREFIXES };
   for (const [k, v] of Object.entries(opts.layerPrefixes ?? {})) prefixes[k as Layer] = v as string[];
   const srcDirs = opts.srcDirs ?? ["src", "lib", "app", "packages", "test", "tests"];
+  const registry = opts.registry ?? defaultRegistry();
 
-  // --- Tier 1: parse every file into a module record ---
+  // --- Tier 1: parse every file into a module record via its language provider ---
   const modules: ModuleInfo[] = [];
   const seen = new Set<string>();
+  const providerIds = new Set<string>();
   for (const dir of srcDirs) {
     for (const abs of walkSourceFiles(join(repoRoot, dir))) {
       const rel = relPath(repoRoot, abs);
       if (seen.has(rel)) continue;
       seen.add(rel);
-      let syntax;
+      const provider = registry.providerFor(rel);
+      if (!provider) continue;
+      let facts;
       try {
-        syntax = extractFile(rel, readFileSync(abs, "utf8"));
+        facts = provider.extract(rel, readFileSync(abs, "utf8"));
       } catch {
         continue;
       }
+      providerIds.add(provider.id);
       modules.push({
         path: rel,
-        layer: classifyLayer(rel, prefixes),
-        isBarrel: syntax.isBarrel,
-        isTest: isTestPath(rel),
-        exports: syntax.exports,
-        imports: syntax.imports.map((i) => ({ ...i })),
+        language: facts.language,
+        layer: facts.layerHint ?? classifyLayer(rel, prefixes),
+        isBarrel: facts.isBarrel,
+        isTest: facts.isTest,
+        isGenerated: facts.isGenerated,
+        exports: facts.exports.map((e) => ({ name: e.name, kind: e.kind })),
+        imports: facts.imports.map((i) => ({ spec: i.raw, typeOnly: i.typeOnly ?? false, resolved: i.resolved })),
         inbound: 0,
+        provenance: facts.provenance,
       });
     }
   }
 
-  // --- dependency graph + inbound counts ---
+  // --- dependency graph + inbound counts (resolution delegated to the provider) ---
   const known = new Set(modules.map((m) => m.path));
   const inbound = new Map<string, number>();
   const edges: { from: string; to: string }[] = [];
   for (const m of modules) {
+    const provider = registry.providerFor(m.path);
     const resolvedTargets = new Set<string>();
     for (const imp of m.imports) {
-      const resolved = resolveSpec(m.path, imp.spec, known);
+      const resolved = provider?.resolveRef(imp.spec, { fromModule: m.path, known });
       imp.resolved = resolved;
       if (resolved && resolved !== m.path) resolvedTargets.add(resolved);
     }
@@ -223,8 +206,9 @@ export function buildEvidenceMap(repoRoot: string, opts: BuildOptions = {}): Evi
       scannerVersion: SCANNER_VERSION,
       fileCount: modules.length,
       extraction: {
-        method: "typescript-syntactic",
+        method: "provider-based",
         confidence: "medium",
+        providers: [...providerIds].sort(),
         knownLimitations: ["tsconfig path aliases", "monorepo package boundaries", "dynamic import()"],
       },
     },
