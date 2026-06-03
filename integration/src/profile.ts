@@ -20,11 +20,18 @@ interface RawProfile {
     reject?: ({ id: string; reason?: string } | string)[];
     tie_breakers?: unknown[];
   };
-  adopt?: ({ id: string } & Partial<AdoptedPattern>)[];
-  ban?: { id: string; enforcement?: string; reason?: string }[];
+  adopt?: RawAdopt;
+  ban?: RawBan;
+  /** Generated configs nest patterns under a `patterns:` key. */
+  patterns?: { adopt?: RawAdopt; ban?: RawBan };
   practicePatterns?: { adopt?: ({ id: string } & Partial<AdoptedPattern>)[] };
   phases?: Partial<ResolvedProfile["phases"]>;
 }
+
+type RawAdopt =
+  | ({ id: string } & Partial<AdoptedPattern>)[]
+  | Record<string, ({ id: string } & Partial<AdoptedPattern>)[]>;
+type RawBan = { id: string; enforcement?: string; reason?: string }[];
 
 const DEFAULT_PHASES: ResolvedProfile["phases"] = {
   // Design 13.3: write-time advisory + fail-open by default.
@@ -34,6 +41,21 @@ const DEFAULT_PHASES: ResolvedProfile["phases"] = {
 };
 
 const idOf = (v: { id: string } | string): string => (typeof v === "string" ? v : v.id);
+
+type RawAdoptEntry = { id: string } & Partial<AdoptedPattern>;
+
+/** Accept either a flat adopt list or one grouped by altitude band, in high→medium→low order. */
+function flattenAdopt(adopt: RawProfile["adopt"]): RawAdoptEntry[] {
+  if (!adopt) return [];
+  if (Array.isArray(adopt)) return adopt;
+  const order = ["high", "medium", "low"];
+  const keys = [...Object.keys(adopt)].sort((a, b) => {
+    const ai = order.indexOf(a);
+    const bi = order.indexOf(b);
+    return (ai === -1 ? order.length : ai) - (bi === -1 ? order.length : bi) || a.localeCompare(b);
+  });
+  return keys.flatMap((k) => adopt[k] ?? []);
+}
 
 export class ProfileError extends Error {}
 
@@ -56,14 +78,19 @@ export function loadProfile(path: string, catalogue: Catalogue): ResolvedProfile
   }));
   const philosophiesReject = (raw.philosophies?.reject ?? []).map(idOf);
 
-  const adopt: AdoptedPattern[] = (raw.adopt ?? []).map((p) => ({
+  // `adopt`/`ban` may live at the top level (hand-written profiles) or nested
+  // under `patterns:` (generated configs); `adopt` may be a flat list or grouped
+  // by altitude band (`{ high: [...], medium: [...], low: [...] }`).
+  const rawAdopt = flattenAdopt(raw.adopt ?? raw.patterns?.adopt);
+  const rawBan = raw.ban ?? raw.patterns?.ban ?? [];
+  const adopt: AdoptedPattern[] = rawAdopt.map((p) => ({
     id: p.id,
     enforcement: (p.enforcement as AdoptedPattern["enforcement"]) ?? "advise",
     appliesTo: p.appliesTo,
     options: p.options,
     sourcePhilosophy: p.sourcePhilosophy,
   }));
-  const ban = (raw.ban ?? []).map((b) => ({
+  const ban = rawBan.map((b) => ({
     id: b.id,
     enforcement: b.enforcement ?? "block",
     reason: b.reason,

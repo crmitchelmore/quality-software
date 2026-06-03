@@ -1,6 +1,7 @@
 import type { Catalogue } from "../catalogue.js";
 import type { EvidenceMap, CandidatePattern } from "./project-map.js";
 import { selectCorePhilosophies } from "./philosophies.js";
+import { altitudeOf, type Altitude } from "./inventory.js";
 
 /**
  * Turn the (advisory) evidence map into a CONSERVATIVE, warn-only candidate profile
@@ -11,7 +12,7 @@ import { selectCorePhilosophies } from "./philosophies.js";
 export interface ProfileProposal {
   yaml: string;
   philosophies: { id: string; reason: string }[];
-  adopt: { id: string; enforcement: "advise" | "warn"; confidence: string; reason: string }[];
+  adopt: { id: string; enforcement: "advise" | "warn"; confidence: string; reason: string; altitude: Altitude }[];
   anchors: { name: string; path: string; confidence: string }[];
   notes: string[];
 }
@@ -32,12 +33,16 @@ export function proposeProfileFromEvidence(map: EvidenceMap, catalogue: Catalogu
   }
   const adoptedCands = [...byId.values()];
 
-  const adopt: ProfileProposal["adopt"] = adoptedCands.map((cand) => ({
-    id: cand.patternId,
-    enforcement: confidenceToEnforcement(cand.confidence),
-    confidence: cand.confidence,
-    reason: cand.evidence[0] ?? "structural evidence",
-  }));
+  const adopt: ProfileProposal["adopt"] = adoptedCands.map((cand) => {
+    const node = catalogue.nodeById.get(cand.patternId);
+    return {
+      id: cand.patternId,
+      enforcement: confidenceToEnforcement(cand.confidence),
+      confidence: cand.confidence,
+      reason: cand.evidence[0] ?? "structural evidence",
+      altitude: node?.altitude ?? altitudeOf(node?.group ?? ""),
+    };
+  });
 
   // Candidate canonical anchors from high/medium-confidence duplicate clusters.
   const anchors: ProfileProposal["anchors"] = [];
@@ -67,7 +72,7 @@ export function proposeProfileFromEvidence(map: EvidenceMap, catalogue: Catalogu
 
 function renderProfileYaml(
   philosophies: { id: string }[],
-  adopt: { id: string; enforcement: string }[],
+  adopt: { id: string; enforcement: string; altitude: Altitude }[],
 ): string {
   const lines: string[] = [];
   lines.push("# Candidate conformance profile (auto-proposed, warn-only).");
@@ -78,14 +83,28 @@ function renderProfileYaml(
   if (philosophies.length) for (const p of philosophies) lines.push(`  - ${p.id}`);
   else lines.push("  []");
   lines.push("patterns:");
+  lines.push("  # Adopted patterns grouped by altitude (scope of application):");
+  lines.push("  #   high   = application / platform");
+  lines.push("  #   medium = component / service");
+  lines.push("  #   low    = method / class / file");
   lines.push("  adopt:");
+  const bands: { key: Altitude; label: string }[] = [
+    { key: "high", label: "application / platform" },
+    { key: "medium", label: "component / service" },
+    { key: "low", label: "method / class / file" },
+  ];
   if (adopt.length) {
-    for (const a of adopt) {
-      lines.push(`    - id: ${a.id}`);
-      lines.push(`      enforcement: ${a.enforcement}`);
+    for (const band of bands) {
+      const inBand = adopt.filter((a) => a.altitude === band.key);
+      if (!inBand.length) continue;
+      lines.push(`    ${band.key}: # ${band.label}`);
+      for (const a of inBand) {
+        lines.push(`      - id: ${a.id}`);
+        lines.push(`        enforcement: ${a.enforcement}`);
+      }
     }
   } else {
-    lines.push("    []");
+    lines.push("    {}");
   }
   lines.push("  ban: []");
   return lines.join("\n") + "\n";

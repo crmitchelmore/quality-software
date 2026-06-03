@@ -128,6 +128,11 @@ test("proposal stays warn-only and never auto-bans", () => {
   const proposal = proposeProfileFromEvidence(map, loadCatalogue(dir));
   assert.ok(!proposal.yaml.includes("enforcement: block"));
   assert.match(proposal.yaml, /ban: \[\]/);
+  // adopt is grouped by altitude band (scope) when non-empty; every entry carries an altitude.
+  if (proposal.adopt.length) {
+    assert.match(proposal.yaml, /adopt:\n(?:.*\n)*?\s{4}(high|medium|low):/);
+    for (const a of proposal.adopt) assert.ok(["high", "medium", "low"].includes(a.altitude));
+  }
   for (const a of proposal.adopt) assert.notEqual(a.enforcement, "block");
 });
 
