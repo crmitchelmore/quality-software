@@ -12,6 +12,7 @@ import { buildEvidenceMap } from "./model/project-map.js";
 import { proposeProfileFromEvidence } from "./model/proposal.js";
 import { renderOnboardingReport, renderAnchorsYaml } from "./model/report.js";
 import { buildInventory, renderInventory } from "./model/inventory.js";
+import { buildPatternMap, renderPatternMapYaml } from "./model/pattern-map.js";
 import { reviewPR, changesFromGit, gitBaseContent } from "./review/pr-review.js";
 import { mkdirSync } from "node:fs";
 
@@ -196,6 +197,11 @@ function cmdOnboard(args: string[]): void {
     writeFileSync(join(cwd, "patterns.anchors.yaml"), renderAnchorsYaml(proposal));
     process.stderr.write(`Wrote patterns.anchors.yaml. Review the canonical anchors before trusting them.\n`);
   }
+  if (args.includes("--write-map")) {
+    const pm = buildPatternMap(map, catalogue);
+    writeFileSync(join(cwd, "patterns.map.yaml"), renderPatternMapYaml(pm));
+    process.stderr.write(`Wrote patterns.map.yaml (detailed companion: where patterns live, how & what flavour).\n`);
+  }
 }
 
 function cmdReview(args: string[]): void {
@@ -254,7 +260,7 @@ async function main(): Promise<void> {
           "  conformance hook <session-start|post-write|guard-shell|turn-end> [--runtime copilot|claude|codex|generic]\n" +
           "                                                                    (reads hook JSON on stdin)\n" +
           "  conformance init [--write]                                          (propose a candidate profile)\n" +
-          "  conformance onboard [--inventory] [--write-profile] [--write-anchors]  (scan codebase; print pattern inventory + evidence)\n" +
+          "  conformance onboard [--inventory] [--write-profile] [--write-anchors] [--write-map]  (scan codebase; print pattern inventory + evidence)\n" +
           "  conformance check [--event PR_REVIEW|BATCH] [--base <ref>] [paths…] (run the engine; exit 1 on block)\n" +
           "  conformance review [--base <ref>] [--json]                          (baseline-aware PR review; exit 1 on net-new block)\n" +
           "  conformance profile                                                 (print the resolved profile)\n",
