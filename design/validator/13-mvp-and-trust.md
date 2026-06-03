@@ -7,6 +7,15 @@
 > the *why*; patterns are the *what*; **detectors are the product.** Where earlier docs
 > conflict with this one, this document wins.
 
+> **Update (2026-06-03, see [15](15-language-neutral-model.md) + [16](16-llm-first-detection.md)):**
+> detection is being made language-neutral and **LLM-first for the advisory tier**. This does
+> **not** overturn the tiers below — it refines them. The *enforceable* tier stays deterministic
+> and is still the **only** thing that may block a merge (now stated as a machine-verifiable
+> *evidence contract*). The *advisory* tier's detection mechanism becomes a catalogue-grounded
+> LLM judge (covering all 275 patterns across any language), with regex/AST/tree-sitter demoted
+> to an accelerator, evidence provider, cache, and blocking *verifier*. "LLM-first" means
+> **first for coverage and reasoning, never sole authority for blocking.**
+
 ## 13.1 Two tiers — enforceable vs advisory
 
 The catalogue is explicitly split so nothing implies that all 460 items are equally

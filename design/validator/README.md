@@ -48,6 +48,8 @@ assigned to phases.
 12. [Runtime-agnostic integration contract](12-integration-contract.md)
 13. [Enforcement tiers, MVP & trust (review-incorporated)](13-mvp-and-trust.md)
 14. [Codebase evidence map & onboarding](14-codebase-model.md)
+15. [Language-neutral code model](15-language-neutral-model.md)
+16. [LLM-first detection & the blocking trust line](16-llm-first-detection.md)
 
 > **Read [13](13-mvp-and-trust.md) for the current design stance.** Two independent reviews
 > reshaped the approach: a two-tier model (a small set of *certified enforceable rulepacks*
