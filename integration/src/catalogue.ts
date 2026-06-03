@@ -16,6 +16,7 @@ export interface GraphNode {
   kind: "software-pattern" | "practice-pattern" | "philosophy";
   title: string;
   group: string;
+  altitude?: "low" | "medium" | "high";
 }
 export interface GraphEdge {
   source: string;

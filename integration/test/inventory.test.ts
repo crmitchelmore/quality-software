@@ -35,10 +35,11 @@ test("inventory detects CQRS + event sourcing and implies DDD, grouped by altitu
   const inv = buildInventory(map, catalogue);
 
   const highIds = inv.high.map((e) => e.id);
-  assert.ok(highIds.includes("cqrs"), `expected cqrs in high, got ${highIds}`);
   assert.ok(highIds.includes("event-sourcing"), `expected event-sourcing in high, got ${highIds}`);
 
+  // CQRS is component/service scope (medium altitude), per the curated catalogue tags.
   const medIds = inv.medium.map((e) => e.id);
+  assert.ok(medIds.includes("cqrs"), `expected cqrs in medium, got ${medIds}`);
   assert.ok(medIds.includes("aggregate"));
   assert.ok(medIds.includes("domain-event"));
 
@@ -50,6 +51,11 @@ test("inventory detects CQRS + event sourcing and implies DDD, grouped by altitu
   }
 
   assert.ok(inv.philosophies.some((p) => p.id === "domain-driven-design"));
+
+  // Entries are bucketed by their curated per-pattern altitude.
+  for (const e of inv.high) assert.equal(e.altitude, "high");
+  for (const e of inv.medium) assert.equal(e.altitude, "medium");
+  for (const e of inv.low) assert.equal(e.altitude, "low");
 
   const md = renderInventory(inv);
   assert.match(md, /High-level — architecture/);

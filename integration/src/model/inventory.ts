@@ -18,6 +18,7 @@ export interface InventoryEntry {
   id: string;
   title: string;
   group: string;
+  altitude: Altitude;
   confidence: "low" | "medium" | "high";
   evidence: string[];
   locations: string[];
@@ -68,6 +69,8 @@ export function buildInventory(map: EvidenceMap, catalogue: Catalogue): Inventor
       id: cand.patternId,
       title: node.title,
       group: node.group,
+      // Prefer the curated per-pattern altitude; fall back to the group heuristic.
+      altitude: node.altitude ?? altitudeOf(node.group),
       confidence: cand.confidence,
       evidence: cand.evidence,
       locations: cand.locations,
@@ -77,8 +80,7 @@ export function buildInventory(map: EvidenceMap, catalogue: Catalogue): Inventor
   }
 
   for (const entry of seen.values()) {
-    const bucket = altitudeOf(entry.group);
-    (bucket === "high" ? high : bucket === "low" ? low : medium).push(entry);
+    (entry.altitude === "high" ? high : entry.altitude === "low" ? low : medium).push(entry);
   }
 
   const byConfThenTitle = (a: InventoryEntry, b: InventoryEntry) =>

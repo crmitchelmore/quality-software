@@ -1,6 +1,6 @@
 import type { EvidenceMap, ModuleInfo } from "./project-map.js";
 import type { Catalogue } from "../catalogue.js";
-import { buildInventory, altitudeOf, type Altitude, type InventoryEntry } from "./inventory.js";
+import { buildInventory, type Altitude, type InventoryEntry } from "./inventory.js";
 
 /**
  * The DETAILED companion to the (intentionally small) patterns.config.yaml. Where
@@ -103,7 +103,7 @@ export function buildPatternMap(map: EvidenceMap, catalogue: Catalogue): Pattern
   const toEntry = (e: InventoryEntry): PatternMapEntry => ({
     id: e.id,
     title: e.title,
-    altitude: altitudeOf(e.group),
+    altitude: e.altitude,
     confidence: e.confidence,
     flavour: flavourFor(e.id, fw),
     evidence: e.evidence,
