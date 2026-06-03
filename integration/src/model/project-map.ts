@@ -277,7 +277,7 @@ export function deriveEvidenceMap(modules: ModuleInfo[], repoRoot: string, opts:
  * not the deciding rule: prefer explicit-quality signals (preferred layer, non-test,
  * non-barrel) and use inbound + short path only to break ties. Always confidence-tagged.
  */
-function pickCanonical(files: string[], byPath: Map<string, ModuleInfo>): CanonicalChoice {
+export function pickCanonical(files: string[], byPath: Map<string, ModuleInfo>): CanonicalChoice {
   const PREFERRED: Layer[] = ["domain", "application"];
   const scored = files.map((path) => {
     const m = byPath.get(path)!;

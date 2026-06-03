@@ -59,3 +59,21 @@ export function layerOfImportSpec(spec: string): Layer | undefined {
   if (has("/domain/", "/core/")) return "domain";
   return undefined;
 }
+
+/**
+ * Map configured path globs to architectural layers, so the write-time detector
+ * and the certifier's forbidden-layer-edge policy derive the SAME boundary from a
+ * profile (one boundary identity, two altitudes). Falls back to `dflt` when no
+ * glob names a recognised layer.
+ */
+export function layersFromGlobs(globs: string[] | undefined, dflt: Layer[]): Layer[] {
+  if (!globs || globs.length === 0) return dflt;
+  const layers = new Set<Layer>();
+  for (const g of globs) {
+    for (const layer of Object.keys(DEFAULT_LAYER_PREFIXES) as Layer[]) {
+      if (layer === "other") continue;
+      if (DEFAULT_LAYER_PREFIXES[layer].some((p) => g.includes(p.replace(/\/$/, "")))) layers.add(layer);
+    }
+  }
+  return layers.size ? [...layers] : dflt;
+}

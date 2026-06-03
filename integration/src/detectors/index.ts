@@ -2,7 +2,7 @@ import type { Detector, ResolvedProfile } from "../contract.js";
 import { forbiddenImportDetector } from "./forbidden-import.js";
 import { bannedConstructDetector } from "./banned-construct.js";
 import { reuseDetector } from "./reuse.js";
-import { DEFAULT_LAYER_PREFIXES, type Layer } from "../model/layers.js";
+import { layersFromGlobs } from "../model/layers.js";
 
 /**
  * Build the active detector set from a resolved profile. Only detectors backed
@@ -35,20 +35,3 @@ export function buildDetectors(profile: ResolvedProfile): Detector[] {
   return detectors;
 }
 
-/**
- * Map configured path globs to architectural layers so the write-time detector
- * and the certifier's forbidden-layer-edge predicate agree on the SAME boundary
- * (critique: one boundary identity, two altitudes). Falls back to `dflt` when no
- * glob names a recognised layer.
- */
-function layersFromGlobs(globs: string[] | undefined, dflt: Layer[]): Layer[] {
-  if (!globs || globs.length === 0) return dflt;
-  const layers = new Set<Layer>();
-  for (const g of globs) {
-    for (const layer of Object.keys(DEFAULT_LAYER_PREFIXES) as Layer[]) {
-      if (layer === "other") continue;
-      if (DEFAULT_LAYER_PREFIXES[layer].some((p) => g.includes(p.replace(/\/$/, "")))) layers.add(layer);
-    }
-  }
-  return layers.size ? [...layers] : dflt;
-}

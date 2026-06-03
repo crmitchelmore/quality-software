@@ -11,6 +11,7 @@ import { walkSourceFiles } from "./fs-util.js";
 import { buildEvidenceMap } from "./model/project-map.js";
 import { proposeProfileFromEvidence } from "./model/proposal.js";
 import { renderOnboardingReport, renderAnchorsYaml } from "./model/report.js";
+import { reviewPR, changesFromGit, gitBaseContent } from "./review/pr-review.js";
 import { mkdirSync } from "node:fs";
 
 async function readStdin(): Promise<string> {
@@ -184,6 +185,30 @@ function cmdOnboard(args: string[]): void {
   }
 }
 
+function cmdReview(args: string[]): void {
+  const cwd = process.cwd();
+  const i = args.indexOf("--base");
+  const base = i >= 0 ? args[i + 1] : "origin/main";
+  const catalogue = loadCatalogue(cwd);
+  let profile;
+  try {
+    profile = loadProfile(join(cwd, "patterns.config.yaml"), catalogue);
+  } catch (e) {
+    process.stderr.write((e as Error).message + "\n");
+    process.exitCode = e instanceof ProfileError ? 2 : 1;
+    return;
+  }
+  const changes = changesFromGit(cwd, base);
+  if (changes.length === 0) {
+    process.stdout.write(`No changes detected against ${base}.\n`);
+    return;
+  }
+  const result = reviewPR({ repoRoot: cwd, profile, changes, baseContent: gitBaseContent(cwd, base) });
+  process.stdout.write(result.summary + "\n\n");
+  printFindings(result.findings);
+  if (result.decision === "block") process.exitCode = 1;
+}
+
 async function main(): Promise<void> {
   const [cmd, ...rest] = process.argv.slice(2);
   switch (cmd) {
@@ -202,6 +227,9 @@ async function main(): Promise<void> {
     case "onboard":
       cmdOnboard(rest);
       break;
+    case "review":
+      cmdReview(rest);
+      break;
     default:
       process.stderr.write(
         "Usage:\n" +
@@ -210,6 +238,7 @@ async function main(): Promise<void> {
           "  conformance init [--write]                                          (propose a candidate profile)\n" +
           "  conformance onboard [--write-profile] [--write-anchors]             (scan codebase; print evidence preview)\n" +
           "  conformance check [--event PR_REVIEW|BATCH] [--base <ref>] [paths…] (run the engine; exit 1 on block)\n" +
+          "  conformance review [--base <ref>]                                   (baseline-aware PR review; exit 1 on net-new block)\n" +
           "  conformance profile                                                 (print the resolved profile)\n",
       );
       process.exitCode = cmd && !["help", "-h", "--help"].includes(cmd) ? 1 : 0;
