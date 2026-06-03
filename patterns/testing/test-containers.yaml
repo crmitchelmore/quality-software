@@ -1,0 +1,84 @@
+id: "test-containers"
+title: "Test Containers"
+aka:
+  - "Testcontainers"
+  - "Containerised Integration Tests"
+scale: "integration"
+category: "testing"
+altitude: "medium"
+maturity: "established"
+short_description: "Run real infrastructure dependencies in ephemeral Docker containers controlled by the test lifecycle."
+description: "Test Containers use libraries such as Testcontainers to start real databases, queues, browsers, or brokers before integration tests and destroy them afterwards. Tests gain realism without relying on shared staging services. The pattern works best when containers are scoped, seeded, and cleaned consistently so tests remain hermetic and parallelisable."
+problem: "Integration tests need real dependency behaviour, but shared test environments are flaky, slow, and polluted by other runs."
+context: "Use for repository, adapter, and service integration tests where the real database, cache, broker, or external protocol semantics matter."
+consequences:
+  - "Catches adapter and infrastructure behaviour that fakes or mocks miss."
+  - "Makes integration tests self-contained in CI when Docker is available."
+  - "Adds startup cost and requires careful lifecycle management for speed and isolation."
+synergies:
+  - pattern: "hexagonal-test-boundaries"
+    reason: "Real adapters can be verified against containers while application tests use in-memory fakes."
+  - pattern: "contract-testing"
+    reason: "Provider verification can run against realistic infrastructure without shared environments."
+  - pattern: "test-sharding"
+    reason: "Container isolation helps parallel workers avoid shared mutable state."
+conflicts_with:
+  - "fake-object"
+alternatives:
+  - "fake-object"
+  - "ephemeral-environment"
+  - "contract-testing"
+languages:
+  - "language-agnostic"
+  - "java"
+  - "typescript"
+  - "javascript"
+  - "python"
+  - "go"
+frameworks:
+  - "none"
+  - "nodejs"
+  - "spring-boot"
+  - "fastapi"
+  - "django"
+  - "kafka"
+  - "redis"
+project_types:
+  - "web-api"
+  - "backend-service"
+  - "microservices"
+  - "data-pipeline"
+  - "modular-monolith"
+tags:
+  - "integration-testing"
+  - "docker"
+  - "infrastructure"
+  - "hermetic"
+examples:
+  - language: "java"
+    title: "Postgres repository test"
+    negative: |-
+      var repo = new OrderRepository(stagingDataSource());
+      repo.save(order);
+      assertThat(repo.find(order.id())).isPresent();
+    positive: |-
+      @Container
+      static PostgreSQLContainer<?> pg = new PostgreSQLContainer<>("postgres:15");
+      
+      @Test
+      void savesOrder() {
+        var repo = new OrderRepository(dataSourceFrom(pg));
+        repo.save(order);
+        assertThat(repo.find(order.id())).isPresent();
+      }
+    explanation: "The positive test owns its database lifecycle; the negative test depends on shared staging state and availability."
+ratings:
+  small:
+    score: 3
+    notes: "Useful when dependency semantics matter, though startup cost can dominate tiny projects."
+  medium:
+    score: 5
+    notes: "Excellent default for adapter and repository integration tests."
+  large:
+    score: 5
+    notes: "High value when paired with reusable fixtures, sharding, and CI container capacity."

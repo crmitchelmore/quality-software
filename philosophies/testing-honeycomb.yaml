@@ -1,0 +1,81 @@
+id: testing-honeycomb
+title: Testing Honeycomb
+discipline: testing
+aka:
+  - Microservice testing honeycomb
+originators:
+  - Spotify
+  - André Schaffer
+  - Rickard Dybeck
+origin:
+  type: blog
+  title: Testing of Microservices
+  year: 2018
+short_description: >-
+  Treat the microservice as the unit: write mostly service-level integration tests, a few internal
+  implementation tests, and as few cross-service integrated tests as possible.
+description: >-
+  The Testing Honeycomb emerged from Spotify's microservice experience. It argues that, for a
+  microservice, the service boundary is the meaningful unit of deployment and confidence. Most tests
+  should exercise the service in isolation through its real API and persistence boundary, with only a
+  small number of implementation-detail tests for complex internals and a strong bias against tests
+  whose result depends on another live service.
+core_tenets:
+  - Test the deployable service through its public contract rather than through internal classes.
+  - Make service-level integration tests the dominant layer for microservices.
+  - Reserve implementation-detail tests for genuinely complex internal algorithms or transformations.
+  - Avoid integrated tests whose pass or fail result depends on another service's correctness.
+  - Use contracts or equivalent boundary checks to keep independent services compatible.
+key_ideas:
+  - name: The service is the unit
+    explanation: >-
+      In microservices, confidence comes from exercising the deployed service boundary, not from
+      exhaustively isolating tiny internal objects.
+  - name: Avoid integrated tests
+    explanation: >-
+      Tests involving several live services are slow, fragile and ambiguous because a failure may
+      belong to any participant.
+in_practice: >-
+  Spin up the service with realistic persistence and local dependencies, drive it through the same API
+  clients use, stub or contract-check other services, and keep only focused unit tests for internal
+  logic that is naturally isolated and worth testing separately.
+complements:
+  - extreme-programming-tdd
+tensions_with:
+  - philosophy: testing-trophy
+    reason: >-
+      The honeycomb and trophy both emphasise integration, but they use the term for different
+      contexts: isolated service testing in microservices versus collaborating frontend units.
+associated_patterns:
+  - pattern: contract-testing
+    reason: >-
+      Replaces fragile cross-service integrated tests with executable compatibility checks at service
+      boundaries.
+  - pattern: test-pyramid
+    reason: >-
+      The honeycomb is a deliberate microservice-specific correction to pyramid-shaped portfolios.
+  - pattern: fake-object
+    reason: >-
+      Fakes can isolate hard external services while preserving realistic service-level flows.
+  - pattern: stub
+    reason: >-
+      Stubs provide controlled responses from awkward external collaborators during isolated service
+      tests.
+successfully_applied:
+  - where: Spotify microservices
+    what: >-
+      Spotify Engineering described moving away from the classic pyramid towards a honeycomb model in
+      which service-level integration tests dominate and integrated tests across services are avoided.
+    evidence_strength: primary-source
+    source:
+      title: Testing of Microservices
+      url: https://engineering.atspotify.com/2018/01/testing-of-microservices/
+      year: 2018
+references:
+  - title: Testing of Microservices
+    author: André Schaffer and Rickard Dybeck
+    year: 2018
+    url: https://engineering.atspotify.com/2018/01/testing-of-microservices/
+  - title: Integrated Tests Are A Scam
+    author: J.B. Rainsberger
+    url: http://blog.thecodewhisperer.com/permalink/integrated-tests-are-a-scam

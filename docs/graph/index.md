@@ -4,10 +4,10 @@ A generated, machine-readable graph (`knowledge-graph.json`) linking software pa
 
 ## Totals
 
-- Software patterns: **275**
+- Software patterns: **290**
 - Practice patterns (product + UX): **145**
-- Philosophies: **39**
-- Edges: **2502**
+- Philosophies: **49**
+- Edges: **2629**
 
 ## Cross-domain bridges
 
@@ -28,9 +28,18 @@ flowchart LR
   atomic_design["Atomic Design"] --> atomic_design_components["Atomic Design Components"]
   atomic_design["Atomic Design"] --> design_tokens["Design Tokens"]
   atomic_design["Atomic Design"] --> pattern_library_governance["Pattern Library Governance"]
+  behaviour_driven_development["Behaviour-Driven Development"] --> given_when_then["Given-When-Then (BDD)"]
+  behaviour_driven_development["Behaviour-Driven Development"] --> arrange_act_assert["Arrange-Act-Assert"]
+  behaviour_driven_development["Behaviour-Driven Development"] --> page_object["Page Object"]
+  behaviour_driven_development["Behaviour-Driven Development"] --> object_mother["Object Mother"]
   calm_technology["Calm Technology"] --> toast_notification["Toast Notification"]
   calm_technology["Calm Technology"] --> skeleton_loading["Skeleton Loading"]
   calm_technology["Calm Technology"] --> system_status_visibility["System Status Visibility"]
+  classicist_tdd["Classicist Test-Driven Development"] --> arrange_act_assert["Arrange-Act-Assert"]
+  classicist_tdd["Classicist Test-Driven Development"] --> fake_object["Fake Object"]
+  classicist_tdd["Classicist Test-Driven Development"] --> stub["Stub"]
+  classicist_tdd["Classicist Test-Driven Development"] --> test_data_builder["Test Data Builder"]
+  classicist_tdd["Classicist Test-Driven Development"] --> test_double["Test Double"]
   clean_architecture_solid["Clean Architecture & SOLID"] --> clean_architecture["Clean Architecture"]
   clean_architecture_solid["Clean Architecture & SOLID"] --> hexagonal_architecture["Hexagonal Architecture (Ports & Adapters)"]
   clean_architecture_solid["Clean Architecture & SOLID"] --> onion_architecture["Onion Architecture"]
@@ -129,15 +138,6 @@ flowchart LR
   inclusive_design["Inclusive Design"] --> screen_reader_semantics["Screen Reader Semantics"]
   inclusive_design["Inclusive Design"] --> reduced_motion["Reduced Motion"]
   information_hiding["Information Hiding & Modular Decomposition"] --> facade["Facade"]
-  information_hiding["Information Hiding & Modular Decomposition"] --> separated_interface["Separated Interface"]
-  information_hiding["Information Hiding & Modular Decomposition"] --> bridge["Bridge"]
-  information_hiding["Information Hiding & Modular Decomposition"] --> adapter["Adapter"]
-  information_hiding["Information Hiding & Modular Decomposition"] --> repository["Repository"]
-  information_hiding["Information Hiding & Modular Decomposition"] --> anti_corruption_layer["Anti-Corruption Layer"]
-  jobs_to_be_done["Jobs to Be Done"] --> jobs_to_be_done_interview["Jobs-to-be-Done Interview"]
-  jobs_to_be_done["Jobs to Be Done"] --> jobs_to_be_done_framing["Jobs-to-be-Done Framing"]
-  jobs_to_be_done["Jobs to Be Done"] --> opportunity_scoring["Opportunity Scoring"]
-  lean_startup["The Lean Startup"] --> feature_flag_experimentation["Feature-Flag Experimentation"]
   class a_philosophy_of_software_design phil;
   class facade sw;
   class hexagonal_architecture sw;
@@ -151,10 +151,20 @@ flowchart LR
   class atomic_design_components prac;
   class design_tokens prac;
   class pattern_library_governance prac;
+  class behaviour_driven_development phil;
+  class given_when_then sw;
+  class arrange_act_assert sw;
+  class page_object sw;
+  class object_mother sw;
   class calm_technology phil;
   class toast_notification prac;
   class skeleton_loading prac;
   class system_status_visibility prac;
+  class classicist_tdd phil;
+  class fake_object sw;
+  class stub sw;
+  class test_data_builder sw;
+  class test_double sw;
   class clean_architecture_solid phil;
   class clean_architecture sw;
   class onion_architecture sw;
@@ -231,10 +241,7 @@ flowchart LR
   class product_operating_model prac;
   class outcome_based_roadmap prac;
   class extreme_programming_tdd phil;
-  class arrange_act_assert sw;
-  class given_when_then sw;
   class test_pyramid sw;
-  class test_double sw;
   class mock_object sw;
   class functional_core_type_driven phil;
   class pure_function sw;
@@ -253,15 +260,6 @@ flowchart LR
   class screen_reader_semantics prac;
   class reduced_motion prac;
   class information_hiding phil;
-  class separated_interface sw;
-  class bridge sw;
-  class adapter sw;
-  class jobs_to_be_done phil;
-  class jobs_to_be_done_interview prac;
-  class jobs_to_be_done_framing prac;
-  class opportunity_scoring prac;
-  class lean_startup phil;
-  class feature_flag_experimentation prac;
 ```
 
 ## Most-connected philosophies
@@ -276,11 +274,11 @@ flowchart LR
 | Human-Centred Design | ux | 27 |
 | Outcome Over Output | product | 27 |
 | Worse Is Better | software | 27 |
+| Continuous Delivery & Lean Software | software | 26 |
 | Simple Made Easy | software | 26 |
-| Continuous Delivery & Lean Software | software | 24 |
 | Don't Make Me Think | ux | 24 |
+| Extreme Programming & Test-Driven Development | software | 24 |
 | Product-Led Growth | product | 24 |
 | A Philosophy of Software Design | software | 23 |
 | Conceptual Integrity | software | 23 |
-| Clean Architecture & SOLID | software | 22 |
 

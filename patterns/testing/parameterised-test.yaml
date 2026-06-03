@@ -1,0 +1,81 @@
+id: "parameterised-test"
+title: "Parameterised Test"
+aka:
+  - "Table-Driven Test"
+  - "Data-Driven Test"
+  - "Parameterized Test"
+scale: "implementation"
+category: "testing"
+altitude: "low"
+maturity: "time-tested"
+short_description: "Run one test body over many named data rows so variants of the same behaviour are visible and cheap to extend."
+description: "Parameterised tests separate the case table from the test mechanics. Each row supplies inputs and expected outcomes for the same behavioural rule, making boundaries, equivalence classes, and regression cases obvious. They are best when all rows assert the same contract; mixing unrelated behaviours into one table creates a new kind of eager test."
+problem: "Copy-pasted tests differ only by data, making the case space hard to review and expensive to maintain."
+context: "Use when multiple examples exercise the same behaviour, especially boundary values, business tiers, parsers, and validation rules."
+consequences:
+  - "Shows the case matrix in one place and makes new variants cheap to add."
+  - "Reduces duplicated arrange/act/assert mechanics."
+  - "Poorly named rows or mixed behaviours can make failures vague and tables hard to read."
+synergies:
+  - pattern: "arrange-act-assert"
+    reason: "One clear test body preserves the same arrange, act, and assert shape for every row."
+  - pattern: "test-data-builder"
+    reason: "Builders keep table rows focused on the fields that vary."
+  - pattern: "property-based-testing"
+    reason: "Explicit rows cover known examples while properties explore generated cases."
+conflicts_with:
+  - "golden-master"
+alternatives:
+  - "property-based-testing"
+  - "test-data-builder"
+  - "object-mother"
+languages:
+  - "language-agnostic"
+  - "python"
+  - "java"
+  - "go"
+  - "typescript"
+  - "javascript"
+frameworks:
+  - "none"
+  - "nodejs"
+  - "spring-boot"
+  - "fastapi"
+  - "dotnet"
+project_types:
+  - "library"
+  - "web-api"
+  - "backend-service"
+  - "cli-tool"
+  - "modular-monolith"
+tags:
+  - "table-driven"
+  - "data-driven"
+  - "boundary-cases"
+examples:
+  - language: "python"
+    title: "Discount tiers as rows"
+    negative: |-
+      def test_standard(): assert discount(100, "standard") == 100
+      def test_gold(): assert discount(100, "gold") == 90
+      def test_platinum(): assert discount(100, "platinum") == 80
+    positive: |-
+      @pytest.mark.parametrize("price,tier,expected", [
+          (100, "standard", 100),
+          (100, "gold", 90),
+          (100, "platinum", 80),
+          (0, "gold", 0),
+      ])
+      def test_discount(price, tier, expected):
+          assert discount(price, tier) == expected
+    explanation: "The table makes the behavioural variants and boundary case visible without copy-pasting the test body."
+ratings:
+  small:
+    score: 5
+    notes: "Excellent low-cost pattern for removing copy-paste tests."
+  medium:
+    score: 5
+    notes: "Scales well across validation and business-rule suites."
+  large:
+    score: 4
+    notes: "Very useful, provided rows are named and tables are not allowed to combine unrelated behaviours."

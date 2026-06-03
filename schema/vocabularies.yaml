@@ -166,6 +166,7 @@ disciplines:
   - software
   - product
   - ux
+  - testing          # testing strategy/quality philosophies (pyramid, trophy, TDD schools …)
   - cross-cutting   # philosophies spanning disciplines
 
 # Product-management pattern categories (mapped to recognised PM workstreams).

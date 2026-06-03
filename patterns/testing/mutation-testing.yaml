@@ -1,0 +1,75 @@
+id: "mutation-testing"
+title: "Mutation Testing"
+aka:
+  - "Mutation-Testing-Driven Quality"
+  - "Fault-Based Testing"
+scale: "implementation"
+category: "testing"
+altitude: "low"
+maturity: "established"
+short_description: "Inject small faults into production code and measure whether the test suite detects them through the mutation score."
+description: "Mutation Testing tools change production code in small ways, such as flipping a comparison or removing a statement, then rerun tests. A killed mutant proves at least one test would catch that fault; a surviving mutant exposes a weak or missing assertion. Mutation score is more meaningful than line coverage because it measures fault detection rather than mere execution."
+problem: "Coverage reports show code was executed but not whether tests would fail when behaviour is wrong."
+context: "Use after a meaningful test suite exists, especially for libraries, pricing rules, parsers, safety-critical calculations, and legacy refactoring safety nets."
+consequences:
+  - "Reveals assertion-free or under-specified tests that coverage misses."
+  - "Provides a rigorous quality signal for critical code paths."
+  - "Can be computationally expensive and produces equivalent mutants that require triage."
+synergies:
+  - pattern: "property-based-testing"
+    reason: "Strong properties kill many mutants across generated inputs."
+  - pattern: "golden-master"
+    reason: "Characterisation suites can be strengthened by checking whether behavioural mutations are detected."
+  - pattern: "parameterised-test"
+    reason: "Explicit boundary rows often kill surviving comparison and constant mutations."
+conflicts_with:
+  - "snapshot-testing"
+alternatives:
+  - "property-based-testing"
+  - "fuzzing"
+  - "golden-master"
+languages:
+  - "language-agnostic"
+  - "java"
+  - "javascript"
+  - "typescript"
+  - "python"
+  - "csharp"
+frameworks:
+  - "none"
+  - "nodejs"
+  - "spring-boot"
+  - "dotnet"
+project_types:
+  - "library"
+  - "backend-service"
+  - "web-api"
+  - "safety-critical"
+  - "high-throughput"
+tags:
+  - "mutation-score"
+  - "coverage-quality"
+  - "pitest"
+  - "stryker"
+examples:
+  - language: "python"
+    title: "Weak assertion exposed by mutation"
+    negative: |-
+      def test_discount():
+          result = apply_discount(100, "gold")
+          assert result is not None  # mutants survive
+    positive: |-
+      def test_discount():
+          assert apply_discount(100, "gold") == 90
+          assert apply_discount(100, "standard") == 100
+    explanation: "The positive assertions kill mutations in the discount calculation; the negative test only proves the function returns something."
+ratings:
+  small:
+    score: 3
+    notes: "Often overkill for tiny apps but valuable for critical functions."
+  medium:
+    score: 4
+    notes: "Good PR-scoped quality gate for mature test suites."
+  large:
+    score: 4
+    notes: "High value on critical modules, but needs incremental execution to control cost."

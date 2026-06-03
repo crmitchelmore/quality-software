@@ -1849,11 +1849,46 @@
       "altitude": "medium"
     },
     {
+      "id": "deterministic-simulation",
+      "kind": "software-pattern",
+      "title": "Deterministic Simulation",
+      "group": "testing",
+      "altitude": "high"
+    },
+    {
+      "id": "dummy-object",
+      "kind": "software-pattern",
+      "title": "Dummy Object",
+      "group": "testing",
+      "altitude": "low"
+    },
+    {
+      "id": "ephemeral-environment",
+      "kind": "software-pattern",
+      "title": "Ephemeral Environment",
+      "group": "testing",
+      "altitude": "high"
+    },
+    {
       "id": "fake-object",
       "kind": "software-pattern",
       "title": "Fake Object",
       "group": "testing",
       "altitude": "low"
+    },
+    {
+      "id": "flaky-test-quarantine",
+      "kind": "software-pattern",
+      "title": "Flaky Test Quarantine",
+      "group": "testing",
+      "altitude": "high"
+    },
+    {
+      "id": "fuzzing",
+      "kind": "software-pattern",
+      "title": "Fuzzing",
+      "group": "testing",
+      "altitude": "medium"
     },
     {
       "id": "given-when-then",
@@ -1870,9 +1905,30 @@
       "altitude": "low"
     },
     {
+      "id": "hexagonal-test-boundaries",
+      "kind": "software-pattern",
+      "title": "Hexagonal Test Boundaries",
+      "group": "testing",
+      "altitude": "medium"
+    },
+    {
+      "id": "humble-object",
+      "kind": "software-pattern",
+      "title": "Humble Object",
+      "group": "testing",
+      "altitude": "low"
+    },
+    {
       "id": "mock-object",
       "kind": "software-pattern",
       "title": "Mock Object",
+      "group": "testing",
+      "altitude": "low"
+    },
+    {
+      "id": "mutation-testing",
+      "kind": "software-pattern",
+      "title": "Mutation Testing",
       "group": "testing",
       "altitude": "low"
     },
@@ -1891,9 +1947,44 @@
       "altitude": "low"
     },
     {
+      "id": "parameterised-test",
+      "kind": "software-pattern",
+      "title": "Parameterised Test",
+      "group": "testing",
+      "altitude": "low"
+    },
+    {
       "id": "property-based-testing",
       "kind": "software-pattern",
       "title": "Property-Based Testing",
+      "group": "testing",
+      "altitude": "low"
+    },
+    {
+      "id": "screenplay-pattern",
+      "kind": "software-pattern",
+      "title": "Screenplay Pattern",
+      "group": "testing",
+      "altitude": "medium"
+    },
+    {
+      "id": "snapshot-testing",
+      "kind": "software-pattern",
+      "title": "Snapshot Testing",
+      "group": "testing",
+      "altitude": "low"
+    },
+    {
+      "id": "sociable-and-solitary-tests",
+      "kind": "software-pattern",
+      "title": "Sociable and Solitary Tests",
+      "group": "testing",
+      "altitude": "low"
+    },
+    {
+      "id": "spy",
+      "kind": "software-pattern",
+      "title": "Spy",
       "group": "testing",
       "altitude": "low"
     },
@@ -1903,6 +1994,13 @@
       "title": "Stub",
       "group": "testing",
       "altitude": "low"
+    },
+    {
+      "id": "test-containers",
+      "kind": "software-pattern",
+      "title": "Test Containers",
+      "group": "testing",
+      "altitude": "medium"
     },
     {
       "id": "test-data-builder",
@@ -1924,6 +2022,13 @@
       "title": "Test Pyramid",
       "group": "testing",
       "altitude": "medium"
+    },
+    {
+      "id": "test-sharding",
+      "kind": "software-pattern",
+      "title": "Test Sharding",
+      "group": "testing",
+      "altitude": "high"
     },
     {
       "id": "ab-test-design",
@@ -2808,10 +2913,22 @@
       "group": "ux"
     },
     {
+      "id": "behaviour-driven-development",
+      "kind": "philosophy",
+      "title": "Behaviour-Driven Development",
+      "group": "testing"
+    },
+    {
       "id": "calm-technology",
       "kind": "philosophy",
       "title": "Calm Technology",
       "group": "ux"
+    },
+    {
+      "id": "classicist-tdd",
+      "kind": "philosophy",
+      "title": "Classicist Test-Driven Development",
+      "group": "testing"
     },
     {
       "id": "clean-architecture-solid",
@@ -2958,6 +3075,24 @@
       "group": "product"
     },
     {
+      "id": "mockist-tdd",
+      "kind": "philosophy",
+      "title": "Mockist Test-Driven Development",
+      "group": "testing"
+    },
+    {
+      "id": "mostly-integration-testing",
+      "kind": "philosophy",
+      "title": "Write Tests. Not Too Many. Mostly Integration.",
+      "group": "testing"
+    },
+    {
+      "id": "mutation-driven-testing",
+      "kind": "philosophy",
+      "title": "Mutation-Driven Testing",
+      "group": "testing"
+    },
+    {
       "id": "nielsen-usability-heuristics",
       "kind": "philosophy",
       "title": "Nielsen's Usability Heuristics",
@@ -2988,6 +3123,18 @@
       "group": "product"
     },
     {
+      "id": "property-based-thinking",
+      "kind": "philosophy",
+      "title": "Property-Based Thinking",
+      "group": "testing"
+    },
+    {
+      "id": "risk-based-testing",
+      "kind": "philosophy",
+      "title": "Risk-Based Testing",
+      "group": "testing"
+    },
+    {
       "id": "service-design-thinking",
       "kind": "philosophy",
       "title": "Service Design Thinking",
@@ -2998,6 +3145,24 @@
       "kind": "philosophy",
       "title": "Simple Made Easy",
       "group": "software"
+    },
+    {
+      "id": "simulation-driven-testing",
+      "kind": "philosophy",
+      "title": "Simulation-Driven Testing",
+      "group": "testing"
+    },
+    {
+      "id": "testing-honeycomb",
+      "kind": "philosophy",
+      "title": "Testing Honeycomb",
+      "group": "testing"
+    },
+    {
+      "id": "testing-trophy",
+      "kind": "philosophy",
+      "title": "Testing Trophy",
+      "group": "testing"
     },
     {
       "id": "universal-design",
@@ -3146,6 +3311,45 @@
       "kind": "philosophy-complements-philosophy"
     },
     {
+      "source": "behaviour-driven-development",
+      "target": "given-when-then",
+      "kind": "philosophy-associates-pattern",
+      "reason": "Given-When-Then is the scenario grammar that makes behaviour examples readable and executable."
+    },
+    {
+      "source": "behaviour-driven-development",
+      "target": "arrange-act-assert",
+      "kind": "philosophy-associates-pattern",
+      "reason": "AAA provides the same three-phase structure for lower-level examples that do not need Gherkin."
+    },
+    {
+      "source": "behaviour-driven-development",
+      "target": "page-object",
+      "kind": "philosophy-associates-pattern",
+      "reason": "Keeps automated acceptance tests expressed through user-visible capabilities rather than UI implementation details."
+    },
+    {
+      "source": "behaviour-driven-development",
+      "target": "object-mother",
+      "kind": "philosophy-associates-pattern",
+      "reason": "Named domain fixtures can make examples read in the ubiquitous language when the catalogue of canonical cases is small."
+    },
+    {
+      "source": "behaviour-driven-development",
+      "target": "mockist-tdd",
+      "kind": "philosophy-complements-philosophy"
+    },
+    {
+      "source": "behaviour-driven-development",
+      "target": "extreme-programming-tdd",
+      "kind": "philosophy-complements-philosophy"
+    },
+    {
+      "source": "behaviour-driven-development",
+      "target": "classicist-tdd",
+      "kind": "philosophy-complements-philosophy"
+    },
+    {
       "source": "calm-technology",
       "target": "toast-notification",
       "kind": "philosophy-associates-practice",
@@ -3173,6 +3377,52 @@
       "target": "product-led-growth",
       "kind": "philosophy-tension-philosophy",
       "reason": "Growth tactics can reward frequent prompts and engagement loops, while calm technology deliberately reduces unnecessary attention capture."
+    },
+    {
+      "source": "classicist-tdd",
+      "target": "arrange-act-assert",
+      "kind": "philosophy-associates-pattern",
+      "reason": "Makes red-green-refactor examples readable by separating fixture setup, exercised behaviour and state assertion."
+    },
+    {
+      "source": "classicist-tdd",
+      "target": "fake-object",
+      "kind": "philosophy-associates-pattern",
+      "reason": "Keeps awkward infrastructure out of tests while preserving real behaviour behind a simplified implementation."
+    },
+    {
+      "source": "classicist-tdd",
+      "target": "stub",
+      "kind": "philosophy-associates-pattern",
+      "reason": "Supplies deterministic answers from query-style dependencies without asserting internal calls."
+    },
+    {
+      "source": "classicist-tdd",
+      "target": "test-data-builder",
+      "kind": "philosophy-associates-pattern",
+      "reason": "Keeps sociable tests focused on relevant domain variation while hiding incidental fixture detail."
+    },
+    {
+      "source": "classicist-tdd",
+      "target": "test-double",
+      "kind": "philosophy-associates-pattern",
+      "reason": "Provides the vocabulary for choosing a double only when a real collaborator would make the test slow, unreliable or hard to control."
+    },
+    {
+      "source": "classicist-tdd",
+      "target": "extreme-programming-tdd",
+      "kind": "philosophy-complements-philosophy"
+    },
+    {
+      "source": "classicist-tdd",
+      "target": "behaviour-driven-development",
+      "kind": "philosophy-complements-philosophy"
+    },
+    {
+      "source": "classicist-tdd",
+      "target": "mockist-tdd",
+      "kind": "philosophy-tension-philosophy",
+      "reason": "Classicist TDD prefers state verification and real collaborators, while mockist TDD uses mock expectations to specify collaborator interactions outside-in."
     },
     {
       "source": "clean-architecture-solid",
@@ -4461,6 +4711,125 @@
       "reason": "Lean Startup's rapid pivots and MVPs can erode a single coherent product vision, which a conceptual-integrity stance prizes and protects."
     },
     {
+      "source": "mockist-tdd",
+      "target": "mock-object",
+      "kind": "philosophy-associates-pattern",
+      "reason": "Mock objects are the central mechanism for expressing collaborator expectations and verifying command interactions."
+    },
+    {
+      "source": "mockist-tdd",
+      "target": "test-double",
+      "kind": "philosophy-associates-pattern",
+      "reason": "The broader double taxonomy helps distinguish mocks from stubs and fakes when designing outside-in tests."
+    },
+    {
+      "source": "mockist-tdd",
+      "target": "contract-testing",
+      "kind": "philosophy-associates-pattern",
+      "reason": "Contract tests counter mock drift by checking that real providers honour the interactions mocked by consumers."
+    },
+    {
+      "source": "mockist-tdd",
+      "target": "given-when-then",
+      "kind": "philosophy-associates-pattern",
+      "reason": "Outside-in work often begins from behaviour scenarios expressed in a shared Given-When-Then form."
+    },
+    {
+      "source": "mockist-tdd",
+      "target": "arrange-act-assert",
+      "kind": "philosophy-associates-pattern",
+      "reason": "Keeps interaction tests legible even when the arrange phase includes mock expectations."
+    },
+    {
+      "source": "mockist-tdd",
+      "target": "behaviour-driven-development",
+      "kind": "philosophy-complements-philosophy"
+    },
+    {
+      "source": "mockist-tdd",
+      "target": "extreme-programming-tdd",
+      "kind": "philosophy-complements-philosophy"
+    },
+    {
+      "source": "mockist-tdd",
+      "target": "classicist-tdd",
+      "kind": "philosophy-tension-philosophy",
+      "reason": "Mockist TDD treats interactions as a primary design contract, while classicist TDD usually prefers real collaborators and state-based assertions."
+    },
+    {
+      "source": "mostly-integration-testing",
+      "target": "test-pyramid",
+      "kind": "philosophy-associates-pattern",
+      "reason": "Provides a portfolio counterweight so mostly integration does not accidentally become a slow, top-heavy end-to-end suite."
+    },
+    {
+      "source": "mostly-integration-testing",
+      "target": "contract-testing",
+      "kind": "philosophy-associates-pattern",
+      "reason": "Gives realistic confidence at service boundaries without relying on brittle integrated environments."
+    },
+    {
+      "source": "mostly-integration-testing",
+      "target": "fake-object",
+      "kind": "philosophy-associates-pattern",
+      "reason": "Enables integration-style flow tests with realistic collaborator behaviour while keeping the suite fast and deterministic."
+    },
+    {
+      "source": "mostly-integration-testing",
+      "target": "extreme-programming-tdd",
+      "kind": "philosophy-complements-philosophy"
+    },
+    {
+      "source": "mostly-integration-testing",
+      "target": "continuous-delivery-lean",
+      "kind": "philosophy-complements-philosophy"
+    },
+    {
+      "source": "mostly-integration-testing",
+      "target": "property-based-thinking",
+      "kind": "philosophy-tension-philosophy",
+      "reason": "A mostly-integration suite can miss algebraic edge cases that are cheaper to express as generated properties at a smaller boundary."
+    },
+    {
+      "source": "mutation-driven-testing",
+      "target": "property-based-testing",
+      "kind": "philosophy-associates-pattern",
+      "reason": "Strong properties can kill broad classes of mutants by asserting invariants rather than only a few examples."
+    },
+    {
+      "source": "mutation-driven-testing",
+      "target": "arrange-act-assert",
+      "kind": "philosophy-associates-pattern",
+      "reason": "Clear assertions make surviving mutants easier to interpret and fix."
+    },
+    {
+      "source": "mutation-driven-testing",
+      "target": "golden-master",
+      "kind": "philosophy-associates-pattern",
+      "reason": "Characterisation tests can be strengthened with mutation feedback during legacy refactoring."
+    },
+    {
+      "source": "mutation-driven-testing",
+      "target": "extreme-programming-tdd",
+      "kind": "philosophy-complements-philosophy"
+    },
+    {
+      "source": "mutation-driven-testing",
+      "target": "property-based-thinking",
+      "kind": "philosophy-complements-philosophy"
+    },
+    {
+      "source": "mutation-driven-testing",
+      "target": "risk-based-testing",
+      "kind": "philosophy-complements-philosophy"
+    },
+    {
+      "source": "mutation-driven-testing",
+      "target": "mostly-integration-testing",
+      "kind": "philosophy-tension-philosophy",
+      "reason": "Mutation testing is most efficient against fast, focused suites; broad integration tests can make mutation runs too slow unless scoped carefully."
+    },
+    {
       "source": "nielsen-usability-heuristics",
       "target": "heuristic-evaluation",
       "kind": "philosophy-associates-practice",
@@ -4634,6 +5003,68 @@
       "reason": "PLG can over-rely on aggregate behavioural data, while Customer Development insists on direct qualitative learning before scaling."
     },
     {
+      "source": "property-based-thinking",
+      "target": "property-based-testing",
+      "kind": "philosophy-associates-pattern",
+      "reason": "This is the direct implementation pattern: define properties, generate inputs and shrink failures into minimal counterexamples."
+    },
+    {
+      "source": "property-based-thinking",
+      "target": "arrange-act-assert",
+      "kind": "philosophy-associates-pattern",
+      "reason": "Even generated tests benefit from a clear setup, operation and property assertion structure."
+    },
+    {
+      "source": "property-based-thinking",
+      "target": "extreme-programming-tdd",
+      "kind": "philosophy-complements-philosophy"
+    },
+    {
+      "source": "property-based-thinking",
+      "target": "design-by-contract",
+      "kind": "philosophy-complements-philosophy"
+    },
+    {
+      "source": "property-based-thinking",
+      "target": "mostly-integration-testing",
+      "kind": "philosophy-tension-philosophy",
+      "reason": "Property-based thinking often pays off at deterministic function or model boundaries, while a mostly-integration strategy may under-invest in those smaller invariant checks."
+    },
+    {
+      "source": "risk-based-testing",
+      "target": "test-pyramid",
+      "kind": "philosophy-associates-pattern",
+      "reason": "Helps allocate risk coverage across cheap and expensive layers instead of overusing end-to-end tests for every scenario."
+    },
+    {
+      "source": "risk-based-testing",
+      "target": "given-when-then",
+      "kind": "philosophy-associates-pattern",
+      "reason": "Makes high-risk business scenarios explicit and reviewable with stakeholders."
+    },
+    {
+      "source": "risk-based-testing",
+      "target": "contract-testing",
+      "kind": "philosophy-associates-pattern",
+      "reason": "Targets high-impact service compatibility risks before provider or consumer deployments."
+    },
+    {
+      "source": "risk-based-testing",
+      "target": "continuous-delivery-lean",
+      "kind": "philosophy-complements-philosophy"
+    },
+    {
+      "source": "risk-based-testing",
+      "target": "mostly-integration-testing",
+      "kind": "philosophy-complements-philosophy"
+    },
+    {
+      "source": "risk-based-testing",
+      "target": "extreme-programming-tdd",
+      "kind": "philosophy-tension-philosophy",
+      "reason": "TDD encourages testing each next behaviour as part of design, while risk-based testing may deliberately leave low-impact behaviours with lighter automated coverage."
+    },
+    {
       "source": "service-design-thinking",
       "target": "service-blueprint",
       "kind": "philosophy-associates-practice",
@@ -4758,6 +5189,120 @@
       "target": "worse-is-better",
       "kind": "philosophy-tension-philosophy",
       "reason": "Worse-is-better may choose the familiar easy implementation to ship; Simple Made Easy warns that ease can import hidden complexity that slows the system later."
+    },
+    {
+      "source": "simulation-driven-testing",
+      "target": "golden-master",
+      "kind": "philosophy-associates-pattern",
+      "reason": "Recorded seeds and expected traces can serve as reproducible artefacts for regression protection."
+    },
+    {
+      "source": "simulation-driven-testing",
+      "target": "property-based-testing",
+      "kind": "philosophy-associates-pattern",
+      "reason": "Generated workloads and invariants supply the model-style assertions that a deterministic simulator repeatedly checks."
+    },
+    {
+      "source": "simulation-driven-testing",
+      "target": "test-pyramid",
+      "kind": "philosophy-associates-pattern",
+      "reason": "Clarifies that simulation is a specialised high-altitude layer rather than a replacement for all smaller tests."
+    },
+    {
+      "source": "simulation-driven-testing",
+      "target": "risk-based-testing",
+      "kind": "philosophy-complements-philosophy"
+    },
+    {
+      "source": "simulation-driven-testing",
+      "target": "property-based-thinking",
+      "kind": "philosophy-complements-philosophy"
+    },
+    {
+      "source": "simulation-driven-testing",
+      "target": "design-for-production",
+      "kind": "philosophy-complements-philosophy"
+    },
+    {
+      "source": "simulation-driven-testing",
+      "target": "mostly-integration-testing",
+      "kind": "philosophy-tension-philosophy",
+      "reason": "Simulation-driven testing demands deep control of runtime interfaces, while pragmatic integration tests usually use real framework and infrastructure behaviour directly."
+    },
+    {
+      "source": "testing-honeycomb",
+      "target": "contract-testing",
+      "kind": "philosophy-associates-pattern",
+      "reason": "Replaces fragile cross-service integrated tests with executable compatibility checks at service boundaries."
+    },
+    {
+      "source": "testing-honeycomb",
+      "target": "test-pyramid",
+      "kind": "philosophy-associates-pattern",
+      "reason": "The honeycomb is a deliberate microservice-specific correction to pyramid-shaped portfolios."
+    },
+    {
+      "source": "testing-honeycomb",
+      "target": "fake-object",
+      "kind": "philosophy-associates-pattern",
+      "reason": "Fakes can isolate hard external services while preserving realistic service-level flows."
+    },
+    {
+      "source": "testing-honeycomb",
+      "target": "stub",
+      "kind": "philosophy-associates-pattern",
+      "reason": "Stubs provide controlled responses from awkward external collaborators during isolated service tests."
+    },
+    {
+      "source": "testing-honeycomb",
+      "target": "extreme-programming-tdd",
+      "kind": "philosophy-complements-philosophy"
+    },
+    {
+      "source": "testing-honeycomb",
+      "target": "testing-trophy",
+      "kind": "philosophy-tension-philosophy",
+      "reason": "The honeycomb and trophy both emphasise integration, but they use the term for different contexts: isolated service testing in microservices versus collaborating frontend units."
+    },
+    {
+      "source": "testing-trophy",
+      "target": "given-when-then",
+      "kind": "philosophy-associates-pattern",
+      "reason": "Integration tests are strongest when they describe user-visible scenarios rather than internal component wiring."
+    },
+    {
+      "source": "testing-trophy",
+      "target": "page-object",
+      "kind": "philosophy-associates-pattern",
+      "reason": "Keeps the small end-to-end layer expressed through user capabilities rather than DOM details."
+    },
+    {
+      "source": "testing-trophy",
+      "target": "test-pyramid",
+      "kind": "philosophy-associates-pattern",
+      "reason": "The trophy deliberately adapts pyramid economics by adding static analysis and widening the integration layer for frontend systems."
+    },
+    {
+      "source": "testing-trophy",
+      "target": "arrange-act-assert",
+      "kind": "philosophy-associates-pattern",
+      "reason": "Gives integration and unit tests a readable structure that separates setup, behaviour and expected outcome."
+    },
+    {
+      "source": "testing-trophy",
+      "target": "behaviour-driven-development",
+      "kind": "philosophy-complements-philosophy"
+    },
+    {
+      "source": "testing-trophy",
+      "target": "extreme-programming-tdd",
+      "kind": "philosophy-complements-philosophy"
+    },
+    {
+      "source": "testing-trophy",
+      "target": "testing-honeycomb",
+      "kind": "philosophy-tension-philosophy",
+      "reason": "Both favour integration confidence, but the trophy is tuned for frontend applications while the honeycomb is tuned for microservices whose deployment unit is the service."
     },
     {
       "source": "universal-design",
@@ -17530,6 +18075,75 @@
       "reason": "Consumer tests often use provider doubles generated from contracts."
     },
     {
+      "source": "deterministic-simulation",
+      "target": "fuzzing",
+      "kind": "pattern-synergy-pattern",
+      "reason": "Seeded workloads and fault schedules can fuzz state-space rather than only input bytes."
+    },
+    {
+      "source": "deterministic-simulation",
+      "target": "property-based-testing",
+      "kind": "pattern-synergy-pattern",
+      "reason": "System invariants define what every simulated run must preserve."
+    },
+    {
+      "source": "deterministic-simulation",
+      "target": "flaky-test-quarantine",
+      "kind": "pattern-synergy-pattern",
+      "reason": "The goal is the opposite of quarantine: make non-deterministic failures deterministic and reproducible."
+    },
+    {
+      "source": "deterministic-simulation",
+      "target": "ephemeral-environment",
+      "kind": "pattern-conflict-pattern"
+    },
+    {
+      "source": "dummy-object",
+      "target": "test-double",
+      "kind": "pattern-synergy-pattern",
+      "reason": "Dummy is the simplest member of the test double family."
+    },
+    {
+      "source": "dummy-object",
+      "target": "arrange-act-assert",
+      "kind": "pattern-synergy-pattern",
+      "reason": "Dummies minimise irrelevant arrange detail so the act and assertion remain visible."
+    },
+    {
+      "source": "dummy-object",
+      "target": "humble-object",
+      "kind": "pattern-synergy-pattern",
+      "reason": "Extracted plain objects often need fewer framework parameters and therefore fewer dummies."
+    },
+    {
+      "source": "dummy-object",
+      "target": "fake-object",
+      "kind": "pattern-conflict-pattern"
+    },
+    {
+      "source": "ephemeral-environment",
+      "target": "test-pyramid",
+      "kind": "pattern-synergy-pattern",
+      "reason": "Ephemeral environments support the small but important E2E layer at the top of the pyramid."
+    },
+    {
+      "source": "ephemeral-environment",
+      "target": "test-sharding",
+      "kind": "pattern-synergy-pattern",
+      "reason": "Isolated environments prevent parallel shards from corrupting shared state."
+    },
+    {
+      "source": "ephemeral-environment",
+      "target": "screenplay-pattern",
+      "kind": "pattern-synergy-pattern",
+      "reason": "High-level acceptance tasks can run against real isolated deployments."
+    },
+    {
+      "source": "ephemeral-environment",
+      "target": "test-containers",
+      "kind": "pattern-conflict-pattern"
+    },
+    {
       "source": "fake-object",
       "target": "test-double",
       "kind": "pattern-synergy-pattern",
@@ -17550,6 +18164,52 @@
     {
       "source": "fake-object",
       "target": "mock-object",
+      "kind": "pattern-conflict-pattern"
+    },
+    {
+      "source": "flaky-test-quarantine",
+      "target": "test-sharding",
+      "kind": "pattern-synergy-pattern",
+      "reason": "Quarantine data helps distinguish true flakes from parallelisation and shared-state bugs."
+    },
+    {
+      "source": "flaky-test-quarantine",
+      "target": "ephemeral-environment",
+      "kind": "pattern-synergy-pattern",
+      "reason": "Isolated environments remove many external causes of flakiness before quarantine is needed."
+    },
+    {
+      "source": "flaky-test-quarantine",
+      "target": "test-pyramid",
+      "kind": "pattern-synergy-pattern",
+      "reason": "Layer metrics show whether flakes concentrate in overly broad E2E tests."
+    },
+    {
+      "source": "flaky-test-quarantine",
+      "target": "snapshot-testing",
+      "kind": "pattern-conflict-pattern"
+    },
+    {
+      "source": "fuzzing",
+      "target": "property-based-testing",
+      "kind": "pattern-synergy-pattern",
+      "reason": "Both generate inputs; properties add stronger semantic oracles to fuzz-discovered cases."
+    },
+    {
+      "source": "fuzzing",
+      "target": "parameterised-test",
+      "kind": "pattern-synergy-pattern",
+      "reason": "Interesting fuzz discoveries should be promoted into explicit regression rows."
+    },
+    {
+      "source": "fuzzing",
+      "target": "mutation-testing",
+      "kind": "pattern-synergy-pattern",
+      "reason": "Mutation score and fuzz findings both reveal gaps in fault detection."
+    },
+    {
+      "source": "fuzzing",
+      "target": "golden-master",
       "kind": "pattern-conflict-pattern"
     },
     {
@@ -17589,6 +18249,52 @@
       "reason": "Pure deterministic functions are ideal targets because identical inputs produce identical approvals."
     },
     {
+      "source": "hexagonal-test-boundaries",
+      "target": "fake-object",
+      "kind": "pattern-synergy-pattern",
+      "reason": "In-memory fakes implement ports for fast application tests."
+    },
+    {
+      "source": "hexagonal-test-boundaries",
+      "target": "test-containers",
+      "kind": "pattern-synergy-pattern",
+      "reason": "Real adapters can be tested against containerised dependencies."
+    },
+    {
+      "source": "hexagonal-test-boundaries",
+      "target": "contract-testing",
+      "kind": "pattern-synergy-pattern",
+      "reason": "Contracts keep port and adapter behaviour aligned across boundaries."
+    },
+    {
+      "source": "hexagonal-test-boundaries",
+      "target": "mock-object",
+      "kind": "pattern-conflict-pattern"
+    },
+    {
+      "source": "humble-object",
+      "target": "page-object",
+      "kind": "pattern-synergy-pattern",
+      "reason": "Page objects can exercise the humble boundary at UI level while presenter logic is tested directly."
+    },
+    {
+      "source": "humble-object",
+      "target": "hexagonal-test-boundaries",
+      "kind": "pattern-synergy-pattern",
+      "reason": "Both push decisions inward and leave adapters or framework edges thin."
+    },
+    {
+      "source": "humble-object",
+      "target": "sociable-and-solitary-tests",
+      "kind": "pattern-synergy-pattern",
+      "reason": "The extracted object can be tested sociably with real domain collaborators or solitarily with doubles."
+    },
+    {
+      "source": "humble-object",
+      "target": "golden-master",
+      "kind": "pattern-conflict-pattern"
+    },
+    {
       "source": "mock-object",
       "target": "test-double",
       "kind": "pattern-synergy-pattern",
@@ -17609,6 +18315,29 @@
     {
       "source": "mock-object",
       "target": "fake-object",
+      "kind": "pattern-conflict-pattern"
+    },
+    {
+      "source": "mutation-testing",
+      "target": "property-based-testing",
+      "kind": "pattern-synergy-pattern",
+      "reason": "Strong properties kill many mutants across generated inputs."
+    },
+    {
+      "source": "mutation-testing",
+      "target": "golden-master",
+      "kind": "pattern-synergy-pattern",
+      "reason": "Characterisation suites can be strengthened by checking whether behavioural mutations are detected."
+    },
+    {
+      "source": "mutation-testing",
+      "target": "parameterised-test",
+      "kind": "pattern-synergy-pattern",
+      "reason": "Explicit boundary rows often kill surviving comparison and constant mutations."
+    },
+    {
+      "source": "mutation-testing",
+      "target": "snapshot-testing",
       "kind": "pattern-conflict-pattern"
     },
     {
@@ -17653,6 +18382,29 @@
       "reason": "Component boundaries often map well to smaller component objects inside a page object."
     },
     {
+      "source": "parameterised-test",
+      "target": "arrange-act-assert",
+      "kind": "pattern-synergy-pattern",
+      "reason": "One clear test body preserves the same arrange, act, and assert shape for every row."
+    },
+    {
+      "source": "parameterised-test",
+      "target": "test-data-builder",
+      "kind": "pattern-synergy-pattern",
+      "reason": "Builders keep table rows focused on the fields that vary."
+    },
+    {
+      "source": "parameterised-test",
+      "target": "property-based-testing",
+      "kind": "pattern-synergy-pattern",
+      "reason": "Explicit rows cover known examples while properties explore generated cases."
+    },
+    {
+      "source": "parameterised-test",
+      "target": "golden-master",
+      "kind": "pattern-conflict-pattern"
+    },
+    {
       "source": "property-based-testing",
       "target": "pure-function",
       "kind": "pattern-synergy-pattern",
@@ -17671,6 +18423,98 @@
       "reason": "Each generated case still benefits from clear arrange, act, and property assertion structure."
     },
     {
+      "source": "screenplay-pattern",
+      "target": "page-object",
+      "kind": "pattern-synergy-pattern",
+      "reason": "Screenplay can wrap page-level details behind lower-level interactions or questions."
+    },
+    {
+      "source": "screenplay-pattern",
+      "target": "given-when-then",
+      "kind": "pattern-synergy-pattern",
+      "reason": "Tasks and questions map naturally onto BDD scenario steps."
+    },
+    {
+      "source": "screenplay-pattern",
+      "target": "ephemeral-environment",
+      "kind": "pattern-synergy-pattern",
+      "reason": "Acceptance tasks are more trustworthy when run against isolated full environments."
+    },
+    {
+      "source": "screenplay-pattern",
+      "target": "page-object",
+      "kind": "pattern-conflict-pattern"
+    },
+    {
+      "source": "snapshot-testing",
+      "target": "golden-master",
+      "kind": "pattern-synergy-pattern",
+      "reason": "Snapshot testing is a focused golden-master variant for serialized output."
+    },
+    {
+      "source": "snapshot-testing",
+      "target": "page-object",
+      "kind": "pattern-synergy-pattern",
+      "reason": "Page objects can drive UI state while snapshots verify stable rendered fragments."
+    },
+    {
+      "source": "snapshot-testing",
+      "target": "test-data-builder",
+      "kind": "pattern-synergy-pattern",
+      "reason": "Builders create deterministic inputs so snapshots avoid mystery data."
+    },
+    {
+      "source": "snapshot-testing",
+      "target": "property-based-testing",
+      "kind": "pattern-conflict-pattern"
+    },
+    {
+      "source": "sociable-and-solitary-tests",
+      "target": "fake-object",
+      "kind": "pattern-synergy-pattern",
+      "reason": "Fakes enable sociable tests without external infrastructure."
+    },
+    {
+      "source": "sociable-and-solitary-tests",
+      "target": "stub",
+      "kind": "pattern-synergy-pattern",
+      "reason": "Stubs support solitary tests for query-style dependencies."
+    },
+    {
+      "source": "sociable-and-solitary-tests",
+      "target": "mock-object",
+      "kind": "pattern-synergy-pattern",
+      "reason": "Mocks support solitary interaction tests for command-style collaborators."
+    },
+    {
+      "source": "sociable-and-solitary-tests",
+      "target": "test-double",
+      "kind": "pattern-conflict-pattern"
+    },
+    {
+      "source": "spy",
+      "target": "test-double",
+      "kind": "pattern-synergy-pattern",
+      "reason": "Spy is one member of the Meszaros/Fowler test double taxonomy."
+    },
+    {
+      "source": "spy",
+      "target": "mock-object",
+      "kind": "pattern-synergy-pattern",
+      "reason": "Both verify interactions; spies inspect recorded calls after the act while mocks set expectations before it."
+    },
+    {
+      "source": "spy",
+      "target": "arrange-act-assert",
+      "kind": "pattern-synergy-pattern",
+      "reason": "Recorded calls keep verification in the Assert phase rather than mixing expectations into setup."
+    },
+    {
+      "source": "spy",
+      "target": "stub",
+      "kind": "pattern-conflict-pattern"
+    },
+    {
       "source": "stub",
       "target": "test-double",
       "kind": "pattern-synergy-pattern",
@@ -17687,6 +18531,29 @@
       "target": "test-data-builder",
       "kind": "pattern-synergy-pattern",
       "reason": "Builders can create rich stub return values without noisy literals."
+    },
+    {
+      "source": "test-containers",
+      "target": "hexagonal-test-boundaries",
+      "kind": "pattern-synergy-pattern",
+      "reason": "Real adapters can be verified against containers while application tests use in-memory fakes."
+    },
+    {
+      "source": "test-containers",
+      "target": "contract-testing",
+      "kind": "pattern-synergy-pattern",
+      "reason": "Provider verification can run against realistic infrastructure without shared environments."
+    },
+    {
+      "source": "test-containers",
+      "target": "test-sharding",
+      "kind": "pattern-synergy-pattern",
+      "reason": "Container isolation helps parallel workers avoid shared mutable state."
+    },
+    {
+      "source": "test-containers",
+      "target": "fake-object",
+      "kind": "pattern-conflict-pattern"
     },
     {
       "source": "test-data-builder",
@@ -17758,6 +18625,29 @@
       "target": "golden-master",
       "kind": "pattern-synergy-pattern",
       "reason": "Approval tests can protect legacy seams while the pyramid is being rebuilt."
+    },
+    {
+      "source": "test-sharding",
+      "target": "test-containers",
+      "kind": "pattern-synergy-pattern",
+      "reason": "Per-worker containers isolate databases, brokers, and caches."
+    },
+    {
+      "source": "test-sharding",
+      "target": "ephemeral-environment",
+      "kind": "pattern-synergy-pattern",
+      "reason": "Environment-per-run or per-shard isolation prevents cross-worker data collisions."
+    },
+    {
+      "source": "test-sharding",
+      "target": "flaky-test-quarantine",
+      "kind": "pattern-synergy-pattern",
+      "reason": "Flake tracking separates sharding bugs from genuinely non-deterministic tests."
+    },
+    {
+      "source": "test-sharding",
+      "target": "golden-master",
+      "kind": "pattern-conflict-pattern"
     }
   ]
 }

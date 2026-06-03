@@ -1,0 +1,79 @@
+id: "test-sharding"
+title: "Test Sharding"
+aka:
+  - "Parallel Test Splitting"
+  - "Suite Partitioning"
+scale: "concurrency"
+category: "testing"
+altitude: "high"
+maturity: "established"
+short_description: "Partition a test suite across parallel workers or machines to reduce feedback time while preserving isolation."
+description: "Test Sharding assigns disjoint subsets of tests to workers, often by file, historical runtime, or framework-level distribution. It reduces wall-clock CI time without deleting coverage. The prerequisite is hermetic tests: no hidden ordering, shared mutable state, fixed ports, or shared databases that collapse under parallel execution."
+problem: "A valuable suite has grown too slow for local or CI feedback, but dropping tests would reduce confidence."
+context: "Use when test runtime is a delivery bottleneck and tests can be isolated by process, worker, database schema, container, or environment."
+consequences:
+  - "Shortens feedback loops while preserving coverage."
+  - "Exposes hidden test interdependence and shared-state bugs."
+  - "Requires runtime balancing, isolated resources, and deterministic ordering assumptions."
+synergies:
+  - pattern: "test-containers"
+    reason: "Per-worker containers isolate databases, brokers, and caches."
+  - pattern: "ephemeral-environment"
+    reason: "Environment-per-run or per-shard isolation prevents cross-worker data collisions."
+  - pattern: "flaky-test-quarantine"
+    reason: "Flake tracking separates sharding bugs from genuinely non-deterministic tests."
+conflicts_with:
+  - "golden-master"
+alternatives:
+  - "test-pyramid"
+  - "flaky-test-quarantine"
+  - "ephemeral-environment"
+languages:
+  - "language-agnostic"
+  - "python"
+  - "javascript"
+  - "typescript"
+  - "java"
+  - "go"
+frameworks:
+  - "none"
+  - "nodejs"
+  - "spring-boot"
+  - "fastapi"
+  - "django"
+  - "dotnet"
+project_types:
+  - "web-api"
+  - "web-frontend"
+  - "backend-service"
+  - "microservices"
+  - "monolith"
+  - "high-throughput"
+tags:
+  - "parallelisation"
+  - "ci-speed"
+  - "sharding"
+  - "hermetic-tests"
+examples:
+  - language: "python"
+    title: "Parallel pytest workers"
+    negative: |-
+      _global_sequence = 0
+      def next_id():
+          global _global_sequence
+          _global_sequence += 1
+          return _global_sequence
+    positive: |-
+      pytest --numprocesses=8 --dist=loadfile
+      # each worker uses its own database schema and randomised test order
+    explanation: "The positive command is safe only after shared mutable state has been removed or isolated for every worker."
+ratings:
+  small:
+    score: 2
+    notes: "Usually unnecessary until runtime is painful."
+  medium:
+    score: 4
+    notes: "Good once suites exceed the team feedback budget."
+  large:
+    score: 5
+    notes: "Essential for large CI systems, especially with runtime-aware balancing."

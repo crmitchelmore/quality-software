@@ -1,6 +1,6 @@
 # Pattern Catalogue Index
 
-Total patterns: **275**
+Total patterns: **290**
 
 ## ai-ml (12)
 
@@ -354,21 +354,36 @@ Total patterns: **275**
 | [Secure by Default](patterns/security/secure-by-default.md) | design | high | time-tested | 4 | 5 | 5 |
 | [Token-Based Authentication](patterns/security/token-based-auth.md) | integration | medium | established | 3 | 5 | 5 |
 
-## testing (13)
+## testing (28)
 
 | Pattern | Scale | Altitude | Maturity | Small | Medium | Large |
 | --- | --- | --- | --- | :-: | :-: | :-: |
 | [Arrange-Act-Assert](patterns/testing/arrange-act-assert.md) | implementation | low | time-tested | 5 | 5 | 4 |
 | [Consumer-Driven Contract Testing](patterns/testing/contract-testing.md) | integration | medium | established | 2 | 4 | 5 |
+| [Deterministic Simulation](patterns/testing/deterministic-simulation.md) | concurrency | high | emerging | 1 | 2 | 5 |
+| [Dummy Object](patterns/testing/dummy-object.md) | implementation | low | time-tested | 3 | 3 | 2 |
+| [Ephemeral Environment](patterns/testing/ephemeral-environment.md) | integration | high | established | 2 | 4 | 5 |
 | [Fake Object](patterns/testing/fake-object.md) | implementation | low | time-tested | 4 | 5 | 4 |
+| [Flaky Test Quarantine](patterns/testing/flaky-test-quarantine.md) | organisational | high | established | 2 | 4 | 5 |
+| [Fuzzing](patterns/testing/fuzzing.md) | integration | medium | established | 3 | 4 | 5 |
 | [Given-When-Then (BDD)](patterns/testing/given-when-then.md) | implementation | low | established | 3 | 4 | 4 |
 | [Golden Master (Approval)](patterns/testing/golden-master.md) | implementation | low | established | 3 | 4 | 4 |
+| [Hexagonal Test Boundaries](patterns/testing/hexagonal-test-boundaries.md) | integration | medium | established | 3 | 5 | 5 |
+| [Humble Object](patterns/testing/humble-object.md) | implementation | low | time-tested | 3 | 4 | 4 |
 | [Mock Object](patterns/testing/mock-object.md) | implementation | low | time-tested | 3 | 4 | 3 |
+| [Mutation Testing](patterns/testing/mutation-testing.md) | implementation | low | established | 3 | 4 | 4 |
 | [Object Mother](patterns/testing/object-mother.md) | implementation | low | time-tested | 3 | 4 | 2 |
 | [Page Object](patterns/testing/page-object.md) | implementation | low | time-tested | 3 | 5 | 4 |
+| [Parameterised Test](patterns/testing/parameterised-test.md) | implementation | low | time-tested | 5 | 5 | 4 |
 | [Property-Based Testing](patterns/testing/property-based-testing.md) | implementation | low | established | 3 | 4 | 5 |
+| [Screenplay Pattern](patterns/testing/screenplay-pattern.md) | integration | medium | established | 2 | 4 | 5 |
+| [Snapshot Testing](patterns/testing/snapshot-testing.md) | implementation | low | established | 3 | 3 | 2 |
+| [Sociable and Solitary Tests](patterns/testing/sociable-and-solitary-tests.md) | implementation | low | time-tested | 4 | 5 | 4 |
+| [Spy](patterns/testing/spy.md) | implementation | low | time-tested | 3 | 4 | 3 |
 | [Stub](patterns/testing/stub.md) | implementation | low | time-tested | 5 | 5 | 4 |
+| [Test Containers](patterns/testing/test-containers.md) | integration | medium | established | 3 | 5 | 5 |
 | [Test Data Builder](patterns/testing/test-data-builder.md) | implementation | low | time-tested | 4 | 5 | 5 |
 | [Test Double](patterns/testing/test-double.md) | implementation | low | time-tested | 4 | 5 | 4 |
 | [Test Pyramid](patterns/testing/test-pyramid.md) | organisational | medium | established | 3 | 5 | 5 |
+| [Test Sharding](patterns/testing/test-sharding.md) | concurrency | high | established | 2 | 4 | 5 |
 

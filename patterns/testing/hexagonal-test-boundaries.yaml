@@ -1,0 +1,81 @@
+id: "hexagonal-test-boundaries"
+title: "Hexagonal Test Boundaries"
+aka:
+  - "Ports and Adapters Testing"
+  - "In-Memory Fakes for Ports"
+scale: "integration"
+category: "testing"
+altitude: "medium"
+maturity: "established"
+short_description: "Test application logic through ports with in-memory fakes, and test real adapters separately at infrastructure boundaries."
+description: "Hexagonal Test Boundaries make the architecture boundary the test boundary. Application service tests run in-process against fakes for repositories, clocks, buses, and gateways. Adapter tests separately verify the production implementations against real infrastructure. This preserves fast feedback for business rules while still checking the database, broker, and HTTP semantics that fakes cannot model perfectly."
+problem: "Every application test hitting real infrastructure is slow and brittle, but pure mocks can drift from real adapter behaviour."
+context: "Use in hexagonal, DDD, or functional-core systems where business logic can depend on ports instead of concrete infrastructure."
+consequences:
+  - "Application tests become fast and deterministic with realistic port-level behaviour."
+  - "Adapter tests stay focused on infrastructure semantics and contract drift."
+  - "Requires disciplined interfaces and contract checks so in-memory fakes do not lie."
+synergies:
+  - pattern: "fake-object"
+    reason: "In-memory fakes implement ports for fast application tests."
+  - pattern: "test-containers"
+    reason: "Real adapters can be tested against containerised dependencies."
+  - pattern: "contract-testing"
+    reason: "Contracts keep port and adapter behaviour aligned across boundaries."
+conflicts_with:
+  - "mock-object"
+alternatives:
+  - "test-containers"
+  - "contract-testing"
+  - "sociable-and-solitary-tests"
+languages:
+  - "language-agnostic"
+  - "java"
+  - "csharp"
+  - "typescript"
+  - "python"
+  - "go"
+frameworks:
+  - "none"
+  - "spring-boot"
+  - "dotnet"
+  - "nodejs"
+  - "fastapi"
+  - "django"
+project_types:
+  - "backend-service"
+  - "web-api"
+  - "microservices"
+  - "modular-monolith"
+  - "monolith"
+tags:
+  - "hexagonal-architecture"
+  - "ports-and-adapters"
+  - "fakes"
+  - "integration-boundary"
+examples:
+  - language: "python"
+    title: "Fake port with real adapter test"
+    negative: |-
+      service = OrderService(PostgresOrderRepository(os.environ["DB_URL"]), SystemClock())
+      assert service.place(request).accepted
+    positive: |-
+      repo = InMemoryOrderRepository()
+      clock = FakeClock("2024-01-01T00:00:00Z")
+      service = OrderService(repo, clock)
+      assert service.place(request).placed_at == clock.now()
+      
+      def test_postgres_repo_constraints(postgres_container):
+          repo = PostgresOrderRepository(postgres_container.url)
+          assert repo.enforces_unique_order_ids()
+    explanation: "The application rule is tested quickly through ports; the adapter has its own focused test against real Postgres behaviour."
+ratings:
+  small:
+    score: 3
+    notes: "Good for domain-rich small services but unnecessary for simple CRUD."
+  medium:
+    score: 5
+    notes: "Excellent balance of fast application tests and realistic adapter checks."
+  large:
+    score: 5
+    notes: "Strong architectural testing pattern for independently evolving services and adapters."

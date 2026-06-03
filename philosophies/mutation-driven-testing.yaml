@@ -1,0 +1,102 @@
+id: mutation-driven-testing
+title: Mutation-Driven Testing
+aka:
+  - Mutation Testing Driven Quality
+  - Mutation Score
+discipline: testing
+originators:
+  - Richard Lipton
+  - Henry Coles
+origin:
+  type: paper
+  title: Fault Diagnosis of Computer Programs
+  year: 1971
+short_description: >-
+  Judge test quality by whether the suite kills deliberate code mutations, using mutation score as a
+  stronger signal than line coverage alone.
+description: >-
+  Mutation-driven testing asks whether tests detect faults, not merely whether they execute code. A
+  mutation tool makes small semantic changes to production code, such as changing comparisons, constants
+  or branch outcomes, and reruns the test suite. Mutants killed by failing tests demonstrate fault
+  detection; surviving mutants reveal missing assertions, weak specifications or untested behaviours.
+  The philosophy treats mutation score as a feedback mechanism for improving tests, especially where
+  correctness matters and simple coverage metrics have become misleading.
+core_tenets:
+  - Coverage is only evidence of execution; mutation score measures fault-detection strength.
+  - Surviving mutants are actionable feedback about underspecified behaviours or weak assertions.
+  - Use mutation testing incrementally on changed or high-risk code so the cost remains practical.
+  - Treat equivalent mutants and metric gaming as analysis tasks, not as reasons to ignore the signal.
+key_ideas:
+  - name: Mutant killed
+    explanation: >-
+      A deliberately changed version of the code is killed when at least one test fails, proving the
+      suite can detect that class of fault.
+  - name: Surviving mutant
+    explanation: >-
+      If all tests still pass, the suite either lacks the right assertion or the mutation is equivalent
+      to the original behaviour.
+in_practice: >-
+  Run PIT, Stryker or an equivalent tool first on critical modules or changed lines. Review surviving
+  mutants, add meaningful behavioural assertions, exclude true equivalent mutants narrowly, and avoid
+  turning the score into a vanity metric detached from defect risk.
+complements:
+  - extreme-programming-tdd
+  - property-based-thinking
+  - risk-based-testing
+tensions_with:
+  - philosophy: mostly-integration-testing
+    reason: >-
+      Mutation testing is most efficient against fast, focused suites; broad integration tests can make
+      mutation runs too slow unless scoped carefully.
+associated_patterns:
+  - pattern: property-based-testing
+    reason: >-
+      Strong properties can kill broad classes of mutants by asserting invariants rather than only a few
+      examples.
+  - pattern: arrange-act-assert
+    reason: >-
+      Clear assertions make surviving mutants easier to interpret and fix.
+  - pattern: golden-master
+    reason: >-
+      Characterisation tests can be strengthened with mutation feedback during legacy refactoring.
+successfully_applied:
+  - where: Java projects using PIT
+    what: >-
+      PIT presents mutation testing as a practical tool for measuring test-suite fault detection and
+      reports surviving mutants that ordinary coverage metrics would miss.
+    evidence_strength: primary-source
+    source:
+      title: PIT Mutation Testing
+      url: https://pitest.org
+  - where: JavaScript and TypeScript projects using Stryker
+    what: >-
+      Stryker applies mutation testing to modern JavaScript and TypeScript codebases, producing mutation
+      scores and survivor reports for CI feedback.
+    evidence_strength: primary-source
+    source:
+      title: Stryker Mutator
+      url: https://stryker-mutator.io
+best_for:
+  - library
+  - financial-calculation
+  - safety-critical-module
+  - legacy-refactoring
+  - domain-model
+criticisms:
+  - Mutation runs can be expensive without incremental or scoped execution.
+  - Equivalent mutants require human judgement and can create noisy reports.
+  - Teams can game mutation thresholds with trivial assertions unless reviews focus on behaviour.
+references:
+  - title: Fault Diagnosis of Computer Programs
+    author: Richard Lipton
+    year: 1971
+  - title: PIT Mutation Testing
+    author: Henry Coles and contributors
+    url: https://pitest.org
+  - title: Stryker Mutator
+    author: Stryker contributors
+    url: https://stryker-mutator.io
+  - title: Practical Test Pyramid
+    author: Ham Vocke, Martin Fowler
+    year: 2018
+    url: https://martinfowler.com/articles/practical-test-pyramid.html

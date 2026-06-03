@@ -1,0 +1,79 @@
+id: "sociable-and-solitary-tests"
+title: "Sociable and Solitary Tests"
+aka:
+  - "Sociable Unit Test"
+  - "Solitary Unit Test"
+  - "Classicist vs Mockist Unit Tests"
+scale: "implementation"
+category: "testing"
+altitude: "low"
+maturity: "time-tested"
+short_description: "Choose deliberately between tests that use real fast collaborators and tests that isolate the subject with doubles."
+description: "Fowler and Jay Fields distinguish sociable unit tests, which let the subject collaborate with real in-process objects, from solitary unit tests, which replace collaborators with doubles. Sociable tests often give more design freedom and confidence; solitary tests isolate failures and can specify outbound interactions. The pattern is the explicit choice, not treating one style as universally correct."
+problem: "Teams argue about whether unit tests may use real collaborators, leading to dogmatic over-mocking or overly broad slow tests."
+context: "Use when defining test strategy for domain logic, application services, and collaborator-heavy code where both confidence and failure localisation matter."
+consequences:
+  - "Makes collaborator choices intentional and reviewable."
+  - "Encourages real collaborators when they are fast and deterministic."
+  - "Supports doubles for slow, non-deterministic, external, or behaviourally significant boundaries."
+synergies:
+  - pattern: "fake-object"
+    reason: "Fakes enable sociable tests without external infrastructure."
+  - pattern: "stub"
+    reason: "Stubs support solitary tests for query-style dependencies."
+  - pattern: "mock-object"
+    reason: "Mocks support solitary interaction tests for command-style collaborators."
+conflicts_with:
+  - "test-double"
+alternatives:
+  - "hexagonal-test-boundaries"
+  - "mock-object"
+  - "fake-object"
+languages:
+  - "language-agnostic"
+  - "java"
+  - "csharp"
+  - "python"
+  - "typescript"
+  - "javascript"
+frameworks:
+  - "none"
+  - "nodejs"
+  - "spring-boot"
+  - "dotnet"
+  - "django"
+  - "fastapi"
+project_types:
+  - "library"
+  - "web-api"
+  - "backend-service"
+  - "monolith"
+  - "modular-monolith"
+tags:
+  - "unit-testing"
+  - "classicist"
+  - "mockist"
+  - "collaborators"
+examples:
+  - language: "language-agnostic"
+    title: "Real domain collaborator vs slow boundary"
+    negative: |-
+      tax_rules = mock()
+      expect(tax_rules.rate_for("GB")).and_return(0.20)
+      assert checkout.total(order, tax_rules) == 120
+    positive: |-
+      tax_rules = RealTaxRules.standard()
+      assert checkout.total(order, tax_rules) == 120
+      
+      # Still replace slow external gateways with doubles.
+    explanation: "A real deterministic domain collaborator gives more confidence than a mock; doubles remain appropriate at slow or external boundaries."
+ratings:
+  small:
+    score: 4
+    notes: "Useful vocabulary that prevents premature over-mocking."
+  medium:
+    score: 5
+    notes: "Excellent strategy distinction for teams balancing confidence and isolation."
+  large:
+    score: 4
+    notes: "Valuable at scale when documented in testing guidelines and paired with boundary patterns."

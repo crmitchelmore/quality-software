@@ -1,0 +1,77 @@
+id: "ephemeral-environment"
+title: "Ephemeral Environment"
+aka:
+  - "Preview Environment"
+  - "Environment per Pull Request"
+  - "On-Demand Test Environment"
+scale: "integration"
+category: "testing"
+altitude: "high"
+maturity: "established"
+short_description: "Provision a complete isolated application stack per pull request or test run, then destroy it after verification."
+description: "Ephemeral Environments create a full but temporary deployment of services, databases, queues, configuration, and routes for a single change or test run. They remove contention for shared staging and make E2E, smoke, and exploratory checks safer. The pattern depends on automation, data isolation, cost controls, and reliable teardown."
+problem: "Shared staging environments create race conditions, polluted data, and unreliable end-to-end results for concurrent teams."
+context: "Use when system-level tests need realistic deployment topology, or reviewers need to exercise a PR before merging."
+consequences:
+  - "Gives each PR a clean, realistic target for smoke and E2E tests."
+  - "Improves debugging because environment state belongs to one run."
+  - "Requires infrastructure automation, teardown guarantees, secret handling, and cost limits."
+synergies:
+  - pattern: "test-pyramid"
+    reason: "Ephemeral environments support the small but important E2E layer at the top of the pyramid."
+  - pattern: "test-sharding"
+    reason: "Isolated environments prevent parallel shards from corrupting shared state."
+  - pattern: "screenplay-pattern"
+    reason: "High-level acceptance tasks can run against real isolated deployments."
+conflicts_with:
+  - "test-containers"
+alternatives:
+  - "test-containers"
+  - "contract-testing"
+  - "flaky-test-quarantine"
+languages:
+  - "language-agnostic"
+  - "shell"
+  - "typescript"
+  - "go"
+  - "python"
+frameworks:
+  - "none"
+  - "kubernetes"
+  - "terraform"
+  - "nodejs"
+  - "spring-boot"
+  - "dotnet"
+project_types:
+  - "microservices"
+  - "distributed-system"
+  - "web-api"
+  - "web-frontend"
+  - "backend-service"
+  - "serverless"
+tags:
+  - "preview-environment"
+  - "e2e"
+  - "isolation"
+  - "ci-cd"
+examples:
+  - language: "shell"
+    title: "Per-run compose environment"
+    negative: |-
+      TEST_ENV=staging npm run test:e2e
+      # multiple PRs mutate the same database
+    positive: |-
+      docker compose up -d --wait
+      npm run test:e2e
+      docker compose down --volumes
+    explanation: "The positive flow creates and tears down isolated state for the run instead of competing for shared staging."
+ratings:
+  small:
+    score: 2
+    notes: "Often too much infrastructure unless E2E realism is essential."
+  medium:
+    score: 4
+    notes: "Very useful for product teams with regular end-to-end checks."
+  large:
+    score: 5
+    notes: "Essential for large platforms where shared staging cannot support safe parallel delivery."

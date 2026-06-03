@@ -1,0 +1,103 @@
+id: mostly-integration-testing
+title: Write Tests. Not Too Many. Mostly Integration.
+aka:
+  - Mostly Integration Testing
+  - Testing Trophy maxim
+discipline: testing
+originators:
+  - Guillermo Rauch
+  - Kent C. Dodds
+origin:
+  type: blog
+  title: Write tests. Not too many. Mostly integration.
+  year: 2016
+short_description: >-
+  Optimise tests for confidence per unit of effort: write automated tests, avoid wasteful coverage
+  maximalism, and prefer realistic integration flows.
+description: >-
+  Mostly integration testing is a pragmatic reaction to both no-test cultures and brittle suites that
+  chase 100 percent unit coverage. Its central claim is economic: tests should buy confidence in the
+  way the software is actually used, so realistic collaboration tests often provide better return than
+  isolated tests of every implementation detail. The maxim still keeps a place for unit tests, static
+  analysis and a few end-to-end journeys, but it asks teams to stop when the marginal confidence of
+  another test is lower than its maintenance cost.
+core_tenets:
+  - Write automated tests because they are the durable feedback loop for change.
+  - Do not optimise for total coverage; optimise for useful confidence and low maintenance cost.
+  - Prefer tests that exercise real collaborations and user-visible behaviour over implementation details.
+  - Keep end-to-end tests few and valuable because they are expensive and failure diagnosis is slower.
+key_ideas:
+  - name: Confidence over coverage
+    explanation: >-
+      Coverage can show code was executed, but useful tests demonstrate that important behaviours still
+      work for users.
+  - name: Integration as sweet spot
+    explanation: >-
+      In many product applications, tests that exercise multiple real units together catch realistic
+      regressions without the cost of full browser or production-like journeys.
+in_practice: >-
+  Cover high-value flows with integration tests through public APIs or component boundaries, use unit
+  tests for complex pure logic, add static checks where the language supports them, and reserve browser
+  or full-stack tests for the smallest set of critical journeys.
+complements:
+  - extreme-programming-tdd
+  - continuous-delivery-lean
+tensions_with:
+  - philosophy: property-based-thinking
+    reason: >-
+      A mostly-integration suite can miss algebraic edge cases that are cheaper to express as generated
+      properties at a smaller boundary.
+associated_patterns:
+  - pattern: test-pyramid
+    reason: >-
+      Provides a portfolio counterweight so mostly integration does not accidentally become a slow,
+      top-heavy end-to-end suite.
+  - pattern: contract-testing
+    reason: >-
+      Gives realistic confidence at service boundaries without relying on brittle integrated
+      environments.
+  - pattern: fake-object
+    reason: >-
+      Enables integration-style flow tests with realistic collaborator behaviour while keeping the suite
+      fast and deterministic.
+successfully_applied:
+  - where: JavaScript and frontend testing communities
+    what: >-
+      Rauch's maxim and Dodds' follow-up writing popularised a confidence-first test portfolio where
+      integration tests form the largest investment for UI-heavy applications.
+    evidence_strength: primary-source
+    source:
+      title: Write tests. Not too many. Mostly integration.
+      url: https://x.com/rauchg/status/807626710350839808
+      year: 2016
+  - where: Testing Library ecosystem
+    what: >-
+      Dodds connected the maxim to Testing Library's principle that tests should resemble how software
+      is used, encouraging behavioural integration tests over implementation-detail assertions.
+    evidence_strength: primary-source
+    source:
+      title: Write Tests
+      url: https://kentcdodds.com/blog/write-tests
+      year: 2019
+best_for:
+  - frontend-application
+  - full-stack-web-app
+  - product-team
+  - component-library
+criticisms:
+  - Integration is an overloaded term and can mean different boundaries to different teams.
+  - The advice is most natural for product and UI code; domain-heavy libraries may need more small invariant tests.
+  - Without discipline, mostly integration can drift into slow, flaky integrated tests.
+references:
+  - title: Write tests. Not too many. Mostly integration.
+    author: Guillermo Rauch
+    year: 2016
+    url: https://x.com/rauchg/status/807626710350839808
+  - title: Write Tests
+    author: Kent C. Dodds
+    year: 2019
+    url: https://kentcdodds.com/blog/write-tests
+  - title: The Testing Trophy and Testing Classifications
+    author: Kent C. Dodds
+    year: 2021
+    url: https://kentcdodds.com/blog/the-testing-trophy-and-testing-classifications

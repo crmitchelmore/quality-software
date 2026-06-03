@@ -1,0 +1,114 @@
+id: simulation-driven-testing
+title: Simulation-Driven Testing
+aka:
+  - Deterministic Simulation Testing
+  - DST
+  - Deterministic Chaos
+discipline: testing
+originators:
+  - FoundationDB engineering team
+  - TigerBeetle engineering team
+  - Antithesis
+origin:
+  type: talk
+  title: Testing Distributed Systems with Deterministic Simulation
+  era: 2010s-2020s
+short_description: >-
+  Build the system around a deterministic, seeded simulator that controls time, I/O and faults so rare
+  distributed failures can be reproduced.
+description: >-
+  Simulation-driven testing treats the simulator as a first-class test environment for whole-system
+  correctness. Instead of relying on wall-clock integration tests, the system routes non-deterministic
+  dependencies such as clocks, networking, disk I/O, scheduling and random numbers through deterministic
+  interfaces. A harness can then inject faults, run many simulated histories, and replay any failure from
+  a seed. The philosophy is strongest for distributed databases and fault-tolerant systems where the most
+  dangerous bugs require precise timing, crashes or partitions that ordinary tests cannot reproduce.
+core_tenets:
+  - Control every source of non-determinism through deterministic shims or interfaces.
+  - Make every failure replayable from a recorded seed so debugging is not guesswork.
+  - Inject faults such as packet loss, partitions, crashes, disk errors and clock changes as normal test inputs.
+  - Test the whole system under many simulated histories rather than only isolated components.
+key_ideas:
+  - name: Seeded replay
+    explanation: >-
+      A failing simulated execution records enough seed and schedule information to reproduce the same
+      sequence of events exactly.
+  - name: Fault-injected universe
+    explanation: >-
+      The simulator owns clocks, networking and storage behaviour, allowing adversarial but controlled
+      failures that would be flaky in real time.
+in_practice: >-
+  Design runtime abstractions for clock, network, disk and randomness from the start; run simulated
+  workloads continuously; publish failure seeds in CI; keep deterministic reproduction as a release gate
+  for consensus, storage and settlement invariants.
+complements:
+  - risk-based-testing
+  - property-based-thinking
+  - design-for-production
+tensions_with:
+  - philosophy: mostly-integration-testing
+    reason: >-
+      Simulation-driven testing demands deep control of runtime interfaces, while pragmatic integration
+      tests usually use real framework and infrastructure behaviour directly.
+associated_patterns:
+  - pattern: golden-master
+    reason: >-
+      Recorded seeds and expected traces can serve as reproducible artefacts for regression protection.
+  - pattern: property-based-testing
+    reason: >-
+      Generated workloads and invariants supply the model-style assertions that a deterministic simulator
+      repeatedly checks.
+  - pattern: test-pyramid
+    reason: >-
+      Clarifies that simulation is a specialised high-altitude layer rather than a replacement for all
+      smaller tests.
+successfully_applied:
+  - where: FoundationDB
+    what: >-
+      The FoundationDB architecture paper describes simulation testing as a major part of how the
+      database finds rare distributed-system failures before release.
+    evidence_strength: primary-source
+    source:
+      title: 'FoundationDB: A Distributed Unbundled Ordered Key-Value Store'
+      url: https://www.foundationdb.org/files/fdb-paper.pdf
+      year: 2021
+  - where: TigerBeetle
+    what: >-
+      TigerBeetle documents VOPR, its deterministic simulator, as a core correctness strategy for a
+      financial accounting database built around reproducible fault injection.
+    evidence_strength: primary-source
+    source:
+      title: TigerBeetle repository
+      url: https://github.com/tigerbeetle/tigerbeetle
+  - where: Antithesis platform
+    what: >-
+      Antithesis commercialises deterministic simulation and autonomous fault injection for reproducing
+      hard-to-find distributed-system failures.
+    evidence_strength: primary-source
+    source:
+      title: Antithesis documentation
+      url: https://antithesis.com/docs/
+best_for:
+  - distributed-database
+  - consensus-system
+  - storage-engine
+  - financial-settlement-system
+  - fault-tolerant-platform
+criticisms:
+  - It is difficult to retrofit because production code must be designed around controllable non-determinism.
+  - The simulator becomes complex infrastructure whose model can diverge from real deployment behaviour.
+  - Most product teams do not need the cost and expertise required for this level of testing.
+references:
+  - title: 'FoundationDB: A Distributed Unbundled Ordered Key-Value Store'
+    author: FoundationDB engineering team
+    year: 2021
+    url: https://www.foundationdb.org/files/fdb-paper.pdf
+  - title: TigerBeetle repository
+    author: TigerBeetle contributors
+    url: https://github.com/tigerbeetle/tigerbeetle
+  - title: Antithesis documentation
+    author: Antithesis
+    url: https://antithesis.com/docs/
+  - title: Testing Distributed Systems with Deterministic Simulation
+    author: Will Wilson
+    url: https://www.youtube.com/results?search_query=Testing+Distributed+Systems+with+Deterministic+Simulation

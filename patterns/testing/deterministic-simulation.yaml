@@ -1,0 +1,78 @@
+id: "deterministic-simulation"
+title: "Deterministic Simulation"
+aka:
+  - "Deterministic Simulation Testing"
+  - "DST"
+  - "Deterministic Chaos"
+  - "Simulation Testing"
+scale: "concurrency"
+category: "testing"
+altitude: "high"
+maturity: "emerging"
+short_description: "Run a whole system inside a seeded simulator that controls time, network, storage, randomness, and injected faults."
+description: "Deterministic Simulation virtualises non-deterministic runtime boundaries so failures can be replayed exactly from a seed. The simulator controls clocks, scheduling, network messages, disk errors, random numbers, and crash-restart cycles. It is a first-class architecture choice for systems where rare distributed failures dominate risk, as in FoundationDB and TigerBeetle-style testing."
+problem: "Distributed systems fail through timing, scheduling, network, and disk interleavings that ordinary integration tests cannot reproduce."
+context: "Use for databases, consensus systems, replicated storage, financial ledgers, and other systems that own enough of their runtime to virtualise non-determinism."
+consequences:
+  - "Makes rare fault scenarios reproducible and debuggable from a seed."
+  - "Can run huge simulated time spans faster than wall clock."
+  - "Extremely expensive to retrofit and only as trustworthy as the simulator model."
+synergies:
+  - pattern: "fuzzing"
+    reason: "Seeded workloads and fault schedules can fuzz state-space rather than only input bytes."
+  - pattern: "property-based-testing"
+    reason: "System invariants define what every simulated run must preserve."
+  - pattern: "flaky-test-quarantine"
+    reason: "The goal is the opposite of quarantine: make non-deterministic failures deterministic and reproducible."
+conflicts_with:
+  - "ephemeral-environment"
+alternatives:
+  - "ephemeral-environment"
+  - "fuzzing"
+  - "property-based-testing"
+languages:
+  - "language-agnostic"
+  - "cpp"
+  - "c"
+  - "rust"
+  - "go"
+frameworks:
+  - "none"
+  - "tokio"
+  - "actix"
+project_types:
+  - "distributed-system"
+  - "data-pipeline"
+  - "high-throughput"
+  - "low-latency"
+  - "safety-critical"
+tags:
+  - "distributed-systems"
+  - "fault-injection"
+  - "simulation"
+  - "reproducibility"
+examples:
+  - language: "language-agnostic"
+    title: "Seeded fault schedule"
+    negative: |-
+      kill node-2
+      sleep 5
+      assert read("key") == "value"  # sometimes fails, rarely reproduces
+    positive: |-
+      sim = Simulator(seed=12345)
+      sim.partition(nodes=[2], at_ms=1000, duration_ms=500)
+      sim.crash(node=3, at_ms=1200)
+      cluster = sim.spawn_cluster(5)
+      result = sim.run(workload="write_then_read")
+      assert result.no_data_loss
+    explanation: "The positive test controls time and faults from a seed, so any failure can be replayed exactly."
+ratings:
+  small:
+    score: 1
+    notes: "Avoid unless the product is itself a distributed systems engine."
+  medium:
+    score: 2
+    notes: "Rarely justified outside specialised reliability-critical systems."
+  large:
+    score: 5
+    notes: "Transformational for databases and consensus systems where rare interleavings are the core risk."

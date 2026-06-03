@@ -1,0 +1,80 @@
+id: "screenplay-pattern"
+title: "Screenplay Pattern"
+aka:
+  - "Actor Pattern"
+  - "Tasks and Abilities"
+scale: "integration"
+category: "testing"
+altitude: "medium"
+maturity: "established"
+short_description: "Model acceptance tests around actors with abilities performing tasks and asking questions, rather than page-centric scripts."
+description: "The Screenplay Pattern scales UI and acceptance tests by decomposing behaviour into Actors, Abilities, Tasks, Interactions, and Questions. Instead of one large page object per screen, tests express user goals as composable tasks and assertions as questions. It is especially useful for multi-actor workflows or suites where page objects have become god objects."
+problem: "Large UI test suites built around page objects accumulate duplicated flows and oversized classes that are hard to compose."
+context: "Use for medium-to-large acceptance suites with repeated user journeys, multiple actors, or several interaction channels such as browser plus API."
+consequences:
+  - "Encourages reusable user-goal tasks instead of low-level UI scripts."
+  - "Handles multi-actor scenarios more naturally than page objects."
+  - "Introduces vocabulary and framework conventions that may be too heavy for small suites."
+synergies:
+  - pattern: "page-object"
+    reason: "Screenplay can wrap page-level details behind lower-level interactions or questions."
+  - pattern: "given-when-then"
+    reason: "Tasks and questions map naturally onto BDD scenario steps."
+  - pattern: "ephemeral-environment"
+    reason: "Acceptance tasks are more trustworthy when run against isolated full environments."
+conflicts_with:
+  - "page-object"
+alternatives:
+  - "page-object"
+  - "given-when-then"
+  - "test-pyramid"
+languages:
+  - "language-agnostic"
+  - "typescript"
+  - "javascript"
+  - "java"
+  - "csharp"
+frameworks:
+  - "none"
+  - "nodejs"
+  - "react"
+  - "angular"
+  - "spring-boot"
+  - "dotnet"
+project_types:
+  - "web-frontend"
+  - "web-api"
+  - "microservices"
+  - "monolith"
+  - "modular-monolith"
+tags:
+  - "acceptance-testing"
+  - "ui-testing"
+  - "actors"
+  - "tasks"
+examples:
+  - language: "typescript"
+    title: "Checkout as actor task"
+    negative: |-
+      const checkout = new CheckoutPage(page)
+      await checkout.fillAddress(address)
+      await checkout.selectShipping("express")
+      await checkout.applyDiscount("SAVE10")
+      await checkout.submitPayment(card)
+    positive: |-
+      await actor.attemptsTo(
+        CompleteCheckout.with(cart, address, card),
+        Confirm.orderSummary()
+      )
+      expect(await actor.asksAbout(OrderTotal.displayed())).toEqual("£108.00")
+    explanation: "The positive test composes user goals and questions rather than growing a page object that knows every checkout detail."
+ratings:
+  small:
+    score: 2
+    notes: "Usually too much structure for a small UI suite."
+  medium:
+    score: 4
+    notes: "Good fit when page objects are becoming hard to compose."
+  large:
+    score: 5
+    notes: "Excellent for large acceptance suites with many journeys and actors."

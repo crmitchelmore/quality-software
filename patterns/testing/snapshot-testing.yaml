@@ -1,0 +1,79 @@
+id: "snapshot-testing"
+title: "Snapshot Testing"
+aka:
+  - "Serialized Snapshot Test"
+  - "Jest Snapshot"
+  - "Visual Snapshot"
+scale: "implementation"
+category: "testing"
+altitude: "low"
+maturity: "established"
+short_description: "Compare rendered or serialized output with a stored snapshot, approving intentional diffs and rejecting accidental changes."
+description: "Snapshot Testing captures structured output such as a component tree, API response, or rendered document and stores it as the expected result. Future test runs diff against that snapshot. It is a narrow form of Golden Master that works best for small, stable outputs with human-reviewable diffs. Blindly updating snapshots turns the practice into a rubber stamp that protects nothing."
+problem: "Large structured outputs are awkward to assert field-by-field, but accidental output changes still need review."
+context: "Use for stable UI components, generated markup, serialized responses, and documents where snapshot diffs are small enough to inspect deliberately."
+consequences:
+  - "Captures broad output regressions with little assertion code."
+  - "Diffs can be easy to review when snapshots are small and deterministic."
+  - "Mass update workflows and volatile fields make snapshots noisy or meaningless."
+synergies:
+  - pattern: "golden-master"
+    reason: "Snapshot testing is a focused golden-master variant for serialized output."
+  - pattern: "page-object"
+    reason: "Page objects can drive UI state while snapshots verify stable rendered fragments."
+  - pattern: "test-data-builder"
+    reason: "Builders create deterministic inputs so snapshots avoid mystery data."
+conflicts_with:
+  - "property-based-testing"
+alternatives:
+  - "golden-master"
+  - "parameterised-test"
+  - "arrange-act-assert"
+languages:
+  - "language-agnostic"
+  - "javascript"
+  - "typescript"
+  - "python"
+  - "java"
+frameworks:
+  - "none"
+  - "react"
+  - "vue"
+  - "angular"
+  - "nodejs"
+  - "nextjs"
+project_types:
+  - "web-frontend"
+  - "library"
+  - "web-api"
+  - "desktop-app"
+  - "mobile-app"
+tags:
+  - "approval"
+  - "snapshots"
+  - "ui-testing"
+  - "rubber-stamping"
+examples:
+  - language: "javascript"
+    title: "Small reviewed component snapshot"
+    negative: |-
+      // After every UI change
+      // npm test -- --updateSnapshot
+      // All diffs accepted without reading them
+    positive: |-
+      test("renders user card", () => {
+        const { container } = render(<UserCard name="Ada" role="admin" />)
+        expect(container).toMatchSnapshot()
+      })
+      // Review the snapshot diff before committing it.
+    explanation: "The positive example keeps the snapshot small and reviewable; the negative workflow rubber-stamps every regression by blindly updating stored output."
+ratings:
+  small:
+    score: 3
+    notes: "Helpful for small components or generated outputs if diffs are reviewed."
+  medium:
+    score: 3
+    notes: "Useful with strict snapshot size and update discipline."
+  large:
+    score: 2
+    notes: "Large suites often accumulate noisy snapshots unless ownership and review rules are strong."

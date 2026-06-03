@@ -19,7 +19,7 @@
     "title": { "type": "string", "minLength": 3 },
     "discipline": {
       "type": "string",
-      "enum": ["software", "product", "ux", "cross-cutting"]
+      "enum": ["software", "product", "ux", "testing", "cross-cutting"]
     },
     "aka": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
     "originators": {

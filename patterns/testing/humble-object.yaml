@@ -1,0 +1,88 @@
+id: "humble-object"
+title: "Humble Object"
+aka:
+  - "Passive View"
+  - "Humble Dialog Box"
+  - "Presenter Extraction"
+scale: "implementation"
+category: "testing"
+altitude: "low"
+maturity: "time-tested"
+short_description: "Move logic out of hard-to-test framework or boundary code into a plain object that can be tested directly."
+description: "Humble Object keeps the unavoidable boundary object deliberately thin: UI widgets, timers, controllers, or framework callbacks only translate events into calls on a plain collaborator. The extracted object owns decisions and formatting, so tests can exercise it without live UI frameworks, sleeping timers, or container bootstrapping."
+problem: "Important logic is trapped inside framework callbacks, UI classes, timers, or asynchronous infrastructure that makes tests slow and brittle."
+context: "Use when a boundary is difficult to instantiate or observe, but its decisions can be expressed in a plain object or function."
+consequences:
+  - "Fast tests cover the extracted logic without launching the framework."
+  - "Boundary code becomes intentionally boring and easier to smoke-test at a higher level."
+  - "Can add indirection if applied to trivial glue with no meaningful logic."
+synergies:
+  - pattern: "page-object"
+    reason: "Page objects can exercise the humble boundary at UI level while presenter logic is tested directly."
+  - pattern: "hexagonal-test-boundaries"
+    reason: "Both push decisions inward and leave adapters or framework edges thin."
+  - pattern: "sociable-and-solitary-tests"
+    reason: "The extracted object can be tested sociably with real domain collaborators or solitarily with doubles."
+conflicts_with:
+  - "golden-master"
+alternatives:
+  - "test-pyramid"
+  - "page-object"
+  - "hexagonal-test-boundaries"
+languages:
+  - "language-agnostic"
+  - "javascript"
+  - "typescript"
+  - "python"
+  - "java"
+  - "csharp"
+frameworks:
+  - "none"
+  - "react"
+  - "angular"
+  - "vue"
+  - "spring-boot"
+  - "dotnet"
+project_types:
+  - "web-frontend"
+  - "desktop-app"
+  - "mobile-app"
+  - "web-api"
+  - "monolith"
+tags:
+  - "testability"
+  - "ui-boundary"
+  - "presenter"
+  - "passive-view"
+examples:
+  - language: "python"
+    title: "Timer presenter extraction"
+    negative: |-
+      class TimerView:
+          def on_tick(self):
+              self.elapsed += 1
+              self.label.text = f"{self.elapsed}s"
+    positive: |-
+      class TimerView:
+          def on_tick(self):
+              self.presenter.tick()
+      
+      class TimerPresenter:
+          def tick(self): self.elapsed += 1
+          def display(self): return f"{self.elapsed}s"
+      
+      def test_tick_increments_elapsed():
+          p = TimerPresenter()
+          p.tick(); p.tick()
+          assert p.display() == "2s"
+    explanation: "The boundary only forwards events; the presenter holds logic and can be tested without a live widget toolkit or real timer."
+ratings:
+  small:
+    score: 3
+    notes: "Useful when a small UI or timer has real logic worth extracting."
+  medium:
+    score: 4
+    notes: "Strong fit for framework-heavy applications where container or UI tests are slow."
+  large:
+    score: 4
+    notes: "Keeps boundary logic maintainable as teams and UI surfaces grow."

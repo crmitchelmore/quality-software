@@ -1,0 +1,76 @@
+id: "dummy-object"
+title: "Dummy Object"
+aka:
+  - "Dummy"
+  - "Placeholder Object"
+scale: "implementation"
+category: "testing"
+altitude: "low"
+maturity: "time-tested"
+short_description: "Pass a deliberately inert placeholder to satisfy a parameter that the test path must never use."
+description: "A Dummy Object exists only to fill an argument slot required by an API. It has no meaningful behaviour for the scenario and should fail loudly if the code unexpectedly calls it. Dummies keep irrelevant setup out of the test, but using them widely can reveal an interface that asks for too many collaborators."
+problem: "A constructor or method requires a collaborator that is irrelevant to the behaviour under test."
+context: "Use when the test path provably does not use the parameter and a null value would be ambiguous or unsafe."
+consequences:
+  - "Signals that a collaborator is intentionally irrelevant to this scenario."
+  - "Can expose over-wide APIs that should be split or simplified."
+  - "If the dummy silently absorbs calls, it hides bugs; make unexpected use fail clearly."
+synergies:
+  - pattern: "test-double"
+    reason: "Dummy is the simplest member of the test double family."
+  - pattern: "arrange-act-assert"
+    reason: "Dummies minimise irrelevant arrange detail so the act and assertion remain visible."
+  - pattern: "humble-object"
+    reason: "Extracted plain objects often need fewer framework parameters and therefore fewer dummies."
+conflicts_with:
+  - "fake-object"
+alternatives:
+  - "stub"
+  - "fake-object"
+  - "test-data-builder"
+languages:
+  - "language-agnostic"
+  - "java"
+  - "csharp"
+  - "typescript"
+  - "python"
+frameworks:
+  - "none"
+  - "nodejs"
+  - "spring-boot"
+  - "dotnet"
+  - "fastapi"
+project_types:
+  - "library"
+  - "web-api"
+  - "backend-service"
+  - "monolith"
+  - "modular-monolith"
+tags:
+  - "test-double"
+  - "placeholder"
+  - "fixture-simplification"
+examples:
+  - language: "java"
+    title: "Unused audit sink"
+    negative: |-
+      var service = new PricingService(null);
+      assertEquals(90, service.price(goldCustomer));
+    positive: |-
+      var service = new PricingService(new FailingAuditSink());
+      assertEquals(90, service.price(goldCustomer));
+      
+      class FailingAuditSink implements AuditSink {
+        public void record(Event e) { throw new AssertionError("unused"); }
+      }
+    explanation: "The dummy makes the unused collaborator explicit and fails if the implementation unexpectedly starts depending on it."
+ratings:
+  small:
+    score: 3
+    notes: "A simple way to remove irrelevant setup in small APIs."
+  medium:
+    score: 3
+    notes: "Helpful, though repeated need for dummies should trigger interface review."
+  large:
+    score: 2
+    notes: "Overuse in large suites often signals constructors or service boundaries that are too broad."

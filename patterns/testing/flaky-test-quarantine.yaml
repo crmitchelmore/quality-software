@@ -1,0 +1,74 @@
+id: "flaky-test-quarantine"
+title: "Flaky Test Quarantine"
+aka:
+  - "Quarantine Lane"
+  - "Non-Blocking Flake Tracking"
+scale: "organisational"
+category: "testing"
+altitude: "high"
+maturity: "established"
+short_description: "Detect non-deterministic tests, move them out of the blocking path, and track them until fixed or removed."
+description: "Flaky Test Quarantine protects trust in the main pipeline by separating tests that fail non-deterministically. Quarantined tests still run and report, but they do not block unrelated changes while ownership, failure history, and repair deadlines remain visible. Quarantine is a short-term containment pattern, not permission to ignore broken tests."
+problem: "A few non-deterministic tests make the whole CI signal untrustworthy, so teams start ignoring red builds."
+context: "Use when flakes are detected repeatedly and cannot be fixed immediately without blocking the delivery pipeline."
+consequences:
+  - "Restores a reliable blocking CI signal for deterministic tests."
+  - "Makes flaky tests visible with ownership and fix tracking."
+  - "Can normalise broken tests if quarantine lacks deadlines, alerts, or removal policy."
+synergies:
+  - pattern: "test-sharding"
+    reason: "Quarantine data helps distinguish true flakes from parallelisation and shared-state bugs."
+  - pattern: "ephemeral-environment"
+    reason: "Isolated environments remove many external causes of flakiness before quarantine is needed."
+  - pattern: "test-pyramid"
+    reason: "Layer metrics show whether flakes concentrate in overly broad E2E tests."
+conflicts_with:
+  - "snapshot-testing"
+alternatives:
+  - "ephemeral-environment"
+  - "test-containers"
+  - "deterministic-simulation"
+languages:
+  - "language-agnostic"
+  - "shell"
+  - "python"
+  - "javascript"
+  - "typescript"
+frameworks:
+  - "none"
+  - "nodejs"
+  - "django"
+  - "spring-boot"
+  - "dotnet"
+project_types:
+  - "web-api"
+  - "web-frontend"
+  - "backend-service"
+  - "microservices"
+  - "distributed-system"
+tags:
+  - "flaky-tests"
+  - "ci"
+  - "non-determinism"
+  - "quarantine"
+examples:
+  - language: "shell"
+    title: "Separate non-blocking flaky job"
+    negative: |-
+      jest.retryTimes(3)
+      npm test
+      # flaky test eventually passes and the cause is hidden
+    positive: |-
+      pytest tests/ -m "not flaky"
+      pytest tests/ -m "flaky" || echo "reported to flake dashboard"
+    explanation: "The positive flow keeps the main lane deterministic while still running and reporting quarantined tests for repair."
+ratings:
+  small:
+    score: 2
+    notes: "Prefer fixing flakes directly in small suites."
+  medium:
+    score: 4
+    notes: "Useful containment when a few flakes block many developers."
+  large:
+    score: 5
+    notes: "Critical for preserving CI trust at scale, provided ownership and expiry are enforced."

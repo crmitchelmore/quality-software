@@ -1,0 +1,88 @@
+id: behaviour-driven-development
+title: Behaviour-Driven Development
+discipline: testing
+aka:
+  - BDD
+  - Behaviour-driven design
+originators:
+  - Dan North
+origin:
+  type: essay
+  title: Introducing BDD
+  year: 2006
+short_description: >-
+  Express tests as shared descriptions of behaviour, using ubiquitous language and Given-When-Then
+  scenarios to turn acceptance criteria into executable specifications.
+description: >-
+  Behaviour-Driven Development reframes TDD around behaviour rather than tests. Dan North observed
+  that the word "test" led teams to focus on implementation verification instead of the next useful
+  behaviour. BDD uses sentence-like names, ubiquitous language and Given-When-Then scenarios so
+  product, testing and engineering participants can agree on examples that become executable
+  specifications.
+core_tenets:
+  - Describe what the system should do next in language the whole team can understand.
+  - Use Given-When-Then to connect context, action and observable outcome.
+  - Treat acceptance criteria as executable specifications, not separate documents to be reinterpreted.
+  - Work outside-in from business behaviour towards supporting implementation.
+  - Name examples so failures explain the behaviour that has regressed.
+key_ideas:
+  - name: Ubiquitous language
+    explanation: >-
+      Examples use domain terms shared by customers, testers and developers, reducing translation loss
+      between requirements and implementation.
+  - name: Executable specification
+    explanation: >-
+      A scenario is both a requirement example and an automated check, keeping documentation and
+      behaviour aligned.
+in_practice: >-
+  Collaborate on concrete examples before building a story, write scenarios in Given-When-Then form,
+  automate only examples that provide lasting confidence, and use lower-level tests to support the
+  same behaviour without duplicating every acceptance scenario through the UI.
+complements:
+  - mockist-tdd
+  - extreme-programming-tdd
+  - classicist-tdd
+associated_patterns:
+  - pattern: given-when-then
+    reason: >-
+      Given-When-Then is the scenario grammar that makes behaviour examples readable and executable.
+  - pattern: arrange-act-assert
+    reason: >-
+      AAA provides the same three-phase structure for lower-level examples that do not need Gherkin.
+  - pattern: page-object
+    reason: >-
+      Keeps automated acceptance tests expressed through user-visible capabilities rather than UI
+      implementation details.
+  - pattern: object-mother
+    reason: >-
+      Named domain fixtures can make examples read in the ubiquitous language when the catalogue of
+      canonical cases is small.
+successfully_applied:
+  - where: JBehave and early BDD practice
+    what: >-
+      Dan North introduced BDD through the should-style naming shift and JBehave, showing how behaviour
+      language helped teams understand what to specify next.
+    evidence_strength: primary-source
+    source:
+      title: Introducing BDD
+      url: https://dannorth.net/blog/introducing-bdd/
+      year: 2006
+  - where: Specification by Example and Given-When-Then practice
+    what: >-
+      Fowler documents Given-When-Then as a readable structure for examples and connects executable
+      examples with specification-by-example practice.
+    evidence_strength: secondary-source
+    source:
+      title: GivenWhenThen
+      url: https://martinfowler.com/bliki/GivenWhenThen.html
+references:
+  - title: Introducing BDD
+    author: Dan North
+    year: 2006
+    url: https://dannorth.net/blog/introducing-bdd/
+  - title: GivenWhenThen
+    author: Martin Fowler
+    url: https://martinfowler.com/bliki/GivenWhenThen.html
+  - title: SpecificationByExample
+    author: Martin Fowler
+    url: https://martinfowler.com/bliki/SpecificationByExample.html

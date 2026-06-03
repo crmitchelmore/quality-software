@@ -1,0 +1,82 @@
+id: testing-trophy
+title: Testing Trophy
+discipline: testing
+aka:
+  - Static-unit-integration-e2e trophy
+originators:
+  - Kent C. Dodds
+origin:
+  type: blog
+  title: The Testing Trophy and Testing Classifications
+  year: 2021
+short_description: >-
+  Weight test investment towards integration tests, with static analysis beneath them and only a few
+  end-to-end tests above, to maximise confidence for frontend applications.
+description: >-
+  The Testing Trophy reframes automated test portfolio design for JavaScript and frontend-heavy
+  systems. It counts static analysis as a cheap confidence layer, keeps unit tests useful but not
+  dominant, makes integration tests the largest investment because they exercise collaborating UI and
+  application units, and reserves end-to-end tests for a small number of critical user journeys.
+core_tenets:
+  - Confidence is the goal; coverage percentages and layer quotas are secondary signals.
+  - Static analysis such as TypeScript and linting is a legitimate, cheap test layer.
+  - Integration tests usually give the best confidence-to-cost ratio for UI-heavy codebases.
+  - Unit tests are valuable for isolated logic, but should not dominate the portfolio by default.
+  - End-to-end tests should cover the most important journeys, not every branch or variant.
+key_ideas:
+  - name: Static analysis as testing
+    explanation: >-
+      Types and lint rules catch large classes of errors before runtime, so they form the low-cost
+      base of the trophy.
+  - name: Mostly integration
+    explanation: >-
+      Tests that exercise realistic collaboration between components, state, routing and API seams
+      better resemble how users experience frontend software.
+in_practice: >-
+  Use TypeScript and linting as a baseline, write targeted unit tests for complex pure logic, make
+  integration tests the default for component and application behaviour, and keep browser end-to-end
+  tests focused on the most valuable happy paths and high-risk flows.
+complements:
+  - behaviour-driven-development
+  - extreme-programming-tdd
+tensions_with:
+  - philosophy: testing-honeycomb
+    reason: >-
+      Both favour integration confidence, but the trophy is tuned for frontend applications while the
+      honeycomb is tuned for microservices whose deployment unit is the service.
+associated_patterns:
+  - pattern: given-when-then
+    reason: >-
+      Integration tests are strongest when they describe user-visible scenarios rather than internal
+      component wiring.
+  - pattern: page-object
+    reason: >-
+      Keeps the small end-to-end layer expressed through user capabilities rather than DOM details.
+  - pattern: test-pyramid
+    reason: >-
+      The trophy deliberately adapts pyramid economics by adding static analysis and widening the
+      integration layer for frontend systems.
+  - pattern: arrange-act-assert
+    reason: >-
+      Gives integration and unit tests a readable structure that separates setup, behaviour and
+      expected outcome.
+successfully_applied:
+  - where: JavaScript and Testing Library ecosystem
+    what: >-
+      Kent C. Dodds used the trophy to explain why frontend teams should count static checks,
+      prioritise tests that resemble software use, and avoid over-investing in implementation-detail
+      unit tests.
+    evidence_strength: primary-source
+    source:
+      title: The Testing Trophy and Testing Classifications
+      url: https://kentcdodds.com/blog/the-testing-trophy-and-testing-classifications
+      year: 2021
+references:
+  - title: The Testing Trophy and Testing Classifications
+    author: Kent C. Dodds
+    year: 2021
+    url: https://kentcdodds.com/blog/the-testing-trophy-and-testing-classifications
+  - title: Write tests. Not too many. Mostly integration.
+    author: Kent C. Dodds
+    year: 2019
+    url: https://kentcdodds.com/blog/write-tests
