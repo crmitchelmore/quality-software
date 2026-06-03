@@ -162,3 +162,30 @@ Provider seam (§15.9) → L0 universal → Kotlin deterministic win → **LLM a
 router + validation + injection hardening + budgets + audit, fake-client tested)** → certified
 blocking expansion + eval harness. LLM blocking is the **last** thing enabled, per policy, with
 metrics.
+
+## 16.13 Implementation notes (Phase 4, 2026-06-03)
+
+Built under `integration/src/llm/` (client seam, router, budget) and
+`integration/src/judge/` (pattern-def loader, prompt, schema, judge, audit). The
+advisory layer is live and fake-client tested; LLM blocking remains disabled.
+
+Decisions taken while implementing, after a second rubber-duck pass:
+
+- **`advisory` is machine-enforced on the `Finding`**, not just in the audit trail.
+  The CLI PR gate and the engine both exclude `advisory` findings from any blocking
+  decision, so an LLM-only finding can never gate CI regardless of severity (§16.2).
+- **The code fence is content-derived** (`sha256(content)` prefix), guaranteeing the
+  delimiter is absent from the region (injection safety, §16.9) *and* keeping the
+  prompt deterministic for the replay fingerprint (§16.7). A purely random fence was
+  rejected because it broke replay determinism.
+- **The untrusted file path is sanitised** (newlines/backticks stripped) and labelled
+  untrusted inside the prompt.
+- **Fail-open is explicit**: a provider error or per-call timeout records an `error`
+  audit, marks the run `incomplete`, emits no finding, and never throws (§16.4).
+- **Budgets are hard**: per-call timeout enforces wall-clock around the provider;
+  `recordTokens` flips `exhausted` on overrun; `maxPatternsPerRegion` is enforced.
+- **The span check is named a "span-alignment guard", not entailment**: it is
+  necessary-but-not-sufficient. A full second-pass entailment verifier is deferred to
+  Phase 5, alongside the deterministic evidence-contract that actually gates blocking.
+- **Catalogue trust**: pattern YAML is treated as trusted grounding; it must be pinned
+  to a catalogue revision outside adversarial PR content before any blocking use.

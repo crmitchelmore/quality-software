@@ -105,7 +105,8 @@ async function cmdCheck(args: string[]): Promise<void> {
   const failOn = profile.phases.pr.failOn;
   const shouldFail =
     (event === "PR_REVIEW" || event === "BATCH") &&
-    findings.some((f) => severityAtLeast(f, failOn));
+    // Advisory (LLM-only) findings never gate CI, regardless of severity (design 16.2).
+    findings.some((f) => !f.advisory && severityAtLeast(f, failOn));
   process.exitCode = shouldFail ? 1 : 0;
   if (verdict.decision === "deny") process.exitCode = 1;
 }

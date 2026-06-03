@@ -69,6 +69,8 @@ export class Engine {
   /** Raise a finding to `block` only when the profile enforces it AND blocking is permitted here. */
   private applyEnforcement(f: Finding, change: ChangeSet): Finding {
     if (!f.patternId) return f;
+    // Advisory (LLM-only) findings are never escalated to block (design 16.2).
+    if (f.advisory) return f;
     const adopted = this.profile.adopt.find((p) => p.id === f.patternId);
     if (!adopted) return f;
     // appliesTo scoping: drop findings outside the pattern's configured paths.
@@ -110,8 +112,8 @@ export class Engine {
   }
 
   private project(change: ChangeSet, findings: Finding[]): ConformanceVerdict {
-    const blocking = findings.filter((f) => f.severity === "block");
-    const advisory = findings.filter((f) => f.severity !== "block");
+    const blocking = findings.filter((f) => f.severity === "block" && !f.advisory);
+    const advisory = findings.filter((f) => f.severity !== "block" || f.advisory);
 
     if (this.blockingAllowed(change.event) && blocking.length > 0) {
       if (change.event === "PRE_WRITE_INTENT" || change.event === "PRE_SHELL") {

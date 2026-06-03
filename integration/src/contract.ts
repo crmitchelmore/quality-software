@@ -71,6 +71,12 @@ export interface Finding {
   evidence?: string;
   /** The philosophy -> pattern -> suggestion rationale chain, for "why" details. */
   rationale?: string;
+  /**
+   * LLM-only finding: advisory by construction and NEVER merge-blocking,
+   * regardless of severity or confidence (design 16.2). Gates MUST exclude
+   * advisory findings. Blocking requires a deterministic predicate (design 16.6).
+   */
+  advisory?: boolean;
 }
 
 /** The single canonical verdict returned by the engine. */
