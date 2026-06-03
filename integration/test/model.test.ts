@@ -143,3 +143,58 @@ test("onboard CLI: exits 0 and prints preview sections", () => {
   assert.match(out, /Recommended conservative profile/);
   assert.match(out, /Next steps/);
 });
+
+// Universal L0 provider: a non-JS (Kotlin) project produces a usable evidence map
+// with FQN cross-file edges resolved by the orchestrator symbol index (design 15.4/15.5).
+function kotlinProject() {
+  const dir = makeProject({ profile: "projectSize: medium\nadopt: []\nban: []\n" });
+  writeFile(
+    dir,
+    "src/main/kotlin/com/app/domain/User.kt",
+    "package com.app.domain\n\ndata class User(val id: String)\n\ninterface UserRepo {\n  fun find(id: String): User?\n}\n",
+  );
+  writeFile(
+    dir,
+    "src/main/kotlin/com/app/infrastructure/SqlUserRepo.kt",
+    "package com.app.infrastructure\n\nimport com.app.domain.User\nimport com.app.domain.UserRepo\n\nclass SqlUserRepo : UserRepo {\n  override fun find(id: String): User? = null\n}\n",
+  );
+  writeFile(
+    dir,
+    "src/test/kotlin/com/app/domain/UserTest.kt",
+    "package com.app.domain\n\nclass UserTest {\n  fun testIt() {}\n}\n",
+  );
+  return dir;
+}
+
+test("universal provider: Kotlin modules, layers, FQN edge, provenance", () => {
+  const dir = kotlinProject();
+  const map = buildEvidenceMap(dir, {});
+
+  const domain = map.modules.find((m) => m.path.endsWith("domain/User.kt"));
+  const infra = map.modules.find((m) => m.path.endsWith("SqlUserRepo.kt"));
+  const testMod = map.modules.find((m) => m.path.endsWith("UserTest.kt"));
+  assert.ok(domain && infra && testMod, "all three kotlin files claimed");
+
+  // language + L0 provenance
+  assert.equal(domain!.language, "kotlin");
+  assert.equal(domain!.provenance.provider, "universal");
+  assert.equal(domain!.provenance.tier, 0);
+  assert.equal(domain!.provenance.confidence, "low");
+  assert.equal(domain!.packageName, "com.app.domain");
+
+  // layers classified from gradle package paths
+  assert.equal(domain!.layer, "domain");
+  assert.equal(infra!.layer, "infrastructure");
+  assert.equal(testMod!.layer, "test");
+
+  // symbols extracted
+  assert.ok(domain!.exports.some((e) => e.name === "User"));
+  assert.ok(domain!.exports.some((e) => e.name === "UserRepo"));
+
+  // FQN import com.app.domain.User -> domain file resolved into a dependency edge
+  const edge = map.dependencyEdges.find((e) => e.from === infra!.path && e.to === domain!.path);
+  assert.ok(edge, "infra->domain FQN edge resolved by orchestrator symbol index");
+
+  // extraction meta records the universal provider
+  assert.ok(map.meta.extraction.providers.includes("universal"));
+});

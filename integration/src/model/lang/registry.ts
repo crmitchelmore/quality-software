@@ -1,5 +1,6 @@
 import type { LanguageProvider } from "./types.js";
 import { typeScriptProvider } from "./typescript.js";
+import { universalProvider } from "./universal.js";
 
 /**
  * Selects the highest-tier provider that claims a file (design 15.2). Files no
@@ -22,7 +23,7 @@ export class ProviderRegistry {
   }
 }
 
-/** Default registry. Phase 1 ships the TypeScript provider; later phases add L0/L1. */
+/** Default registry. TS (L2) wins for .ts/.js; the universal L0 provider claims the rest. */
 export function defaultRegistry(): ProviderRegistry {
-  return new ProviderRegistry([typeScriptProvider]);
+  return new ProviderRegistry([typeScriptProvider, universalProvider]);
 }

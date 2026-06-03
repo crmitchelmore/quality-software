@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { execSync } from "node:child_process";
-import { walkSourceFiles } from "../fs-util.js";
+import { walkAllFiles } from "../fs-util.js";
 import { relPath } from "../detectors/util.js";
 import type { ExportedSymbol } from "./extract.js";
 import { defaultRegistry, type ProviderRegistry } from "./lang/registry.js";
@@ -32,6 +32,7 @@ export interface ModuleInfo {
   exports: ExportedSymbol[];
   imports: { spec: string; typeOnly: boolean; resolved?: string }[];
   inbound: number; // how many modules import this one
+  packageName?: string; // FQN package/namespace (JVM, C#, Go, PHP) — for cross-file resolution
   provenance: Provenance;
 }
 
@@ -123,7 +124,7 @@ export function buildEvidenceMap(repoRoot: string, opts: BuildOptions = {}): Evi
   const seen = new Set<string>();
   const providerIds = new Set<string>();
   for (const dir of srcDirs) {
-    for (const abs of walkSourceFiles(join(repoRoot, dir))) {
+    for (const abs of walkAllFiles(join(repoRoot, dir))) {
       const rel = relPath(repoRoot, abs);
       if (seen.has(rel)) continue;
       seen.add(rel);
@@ -146,6 +147,7 @@ export function buildEvidenceMap(repoRoot: string, opts: BuildOptions = {}): Evi
         exports: facts.exports.map((e) => ({ name: e.name, kind: e.kind })),
         imports: facts.imports.map((i) => ({ spec: i.raw, typeOnly: i.typeOnly ?? false, resolved: i.resolved })),
         inbound: 0,
+        packageName: facts.semanticFacts?.packageName as string | undefined,
         provenance: facts.provenance,
       });
     }
@@ -153,15 +155,44 @@ export function buildEvidenceMap(repoRoot: string, opts: BuildOptions = {}): Evi
 
   // --- dependency graph + inbound counts (resolution delegated to the provider) ---
   const known = new Set(modules.map((m) => m.path));
+
+  // Orchestrator-level FQN/symbol index for package-qualified languages (design 15.5).
+  // Per-file resolveRef cannot turn `import com.foo.Bar` into a file alone; this
+  // whole-project index does. Low confidence by construction (regex-derived).
+  const byFqn = new Map<string, string>(); // "pkg.Symbol" -> file
+  const byPackage = new Map<string, string[]>(); // "pkg" -> files
+  for (const m of modules) {
+    if (!m.packageName) continue;
+    const arr = byPackage.get(m.packageName) ?? [];
+    arr.push(m.path);
+    byPackage.set(m.packageName, arr);
+    for (const e of m.exports) {
+      byFqn.set(`${m.packageName}.${e.name}`, m.path);
+    }
+  }
+  const fqnResolve = (raw: string): string[] => {
+    if (raw.startsWith(".")) return [];
+    const exact = byFqn.get(raw);
+    if (exact) return [exact];
+    // wildcard / package import (`com.foo.*` arrives as `com.foo`) -> all package files
+    const pkg = byPackage.get(raw);
+    if (pkg) return pkg;
+    // `com.foo.Bar` where Bar isn't indexed: try the parent package
+    const parent = raw.includes(".") ? raw.slice(0, raw.lastIndexOf(".")) : undefined;
+    if (parent && byPackage.has(parent)) return byPackage.get(parent)!;
+    return [];
+  };
+
   const inbound = new Map<string, number>();
   const edges: { from: string; to: string }[] = [];
   for (const m of modules) {
     const provider = registry.providerFor(m.path);
     const resolvedTargets = new Set<string>();
     for (const imp of m.imports) {
-      const resolved = provider?.resolveRef(imp.spec, { fromModule: m.path, known });
-      imp.resolved = resolved;
-      if (resolved && resolved !== m.path) resolvedTargets.add(resolved);
+      const direct = provider?.resolveRef(imp.spec, { fromModule: m.path, known });
+      const targets = direct ? [direct] : fqnResolve(imp.spec);
+      imp.resolved = targets[0];
+      for (const t of targets) if (t !== m.path) resolvedTargets.add(t);
     }
     for (const t of resolvedTargets) {
       edges.push({ from: m.path, to: t });
