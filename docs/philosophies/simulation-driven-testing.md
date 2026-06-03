@@ -28,9 +28,8 @@ Simulation-driven testing treats the simulator as a first-class test environment
 
 Patterns from the catalogue that embody or operationalise this philosophy:
 
-- [Golden Master (Approval)](../patterns/testing/golden-master.md) — Recorded seeds and expected traces can serve as reproducible artefacts for regression protection.
-- [Property-Based Testing](../patterns/testing/property-based-testing.md) — Generated workloads and invariants supply the model-style assertions that a deterministic simulator repeatedly checks.
-- [Test Pyramid](../patterns/testing/test-pyramid.md) — Clarifies that simulation is a specialised high-altitude layer rather than a replacement for all smaller tests.
+- [Deterministic Simulation](../patterns/testing/deterministic-simulation.md) — Deterministic, seeded simulation of the whole system is the core practice — the same inputs always reproduce the same execution, so failures are replayable.
+- [Fuzzing](../patterns/testing/fuzzing.md) — Coverage-guided and randomised fault injection drives the simulator into rare interleavings and edge states.
 
 ## Reported applications
 

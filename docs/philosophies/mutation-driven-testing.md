@@ -28,9 +28,8 @@ Mutation-driven testing asks whether tests detect faults, not merely whether the
 
 Patterns from the catalogue that embody or operationalise this philosophy:
 
-- [Property-Based Testing](../patterns/testing/property-based-testing.md) — Strong properties can kill broad classes of mutants by asserting invariants rather than only a few examples.
+- [Mutation Testing](../patterns/testing/mutation-testing.md) — Mutation testing is the core practice: inject faults and measure the mutation score to gauge how thoroughly the suite actually exercises behaviour.
 - [Arrange-Act-Assert](../patterns/testing/arrange-act-assert.md) — Clear assertions make surviving mutants easier to interpret and fix.
-- [Golden Master (Approval)](../patterns/testing/golden-master.md) — Characterisation tests can be strengthened with mutation feedback during legacy refactoring.
 
 ## Reported applications
 

@@ -51,17 +51,14 @@ tensions_with:
       Simulation-driven testing demands deep control of runtime interfaces, while pragmatic integration
       tests usually use real framework and infrastructure behaviour directly.
 associated_patterns:
-  - pattern: golden-master
+  - pattern: deterministic-simulation
     reason: >-
-      Recorded seeds and expected traces can serve as reproducible artefacts for regression protection.
-  - pattern: property-based-testing
+      Deterministic, seeded simulation of the whole system is the core practice — the same inputs always
+      reproduce the same execution, so failures are replayable.
+  - pattern: fuzzing
     reason: >-
-      Generated workloads and invariants supply the model-style assertions that a deterministic simulator
-      repeatedly checks.
-  - pattern: test-pyramid
-    reason: >-
-      Clarifies that simulation is a specialised high-altitude layer rather than a replacement for all
-      smaller tests.
+      Coverage-guided and randomised fault injection drives the simulator into rare interleavings and
+      edge states.
 successfully_applied:
   - where: FoundationDB
     what: >-

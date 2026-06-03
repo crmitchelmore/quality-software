@@ -7,7 +7,7 @@ A generated, machine-readable graph (`knowledge-graph.json`) linking software pa
 - Software patterns: **290**
 - Practice patterns (product + UX): **145**
 - Philosophies: **49**
-- Edges: **2629**
+- Edges: **2627**
 
 ## Cross-domain bridges
 

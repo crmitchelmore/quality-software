@@ -4792,21 +4792,15 @@
     },
     {
       "source": "mutation-driven-testing",
-      "target": "property-based-testing",
+      "target": "mutation-testing",
       "kind": "philosophy-associates-pattern",
-      "reason": "Strong properties can kill broad classes of mutants by asserting invariants rather than only a few examples."
+      "reason": "Mutation testing is the core practice: inject faults and measure the mutation score to gauge how thoroughly the suite actually exercises behaviour."
     },
     {
       "source": "mutation-driven-testing",
       "target": "arrange-act-assert",
       "kind": "philosophy-associates-pattern",
       "reason": "Clear assertions make surviving mutants easier to interpret and fix."
-    },
-    {
-      "source": "mutation-driven-testing",
-      "target": "golden-master",
-      "kind": "philosophy-associates-pattern",
-      "reason": "Characterisation tests can be strengthened with mutation feedback during legacy refactoring."
     },
     {
       "source": "mutation-driven-testing",
@@ -5192,21 +5186,15 @@
     },
     {
       "source": "simulation-driven-testing",
-      "target": "golden-master",
+      "target": "deterministic-simulation",
       "kind": "philosophy-associates-pattern",
-      "reason": "Recorded seeds and expected traces can serve as reproducible artefacts for regression protection."
+      "reason": "Deterministic, seeded simulation of the whole system is the core practice — the same inputs always reproduce the same execution, so failures are replayable."
     },
     {
       "source": "simulation-driven-testing",
-      "target": "property-based-testing",
+      "target": "fuzzing",
       "kind": "philosophy-associates-pattern",
-      "reason": "Generated workloads and invariants supply the model-style assertions that a deterministic simulator repeatedly checks."
-    },
-    {
-      "source": "simulation-driven-testing",
-      "target": "test-pyramid",
-      "kind": "philosophy-associates-pattern",
-      "reason": "Clarifies that simulation is a specialised high-altitude layer rather than a replacement for all smaller tests."
+      "reason": "Coverage-guided and randomised fault injection drives the simulator into rare interleavings and edge states."
     },
     {
       "source": "simulation-driven-testing",

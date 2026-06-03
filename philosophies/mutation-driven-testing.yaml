@@ -49,16 +49,13 @@ tensions_with:
       Mutation testing is most efficient against fast, focused suites; broad integration tests can make
       mutation runs too slow unless scoped carefully.
 associated_patterns:
-  - pattern: property-based-testing
+  - pattern: mutation-testing
     reason: >-
-      Strong properties can kill broad classes of mutants by asserting invariants rather than only a few
-      examples.
+      Mutation testing is the core practice: inject faults and measure the mutation score to gauge how
+      thoroughly the suite actually exercises behaviour.
   - pattern: arrange-act-assert
     reason: >-
       Clear assertions make surviving mutants easier to interpret and fix.
-  - pattern: golden-master
-    reason: >-
-      Characterisation tests can be strengthened with mutation feedback during legacy refactoring.
 successfully_applied:
   - where: Java projects using PIT
     what: >-

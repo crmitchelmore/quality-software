@@ -35,7 +35,7 @@ Each philosophy associates patterns from the [pattern catalogue](../index.md) an
 | [Information Hiding & Modular Decomposition](information-hiding.md) | software | David Parnas | *On the Criteria To Be Used in Decomposing Systems into Modules* (1972) | 6 |
 | [Jobs to Be Done](jobs-to-be-done.md) | product | Clayton Christensen, Tony Ulwick | *Competing Against Luck* (2016) | 3 |
 | [Mockist Test-Driven Development](mockist-tdd.md) | testing | Steve Freeman, Nat Pryce | *Growing Object-Oriented Software, Guided by Tests* (2009) | 5 |
-| [Mutation-Driven Testing](mutation-driven-testing.md) | testing | Richard Lipton, Henry Coles | *Fault Diagnosis of Computer Programs* (1971) | 3 |
+| [Mutation-Driven Testing](mutation-driven-testing.md) | testing | Richard Lipton, Henry Coles | *Fault Diagnosis of Computer Programs* (1971) | 2 |
 | [Nielsen's Usability Heuristics](nielsen-usability-heuristics.md) | ux | Jakob Nielsen | *10 Usability Heuristics for User Interface Design* (1994) | 3 |
 | [Outcome Over Output](outcome-over-output.md) | product | Josh Seiden, Marty Cagan | *Outcomes Over Output* (2019) | 3 |
 | [Participatory Design](participatory-design.md) | ux | Kristen Nygaard, Scandinavian cooperative design tradition | *Scandinavian Cooperative Design* | 2 |
@@ -44,7 +44,7 @@ Each philosophy associates patterns from the [pattern catalogue](../index.md) an
 | [Risk-Based Testing](risk-based-testing.md) | testing | James Bach, Rex Black, Michael Bolton | *Risk-based and context-driven testing tradition* | 3 |
 | [Service Design Thinking](service-design-thinking.md) | ux | Marc Stickdorn, Jakob Schneider | *This is Service Design Thinking* (2011) | 3 |
 | [Simple Made Easy](simple-made-easy.md) | software | Rich Hickey | *Simple Made Easy* (2011) | 7 |
-| [Simulation-Driven Testing](simulation-driven-testing.md) | testing | FoundationDB engineering team, TigerBeetle engineering team, Antithesis | *Testing Distributed Systems with Deterministic Simulation* | 3 |
+| [Simulation-Driven Testing](simulation-driven-testing.md) | testing | FoundationDB engineering team, TigerBeetle engineering team, Antithesis | *Testing Distributed Systems with Deterministic Simulation* | 2 |
 | [Testing Honeycomb](testing-honeycomb.md) | testing | Spotify, André Schaffer, Rickard Dybeck | *Testing of Microservices* (2018) | 4 |
 | [Testing Trophy](testing-trophy.md) | testing | Kent C. Dodds | *The Testing Trophy and Testing Classifications* (2021) | 4 |
 | [The Design of Everyday Things](design-of-everyday-things.md) | ux | Don Norman | *The Design of Everyday Things* (1988) | 2 |
@@ -80,6 +80,7 @@ Each philosophy associates patterns from the [pattern catalogue](../index.md) an
 | [Database per Service](../patterns/data-persistence/database-per-service.md) | [Continuous Delivery & Lean Software](continuous-delivery-lean.md) |
 | [Dependency Injection](../patterns/implementation/dependency-injection.md) | [Clean Architecture & SOLID](clean-architecture-solid.md), [The Zen of Python](zen-of-python.md) |
 | [Deployment Stamp (Cells)](../patterns/cloud-distributed/deployment-stamp.md) | [Continuous Delivery & Lean Software](continuous-delivery-lean.md) |
+| [Deterministic Simulation](../patterns/testing/deterministic-simulation.md) | [Simulation-Driven Testing](simulation-driven-testing.md) |
 | [Domain Event](../patterns/ddd-tactical/domain-event.md) | [Domain-Driven Design](domain-driven-design.md) |
 | [Domain Model](../patterns/enterprise-application/domain-model.md) | [Conceptual Integrity](conceptual-integrity.md) |
 | [Either / Result](../patterns/functional/either-result.md) | [Functional Core & Type-Driven Design](functional-core-type-driven.md) |
@@ -90,8 +91,8 @@ Each philosophy associates patterns from the [pattern catalogue](../index.md) an
 | [Feature Toggle](../patterns/implementation/feature-toggle.md) | [Continuous Delivery & Lean Software](continuous-delivery-lean.md), [Extreme Programming & Test-Driven Development](extreme-programming-tdd.md), [Worse Is Better](worse-is-better.md) |
 | [Flyweight](../patterns/gof-structural/flyweight.md) | [Data-Oriented Design](data-oriented-design.md) |
 | [Function Composition](../patterns/functional/function-composition.md) | [Simple Made Easy](simple-made-easy.md) |
+| [Fuzzing](../patterns/testing/fuzzing.md) | [Simulation-Driven Testing](simulation-driven-testing.md) |
 | [Given-When-Then (BDD)](../patterns/testing/given-when-then.md) | [Behaviour-Driven Development](behaviour-driven-development.md), [Extreme Programming & Test-Driven Development](extreme-programming-tdd.md), [Mockist Test-Driven Development](mockist-tdd.md), [Risk-Based Testing](risk-based-testing.md), [Testing Trophy](testing-trophy.md) |
-| [Golden Master (Approval)](../patterns/testing/golden-master.md) | [Mutation-Driven Testing](mutation-driven-testing.md), [Simulation-Driven Testing](simulation-driven-testing.md) |
 | [Guard Clause (Early Return)](../patterns/implementation/guard-clause.md) | [A Philosophy of Software Design](a-philosophy-of-software-design.md), [Design by Contract](design-by-contract.md), [The Zen of Python](zen-of-python.md) |
 | [Health Endpoint Monitoring](../patterns/cloud-distributed/health-endpoint-monitoring.md) | [Design for Production / Stability](design-for-production.md) |
 | [Hexagonal Architecture (Ports & Adapters)](../patterns/architecture/hexagonal-architecture.md) | [A Philosophy of Software Design](a-philosophy-of-software-design.md), [Clean Architecture & SOLID](clean-architecture-solid.md) |
@@ -106,6 +107,7 @@ Each philosophy associates patterns from the [pattern catalogue](../index.md) an
 | [Middleware Pipeline](../patterns/implementation/middleware-pipeline.md) | [The Unix Philosophy](unix-philosophy.md) |
 | [Mock Object](../patterns/testing/mock-object.md) | [Extreme Programming & Test-Driven Development](extreme-programming-tdd.md), [Mockist Test-Driven Development](mockist-tdd.md) |
 | [Modular Monolith](../patterns/architecture/modular-monolith.md) | [Conceptual Integrity](conceptual-integrity.md), [Conway's Law & Team Topologies](conways-law-team-topologies.md) |
+| [Mutation Testing](../patterns/testing/mutation-testing.md) | [Mutation-Driven Testing](mutation-driven-testing.md) |
 | [Newtype / Wrapper Type](../patterns/implementation/newtype-wrapper.md) | [Functional Core & Type-Driven Design](functional-core-type-driven.md) |
 | [Null Object](../patterns/implementation/null-object.md) | [Design by Contract](design-by-contract.md) |
 | [Object Mother](../patterns/testing/object-mother.md) | [Behaviour-Driven Development](behaviour-driven-development.md) |
@@ -118,7 +120,7 @@ Each philosophy associates patterns from the [pattern catalogue](../index.md) an
 | [Persistent Data Structure](../patterns/functional/persistent-data-structure.md) | [Simple Made Easy](simple-made-easy.md) |
 | [Pipes and Filters](../patterns/architecture/pipes-and-filters.md) | [The Unix Philosophy](unix-philosophy.md), [Worse Is Better](worse-is-better.md) |
 | [Problem Details (RFC 7807 Errors)](../patterns/api-design/problem-details.md) | [The Zen of Python](zen-of-python.md) |
-| [Property-Based Testing](../patterns/testing/property-based-testing.md) | [Design by Contract](design-by-contract.md), [Extreme Programming & Test-Driven Development](extreme-programming-tdd.md), [Mutation-Driven Testing](mutation-driven-testing.md), [Property-Based Thinking](property-based-thinking.md), [Simulation-Driven Testing](simulation-driven-testing.md) |
+| [Property-Based Testing](../patterns/testing/property-based-testing.md) | [Design by Contract](design-by-contract.md), [Extreme Programming & Test-Driven Development](extreme-programming-tdd.md), [Property-Based Thinking](property-based-thinking.md) |
 | [Prototype](../patterns/gof-creational/prototype.md) | [Worse Is Better](worse-is-better.md) |
 | [Published Language](../patterns/ddd-strategic/published-language.md) | [Conway's Law & Team Topologies](conways-law-team-topologies.md) |
 | [Pure Function](../patterns/functional/pure-function.md) | [Functional Core & Type-Driven Design](functional-core-type-driven.md), [Simple Made Easy](simple-made-easy.md) |
@@ -134,7 +136,7 @@ Each philosophy associates patterns from the [pattern catalogue](../index.md) an
 | [Template Method](../patterns/gof-behavioural/template-method.md) | [The Zen of Python](zen-of-python.md) |
 | [Test Data Builder](../patterns/testing/test-data-builder.md) | [Classicist Test-Driven Development](classicist-tdd.md) |
 | [Test Double](../patterns/testing/test-double.md) | [Classicist Test-Driven Development](classicist-tdd.md), [Extreme Programming & Test-Driven Development](extreme-programming-tdd.md), [Mockist Test-Driven Development](mockist-tdd.md) |
-| [Test Pyramid](../patterns/testing/test-pyramid.md) | [Extreme Programming & Test-Driven Development](extreme-programming-tdd.md), [Write Tests. Not Too Many. Mostly Integration.](mostly-integration-testing.md), [Risk-Based Testing](risk-based-testing.md), [Simulation-Driven Testing](simulation-driven-testing.md), [Testing Honeycomb](testing-honeycomb.md), [Testing Trophy](testing-trophy.md) |
+| [Test Pyramid](../patterns/testing/test-pyramid.md) | [Extreme Programming & Test-Driven Development](extreme-programming-tdd.md), [Write Tests. Not Too Many. Mostly Integration.](mostly-integration-testing.md), [Risk-Based Testing](risk-based-testing.md), [Testing Honeycomb](testing-honeycomb.md), [Testing Trophy](testing-trophy.md) |
 | [Timeout](../patterns/resilience/timeout.md) | [Design for Production / Stability](design-for-production.md) |
 | [Type State](../patterns/implementation/type-state.md) | [Functional Core & Type-Driven Design](functional-core-type-driven.md) |
 | [Ubiquitous Language](../patterns/ddd-strategic/ubiquitous-language.md) | [Domain-Driven Design](domain-driven-design.md) |
