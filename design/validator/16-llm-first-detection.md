@@ -189,3 +189,31 @@ Decisions taken while implementing, after a second rubber-duck pass:
   Phase 5, alongside the deterministic evidence-contract that actually gates blocking.
 - **Catalogue trust**: pattern YAML is treated as trusted grounding; it must be pinned
   to a catalogue revision outside adversarial PR content before any blocking use.
+
+## 16.14 Implementation notes (Phase 5, 2026-06-03)
+
+Built under `integration/src/policy/` (evidence contract + deterministic certifier)
+and `integration/src/eval/` (eval harness). This is the trust line that makes
+blocking safe; LLM blocking stays disabled until a policy clears the gate below.
+
+- **`Policy` is the named, configured unit that blocks** — not a pattern name. Its
+  `predicate` is a small, fully-deterministic spec over the neutral model
+  (`forbidden-layer-edge`, `forbidden-import`, `no-duplicate-symbol`). `block`
+  severity must be explicitly set.
+- **The certifier (`policy/certify.ts`) is the ONLY source of block-severity
+  findings.** It re-derives violations deterministically with exact evidence, so
+  every block traces to a concrete edge/import/duplicate. It never calls an LLM and
+  is verified deterministic across runs.
+- **`corroborate()` links an advisory LLM finding to a certified violation for the
+  same file** (design 16.6). The LLM explains; the predicate decides. The LLM can
+  never upgrade itself.
+- **The eval harness (`eval/harness.ts`) measures two separate things** (design
+  16.10): judge advisory quality (precision/recall/false-advisory, bucketed by
+  held-out set) and the certifier **false-block rate**. `runBlockingEval` exposes
+  `promotable` — true only when zero conforming cases were blocked — which is the
+  advisory→blocking promotion gate.
+
+Remaining for a future phase before enabling live blocking: a second-pass entailment
+verifier (§16.9), durable audit/replay persistence wired to a store (§16.7), real
+labelled regression/adversarial corpora, and the tree-sitter L1 Kotlin provider
+(Phase 3) for higher-fidelity deterministic evidence.
