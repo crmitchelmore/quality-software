@@ -7,6 +7,7 @@ import type { ExportedSymbol } from "./extract.js";
 import { defaultRegistry, type ProviderRegistry } from "./lang/registry.js";
 import type { Provenance } from "./lang/types.js";
 import { DEFAULT_LAYER_PREFIXES, classifyLayer } from "./layers.js";
+import { detectCapabilities, type CapabilityCluster } from "./capabilities.js";
 
 /**
  * The codebase EVIDENCE MAP (design 14). Deliberately NOT an authoritative
@@ -74,6 +75,7 @@ export interface EvidenceMap {
   dependencyEdges: { from: string; to: string }[];
   duplicateSymbols: DuplicateCluster[];
   candidatePatterns: CandidatePattern[];
+  capabilityClusters: CapabilityCluster[];
 }
 
 export interface BuildOptions {
@@ -251,6 +253,9 @@ export function deriveEvidenceMap(modules: ModuleInfo[], repoRoot: string, opts:
   // --- Tier 3: advisory candidate patterns (confidence-tagged) ---
   const candidatePatterns = inferCandidates(modules, edges, byPath);
 
+  // --- Localised capabilities / shared-helper opportunities (reuse, design 14) ---
+  const capabilityClusters = detectCapabilities(modules);
+
   return {
     meta: {
       generatedAt: new Date().toISOString(),
@@ -269,6 +274,7 @@ export function deriveEvidenceMap(modules: ModuleInfo[], repoRoot: string, opts:
     dependencyEdges: edges,
     duplicateSymbols,
     candidatePatterns,
+    capabilityClusters,
   };
 }
 

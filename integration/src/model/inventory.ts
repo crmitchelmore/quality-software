@@ -1,4 +1,5 @@
 import type { EvidenceMap } from "./project-map.js";
+import type { CapabilityCluster } from "./capabilities.js";
 import type { Catalogue, GraphNode } from "../catalogue.js";
 
 /**
@@ -32,6 +33,7 @@ export interface Inventory {
   medium: InventoryEntry[];
   low: InventoryEntry[];
   philosophies: PhilosophyEntry[];
+  capabilities: CapabilityCluster[];
 }
 
 /** Catalogue group → altitude. Architecture-scale groups are "high". */
@@ -98,7 +100,7 @@ export function buildInventory(map: EvidenceMap, catalogue: Catalogue): Inventor
     })
     .sort((a, b) => b.impliedBy.length - a.impliedBy.length || a.title.localeCompare(b.title));
 
-  return { high, medium, low, philosophies };
+  return { high, medium, low, philosophies, capabilities: map.capabilityClusters };
 }
 
 const ALTITUDE_LABEL: Record<Altitude, string> = {
@@ -147,6 +149,35 @@ export function renderInventory(inv: Inventory): string {
     L.push("");
     for (const p of inv.philosophies) {
       L.push(`- **${p.title}** \`${p.id}\` — implied by: ${p.impliedBy.join(", ")}`);
+    }
+  }
+  L.push("");
+
+  L.push("## Localised utilities & shared-helper opportunities");
+  if (!inv.capabilities.length) {
+    L.push("- _no scattered cross-cutting capabilities detected_");
+  } else {
+    L.push(
+      "> Cross-cutting functions that should have ONE canonical home. " +
+        "Consolidating these keeps behaviour consistent and avoids divergent copies.",
+    );
+    L.push("");
+    for (const c of inv.capabilities) {
+      if (c.recommendation === "route-through-canonical" && c.canonical) {
+        L.push(
+          `### ${c.title}  \`${c.id}\` — shared helper exists, ${c.bypassing.length} caller(s) bypass it`,
+        );
+        L.push(`- canonical helper: \`${c.canonical.path}\` (${c.canonical.inbound} dependents)`);
+        L.push(`- used directly in ${c.usingFiles.length} file(s); route these through the helper:`);
+        for (const f of c.bypassing.slice(0, 10)) L.push(`  - \`${f}\``);
+        if (c.bypassing.length > 10) L.push(`  - …and ${c.bypassing.length - 10} more`);
+      } else {
+        L.push(`### ${c.title}  \`${c.id}\` — no shared helper, used in ${c.usingFiles.length} file(s)`);
+        L.push(`- consider extracting one canonical helper; currently reached for inline in:`);
+        for (const f of c.usingFiles.slice(0, 10)) L.push(`  - \`${f}\``);
+        if (c.usingFiles.length > 10) L.push(`  - …and ${c.usingFiles.length - 10} more`);
+      }
+      L.push("");
     }
   }
   L.push("");
