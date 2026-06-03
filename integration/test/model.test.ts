@@ -136,6 +136,34 @@ test("proposal stays warn-only and never auto-bans", () => {
   for (const a of proposal.adopt) assert.notEqual(a.enforcement, "block");
 });
 
+test("proposal puts testing patterns + philosophies in an independent testing section", () => {
+  const catalogue = loadCatalogue(REPO_ROOT);
+  // Synthetic evidence: a testing pattern (mock-object) + an architecture pattern (repository).
+  const map = {
+    duplicateSymbols: [],
+    candidatePatterns: [
+      { patternId: "mock-object", confidence: "high", evidence: ["test doubles"], locations: ["a"] },
+      { patternId: "repository", confidence: "high", evidence: ["repo layer"], locations: ["b"] },
+    ],
+  } as unknown as Parameters<typeof proposeProfileFromEvidence>[0];
+  const proposal = proposeProfileFromEvidence(map, catalogue);
+
+  // mock-object must live under `testing:` not the altitude bands.
+  assert.match(proposal.yaml, /\ntesting:\n/);
+  const testingBlock = proposal.yaml.slice(proposal.yaml.indexOf("\ntesting:\n"));
+  const archBlock = proposal.yaml.slice(0, proposal.yaml.indexOf("\ntesting:\n"));
+  assert.match(testingBlock, /- id: mock-object/);
+  assert.doesNotMatch(archBlock, /- id: mock-object/);
+  // repository (architecture) stays in the altitude bands, not the testing section.
+  assert.match(archBlock, /- id: repository/);
+  // A testing-discipline philosophy is surfaced under testing.philosophies.
+  assert.ok(proposal.testingPhilosophies.length > 0, "expected at least one testing philosophy");
+  assert.ok(
+    proposal.testingPhilosophies.every((p) => /\n {4}- /.test(testingBlock)),
+    "testing philosophies should render under testing.philosophies",
+  );
+});
+
 test("onboard CLI: exits 0 and prints preview sections", () => {
   const dir = modelProject();
   const out = execFileSync(

@@ -84,3 +84,41 @@ test("loadProfile still accepts a flat adopt list (back-compat)", () => {
     ["repository", "cqrs"],
   );
 });
+
+test("loadProfile merges the independent testing section into philosophies + adopt", () => {
+  const dir = makeProject({
+    profile: [
+      "version: 1",
+      "philosophies:",
+      "  - domain-driven-design",
+      "patterns:",
+      "  high:",
+      "    adopt:",
+      "      - id: event-sourcing",
+      "        enforcement: warn",
+      "  ban: []",
+      "testing:",
+      "  philosophies:",
+      "    - testing-trophy",
+      "  patterns:",
+      "    adopt:",
+      "      - id: mock-object",
+      "        enforcement: advise",
+      "      - id: property-based-testing",
+      "        enforcement: advise",
+    ].join("\n"),
+  });
+  const resolved = loadProfile(join(dir, "patterns.config.yaml"), catalogue);
+  // Testing philosophy is merged alongside the architecture philosophy.
+  assert.deepEqual(
+    resolved.philosophies.adopt.map((p) => p.id).sort(),
+    ["domain-driven-design", "testing-trophy"],
+  );
+  // Testing patterns are merged into the enforceable adopt set.
+  const ids = resolved.adopt.map((a) => a.id);
+  assert.ok(ids.includes("event-sourcing"));
+  assert.ok(ids.includes("mock-object"));
+  assert.ok(ids.includes("property-based-testing"));
+  // No unknown-id warnings for the testing entries.
+  assert.ok(!resolved.warnings.some((w) => /testing-trophy|mock-object|property-based-testing/.test(w)));
+});

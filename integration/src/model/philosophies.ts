@@ -21,17 +21,33 @@ export interface CorePhilosophy {
 }
 
 export const DEFAULT_CORE_CAP = 4;
+export const DEFAULT_TESTING_CAP = 3;
+
+export interface SelectPhilosophyOptions {
+  cap?: number;
+  /** Only consider philosophies for which this returns true (e.g. by discipline). */
+  include?: (philosophyId: string) => boolean;
+}
+
+/** Discipline (graph node group) of a philosophy id, defaulting to "software". */
+export function disciplineOf(catalogue: Catalogue, philosophyId: string): string {
+  const node = catalogue.nodeById.get(philosophyId);
+  return node?.kind === "philosophy" ? node.group : "software";
+}
 
 export function selectCorePhilosophies(
   candidates: CandidatePattern[],
   catalogue: Catalogue,
-  cap: number = DEFAULT_CORE_CAP,
+  options: number | SelectPhilosophyOptions = DEFAULT_CORE_CAP,
 ): CorePhilosophy[] {
+  const { cap = DEFAULT_CORE_CAP, include } =
+    typeof options === "number" ? { cap: options, include: undefined } : options;
   // Aggregate: philosophyId -> { weight, hasHigh, implying patterns (deduped, best conf) }
   const agg = new Map<string, { weight: number; hasHigh: boolean; byPattern: Map<string, number> }>();
   for (const cand of candidates) {
     const w = CONF_WEIGHT[cand.confidence];
     for (const phil of catalogue.philosophyForPattern.get(cand.patternId) ?? []) {
+      if (include && !include(phil.philosophyId)) continue;
       const a = agg.get(phil.philosophyId) ?? { weight: 0, hasHigh: false, byPattern: new Map() };
       // Count each pattern once, at its strongest confidence contribution.
       const prev = a.byPattern.get(cand.patternId) ?? 0;

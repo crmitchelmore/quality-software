@@ -1,6 +1,6 @@
 import type { Catalogue } from "../catalogue.js";
 import type { EvidenceMap, CandidatePattern } from "./project-map.js";
-import { selectCorePhilosophies } from "./philosophies.js";
+import { selectCorePhilosophies, disciplineOf, DEFAULT_TESTING_CAP } from "./philosophies.js";
 import { altitudeOf, type Altitude } from "./inventory.js";
 
 /**
@@ -12,6 +12,7 @@ import { altitudeOf, type Altitude } from "./inventory.js";
 export interface ProfileProposal {
   yaml: string;
   philosophies: { id: string; reason: string }[];
+  testingPhilosophies: { id: string; reason: string }[];
   adopt: { id: string; enforcement: "advise" | "warn"; confidence: string; reason: string; altitude: Altitude }[];
   anchors: { name: string; path: string; confidence: string }[];
   notes: string[];
@@ -53,26 +54,54 @@ export function proposeProfileFromEvidence(map: EvidenceMap, catalogue: Catalogu
   }
 
   // CORE philosophies only — a small, well-supported set, not every implied one
-  // (mixing many philosophies creates contradictory guidance).
-  const core = selectCorePhilosophies(adoptedCands, catalogue);
+  // (mixing many philosophies creates contradictory guidance). Testing-discipline
+  // philosophies are selected SEPARATELY so they form an independent section and
+  // never crowd out the application-architecture philosophies (and vice versa).
+  const core = selectCorePhilosophies(adoptedCands, catalogue, {
+    include: (id) => disciplineOf(catalogue, id) !== "testing",
+  });
   const philosophies = core.map((c) => ({
     id: c.id,
     reason: `core: implied by ${c.impliedBy.slice(0, 3).join(", ")}`,
   }));
+  const testingCore = selectCorePhilosophies(adoptedCands, catalogue, {
+    cap: DEFAULT_TESTING_CAP,
+    include: (id) => disciplineOf(catalogue, id) === "testing",
+  });
+  const testingPhilosophies = testingCore.map((c) => ({
+    id: c.id,
+    reason: `testing: implied by ${c.impliedBy.slice(0, 3).join(", ")}`,
+  }));
+
+  // Split adopted patterns: testing-discipline patterns live in the independent
+  // testing section; everything else is grouped by altitude in `patterns:`.
+  const isTesting = (id: string) => catalogue.nodeById.get(id)?.group === "testing";
+  const archAdopt = adopt.filter((a) => !isTesting(a.id));
+  const testingAdopt = adopt.filter((a) => isTesting(a.id));
 
   const notes: string[] = [
     "All entries are warn-only or advisory; nothing is adopted until you ratify it.",
     "No patterns are banned automatically — add bans deliberately.",
     "Philosophies are reduced to the core set to avoid contradictory guidance; add/remove deliberately.",
+    "Testing philosophies and patterns are kept in an independent `testing:` section.",
   ];
   if (!adopt.length) notes.push("No medium+ confidence patterns detected; profile left intentionally minimal.");
 
-  return { yaml: renderProfileYaml(philosophies, adopt), philosophies, adopt, anchors, notes };
+  return {
+    yaml: renderProfileYaml(philosophies, archAdopt, testingPhilosophies, testingAdopt),
+    philosophies,
+    testingPhilosophies,
+    adopt,
+    anchors,
+    notes,
+  };
 }
 
 function renderProfileYaml(
   philosophies: { id: string }[],
   adopt: { id: string; enforcement: string; altitude: Altitude }[],
+  testingPhilosophies: { id: string }[] = [],
+  testingAdopt: { id: string; enforcement: string }[] = [],
 ): string {
   const lines: string[] = [];
   lines.push("# Candidate conformance profile (auto-proposed, warn-only).");
@@ -100,5 +129,23 @@ function renderProfileYaml(
     }
   }
   lines.push("  ban: []");
+  if (testingPhilosophies.length || testingAdopt.length) {
+    lines.push("testing:");
+    lines.push("  # Independent testing discipline: its own philosophies + patterns,");
+    lines.push("  # kept separate from the application architecture above.");
+    lines.push("  philosophies:");
+    if (testingPhilosophies.length) for (const p of testingPhilosophies) lines.push(`    - ${p.id}`);
+    else lines.push("    []");
+    lines.push("  patterns:");
+    if (testingAdopt.length) {
+      lines.push("    adopt:");
+      for (const a of testingAdopt) {
+        lines.push(`      - id: ${a.id}`);
+        lines.push(`        enforcement: ${a.enforcement}`);
+      }
+    } else {
+      lines.push("    adopt: []");
+    }
+  }
   return lines.join("\n") + "\n";
 }

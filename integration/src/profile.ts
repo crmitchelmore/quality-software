@@ -36,6 +36,15 @@ interface RawProfile {
     medium?: { adopt?: RawAdoptEntry[] };
     low?: { adopt?: RawAdoptEntry[] };
   };
+  /**
+   * Independent testing discipline section: its own philosophies and patterns,
+   * kept separate from the application architecture so the two never crowd each
+   * other out. Merged into the resolved philosophies/adopt sets at load time.
+   */
+  testing?: {
+    philosophies?: (string | { id: string; weight?: string })[];
+    patterns?: { adopt?: RawAdopt };
+  };
   practicePatterns?: { adopt?: ({ id: string } & Partial<AdoptedPattern>)[] };
   phases?: Partial<ResolvedProfile["phases"]>;
 }
@@ -102,7 +111,9 @@ export function loadProfile(path: string, catalogue: Catalogue): ResolvedProfile
   const rawPhil = raw.philosophies;
   const philAdoptRaw = Array.isArray(rawPhil) ? rawPhil : (rawPhil?.adopt ?? []);
   const philRejectRaw = Array.isArray(rawPhil) ? [] : (rawPhil?.reject ?? []);
-  const philosophiesAdopt = philAdoptRaw.map((v) => ({
+  // The independent testing section contributes its own philosophies + patterns.
+  const testingPhilRaw = raw.testing?.philosophies ?? [];
+  const philosophiesAdopt = [...philAdoptRaw, ...testingPhilRaw].map((v) => ({
     id: idOf(v),
     weight: (typeof v === "object" && v.weight === "secondary" ? "secondary" : "primary") as
       | "primary"
@@ -116,7 +127,8 @@ export function loadProfile(path: string, catalogue: Catalogue): ResolvedProfile
   // flat list; `resolveAdopt` normalises all of these (high→medium→low order).
   const rawAdopt = resolveAdopt(raw);
   const rawBan = raw.ban ?? raw.patterns?.ban ?? [];
-  const adopt: AdoptedPattern[] = rawAdopt.map((p) => ({
+  const testingAdopt = flattenAdopt(raw.testing?.patterns?.adopt);
+  const adopt: AdoptedPattern[] = [...rawAdopt, ...testingAdopt].map((p) => ({
     id: p.id,
     enforcement: (p.enforcement as AdoptedPattern["enforcement"]) ?? "advise",
     appliesTo: p.appliesTo,
