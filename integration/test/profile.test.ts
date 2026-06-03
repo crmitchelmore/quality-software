@@ -9,7 +9,36 @@ after(cleanupAll);
 
 const catalogue = loadCatalogue(process.env.CONFORMANCE_CATALOGUE_ROOT);
 
-test("loadProfile accepts adopt grouped by altitude band, flattened high→medium→low", () => {
+test("loadProfile accepts patterns grouped as patterns.<band>.adopt, high→medium→low", () => {
+  const dir = makeProject({
+    profile: [
+      "version: 1",
+      "philosophies: []",
+      "patterns:",
+      "  low:",
+      "    adopt:",
+      "      - id: strategy",
+      "        enforcement: advise",
+      "  high:",
+      "    adopt:",
+      "      - id: event-sourcing",
+      "        enforcement: warn",
+      "  medium:",
+      "    adopt:",
+      "      - id: cqrs",
+      "        enforcement: warn",
+      "  ban: []",
+    ].join("\n"),
+  });
+  const resolved = loadProfile(join(dir, "patterns.config.yaml"), catalogue);
+  assert.deepEqual(
+    resolved.adopt.map((a) => a.id),
+    ["event-sourcing", "cqrs", "strategy"],
+  );
+  assert.equal(resolved.adopt.find((a) => a.id === "cqrs")?.enforcement, "warn");
+});
+
+test("loadProfile accepts adopt grouped under patterns.adopt.<band> (earlier form)", () => {
   const dir = makeProject({
     profile: [
       "version: 1",

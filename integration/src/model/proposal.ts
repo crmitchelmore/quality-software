@@ -83,28 +83,21 @@ function renderProfileYaml(
   if (philosophies.length) for (const p of philosophies) lines.push(`  - ${p.id}`);
   else lines.push("  []");
   lines.push("patterns:");
-  lines.push("  # Adopted patterns grouped by altitude (scope of application):");
-  lines.push("  #   high   = application / platform");
-  lines.push("  #   medium = component / service");
-  lines.push("  #   low    = method / class / file");
-  lines.push("  adopt:");
+  lines.push("  # Patterns grouped by altitude (scope of application).");
   const bands: { key: Altitude; label: string }[] = [
     { key: "high", label: "application / platform" },
     { key: "medium", label: "component / service" },
     { key: "low", label: "method / class / file" },
   ];
-  if (adopt.length) {
-    for (const band of bands) {
-      const inBand = adopt.filter((a) => a.altitude === band.key);
-      if (!inBand.length) continue;
-      lines.push(`    ${band.key}: # ${band.label}`);
-      for (const a of inBand) {
-        lines.push(`      - id: ${a.id}`);
-        lines.push(`        enforcement: ${a.enforcement}`);
-      }
+  for (const band of bands) {
+    const inBand = adopt.filter((a) => a.altitude === band.key);
+    if (!inBand.length) continue;
+    lines.push(`  ${band.key}: # ${band.label}`);
+    lines.push("    adopt:");
+    for (const a of inBand) {
+      lines.push(`      - id: ${a.id}`);
+      lines.push(`        enforcement: ${a.enforcement}`);
     }
-  } else {
-    lines.push("    {}");
   }
   lines.push("  ban: []");
   return lines.join("\n") + "\n";

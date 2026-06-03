@@ -22,8 +22,18 @@ interface RawProfile {
   };
   adopt?: RawAdopt;
   ban?: RawBan;
-  /** Generated configs nest patterns under a `patterns:` key. */
-  patterns?: { adopt?: RawAdopt; ban?: RawBan };
+  /**
+   * Generated configs nest patterns under a `patterns:` key. Adopt entries may be
+   * grouped by altitude band, either as `patterns.<band>.adopt` (current) or
+   * `patterns.adopt.<band>` / `patterns.adopt` (earlier forms).
+   */
+  patterns?: {
+    adopt?: RawAdopt;
+    ban?: RawBan;
+    high?: { adopt?: RawAdoptEntry[] };
+    medium?: { adopt?: RawAdoptEntry[] };
+    low?: { adopt?: RawAdoptEntry[] };
+  };
   practicePatterns?: { adopt?: ({ id: string } & Partial<AdoptedPattern>)[] };
   phases?: Partial<ResolvedProfile["phases"]>;
 }
@@ -45,7 +55,7 @@ const idOf = (v: { id: string } | string): string => (typeof v === "string" ? v 
 type RawAdoptEntry = { id: string } & Partial<AdoptedPattern>;
 
 /** Accept either a flat adopt list or one grouped by altitude band, in high→medium→low order. */
-function flattenAdopt(adopt: RawProfile["adopt"]): RawAdoptEntry[] {
+function flattenAdopt(adopt: RawAdopt | undefined): RawAdoptEntry[] {
   if (!adopt) return [];
   if (Array.isArray(adopt)) return adopt;
   const order = ["high", "medium", "low"];
@@ -55,6 +65,21 @@ function flattenAdopt(adopt: RawProfile["adopt"]): RawAdoptEntry[] {
     return (ai === -1 ? order.length : ai) - (bi === -1 ? order.length : bi) || a.localeCompare(b);
   });
   return keys.flatMap((k) => adopt[k] ?? []);
+}
+
+/**
+ * Resolve adopted patterns from any supported shape, in high→medium→low order:
+ *   - top-level `adopt:` (flat array or `{ band: [...] }`)            — hand-written/legacy
+ *   - `patterns.adopt:` (flat array or `{ band: [...] }`)             — earlier grouped form
+ *   - `patterns.<band>.adopt:`                                        — current grouped form
+ */
+function resolveAdopt(raw: RawProfile): RawAdoptEntry[] {
+  const p = raw.patterns;
+  const byBand = p
+    ? (["high", "medium", "low"] as const).flatMap((band) => p[band]?.adopt ?? [])
+    : [];
+  if (byBand.length) return byBand;
+  return flattenAdopt(raw.adopt ?? p?.adopt);
 }
 
 export class ProfileError extends Error {}
@@ -79,9 +104,10 @@ export function loadProfile(path: string, catalogue: Catalogue): ResolvedProfile
   const philosophiesReject = (raw.philosophies?.reject ?? []).map(idOf);
 
   // `adopt`/`ban` may live at the top level (hand-written profiles) or nested
-  // under `patterns:` (generated configs); `adopt` may be a flat list or grouped
-  // by altitude band (`{ high: [...], medium: [...], low: [...] }`).
-  const rawAdopt = flattenAdopt(raw.adopt ?? raw.patterns?.adopt);
+  // under `patterns:` (generated configs). Adopt entries may be grouped by
+  // altitude band as `patterns.<band>.adopt` or `patterns.adopt.<band>`, or a
+  // flat list; `resolveAdopt` normalises all of these (high→medium→low order).
+  const rawAdopt = resolveAdopt(raw);
   const rawBan = raw.ban ?? raw.patterns?.ban ?? [];
   const adopt: AdoptedPattern[] = rawAdopt.map((p) => ({
     id: p.id,
