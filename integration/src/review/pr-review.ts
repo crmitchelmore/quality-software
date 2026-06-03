@@ -10,7 +10,7 @@ import {
 } from "../model/project-map.js";
 import { certify, certifiedFindings } from "../policy/certify.js";
 import { policiesFromProfile } from "../policy/from-profile.js";
-import { CAPABILITIES, findCanonicalHelper, moduleUsesCapability } from "../model/capabilities.js";
+import { CAPABILITIES, findCanonicalHelper, moduleReachesCapabilityInline } from "../model/capabilities.js";
 import { fingerprint } from "../contract.js";
 
 /**
@@ -241,8 +241,8 @@ function capabilityBypass(
     for (const cap of CAPABILITIES) {
       const canonical = helpers.get(cap.id);
       if (!canonical || canonical.path === c.path) continue;
-      if (!moduleUsesCapability(head, cap)) continue; // file doesn't use the capability
-      if (baseMod && moduleUsesCapability(baseMod, cap)) continue; // not net-new
+      if (!moduleReachesCapabilityInline(head, cap)) continue; // file doesn't reach the capability inline
+      if (baseMod && moduleReachesCapabilityInline(baseMod, cap)) continue; // not net-new
       if (head.imports.some((i) => i.resolved === canonical.path)) continue; // already routes through helper
 
       out.push({

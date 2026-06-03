@@ -7,7 +7,7 @@ import type { ExportedSymbol } from "./extract.js";
 import { defaultRegistry, type ProviderRegistry } from "./lang/registry.js";
 import type { Provenance } from "./lang/types.js";
 import { DEFAULT_LAYER_PREFIXES, classifyLayer } from "./layers.js";
-import { detectCapabilities, type CapabilityCluster } from "./capabilities.js";
+import { detectCapabilities, classifyCapabilityUse, type CapabilityCluster, type CapabilityUse } from "./capabilities.js";
 import { registryCandidates } from "./detectors.js";
 
 /**
@@ -36,6 +36,10 @@ export interface ModuleInfo {
   imports: { spec: string; typeOnly: boolean; resolved?: string }[];
   inbound: number; // how many modules import this one
   packageName?: string; // FQN package/namespace (JVM, C#, Go, PHP) — for cross-file resolution
+  /** How this module touches each cross-cutting capability it imports, from its
+   *  source (inline call vs DI-injected bean vs declarative annotation). Drives
+   *  reuse detection so injected/annotation-based shared use is not a false smell. */
+  capabilityUse?: Record<string, CapabilityUse>;
   provenance: Provenance;
 }
 
@@ -162,6 +166,10 @@ export function moduleFromFile(
     imports: facts.imports.map((i) => ({ spec: i.raw, typeOnly: i.typeOnly ?? false, resolved: i.resolved })),
     inbound: 0,
     packageName: facts.semanticFacts?.packageName as string | undefined,
+    capabilityUse: classifyCapabilityUse(
+      content,
+      facts.imports.map((i) => i.raw),
+    ),
     provenance: facts.provenance,
   };
 }
