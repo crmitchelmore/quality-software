@@ -6,6 +6,7 @@ import { relPath } from "../detectors/util.js";
 import type { ExportedSymbol } from "./extract.js";
 import { defaultRegistry, type ProviderRegistry } from "./lang/registry.js";
 import type { Provenance } from "./lang/types.js";
+import { DEFAULT_LAYER_PREFIXES, classifyLayer } from "./layers.js";
 
 /**
  * The codebase EVIDENCE MAP (design 14). Deliberately NOT an authoritative
@@ -83,28 +84,6 @@ export interface BuildOptions {
   registry?: ProviderRegistry;
 }
 
-const DEFAULT_LAYER_PREFIXES: Record<Layer, string[]> = {
-  test: ["test/", "tests/", "__tests__/", "__mocks__/", "fixtures/", "spec/"],
-  domain: ["src/domain/", "domain/", "src/core/"],
-  application: ["src/application/", "application/", "src/usecases/", "src/use-cases/", "src/app/"],
-  infrastructure: ["src/infrastructure/", "infrastructure/", "src/infra/", "src/adapters/", "src/persistence/"],
-  interface: ["src/interface/", "src/interfaces/", "src/api/", "src/http/", "src/web/", "src/ui/", "src/controllers/", "src/routes/"],
-  other: [],
-};
-
-function isTestPath(rel: string): boolean {
-  return /(^|\/)(test|tests|__tests__|__mocks__|fixtures|spec)(\/|$)/.test(rel) || /\.(test|spec)\.[tj]sx?$/.test(rel);
-}
-
-function classifyLayer(rel: string, prefixes: Record<Layer, string[]>): Layer {
-  if (isTestPath(rel)) return "test";
-  const ordered: Layer[] = ["domain", "application", "infrastructure", "interface"];
-  for (const layer of ordered) {
-    if (prefixes[layer].some((p) => rel.includes(p))) return layer;
-  }
-  return "other";
-}
-
 function gitCommit(repoRoot: string): string | undefined {
   try {
     return execSync(`git -C "${repoRoot}" rev-parse --short HEAD`, { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim();
@@ -114,51 +93,93 @@ function gitCommit(repoRoot: string): string | undefined {
 }
 
 export function buildEvidenceMap(repoRoot: string, opts: BuildOptions = {}): EvidenceMap {
+  return deriveEvidenceMap(parseModules(repoRoot, opts), repoRoot, opts);
+}
+
+/**
+ * Tier-1 parse step ONLY: walk the tree and turn every claimed file into a
+ * ModuleInfo. No cross-file derivation happens here. Separated from
+ * deriveEvidenceMap so callers (e.g. the PR reviewer) can take this module set,
+ * apply an overlay (replace/add/remove files), and re-derive a consistent map
+ * WITHOUT inheriting stale edges/duplicates from a previous version (design 16.6).
+ */
+export function parseModules(repoRoot: string, opts: BuildOptions = {}): ModuleInfo[] {
   const prefixes: Record<Layer, string[]> = { ...DEFAULT_LAYER_PREFIXES };
   for (const [k, v] of Object.entries(opts.layerPrefixes ?? {})) prefixes[k as Layer] = v as string[];
   const srcDirs = opts.srcDirs ?? ["src", "lib", "app", "packages", "test", "tests"];
   const registry = opts.registry ?? defaultRegistry();
 
-  // --- Tier 1: parse every file into a module record via its language provider ---
   const modules: ModuleInfo[] = [];
   const seen = new Set<string>();
-  const providerIds = new Set<string>();
   for (const dir of srcDirs) {
     for (const abs of walkAllFiles(join(repoRoot, dir))) {
       const rel = relPath(repoRoot, abs);
       if (seen.has(rel)) continue;
       seen.add(rel);
-      const provider = registry.providerFor(rel);
-      if (!provider) continue;
-      let facts;
+      let content: string;
       try {
-        facts = provider.extract(rel, readFileSync(abs, "utf8"));
+        content = readFileSync(abs, "utf8");
       } catch {
         continue;
       }
-      providerIds.add(provider.id);
-      modules.push({
-        path: rel,
-        language: facts.language,
-        layer: facts.layerHint ?? classifyLayer(rel, prefixes),
-        isBarrel: facts.isBarrel,
-        isTest: facts.isTest,
-        isGenerated: facts.isGenerated,
-        exports: facts.exports.map((e) => ({ name: e.name, kind: e.kind })),
-        imports: facts.imports.map((i) => ({ spec: i.raw, typeOnly: i.typeOnly ?? false, resolved: i.resolved })),
-        inbound: 0,
-        packageName: facts.semanticFacts?.packageName as string | undefined,
-        provenance: facts.provenance,
-      });
+      const m = moduleFromFile(rel, content, prefixes, registry);
+      if (m) modules.push(m);
     }
   }
+  return modules;
+}
+
+/**
+ * Parse a single file into a ModuleInfo via its language provider, or undefined
+ * if no provider claims it. Shared by the bulk walker and overlay callers so the
+ * module shape is identical however a module enters the map.
+ */
+export function moduleFromFile(
+  rel: string,
+  content: string,
+  prefixes: Record<Layer, string[]> = DEFAULT_LAYER_PREFIXES,
+  registry: ProviderRegistry = defaultRegistry(),
+): ModuleInfo | undefined {
+  const provider = registry.providerFor(rel);
+  if (!provider) return undefined;
+  let facts;
+  try {
+    facts = provider.extract(rel, content);
+  } catch {
+    return undefined;
+  }
+  return {
+    path: rel,
+    language: facts.language,
+    layer: facts.layerHint ?? classifyLayer(rel, prefixes),
+    isBarrel: facts.isBarrel,
+    isTest: facts.isTest,
+    isGenerated: facts.isGenerated,
+    exports: facts.exports.map((e) => ({ name: e.name, kind: e.kind })),
+    imports: facts.imports.map((i) => ({ spec: i.raw, typeOnly: i.typeOnly ?? false, resolved: i.resolved })),
+    inbound: 0,
+    packageName: facts.semanticFacts?.packageName as string | undefined,
+    provenance: facts.provenance,
+  };
+}
+
+/**
+ * Tier-2/3 derivation step: from a flat module set, recompute the dependency
+ * graph, duplicate clusters, candidate patterns and meta. PURE over `modules`
+ * (mutates only the passed modules' `inbound`/`imports.resolved`), so two module
+ * sets always yield independently-consistent maps — the property the PR reviewer
+ * relies on to diff baseline vs head (critique: never merge stale edges).
+ */
+export function deriveEvidenceMap(modules: ModuleInfo[], repoRoot: string, opts: BuildOptions = {}): EvidenceMap {
+  const prefixes: Record<Layer, string[]> = { ...DEFAULT_LAYER_PREFIXES };
+  for (const [k, v] of Object.entries(opts.layerPrefixes ?? {})) prefixes[k as Layer] = v as string[];
+  const registry = opts.registry ?? defaultRegistry();
+  const providerIds = new Set(modules.map((m) => m.provenance.provider));
 
   // --- dependency graph + inbound counts (resolution delegated to the provider) ---
   const known = new Set(modules.map((m) => m.path));
 
   // Orchestrator-level FQN/symbol index for package-qualified languages (design 15.5).
-  // Per-file resolveRef cannot turn `import com.foo.Bar` into a file alone; this
-  // whole-project index does. Low confidence by construction (regex-derived).
   const byFqn = new Map<string, string>(); // "pkg.Symbol" -> file
   const byPackage = new Map<string, string[]>(); // "pkg" -> files
   for (const m of modules) {

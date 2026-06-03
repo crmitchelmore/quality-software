@@ -3,31 +3,37 @@ import { join } from "node:path";
 import type { Detector, Finding, ChangeSet, DetectorContext } from "../contract.js";
 import { fingerprint } from "../contract.js";
 import { relPath } from "./util.js";
-import { walkSourceFiles } from "../fs-util.js";
+import { factsFor } from "./facts.js";
+import { walkAllFiles } from "../fs-util.js";
 
 /**
- * Reuse detector (design 07-reuse-enforcement + 13.9). Flags when a change adds
- * an exported symbol whose name already exists elsewhere in the codebase —
- * "this abstraction may already exist; reuse rather than reinvent".
+ * Reuse detector (design 07-reuse-enforcement + 13.9). Flags when a change adds a
+ * declared symbol whose name already exists elsewhere in the codebase — "this
+ * abstraction may already exist; reuse rather than reinvent".
+ *
+ * Now LANGUAGE-NEUTRAL: declarations come from the neutral code model (FileFacts
+ * via the provider registry), so duplicate-symbol reuse is detected across
+ * TypeScript, Kotlin, Java and Python alike, not just JS `export`s.
  *
  * MVP scope: NEAR-EXACT name match only, ADVISORY only (no blocking). Embedding/
- * semantic similarity is deferred — it produces false positives unless
- * corroborated by lexical/signature evidence (design 13.9). The index is rebuilt
- * per run for simplicity; a real deployment caches it (design 2.5).
+ * semantic similarity is deferred — it produces false positives unless corroborated
+ * by lexical/signature evidence (design 13.9). The index is rebuilt per run for
+ * simplicity; a real deployment caches it (design 2.5).
  */
 
-const EXPORT_RE = /export\s+(?:async\s+)?(?:function|class|const|interface|type|enum)\s+([A-Za-z_$][\w$]*)/g;
-
-function exportsIn(content: string): string[] {
+function declaredNames(rel: string, content: string): string[] {
+  const facts = factsFor(rel, content);
+  if (!facts) return [];
   const names = new Set<string>();
-  let m: RegExpExecArray | null;
-  const re = new RegExp(EXPORT_RE.source, "g");
-  while ((m = re.exec(content))) names.add(m[1]);
+  for (const e of facts.exports) {
+    if (e.kind === "reexport" || e.name === "default") continue;
+    names.add(e.name);
+  }
   return [...names];
 }
 
 export function reuseDetector(srcGlobs: string[] = ["src"]): Detector {
-  const version = "1.0.0";
+  const version = "1.1.0";
   return {
     id: "reuse.duplicate-export",
     version,
@@ -38,10 +44,10 @@ export function reuseDetector(srcGlobs: string[] = ["src"]): Detector {
     run(change: ChangeSet, _ctx: DetectorContext): Finding[] {
       const changedRel = new Set(change.files.map((f) => relPath(change.repoRoot, f.path)));
 
-      // Build an index of existing exported names -> files (excluding changed files).
+      // Build an index of existing declared names -> files (excluding changed files).
       const index = new Map<string, string[]>();
       for (const dir of srcGlobs) {
-        for (const abs of walkSourceFiles(join(change.repoRoot, dir))) {
+        for (const abs of walkAllFiles(join(change.repoRoot, dir))) {
           const rel = relPath(change.repoRoot, abs);
           if (changedRel.has(rel)) continue;
           let content: string;
@@ -50,7 +56,7 @@ export function reuseDetector(srcGlobs: string[] = ["src"]): Detector {
           } catch {
             continue;
           }
-          for (const name of exportsIn(content)) {
+          for (const name of declaredNames(rel, content)) {
             const arr = index.get(name) ?? [];
             arr.push(rel);
             index.set(name, arr);
@@ -62,10 +68,10 @@ export function reuseDetector(srcGlobs: string[] = ["src"]): Detector {
       for (const file of change.files) {
         if (!file.content) continue;
         const rel = relPath(change.repoRoot, file.path);
-        for (const name of exportsIn(file.content)) {
+        for (const name of declaredNames(rel, file.content)) {
           const existing = index.get(name);
           if (existing && existing.length) {
-            const evidence = `export ${name}`;
+            const evidence = `declares ${name}`;
             findings.push({
               fingerprint: fingerprint({
                 detectorId: "reuse.duplicate-export",
@@ -78,7 +84,7 @@ export function reuseDetector(srcGlobs: string[] = ["src"]): Detector {
               detectorVersion: version,
               severity: "advice",
               path: rel,
-              message: `Possible duplicate: '${name}' is already exported by ${existing[0]}${
+              message: `Possible duplicate: '${name}' is already declared by ${existing[0]}${
                 existing.length > 1 ? ` (+${existing.length - 1} more)` : ""
               }.`,
               suggestion: `Reuse the existing '${name}' from ${existing[0]} instead of defining a parallel one, or rename if genuinely distinct.`,

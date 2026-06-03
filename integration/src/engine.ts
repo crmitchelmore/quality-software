@@ -79,7 +79,9 @@ export class Engine {
     }
     const detector = this.detectors.find((d) => d.id === f.detectorId);
     const blockingAllowedHere = this.blockingAllowed(change.event);
-    if (adopted.enforcement === "block" && detector?.canBlock && blockingAllowedHere) {
+    // Heuristic (unresolved, low-confidence) deterministic findings never hard-block;
+    // the certifier over resolved edges is their authoritative gate (design 16.6).
+    if (adopted.enforcement === "block" && detector?.canBlock && blockingAllowedHere && !f.heuristic) {
       return { ...f, severity: "block" };
     }
     if (adopted.enforcement === "warn") return { ...f, severity: "warning" };

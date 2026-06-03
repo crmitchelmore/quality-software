@@ -77,6 +77,13 @@ export interface Finding {
    * advisory findings. Blocking requires a deterministic predicate (design 16.6).
    */
   advisory?: boolean;
+  /**
+   * Deterministic but LOW-CONFIDENCE: produced by a single-file heuristic that did
+   * not resolve the reference against the whole-project index (e.g. FQN/package
+   * segment-scanning at write-time). Never escalated to a hard block — the
+   * authoritative blocker is the certifier over resolved edges (design 16.6).
+   */
+  heuristic?: boolean;
 }
 
 /** The single canonical verdict returned by the engine. */

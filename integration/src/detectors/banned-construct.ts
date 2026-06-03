@@ -3,45 +3,87 @@ import { fingerprint } from "../contract.js";
 import { relPath } from "./util.js";
 
 /**
- * Banned-construct detector. Flags textual signatures of patterns the profile
- * has explicitly banned (design 09-config `ban:`). Conservative, line-anchored,
+ * Banned-construct detector. Flags textual signatures of patterns the profile has
+ * explicitly banned (design 09-config `ban:`). Conservative, line-anchored,
  * advisory by default. In production these signatures are Semgrep/ESLint rules
  * (design 13.2); the built-in regex set keeps the MVP self-contained.
  *
- * Signatures are intentionally high-precision (favouring misses over false
+ * Signatures are LANGUAGE-TAGGED so the same ban (e.g. Singleton, Service Locator)
+ * is caught across TypeScript, Kotlin, Java and Python without cross-language false
+ * positives. They are intentionally high-precision (favouring misses over false
  * positives) per design 13.4 — trust beats coverage.
  */
 
 interface Signature {
   patternId: string;
+  langs: RegExp; // file-extension guard
   re: RegExp;
   message: string;
   suggestion: string;
 }
 
+const TS = /\.(ts|tsx|js|jsx|mjs|cts|mts)$/;
+const JVM = /\.(java|kt|kts|scala)$/;
+const PY = /\.py$/;
+const ANY_OO = /\.(ts|tsx|js|jsx|mjs|cts|mts|java|kt|kts|scala|py|cs)$/;
+
 const SIGNATURES: Signature[] = [
+  // --- Service Locator (anti-pattern: hides dependencies) ---
   {
     patternId: "service-locator",
-    re: /\b(ServiceLocator|serviceLocator)\b\s*\.\s*(get|resolve|getService)\s*\(/,
+    langs: ANY_OO,
+    re: /\b(ServiceLocator|serviceLocator)\b\s*[.:]{1,2}\s*(get|resolve|getService|getInstance)\s*[(<]/,
     message: "Service Locator usage hides dependencies; this pattern is banned by the profile.",
     suggestion: "Inject the dependency through the constructor so it is explicit and testable.",
   },
+  // --- Active Record (couples domain to persistence) ---
   {
     patternId: "active-record",
+    langs: TS,
     re: /class\s+\w+\s+extends\s+(ActiveRecord|Model)\b/,
     message: "Active Record couples the domain to persistence; this pattern is banned by the profile.",
     suggestion: "Use a persistence-ignorant entity with a Repository / Data Mapper instead.",
   },
   {
+    patternId: "active-record",
+    langs: PY,
+    re: /class\s+\w+\s*\(\s*(models\.Model|Model|db\.Model|ActiveRecord)\s*\)/,
+    message: "Active Record (Django/SQLAlchemy model as domain) couples the domain to persistence; banned by the profile.",
+    suggestion: "Keep the domain entity persistence-ignorant and map it via a Repository.",
+  },
+  // --- Singleton (prefer DI-scoped lifetimes) ---
+  {
     patternId: "singleton",
+    langs: TS,
     re: /static\s+(getInstance|instance)\b/,
     message: "Singleton access detected; the profile prefers DI-scoped lifetimes.",
     suggestion: "Register the type with the container and inject it rather than using a global instance.",
   },
+  {
+    patternId: "singleton",
+    langs: JVM,
+    re: /\b(public\s+|private\s+)?static\s+(final\s+)?\w[\w<>]*\s+getInstance\s*\(/,
+    message: "Singleton access (static getInstance) detected; the profile prefers DI-scoped lifetimes.",
+    suggestion: "Register the type with the DI container (Spring/Guice/Koin) and inject it.",
+  },
+  {
+    patternId: "singleton",
+    langs: /\.(kt|kts)$/,
+    re: /^\s*object\s+[A-Z]\w*/,
+    message: "Kotlin `object` is a singleton; the profile prefers DI-scoped lifetimes.",
+    suggestion: "Use a class wired through the DI container (Koin/Hilt) instead of a top-level `object`.",
+  },
+  {
+    patternId: "singleton",
+    langs: PY,
+    re: /\b_instance\b\s*=\s*None|def\s+__new__\s*\(\s*cls/,
+    message: "Singleton pattern (__new__/_instance) detected; the profile prefers explicit wiring.",
+    suggestion: "Construct the object once at the composition root and pass it in explicitly.",
+  },
 ];
 
 export function bannedConstructDetector(bannedPatternIds: Set<string>): Detector {
-  const version = "1.0.0";
+  const version = "1.1.0";
   const active = SIGNATURES.filter((s) => bannedPatternIds.has(s.patternId));
   return {
     id: "banned-construct.signatures",
@@ -56,10 +98,11 @@ export function bannedConstructDetector(bannedPatternIds: Set<string>): Detector
       for (const file of change.files) {
         if (!file.content) continue;
         const rel = relPath(change.repoRoot, file.path);
-        if (!/\.(ts|tsx|js|jsx|mjs|cts|mts)$/.test(rel)) continue;
+        const applicable = active.filter((s) => s.langs.test(rel));
+        if (applicable.length === 0) continue;
         const lines = file.content.split("\n");
         lines.forEach((text, idx) => {
-          for (const sig of active) {
+          for (const sig of applicable) {
             if (sig.re.test(text)) {
               const rationale = ctx.rationaleFor(sig.patternId);
               const evidence = text.trim().slice(0, 120);

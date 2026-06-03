@@ -1,79 +1,75 @@
-import type { Detector, Finding, ChangeSet, DetectorContext, ChangeFile } from "../contract.js";
+import type { Detector, Finding, ChangeSet, DetectorContext } from "../contract.js";
 import { fingerprint } from "../contract.js";
-import { matchesAny, relPath } from "./util.js";
+import { relPath } from "./util.js";
+import { factsFor, resolveRelative } from "./facts.js";
+import { classifyLayer, layerOfImportSpec, type Layer } from "../model/layers.js";
+import { defaultRegistry, type ProviderRegistry } from "../model/lang/registry.js";
 
 /**
- * Forbidden-import boundary detector — the flagship rulepack.
+ * Forbidden-import boundary detector — the flagship rulepack, now LANGUAGE-NEUTRAL.
  *
- * Enforces the import-direction invariant shared by Hexagonal Architecture and
- * DDD: domain/application code must not import infrastructure. This is the
- * deterministic projection of the "dependency-rule" tenet (design 11.3).
+ * It is the single-file, write-time PROJECTION of the certifier's
+ * `forbidden-layer-edge` predicate (design 16.6): "a module in a source layer must
+ * not depend on a module in a forbidden target layer" — the import-direction
+ * invariant shared by Hexagonal/Clean/Onion/Layered architecture.
  *
- * Reads its boundary from the adopted `hexagonal-architecture` (or
- * `clean-architecture`) pattern options:
- *   options:
- *     domainGlobs: ["src/domain/**", "src/application/**"]
- *     forbidImportsFrom: ["src/infrastructure/**"]
- *
- * In production this delegates to dependency-cruiser / eslint-plugin-boundaries
- * (design 13.2); this built-in variant keeps the MVP runnable with no external
- * tool and is the fast write-time path.
+ * It runs over the neutral code model (FileFacts via the provider registry), so it
+ * covers TypeScript, Kotlin, Java and Python (and every other provider language)
+ * with one implementation. Two resolution qualities:
+ *   - RELATIVE imports (`../infrastructure/db`) are path-resolved precisely →
+ *     block-eligible, exactly as before.
+ *   - PACKAGE/FQN imports (`com.app.infrastructure.Db`) are classified by scanning
+ *     the specifier for a layer segment → marked `heuristic` (low-confidence,
+ *     advisory only). The authoritative blocker for these is the certifier, which
+ *     resolves the FQN against the whole-project index (design 16.6).
  */
 
-const IMPORT_RE = /(?:import\s[^'"]*from\s*|import\s*|require\s*\(\s*|export\s[^'"]*from\s*)['"]([^'"]+)['"]/g;
-
-function importsIn(content: string): { spec: string; line: number }[] {
-  const out: { spec: string; line: number }[] = [];
-  const lines = content.split("\n");
-  lines.forEach((text, idx) => {
-    let m: RegExpExecArray | null;
-    const re = new RegExp(IMPORT_RE.source, "g");
-    while ((m = re.exec(text))) out.push({ spec: m[1], line: idx + 1 });
-  });
-  return out;
-}
-
-/** Resolve a relative import against the importing file to a repo-relative path. */
-function resolveImport(fromRel: string, spec: string): string | undefined {
-  if (!spec.startsWith(".")) return undefined; // bare/package import — not a local boundary crossing
-  const fromDir = fromRel.split("/").slice(0, -1);
-  const parts = spec.split("/");
-  for (const p of parts) {
-    if (p === "." || p === "") continue;
-    else if (p === "..") fromDir.pop();
-    else fromDir.push(p);
-  }
-  return fromDir.join("/");
-}
-
-export function forbiddenImportDetector(opts: {
+export interface BoundaryEdge {
   patternId: string;
-  domainGlobs: string[];
-  forbidImportsFrom: string[];
-}): Detector {
-  const version = "1.0.0";
+  fromLayers: Layer[];
+  toLayer: Layer;
+  registry?: ProviderRegistry;
+}
+
+const DETECTOR_ID = "forbidden-import.dependency-rule";
+
+export function forbiddenImportDetector(edge: BoundaryEdge): Detector {
+  const version = "1.1.0";
+  const registry = edge.registry ?? defaultRegistry();
+  const fromSet = new Set(edge.fromLayers);
   return {
-    id: "forbidden-import.dependency-rule",
+    id: DETECTOR_ID,
     version,
-    patternId: opts.patternId,
+    patternId: edge.patternId,
     requiresContext: "file",
     events: ["POST_WRITE_CONTENT", "PR_REVIEW", "BATCH"],
-    canBlock: true, // ships fixtures; deterministic. Still advisory until profile enforcement=block.
+    canBlock: true, // deterministic; only PATH-RESOLVED findings are block-eligible (heuristic ones are not)
     maxLatencyMs: 50,
     run(change: ChangeSet, ctx: DetectorContext): Finding[] {
       const findings: Finding[] = [];
-      const rationale = ctx.rationaleFor(opts.patternId);
+      const rationale = ctx.rationaleFor(edge.patternId);
       for (const file of change.files) {
         if (!file.content) continue;
         const rel = relPath(change.repoRoot, file.path);
-        if (!/\.(ts|tsx|js|jsx|mjs|cts|mts)$/.test(rel)) continue;
-        if (!matchesAny(rel, opts.domainGlobs)) continue;
-        for (const imp of importsIn(file.content)) {
-          const resolved = resolveImport(rel, imp.spec);
-          const target = resolved ?? imp.spec;
-          if (matchesAny(target, opts.forbidImportsFrom)) {
-            findings.push(buildFinding(file, rel, imp, opts, version, rationale));
+        const fromLayer = classifyLayer(rel);
+        if (!fromSet.has(fromLayer)) continue;
+        const facts = factsFor(rel, file.content, registry);
+        if (!facts) continue;
+        for (const imp of facts.imports) {
+          const spec = imp.raw;
+          let targetLayer: Layer | undefined;
+          let heuristic = false;
+          const resolved = resolveRelative(rel, spec);
+          if (resolved !== undefined) {
+            targetLayer = classifyLayer(resolved);
+          } else {
+            targetLayer = layerOfImportSpec(spec);
+            heuristic = true; // FQN/package segment-scan — not resolved against the index
           }
+          if (targetLayer !== edge.toLayer) continue;
+          findings.push(
+            buildFinding(rel, spec, imp.span?.startLine, edge, fromLayer, heuristic, version, rationale),
+          );
         }
       }
       return findings;
@@ -82,35 +78,41 @@ export function forbiddenImportDetector(opts: {
 }
 
 function buildFinding(
-  file: ChangeFile,
   rel: string,
-  imp: { spec: string; line: number },
-  opts: { patternId: string; forbidImportsFrom: string[] },
+  spec: string,
+  line: number | undefined,
+  edge: BoundaryEdge,
+  fromLayer: Layer,
+  heuristic: boolean,
   version: string,
   rationale: { philosophyId?: string; rationale?: string },
 ): Finding {
-  const evidence = `import "${imp.spec}"`;
+  const evidence = `import "${spec}"`;
+  const how = heuristic
+    ? `possible boundary crossing — '${spec}' looks like the ${edge.toLayer} layer (heuristic; not resolved)`
+    : `imports the ${edge.toLayer} layer ("${spec}")`;
   return {
     fingerprint: fingerprint({
-      patternId: opts.patternId,
-      detectorId: "forbidden-import.dependency-rule",
+      patternId: edge.patternId,
+      detectorId: DETECTOR_ID,
       detectorVersion: version,
-      symbol: imp.spec,
+      symbol: spec,
       evidence,
       scopePath: rel,
     }),
-    detectorId: "forbidden-import.dependency-rule",
+    detectorId: DETECTOR_ID,
     detectorVersion: version,
-    patternId: opts.patternId,
+    patternId: edge.patternId,
     philosophyId: rationale.philosophyId,
     severity: "warning",
     path: rel,
-    line: imp.line,
-    message: `Boundary violation: ${rel} imports from a forbidden layer ("${imp.spec}").`,
+    line,
+    message: `Boundary violation: ${fromLayer} module ${rel} ${how}.`,
     suggestion:
-      `Depend on an abstraction (outbound port/interface) owned by the domain instead of importing ` +
-      `infrastructure directly; wire the concrete implementation in the composition root.`,
+      `Depend on an abstraction (outbound port/interface) owned by the ${fromLayer} layer instead of ` +
+      `importing ${edge.toLayer} directly; wire the concrete implementation in the composition root.`,
     evidence,
     rationale: rationale.rationale,
+    heuristic: heuristic || undefined,
   };
 }
