@@ -8,6 +8,10 @@ import { proposeProfile } from "./init.js";
 import { Engine } from "./engine.js";
 import type { ChangeSet, Finding } from "./contract.js";
 import { walkSourceFiles } from "./fs-util.js";
+import { buildEvidenceMap } from "./model/project-map.js";
+import { proposeProfileFromEvidence } from "./model/proposal.js";
+import { renderOnboardingReport, renderAnchorsYaml } from "./model/report.js";
+import { mkdirSync } from "node:fs";
 
 async function readStdin(): Promise<string> {
   const chunks: Buffer[] = [];
@@ -146,6 +150,39 @@ function cmdProfile(): void {
   }
 }
 
+function cmdOnboard(args: string[]): void {
+  const cwd = process.cwd();
+  const catalogue = loadCatalogue(cwd);
+  const map = buildEvidenceMap(cwd, {});
+
+  // Persist the derived map (gitignored artifact, design 14).
+  const outDir = join(cwd, ".conformance");
+  try {
+    mkdirSync(outDir, { recursive: true });
+    writeFileSync(join(outDir, "project-map.json"), JSON.stringify(map, null, 2) + "\n");
+  } catch (e) {
+    process.stderr.write(`warning: could not write project-map.json: ${(e as Error).message}\n`);
+  }
+
+  const proposal = proposeProfileFromEvidence(map, catalogue);
+  process.stdout.write(renderOnboardingReport(map, proposal));
+
+  if (args.includes("--write-profile")) {
+    const target = join(cwd, "patterns.config.yaml");
+    if (existsSync(target)) {
+      process.stderr.write(`\nRefusing to overwrite existing ${target}; profile already exists.\n`);
+      process.exitCode = 1;
+    } else {
+      writeFileSync(target, proposal.yaml);
+      process.stderr.write(`\nWrote warn-only candidate ${target}. Review and ratify before relying on it.\n`);
+    }
+  }
+  if (args.includes("--write-anchors")) {
+    writeFileSync(join(cwd, "patterns.anchors.yaml"), renderAnchorsYaml(proposal));
+    process.stderr.write(`Wrote patterns.anchors.yaml. Review the canonical anchors before trusting them.\n`);
+  }
+}
+
 async function main(): Promise<void> {
   const [cmd, ...rest] = process.argv.slice(2);
   switch (cmd) {
@@ -161,12 +198,16 @@ async function main(): Promise<void> {
     case "profile":
       cmdProfile();
       break;
+    case "onboard":
+      cmdOnboard(rest);
+      break;
     default:
       process.stderr.write(
         "Usage:\n" +
           "  conformance hook <session-start|post-write|guard-shell|turn-end> [--runtime copilot|claude|codex|generic]\n" +
           "                                                                    (reads hook JSON on stdin)\n" +
           "  conformance init [--write]                                          (propose a candidate profile)\n" +
+          "  conformance onboard [--write-profile] [--write-anchors]             (scan codebase; print evidence preview)\n" +
           "  conformance check [--event PR_REVIEW|BATCH] [--base <ref>] [paths…] (run the engine; exit 1 on block)\n" +
           "  conformance profile                                                 (print the resolved profile)\n",
       );

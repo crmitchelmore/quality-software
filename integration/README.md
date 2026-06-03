@@ -50,9 +50,27 @@ export CONFORMANCE_CATALOGUE_ROOT=/abs/path/to/quality-software   # this repo (t
 node /abs/path/to/quality-software/integration/bin/conformance.mjs profile
 node /abs/path/to/quality-software/integration/bin/conformance.mjs check --event PR_REVIEW
 node /abs/path/to/quality-software/integration/bin/conformance.mjs init        # propose a profile
+node /abs/path/to/quality-software/integration/bin/conformance.mjs onboard     # scan codebase, print evidence map
 ```
 
 `npm link` (or add `bin/` to PATH) to get the `conformance` / `conformance-mcp` commands.
+
+## Onboarding an existing codebase
+
+Before a project has a ratified profile, build an **evidence map** of what it already does:
+
+```bash
+conformance onboard                  # scan, print preview, write .conformance/project-map.json (gitignored)
+conformance onboard --write-profile  # also write a warn-only candidate patterns.config.yaml (if none exists)
+conformance onboard --write-anchors  # also write a committable patterns.anchors.yaml of canonical anchors
+```
+
+The report is **preview-first and advisory**: observed structure (facts) → detector-backed
+signals → candidate patterns (low/medium confidence) → a conservative warn-only proposal.
+Nothing is adopted or enforced until you ratify it. Canonical implementations are picked by a
+scored heuristic (`{path, confidence, reasons[]}`), never authoritatively. See
+[`design/validator/14-codebase-model.md`](../design/validator/14-codebase-model.md) and the
+`codebase-onboarding` skill.
 
 ## Wiring into GitHub Copilot CLI
 
