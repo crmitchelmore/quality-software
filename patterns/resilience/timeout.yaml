@@ -2,6 +2,7 @@ id: timeout
 title: Timeout
 scale: integration
 category: resilience
+altitude: medium
 maturity: time-tested
 aka:
   - Deadline

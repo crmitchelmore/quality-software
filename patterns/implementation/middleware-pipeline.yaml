@@ -5,6 +5,7 @@ aka:
   - Request Pipeline
 scale: design
 category: implementation
+altitude: medium
 maturity: established
 short_description: >-
   Process a request through an ordered chain of small middleware components, each of

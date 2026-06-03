@@ -2,6 +2,7 @@ id: hedged-requests
 title: Hedged Requests
 scale: integration
 category: resilience
+altitude: medium
 maturity: established
 aka:
   - Backup Requests

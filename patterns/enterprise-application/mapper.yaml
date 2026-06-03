@@ -2,6 +2,7 @@ id: mapper
 title: Mapper
 scale: design
 category: enterprise-application
+altitude: low
 maturity: time-tested
 short_description: >-
   Move data between two representations while keeping both sides independent of each other's structure and lifecycle.

@@ -2,6 +2,7 @@ id: graphql
 title: GraphQL Schema
 scale: integration
 category: api-design
+altitude: medium
 maturity: established
 short_description: >-
   Expose a typed graph schema that lets clients request exactly the fields and relationships they need through queries and mutations.

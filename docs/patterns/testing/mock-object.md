@@ -2,7 +2,7 @@
 
 > Use a test double with explicit interaction expectations when the behaviour is the collaboration itself rather than a returned state.
 
-**Scale:** implementation · **Category:** testing · **Maturity:** time-tested
+**Scale:** implementation · **Altitude:** low · **Category:** testing · **Maturity:** time-tested
 
 **Also known as:** Mock
 

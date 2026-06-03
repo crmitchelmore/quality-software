@@ -4,6 +4,7 @@ aka:
   - Well-Structured Monolith
 scale: architectural
 category: architecture
+altitude: high
 maturity: established
 short_description: >-
   Keep one deployable application while enforcing strong internal module boundaries around business capabilities, so teams get simpler operations without a tangled codebase.

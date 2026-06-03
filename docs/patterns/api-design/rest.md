@@ -2,7 +2,7 @@
 
 > Model an HTTP API around resources, representations, standard methods, status codes, and cache semantics.
 
-**Scale:** integration · **Category:** api-design · **Maturity:** time-tested
+**Scale:** integration · **Altitude:** medium · **Category:** api-design · **Maturity:** time-tested
 
 ## Description
 

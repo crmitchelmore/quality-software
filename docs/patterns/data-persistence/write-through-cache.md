@@ -2,7 +2,7 @@
 
 > Write every change to the cache and durable store in the request path so subsequent reads hit fresh cached data.
 
-**Scale:** data · **Category:** data-persistence · **Maturity:** established
+**Scale:** data · **Altitude:** medium · **Category:** data-persistence · **Maturity:** established
 
 ## Description
 

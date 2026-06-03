@@ -2,6 +2,7 @@ id: backpressure
 title: Backpressure
 scale: concurrency
 category: resilience
+altitude: medium
 maturity: established
 aka:
   - Flow Control

@@ -2,7 +2,7 @@
 
 > Let an API gateway or edge service combine several backend calls into one client response, reducing client chattiness and hiding backend topology.
 
-**Scale:** integration · **Category:** cloud-distributed · **Maturity:** established
+**Scale:** integration · **Altitude:** high · **Category:** cloud-distributed · **Maturity:** established
 
 ## Description
 

@@ -2,7 +2,7 @@
 
 > Route each message to an output channel by evaluating fields in the message content or headers against explicit business predicates.
 
-**Scale:** integration · **Category:** enterprise-integration · **Maturity:** time-tested
+**Scale:** integration · **Altitude:** medium · **Category:** enterprise-integration · **Maturity:** time-tested
 
 ## Description
 

@@ -2,6 +2,7 @@ id: single-table-inheritance
 title: Single Table Inheritance
 scale: data
 category: enterprise-application
+altitude: medium
 maturity: time-tested
 short_description: >-
   Store an entire inheritance hierarchy in one database table, using a discriminator column to identify the concrete subtype for each row.

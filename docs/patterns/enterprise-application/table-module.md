@@ -2,7 +2,7 @@
 
 > Place business logic in one class or module per database table, operating on sets of records rather than objects per row.
 
-**Scale:** design · **Category:** enterprise-application · **Maturity:** time-tested
+**Scale:** design · **Altitude:** medium · **Category:** enterprise-application · **Maturity:** time-tested
 
 **Also known as:** Table-oriented domain logic
 

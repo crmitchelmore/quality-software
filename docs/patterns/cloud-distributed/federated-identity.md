@@ -2,7 +2,7 @@
 
 > Trust an external identity provider to authenticate users or workloads and use standard tokens to access applications across organisational or system boundaries.
 
-**Scale:** integration · **Category:** cloud-distributed · **Maturity:** established
+**Scale:** integration · **Altitude:** high · **Category:** cloud-distributed · **Maturity:** established
 
 ## Description
 

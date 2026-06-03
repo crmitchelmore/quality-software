@@ -2,7 +2,7 @@
 
 > Move data-transfer logic between database records and domain objects into a dedicated mapper layer.
 
-**Scale:** data · **Category:** enterprise-application · **Maturity:** time-tested
+**Scale:** data · **Altitude:** medium · **Category:** enterprise-application · **Maturity:** time-tested
 
 **Also known as:** Mapper layer, Persistence mapper
 

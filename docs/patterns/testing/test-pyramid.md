@@ -2,7 +2,7 @@
 
 > Balance the test suite with many fast low-level tests, fewer service/integration tests, and a small number of slow end-to-end journeys.
 
-**Scale:** organisational · **Category:** testing · **Maturity:** established
+**Scale:** organisational · **Altitude:** medium · **Category:** testing · **Maturity:** established
 
 **Also known as:** Testing pyramid
 

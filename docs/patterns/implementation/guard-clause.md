@@ -2,7 +2,7 @@
 
 > Handle preconditions and edge cases up front with early returns, so the main logic runs at minimal indentation without deep nesting.
 
-**Scale:** implementation · **Category:** implementation · **Maturity:** time-tested
+**Scale:** implementation · **Altitude:** low · **Category:** implementation · **Maturity:** time-tested
 
 **Also known as:** Early Return, Bouncer Pattern
 

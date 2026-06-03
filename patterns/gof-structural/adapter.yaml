@@ -4,6 +4,7 @@ aka:
   - Wrapper
 scale: design
 category: gof-structural
+altitude: low
 maturity: time-tested
 short_description: >-
   Translate one interface into another expected by the client, allowing incompatible APIs or external models to collaborate without changing either side.

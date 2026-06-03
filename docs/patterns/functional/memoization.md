@@ -2,7 +2,7 @@
 
 > Cache the result of a pure function by its inputs so repeated calls return immediately without recomputation.
 
-**Scale:** implementation · **Category:** functional · **Maturity:** time-tested
+**Scale:** implementation · **Altitude:** low · **Category:** functional · **Maturity:** time-tested
 
 **Also known as:** Result Caching
 

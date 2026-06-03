@@ -2,6 +2,7 @@ id: query-object
 title: Query Object
 scale: data
 category: enterprise-application
+altitude: medium
 maturity: time-tested
 short_description: >-
   Represent a database query as an object so selection criteria, ordering, paging, and joins can be composed and reused without scattering SQL strings.

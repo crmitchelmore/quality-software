@@ -2,7 +2,7 @@
 
 > Process data through a sequence of independent filters connected by pipes, where each filter transforms, enriches, validates, or routes the stream.
 
-**Scale:** architectural · **Category:** architecture · **Maturity:** time-tested
+**Scale:** architectural · **Altitude:** medium · **Category:** architecture · **Maturity:** time-tested
 
 **Also known as:** Pipeline Architecture
 

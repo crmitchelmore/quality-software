@@ -2,6 +2,7 @@ id: competing-consumers
 title: Competing Consumers
 scale: integration
 category: cloud-distributed
+altitude: medium
 maturity: time-tested
 short_description: >-
   Run multiple equivalent consumers on the same queue so each message is handled

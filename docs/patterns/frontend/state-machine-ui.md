@@ -2,7 +2,7 @@
 
 > Model UI behaviour as explicit states, events and transitions so only valid screens and interactions are representable.
 
-**Scale:** frontend · **Category:** frontend · **Maturity:** established
+**Scale:** frontend · **Altitude:** medium · **Category:** frontend · **Maturity:** established
 
 ## Description
 

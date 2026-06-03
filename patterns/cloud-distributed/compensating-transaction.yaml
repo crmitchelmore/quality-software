@@ -2,6 +2,7 @@ id: compensating-transaction
 title: Compensating Transaction
 scale: integration
 category: cloud-distributed
+altitude: medium
 maturity: time-tested
 short_description: >-
   Undo or neutralise the effects of completed distributed steps with explicit business

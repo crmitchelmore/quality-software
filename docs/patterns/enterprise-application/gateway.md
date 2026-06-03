@@ -2,7 +2,7 @@
 
 > Encapsulate access to an external system or resource behind a narrow object that hides protocol, SDK, authentication, and error-handling details.
 
-**Scale:** integration · **Category:** enterprise-application · **Maturity:** time-tested
+**Scale:** integration · **Altitude:** medium · **Category:** enterprise-application · **Maturity:** time-tested
 
 ## Description
 

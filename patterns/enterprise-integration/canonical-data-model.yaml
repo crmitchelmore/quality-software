@@ -2,6 +2,7 @@ id: canonical-data-model
 title: Canonical Data Model
 scale: integration
 category: enterprise-integration
+altitude: high
 maturity: time-tested
 aka:
   - Canonical Message Model

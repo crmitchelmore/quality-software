@@ -2,7 +2,7 @@
 
 > Translate one interface into another expected by the client, allowing incompatible APIs or external models to collaborate without changing either side.
 
-**Scale:** design · **Category:** gof-structural · **Maturity:** time-tested
+**Scale:** design · **Altitude:** low · **Category:** gof-structural · **Maturity:** time-tested
 
 **Also known as:** Wrapper
 

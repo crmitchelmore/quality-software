@@ -4,6 +4,7 @@ aka:
   - Result Caching
 scale: implementation
 category: functional
+altitude: low
 maturity: time-tested
 short_description: >-
   Cache the result of a pure function by its inputs so repeated calls return immediately without recomputation.

@@ -2,7 +2,7 @@
 
 > Precompute and store a read-optimised projection of source data so expensive or cross-service queries can be served quickly from a purpose-built view.
 
-**Scale:** data · **Category:** cloud-distributed · **Maturity:** time-tested
+**Scale:** data · **Altitude:** medium · **Category:** cloud-distributed · **Maturity:** time-tested
 
 ## Description
 

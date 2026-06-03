@@ -4,6 +4,7 @@ aka:
   - EDA
 scale: architectural
 category: architecture
+altitude: medium
 maturity: established
 short_description: >-
   Let services publish immutable facts about state changes and have other components react asynchronously, reducing temporal coupling between producers and consumers.

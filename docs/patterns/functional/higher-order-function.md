@@ -2,7 +2,7 @@
 
 > Accept functions as inputs or return functions as outputs to parameterise behaviour without inheritance or conditionals.
 
-**Scale:** implementation · **Category:** functional · **Maturity:** time-tested
+**Scale:** implementation · **Altitude:** low · **Category:** functional · **Maturity:** time-tested
 
 **Also known as:** Function as Argument, Function Factory
 

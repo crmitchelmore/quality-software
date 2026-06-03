@@ -5,6 +5,7 @@ aka:
   - Event Dispatcher
 scale: design
 category: implementation
+altitude: low
 maturity: established
 short_description: >-
   Let components publish named in-process events to registered listeners without

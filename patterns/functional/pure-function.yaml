@@ -4,6 +4,7 @@ aka:
   - Referentially Transparent Function
 scale: implementation
 category: functional
+altitude: low
 maturity: time-tested
 short_description: >-
   Write functions whose result depends only on inputs and that produce no observable side effects.

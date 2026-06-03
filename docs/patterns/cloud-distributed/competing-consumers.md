@@ -2,7 +2,7 @@
 
 > Run multiple equivalent consumers on the same queue so each message is handled by one worker, increasing throughput and resilience through horizontal scaling.
 
-**Scale:** integration · **Category:** cloud-distributed · **Maturity:** time-tested
+**Scale:** integration · **Altitude:** medium · **Category:** cloud-distributed · **Maturity:** time-tested
 
 ## Description
 

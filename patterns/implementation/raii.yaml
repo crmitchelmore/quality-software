@@ -4,6 +4,7 @@ aka:
   - Scope-Bound Resource Management
 scale: implementation
 category: implementation
+altitude: low
 maturity: time-tested
 short_description: >-
   Bind resource lifetime to object lifetime so acquisition happens during

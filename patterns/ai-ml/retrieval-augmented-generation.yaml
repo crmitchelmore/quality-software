@@ -2,6 +2,7 @@ id: retrieval-augmented-generation
 title: Retrieval-Augmented Generation (RAG)
 scale: architectural
 category: ai-ml
+altitude: medium
 maturity: emerging
 short_description: >-
   Ground language-model responses in retrieved private or domain-specific context instead of relying only on model parameters.

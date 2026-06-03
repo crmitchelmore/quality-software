@@ -2,7 +2,7 @@
 
 > Select, summarise, evict, and persist context deliberately so LLM workflows stay relevant, private, and within token limits.
 
-**Scale:** design · **Category:** ai-ml · **Maturity:** emerging
+**Scale:** design · **Altitude:** medium · **Category:** ai-ml · **Maturity:** emerging
 
 ## Description
 

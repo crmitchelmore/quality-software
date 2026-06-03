@@ -2,7 +2,7 @@
 
 > Authenticate requests with signed, time-bound tokens carrying identity, audience, issuer, and scope claims verified at each resource boundary.
 
-**Scale:** integration · **Category:** security · **Maturity:** established
+**Scale:** integration · **Altitude:** medium · **Category:** security · **Maturity:** established
 
 **Also known as:** Bearer token auth, JWT auth
 

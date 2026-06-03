@@ -2,6 +2,7 @@ id: composite
 title: Composite
 scale: design
 category: gof-structural
+altitude: low
 maturity: time-tested
 short_description: >-
   Treat individual objects and tree-shaped groups uniformly through a shared component interface.

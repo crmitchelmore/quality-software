@@ -4,6 +4,7 @@ aka:
   - Prefer Composition
 scale: design
 category: implementation
+altitude: low
 maturity: time-tested
 short_description: >-
   Build behaviour by combining small collaborators instead of relying on deep class

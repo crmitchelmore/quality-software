@@ -4,6 +4,7 @@ aka:
   - Frontend Microservices
 scale: architectural
 category: frontend
+altitude: high
 maturity: established
 short_description: >-
   Split a frontend into independently owned, built and deployed slices that compose into one user experience at runtime or build time.

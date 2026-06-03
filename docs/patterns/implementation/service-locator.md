@@ -2,7 +2,7 @@
 
 > Retrieve dependencies from a central registry at runtime, trading explicit constructor wiring for dynamic lookup and late binding.
 
-**Scale:** design · **Category:** implementation · **Maturity:** established
+**Scale:** design · **Altitude:** low · **Category:** implementation · **Maturity:** established
 
 **Also known as:** Registry Lookup
 

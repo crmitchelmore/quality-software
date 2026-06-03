@@ -2,6 +2,7 @@ id: leader-election
 title: Leader Election
 scale: architectural
 category: cloud-distributed
+altitude: medium
 maturity: time-tested
 short_description: >-
   Coordinate a cluster so exactly one healthy instance owns singleton work at a time,

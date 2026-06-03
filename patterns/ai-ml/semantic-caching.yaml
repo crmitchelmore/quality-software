@@ -2,6 +2,7 @@ id: semantic-caching
 title: Semantic Caching
 scale: data
 category: ai-ml
+altitude: medium
 maturity: emerging
 short_description: >-
   Cache model responses by semantic similarity rather than exact prompt text to reduce cost and latency for repeated intent.

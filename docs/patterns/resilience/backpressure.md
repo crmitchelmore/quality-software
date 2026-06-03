@@ -2,7 +2,7 @@
 
 > Let consumers signal available capacity to producers so work enters the system only as fast as it can be processed safely.
 
-**Scale:** concurrency · **Category:** resilience · **Maturity:** established
+**Scale:** concurrency · **Altitude:** medium · **Category:** resilience · **Maturity:** established
 
 **Also known as:** Flow Control, Demand Signalling
 

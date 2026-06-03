@@ -2,7 +2,7 @@
 
 > Attach a dynamic itinerary to a message so each processing step sends it to the next endpoint listed on the slip.
 
-**Scale:** integration · **Category:** enterprise-integration · **Maturity:** time-tested
+**Scale:** integration · **Altitude:** medium · **Category:** enterprise-integration · **Maturity:** time-tested
 
 ## Description
 

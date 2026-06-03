@@ -2,7 +2,7 @@
 
 > Provide a single managed edge for clients, centralising request routing, authentication, throttling, protocol translation, and coarse API composition.
 
-**Scale:** architectural · **Category:** architecture · **Maturity:** established
+**Scale:** architectural · **Altitude:** high · **Category:** architecture · **Maturity:** established
 
 ## Description
 

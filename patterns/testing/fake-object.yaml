@@ -5,6 +5,7 @@ aka:
   - Fake
 scale: implementation
 category: testing
+altitude: low
 maturity: time-tested
 short_description: >-
   Use a lightweight working implementation of a collaborator when tests need realistic behaviour without the real infrastructure.

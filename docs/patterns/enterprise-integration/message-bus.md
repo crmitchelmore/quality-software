@@ -2,7 +2,7 @@
 
 > Provide a shared messaging backbone with common channels, contracts and operational services so applications integrate through messages instead of direct point-to-point links.
 
-**Scale:** integration · **Category:** enterprise-integration · **Maturity:** time-tested
+**Scale:** integration · **Altitude:** high · **Category:** enterprise-integration · **Maturity:** time-tested
 
 ## Description
 

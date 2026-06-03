@@ -5,6 +5,7 @@ aka:
   - Request Object
 scale: design
 category: gof-behavioural
+altitude: low
 maturity: time-tested
 short_description: >-
   Encapsulate a request as an object so it can be queued, logged, authorised,

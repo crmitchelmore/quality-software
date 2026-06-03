@@ -4,6 +4,7 @@ aka:
   - MVP
 scale: frontend
 category: frontend
+altitude: medium
 maturity: time-tested
 short_description: >-
   Keep a passive view thin by routing user events to a presenter that coordinates model access and updates the view through an interface.

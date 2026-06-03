@@ -2,6 +2,7 @@ id: message-translator
 title: Message Translator
 scale: integration
 category: enterprise-integration
+altitude: medium
 maturity: time-tested
 short_description: >-
   Convert messages between the data model, schema, protocol, or vocabulary expected by different applications while preserving business meaning.

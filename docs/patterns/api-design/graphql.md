@@ -2,7 +2,7 @@
 
 > Expose a typed graph schema that lets clients request exactly the fields and relationships they need through queries and mutations.
 
-**Scale:** integration · **Category:** api-design · **Maturity:** established
+**Scale:** integration · **Altitude:** medium · **Category:** api-design · **Maturity:** established
 
 ## Description
 

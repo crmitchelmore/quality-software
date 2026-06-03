@@ -2,6 +2,7 @@ id: splitter
 title: Splitter
 scale: integration
 category: enterprise-integration
+altitude: medium
 maturity: time-tested
 short_description: >-
   Break a composite message into a sequence of smaller messages so each part can be processed independently and, if needed, correlated back to the original.

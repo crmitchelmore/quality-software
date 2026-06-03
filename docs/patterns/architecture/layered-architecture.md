@@ -2,7 +2,7 @@
 
 > Organise a system into horizontal layers such as presentation, application, domain, and infrastructure, with each layer serving the layer above and depending only on lower layers or stable contracts.
 
-**Scale:** architectural · **Category:** architecture · **Maturity:** time-tested
+**Scale:** architectural · **Altitude:** high · **Category:** architecture · **Maturity:** time-tested
 
 **Also known as:** N-Tier Architecture, Three-Tier Architecture
 

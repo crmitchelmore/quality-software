@@ -2,7 +2,7 @@
 
 > Let readers share an immutable snapshot while writers create and publish a fresh copy, avoiding reader locks for read-mostly data.
 
-**Scale:** concurrency · **Category:** concurrency · **Maturity:** time-tested
+**Scale:** concurrency · **Altitude:** low · **Category:** concurrency · **Maturity:** time-tested
 
 **Also known as:** COW, Snapshot-on-write
 

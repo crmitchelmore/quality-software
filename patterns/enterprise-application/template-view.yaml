@@ -2,6 +2,7 @@ id: template-view
 title: Template View
 scale: design
 category: enterprise-application
+altitude: medium
 maturity: time-tested
 aka:
   - Server-side template

@@ -4,6 +4,7 @@ aka:
   - Registry Lookup
 scale: design
 category: implementation
+altitude: low
 maturity: established
 short_description: >-
   Retrieve dependencies from a central registry at runtime, trading explicit

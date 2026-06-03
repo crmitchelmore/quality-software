@@ -2,6 +2,7 @@ id: scatter-gather
 title: Scatter-Gather
 scale: integration
 category: enterprise-integration
+altitude: medium
 maturity: time-tested
 short_description: >-
   Send a request to multiple recipients in parallel, collect the responses, and continue with a combined, best, quorum, or first-success result.

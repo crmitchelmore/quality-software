@@ -2,7 +2,7 @@
 
 > Partition a platform into self-contained cells so each cell serves a subset of traffic with isolated capacity, data, and blast radius.
 
-**Scale:** architectural · **Category:** architecture · **Maturity:** established
+**Scale:** architectural · **Altitude:** high · **Category:** architecture · **Maturity:** established
 
 **Also known as:** Cellular architecture, Bulkheaded cells
 

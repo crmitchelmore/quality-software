@@ -2,7 +2,7 @@
 
 > Structure each test into setup, one behaviour trigger, and observable assertions so the reader can see cause and effect immediately.
 
-**Scale:** implementation · **Category:** testing · **Maturity:** time-tested
+**Scale:** implementation · **Altitude:** low · **Category:** testing · **Maturity:** time-tested
 
 **Also known as:** Given-When-Then at test level
 

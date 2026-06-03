@@ -2,7 +2,7 @@
 
 > Define a stable enterprise message shape so integrations translate once at the boundary instead of every system learning every other system's private schema.
 
-**Scale:** integration · **Category:** enterprise-integration · **Maturity:** time-tested
+**Scale:** integration · **Altitude:** high · **Category:** enterprise-integration · **Maturity:** time-tested
 
 **Also known as:** Canonical Message Model, Enterprise Canonical Model
 

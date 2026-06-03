@@ -5,6 +5,7 @@ aka:
   - Non-blocking event loop
 scale: concurrency
 category: concurrency
+altitude: medium
 maturity: time-tested
 short_description: >-
   Demultiplex readiness events from many I/O handles and dispatch each ready event to a short, non-blocking handler on one or more event-loop threads.

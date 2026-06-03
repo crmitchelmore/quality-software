@@ -2,6 +2,7 @@ id: shared-kernel
 title: Shared Kernel
 scale: organisational
 category: ddd-strategic
+altitude: high
 maturity: time-tested
 short_description: >-
   Share a deliberately small, jointly owned subset of model or code between bounded contexts when divergence would be more costly than coordination.

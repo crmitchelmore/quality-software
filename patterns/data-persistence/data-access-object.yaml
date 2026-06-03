@@ -2,6 +2,7 @@ id: data-access-object
 title: Data Access Object (DAO)
 scale: design
 category: data-persistence
+altitude: medium
 maturity: time-tested
 short_description: >-
   Encapsulate table- or query-oriented persistence operations behind an object dedicated to data access, distinct from domain repositories.

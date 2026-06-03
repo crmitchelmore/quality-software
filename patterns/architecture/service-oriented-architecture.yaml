@@ -4,6 +4,7 @@ aka:
   - SOA
 scale: architectural
 category: architecture
+altitude: high
 maturity: time-tested
 short_description: >-
   Expose coarse-grained business capabilities as reusable services coordinated through stable contracts, often with shared integration infrastructure and enterprise governance.

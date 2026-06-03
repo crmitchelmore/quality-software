@@ -5,6 +5,7 @@ aka:
   - Message broker architecture
 scale: architectural
 category: architecture
+altitude: high
 maturity: time-tested
 short_description: >-
   Decouple participants by routing requests, commands, or events through a broker

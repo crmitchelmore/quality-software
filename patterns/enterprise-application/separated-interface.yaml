@@ -2,6 +2,7 @@ id: separated-interface
 title: Separated Interface
 scale: design
 category: enterprise-application
+altitude: low
 maturity: time-tested
 short_description: >-
   Define an interface in one package or layer while implementations live elsewhere, allowing clients to depend on a stable contract rather than concrete infrastructure.

@@ -2,7 +2,7 @@
 
 > Replace a real collaborator in a test with a controlled substitute so behaviour can be exercised without slow, unavailable, or nondeterministic dependencies.
 
-**Scale:** implementation · **Category:** testing · **Maturity:** time-tested
+**Scale:** implementation · **Altitude:** low · **Category:** testing · **Maturity:** time-tested
 
 **Also known as:** Dummy, Spy, Mock, Stub, Fake
 

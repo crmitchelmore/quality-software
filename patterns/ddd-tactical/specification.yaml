@@ -2,6 +2,7 @@ id: specification
 title: Specification
 scale: design
 category: ddd-tactical
+altitude: low
 maturity: time-tested
 short_description: >-
   Encapsulate a business rule as a composable predicate that can validate objects, select candidates, or explain eligibility decisions.

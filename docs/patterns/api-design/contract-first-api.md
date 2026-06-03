@@ -2,7 +2,7 @@
 
 > Design and review the API contract before implementation, then generate docs, clients, tests, or server stubs from it.
 
-**Scale:** integration · **Category:** api-design · **Maturity:** established
+**Scale:** integration · **Altitude:** medium · **Category:** api-design · **Maturity:** established
 
 ## Description
 

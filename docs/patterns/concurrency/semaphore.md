@@ -2,7 +2,7 @@
 
 > Control access to a finite set of permits so only a bounded number of concurrent operations can enter a critical or resource-limited section.
 
-**Scale:** concurrency · **Category:** concurrency · **Maturity:** time-tested
+**Scale:** concurrency · **Altitude:** low · **Category:** concurrency · **Maturity:** time-tested
 
 **Also known as:** Permit counter, Counting semaphore
 

@@ -2,7 +2,7 @@
 
 > Stand in for another object behind the same interface to control access, defer work, add protection, or represent a remote resource.
 
-**Scale:** design · **Category:** gof-structural · **Maturity:** time-tested
+**Scale:** design · **Altitude:** low · **Category:** gof-structural · **Maturity:** time-tested
 
 ## Description
 

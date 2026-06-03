@@ -2,6 +2,7 @@ id: prompt-chaining
 title: Prompt Chaining
 scale: design
 category: ai-ml
+altitude: medium
 maturity: cutting-edge
 short_description: >-
   Decompose a complex LLM task into explicit, typed steps where each prompt consumes the previous step's checked output.

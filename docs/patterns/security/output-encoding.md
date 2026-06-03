@@ -2,7 +2,7 @@
 
 > Encode untrusted data for the exact output context before rendering it, preventing valid data from becoming executable code.
 
-**Scale:** implementation · **Category:** security · **Maturity:** time-tested
+**Scale:** implementation · **Altitude:** low · **Category:** security · **Maturity:** time-tested
 
 **Also known as:** Contextual escaping, Output escaping
 

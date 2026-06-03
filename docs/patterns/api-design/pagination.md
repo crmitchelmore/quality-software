@@ -2,7 +2,7 @@
 
 > Return large collections in bounded pages using stable ordering and continuation information instead of unbounded lists.
 
-**Scale:** integration · **Category:** api-design · **Maturity:** time-tested
+**Scale:** integration · **Altitude:** medium · **Category:** api-design · **Maturity:** time-tested
 
 ## Description
 

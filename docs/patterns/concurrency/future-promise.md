@@ -2,7 +2,7 @@
 
 > Represent a result that will be available later, allowing work to run concurrently while callers compose, await, cancel, or observe completion.
 
-**Scale:** concurrency · **Category:** concurrency · **Maturity:** time-tested
+**Scale:** concurrency · **Altitude:** low · **Category:** concurrency · **Maturity:** time-tested
 
 **Also known as:** Deferred Result, Task
 

@@ -5,6 +5,7 @@ aka:
   - Channel-oriented concurrency
 scale: concurrency
 category: concurrency
+altitude: medium
 maturity: time-tested
 short_description: >-
   Compose independent sequential processes that synchronise and exchange values through explicit channels rather than shared mutable memory.

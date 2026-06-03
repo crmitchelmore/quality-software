@@ -2,7 +2,7 @@
 
 > Encapsulate complex creation of aggregates or value objects so newly created domain objects are valid and intention-revealing from the start.
 
-**Scale:** design · **Category:** ddd-tactical · **Maturity:** time-tested
+**Scale:** design · **Altitude:** low · **Category:** ddd-tactical · **Maturity:** time-tested
 
 ## Description
 

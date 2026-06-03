@@ -5,6 +5,7 @@ aka:
   - Reducer Store
 scale: frontend
 category: frontend
+altitude: medium
 maturity: established
 short_description: >-
   Keep shared client state in a single predictable store updated by pure reducers in response to explicit actions.

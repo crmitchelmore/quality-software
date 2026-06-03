@@ -2,7 +2,7 @@
 
 > Bind resource lifetime to object lifetime so acquisition happens during construction and release happens automatically when scope exits.
 
-**Scale:** implementation · **Category:** implementation · **Maturity:** time-tested
+**Scale:** implementation · **Altitude:** low · **Category:** implementation · **Maturity:** time-tested
 
 **Also known as:** Scope-Bound Resource Management
 

@@ -2,6 +2,7 @@ id: data-mapper
 title: Data Mapper
 scale: data
 category: enterprise-application
+altitude: medium
 maturity: time-tested
 aka:
   - Mapper layer

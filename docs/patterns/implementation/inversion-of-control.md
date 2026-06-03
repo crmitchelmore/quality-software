@@ -2,7 +2,7 @@
 
 > Let a framework, runtime, or composition root call application code at defined extension points instead of application code controlling every step directly.
 
-**Scale:** design · **Category:** implementation · **Maturity:** time-tested
+**Scale:** design · **Altitude:** low · **Category:** implementation · **Maturity:** time-tested
 
 **Also known as:** IoC, Hollywood Principle
 

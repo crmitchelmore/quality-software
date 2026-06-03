@@ -4,6 +4,7 @@ aka:
   - Chain of Command
 scale: design
 category: gof-behavioural
+altitude: low
 maturity: time-tested
 short_description: >-
   Pass a request along an ordered chain of handlers until one handles it or all

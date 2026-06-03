@@ -2,7 +2,7 @@
 
 > Delay computing a value until it is demanded, and often compute it at most once.
 
-**Scale:** implementation · **Category:** functional · **Maturity:** time-tested
+**Scale:** implementation · **Altitude:** low · **Category:** functional · **Maturity:** time-tested
 
 **Also known as:** Call by Need, Deferred Evaluation
 

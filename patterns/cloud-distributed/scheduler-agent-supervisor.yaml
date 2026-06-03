@@ -2,6 +2,7 @@ id: scheduler-agent-supervisor
 title: Scheduler-Agent-Supervisor
 scale: integration
 category: cloud-distributed
+altitude: high
 maturity: established
 short_description: >-
   Split distributed work into a scheduler that assigns jobs, agents that execute them,

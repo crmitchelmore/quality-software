@@ -2,7 +2,7 @@
 
 > Expose typed, permissioned functions to an LLM so it can request external actions through controlled contracts rather than free-form text.
 
-**Scale:** integration · **Category:** ai-ml · **Maturity:** cutting-edge
+**Scale:** integration · **Altitude:** low · **Category:** ai-ml · **Maturity:** cutting-edge
 
 ## Description
 

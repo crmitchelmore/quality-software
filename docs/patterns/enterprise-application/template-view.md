@@ -2,7 +2,7 @@
 
 > Render dynamic pages by embedding simple presentation logic in a template populated from a model.
 
-**Scale:** design · **Category:** enterprise-application · **Maturity:** time-tested
+**Scale:** design · **Altitude:** medium · **Category:** enterprise-application · **Maturity:** time-tested
 
 **Also known as:** Server-side template, HTML template
 

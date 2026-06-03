@@ -2,7 +2,7 @@
 
 > Coordinate LLM-driven agents, tools, memory, approvals, and termination policies so autonomous workflows remain bounded and observable.
 
-**Scale:** architectural · **Category:** ai-ml · **Maturity:** emerging
+**Scale:** architectural · **Altitude:** high · **Category:** ai-ml · **Maturity:** emerging
 
 ## Description
 

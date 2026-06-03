@@ -2,7 +2,7 @@
 
 > Mediate between the domain and data mapping layers using a collection-like interface for accessing aggregates, hiding the persistence mechanism from the domain.
 
-**Scale:** design · **Category:** data-persistence · **Maturity:** time-tested
+**Scale:** design · **Altitude:** medium · **Category:** data-persistence · **Maturity:** time-tested
 
 ## Description
 

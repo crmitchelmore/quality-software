@@ -2,7 +2,7 @@
 
 > Use a simple double that returns predetermined values so the test can drive a branch or scenario deterministically.
 
-**Scale:** implementation · **Category:** testing · **Maturity:** time-tested
+**Scale:** implementation · **Altitude:** low · **Category:** testing · **Maturity:** time-tested
 
 **Also known as:** Canned response
 

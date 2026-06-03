@@ -2,6 +2,7 @@ id: bounded-context
 title: Bounded Context
 scale: architectural
 category: ddd-strategic
+altitude: high
 maturity: time-tested
 short_description: >-
   Draw an explicit boundary around a model, language, codebase, and team ownership so terms and rules are consistent inside and deliberately translated outside.

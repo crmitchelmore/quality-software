@@ -2,7 +2,7 @@
 
 > Expose lightweight health endpoints that external monitors, load balancers, and orchestrators can probe to detect liveness, readiness, and dependency degradation.
 
-**Scale:** integration · **Category:** cloud-distributed · **Maturity:** established
+**Scale:** integration · **Altitude:** medium · **Category:** cloud-distributed · **Maturity:** established
 
 ## Description
 

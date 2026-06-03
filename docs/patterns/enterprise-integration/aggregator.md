@@ -2,7 +2,7 @@
 
 > Collect related messages, decide when the group is complete, and publish a combined result or completion event.
 
-**Scale:** integration · **Category:** enterprise-integration · **Maturity:** time-tested
+**Scale:** integration · **Altitude:** medium · **Category:** enterprise-integration · **Maturity:** time-tested
 
 ## Description
 

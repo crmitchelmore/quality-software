@@ -4,6 +4,7 @@ aka:
   - Screen Object
 scale: implementation
 category: testing
+altitude: low
 maturity: time-tested
 short_description: >-
   Encapsulate UI test selectors and user interactions behind page-level methods so tests express behaviour instead of DOM mechanics.

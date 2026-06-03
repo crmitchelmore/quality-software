@@ -2,7 +2,7 @@
 
 > Represent a multi-argument function as a chain of one-argument functions, enabling staged configuration and reuse.
 
-**Scale:** implementation · **Category:** functional · **Maturity:** time-tested
+**Scale:** implementation · **Altitude:** low · **Category:** functional · **Maturity:** time-tested
 
 **Also known as:** Curried Functions
 

@@ -5,6 +5,7 @@ aka:
   - Controller Object
 scale: design
 category: gof-behavioural
+altitude: low
 maturity: time-tested
 short_description: >-
   Centralise complex collaboration between peer objects in a mediator so peers do

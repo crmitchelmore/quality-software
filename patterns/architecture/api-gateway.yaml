@@ -2,6 +2,7 @@ id: api-gateway
 title: API Gateway
 scale: architectural
 category: architecture
+altitude: high
 maturity: established
 short_description: >-
   Provide a single managed edge for clients, centralising request routing,

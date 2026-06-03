@@ -2,7 +2,7 @@
 
 > Preserve previous versions of a collection after updates by sharing unchanged structure between versions.
 
-**Scale:** design · **Category:** functional · **Maturity:** time-tested
+**Scale:** design · **Altitude:** low · **Category:** functional · **Maturity:** time-tested
 
 **Also known as:** Structurally Shared Data Structure
 

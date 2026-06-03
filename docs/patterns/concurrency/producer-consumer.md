@@ -2,7 +2,7 @@
 
 > Decouple work creation from work execution by passing items through a thread-safe queue, often bounded so producers cannot outrun consumers indefinitely.
 
-**Scale:** concurrency · **Category:** concurrency · **Maturity:** time-tested
+**Scale:** concurrency · **Altitude:** low · **Category:** concurrency · **Maturity:** time-tested
 
 **Also known as:** Bounded Buffer, Work Queue
 

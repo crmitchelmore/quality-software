@@ -2,7 +2,7 @@
 
 > Separate write models that enforce commands and invariants from read models optimised for queries, allowing each side to evolve for its own workload.
 
-**Scale:** architectural · **Category:** architecture · **Maturity:** established
+**Scale:** architectural · **Altitude:** medium · **Category:** architecture · **Maturity:** established
 
 **Also known as:** Command Query Responsibility Segregation
 

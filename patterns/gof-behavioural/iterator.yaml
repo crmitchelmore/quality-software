@@ -5,6 +5,7 @@ aka:
   - Enumerator
 scale: design
 category: gof-behavioural
+altitude: low
 maturity: time-tested
 short_description: >-
   Provide a uniform way to traverse elements of a collection without exposing the

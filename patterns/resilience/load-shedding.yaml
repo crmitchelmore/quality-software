@@ -2,6 +2,7 @@ id: load-shedding
 title: Load Shedding
 scale: integration
 category: resilience
+altitude: medium
 maturity: established
 aka:
   - Controlled Rejection

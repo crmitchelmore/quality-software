@@ -2,7 +2,7 @@
 
 > Structure a design system as progressively composed atoms, molecules, organisms, templates and pages.
 
-**Scale:** frontend · **Category:** frontend · **Maturity:** established
+**Scale:** frontend · **Altitude:** medium · **Category:** frontend · **Maturity:** established
 
 ## Description
 

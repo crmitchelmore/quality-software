@@ -2,7 +2,7 @@
 
 > Describe object-relational mapping rules as metadata so generic mapper code can read columns, associations, inheritance, and conversions consistently.
 
-**Scale:** data · **Category:** enterprise-application · **Maturity:** time-tested
+**Scale:** data · **Altitude:** medium · **Category:** enterprise-application · **Maturity:** time-tested
 
 ## Description
 

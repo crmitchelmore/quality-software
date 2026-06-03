@@ -2,7 +2,7 @@
 
 > Provide an object's dependencies from the outside rather than constructing them internally, making collaborators explicit, replaceable, and testable.
 
-**Scale:** design · **Category:** implementation · **Maturity:** time-tested
+**Scale:** design · **Altitude:** low · **Category:** implementation · **Maturity:** time-tested
 
 **Also known as:** DI, Constructor Injection
 

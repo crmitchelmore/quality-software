@@ -2,7 +2,7 @@
 
 > Design an operation so repeating the same request has the same intended effect as performing it once, making retries and duplicate delivery safe.
 
-**Scale:** integration · **Category:** resilience · **Maturity:** time-tested
+**Scale:** integration · **Altitude:** medium · **Category:** resilience · **Maturity:** time-tested
 
 **Also known as:** Safe Repeatability, Deduplicated Side Effects
 

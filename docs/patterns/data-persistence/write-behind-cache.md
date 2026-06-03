@@ -2,7 +2,7 @@
 
 > Acknowledge writes after updating the cache or queue, then persist them asynchronously to reduce latency while accepting durability risk.
 
-**Scale:** data · **Category:** data-persistence · **Maturity:** established
+**Scale:** data · **Altitude:** medium · **Category:** data-persistence · **Maturity:** established
 
 ## Description
 

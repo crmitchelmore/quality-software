@@ -2,7 +2,7 @@
 
 > Encapsulate UI test selectors and user interactions behind page-level methods so tests express behaviour instead of DOM mechanics.
 
-**Scale:** implementation · **Category:** testing · **Maturity:** time-tested
+**Scale:** implementation · **Altitude:** low · **Category:** testing · **Maturity:** time-tested
 
 **Also known as:** Screen Object
 

@@ -2,7 +2,7 @@
 
 > Keep each piece of knowledge, policy, or rule in one authoritative place so changes are made once and remain consistent.
 
-**Scale:** implementation · **Category:** implementation · **Maturity:** time-tested
+**Scale:** implementation · **Altitude:** low · **Category:** implementation · **Maturity:** time-tested
 
 **Also known as:** Don't Repeat Yourself, Single Source of Truth
 

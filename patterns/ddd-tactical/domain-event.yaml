@@ -2,6 +2,7 @@ id: domain-event
 title: Domain Event
 scale: design
 category: ddd-tactical
+altitude: medium
 maturity: time-tested
 short_description: >-
   Capture a business-significant occurrence as an immutable fact so other parts of the domain can react without coupling to the initiating object.

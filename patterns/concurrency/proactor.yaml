@@ -5,6 +5,7 @@ aka:
   - Completion event loop
 scale: concurrency
 category: concurrency
+altitude: medium
 maturity: time-tested
 short_description: >-
   Start asynchronous operations and dispatch handlers only when the operating system or runtime reports that each operation has completed.

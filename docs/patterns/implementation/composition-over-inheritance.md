@@ -2,7 +2,7 @@
 
 > Build behaviour by combining small collaborators instead of relying on deep class hierarchies and inherited implementation.
 
-**Scale:** design · **Category:** implementation · **Maturity:** time-tested
+**Scale:** design · **Altitude:** low · **Category:** implementation · **Maturity:** time-tested
 
 **Also known as:** Prefer Composition
 

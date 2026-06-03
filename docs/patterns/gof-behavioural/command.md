@@ -2,7 +2,7 @@
 
 > Encapsulate a request as an object so it can be queued, logged, authorised, retried, undone, or passed through infrastructure without coupling caller to receiver.
 
-**Scale:** design · **Category:** gof-behavioural · **Maturity:** time-tested
+**Scale:** design · **Altitude:** low · **Category:** gof-behavioural · **Maturity:** time-tested
 
 **Also known as:** Action Object, Request Object
 

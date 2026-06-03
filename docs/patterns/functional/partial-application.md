@@ -2,7 +2,7 @@
 
 > Create a new function by fixing some arguments of an existing function, leaving the remaining arguments to be supplied later.
 
-**Scale:** implementation · **Category:** functional · **Maturity:** time-tested
+**Scale:** implementation · **Altitude:** low · **Category:** functional · **Maturity:** time-tested
 
 **Also known as:** Argument Binding
 

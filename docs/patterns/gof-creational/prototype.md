@@ -2,7 +2,7 @@
 
 > Create new objects by copying a configured exemplar, preserving expensive or intricate setup while varying only the changed parts.
 
-**Scale:** design · **Category:** gof-creational · **Maturity:** time-tested
+**Scale:** design · **Altitude:** low · **Category:** gof-creational · **Maturity:** time-tested
 
 ## Description
 

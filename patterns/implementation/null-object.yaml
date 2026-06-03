@@ -5,6 +5,7 @@ aka:
   - Do-Nothing Object
 scale: design
 category: implementation
+altitude: low
 maturity: time-tested
 short_description: >-
   Replace absent collaborators with an object that implements the same interface and

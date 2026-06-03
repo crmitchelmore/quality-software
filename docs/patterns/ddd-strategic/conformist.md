@@ -2,7 +2,7 @@
 
 > Deliberately adopt an upstream model as-is when the downstream team has little influence and translation would cost more than conformity.
 
-**Scale:** organisational · **Category:** ddd-strategic · **Maturity:** time-tested
+**Scale:** organisational · **Altitude:** high · **Category:** ddd-strategic · **Maturity:** time-tested
 
 ## Description
 

@@ -2,7 +2,7 @@
 
 > Encode an object's lifecycle state in its type so invalid operations are rejected at compile time rather than checked at runtime.
 
-**Scale:** design · **Category:** implementation · **Maturity:** established
+**Scale:** design · **Altitude:** low · **Category:** implementation · **Maturity:** established
 
 **Also known as:** Typestate, State-Encoded Types
 

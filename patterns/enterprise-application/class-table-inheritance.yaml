@@ -2,6 +2,7 @@ id: class-table-inheritance
 title: Class Table Inheritance
 scale: data
 category: enterprise-application
+altitude: medium
 maturity: time-tested
 short_description: >-
   Store each class in an inheritance hierarchy in its own table, joining subclass rows to superclass rows by the same primary key.

@@ -2,7 +2,7 @@
 
 > Route external requests through a hardened entry component that validates, authenticates, filters, and forwards only safe traffic to protected backend services.
 
-**Scale:** architectural · **Category:** cloud-distributed · **Maturity:** established
+**Scale:** architectural · **Altitude:** medium · **Category:** cloud-distributed · **Maturity:** established
 
 ## Description
 

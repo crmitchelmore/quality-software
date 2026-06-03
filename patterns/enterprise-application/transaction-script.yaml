@@ -2,6 +2,7 @@ id: transaction-script
 title: Transaction Script
 scale: design
 category: enterprise-application
+altitude: medium
 maturity: time-tested
 aka:
   - Procedure script

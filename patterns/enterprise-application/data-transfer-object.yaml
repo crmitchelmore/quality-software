@@ -2,6 +2,7 @@ id: data-transfer-object
 title: Data Transfer Object (DTO)
 scale: design
 category: enterprise-application
+altitude: low
 maturity: time-tested
 short_description: >-
   Carry data across process, layer, or network boundaries in simple serialisable structures tailored to the contract rather than the domain model.

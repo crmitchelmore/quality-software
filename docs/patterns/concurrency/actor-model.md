@@ -2,7 +2,7 @@
 
 > Encapsulate mutable state inside independently scheduled actors that communicate only by asynchronous messages.
 
-**Scale:** concurrency · **Category:** concurrency · **Maturity:** time-tested
+**Scale:** concurrency · **Altitude:** medium · **Category:** concurrency · **Maturity:** time-tested
 
 **Also known as:** Actors, Share-nothing message passing
 

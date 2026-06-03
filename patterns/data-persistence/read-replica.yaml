@@ -2,6 +2,7 @@ id: read-replica
 title: Read Replica
 scale: data
 category: data-persistence
+altitude: medium
 maturity: time-tested
 short_description: >-
   Serve read-only traffic from replicated database copies while writes continue on the primary, improving read scale at the cost of replica lag.

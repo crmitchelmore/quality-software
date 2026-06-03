@@ -2,7 +2,7 @@
 
 > Provide a well-known object for locating shared services or configuration when passing every dependency explicitly is impractical.
 
-**Scale:** design · **Category:** enterprise-application · **Maturity:** time-tested
+**Scale:** design · **Altitude:** medium · **Category:** enterprise-application · **Maturity:** time-tested
 
 ## Description
 

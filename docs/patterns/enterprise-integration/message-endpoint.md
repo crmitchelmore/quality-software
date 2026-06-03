@@ -2,7 +2,7 @@
 
 > Encapsulate the code that connects an application to a messaging system so domain logic deals with commands and events rather than broker APIs.
 
-**Scale:** integration · **Category:** enterprise-integration · **Maturity:** time-tested
+**Scale:** integration · **Altitude:** medium · **Category:** enterprise-integration · **Maturity:** time-tested
 
 ## Description
 

@@ -2,7 +2,7 @@
 
 > Compose independent sequential processes that synchronise and exchange values through explicit channels rather than shared mutable memory.
 
-**Scale:** concurrency · **Category:** concurrency · **Maturity:** time-tested
+**Scale:** concurrency · **Altitude:** medium · **Category:** concurrency · **Maturity:** time-tested
 
 **Also known as:** CSP, Channel-oriented concurrency
 

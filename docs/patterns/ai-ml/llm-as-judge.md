@@ -2,7 +2,7 @@
 
 > Use a model to grade outputs against a rubric, preferably with calibration, examples, and spot checks against human judgement.
 
-**Scale:** design · **Category:** ai-ml · **Maturity:** emerging
+**Scale:** design · **Altitude:** medium · **Category:** ai-ml · **Maturity:** emerging
 
 ## Description
 

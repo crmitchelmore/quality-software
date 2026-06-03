@@ -2,7 +2,7 @@
 
 > Let API consumers define executable expectations that providers verify, catching integration breakage before services are deployed together.
 
-**Scale:** integration · **Category:** testing · **Maturity:** established
+**Scale:** integration · **Altitude:** medium · **Category:** testing · **Maturity:** established
 
 **Also known as:** CDC testing, Pact testing
 

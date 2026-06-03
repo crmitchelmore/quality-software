@@ -2,7 +2,7 @@
 
 > Provide a deliberately degraded response when the preferred dependency or behaviour fails, preserving the most important user or system outcome.
 
-**Scale:** integration · **Category:** resilience · **Maturity:** established
+**Scale:** integration · **Altitude:** medium · **Category:** resilience · **Maturity:** established
 
 **Also known as:** Graceful Degradation, Degraded Response
 

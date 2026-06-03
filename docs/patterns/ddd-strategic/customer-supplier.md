@@ -2,7 +2,7 @@
 
 > Define an upstream/downstream relationship where the upstream supplier plans changes in collaboration with downstream customer needs.
 
-**Scale:** organisational · **Category:** ddd-strategic · **Maturity:** time-tested
+**Scale:** organisational · **Altitude:** high · **Category:** ddd-strategic · **Maturity:** time-tested
 
 ## Description
 

@@ -2,6 +2,7 @@ id: service-mesh
 title: Service Mesh
 scale: architectural
 category: architecture
+altitude: high
 maturity: established
 short_description: >-
   Move cross-service traffic policy, telemetry, security, and resilience controls

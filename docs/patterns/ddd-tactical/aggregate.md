@@ -2,7 +2,7 @@
 
 > Group entities and value objects behind a root that enforces consistency boundaries and transactional invariants.
 
-**Scale:** design · **Category:** ddd-tactical · **Maturity:** time-tested
+**Scale:** design · **Altitude:** medium · **Category:** ddd-tactical · **Maturity:** time-tested
 
 ## Description
 

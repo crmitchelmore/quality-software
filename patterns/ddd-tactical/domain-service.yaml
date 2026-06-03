@@ -2,6 +2,7 @@ id: domain-service
 title: Domain Service
 scale: design
 category: ddd-tactical
+altitude: medium
 maturity: time-tested
 short_description: >-
   Place domain behaviour that does not naturally belong to one entity or value object into a stateless service expressed in ubiquitous language.

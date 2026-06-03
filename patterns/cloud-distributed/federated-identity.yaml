@@ -2,6 +2,7 @@ id: federated-identity
 title: Federated Identity
 scale: integration
 category: cloud-distributed
+altitude: high
 maturity: established
 short_description: >-
   Trust an external identity provider to authenticate users or workloads and use

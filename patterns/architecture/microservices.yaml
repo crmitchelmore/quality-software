@@ -4,6 +4,7 @@ aka:
   - Microservice Architecture
 scale: architectural
 category: architecture
+altitude: high
 maturity: established
 short_description: >-
   Decompose a system into independently deployable services aligned to business capabilities, each owning its data and exposing contracts through APIs, events, or messages.

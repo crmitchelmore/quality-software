@@ -2,7 +2,7 @@
 
 > Keep one deployable application while enforcing strong internal module boundaries around business capabilities, so teams get simpler operations without a tangled codebase.
 
-**Scale:** architectural · **Category:** architecture · **Maturity:** established
+**Scale:** architectural · **Altitude:** high · **Category:** architecture · **Maturity:** established
 
 **Also known as:** Well-Structured Monolith
 

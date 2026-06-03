@@ -5,6 +5,7 @@ aka:
   - Three-Tier Architecture
 scale: architectural
 category: architecture
+altitude: high
 maturity: time-tested
 short_description: >-
   Organise a system into horizontal layers such as presentation, application, domain, and infrastructure, with each layer serving the layer above and depending only on lower layers or stable contracts.

@@ -2,6 +2,7 @@ id: write-through-cache
 title: Write-Through Cache
 scale: data
 category: data-persistence
+altitude: medium
 maturity: established
 short_description: >-
   Write every change to the cache and durable store in the request path so subsequent reads hit fresh cached data.

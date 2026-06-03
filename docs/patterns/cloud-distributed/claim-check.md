@@ -2,7 +2,7 @@
 
 > Store a large payload externally and send only a lightweight reference through the message channel, letting receivers retrieve the payload when needed.
 
-**Scale:** integration · **Category:** cloud-distributed · **Maturity:** time-tested
+**Scale:** integration · **Altitude:** medium · **Category:** cloud-distributed · **Maturity:** time-tested
 
 ## Description
 

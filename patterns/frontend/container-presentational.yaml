@@ -5,6 +5,7 @@ aka:
   - Connected and Pure Components
 scale: frontend
 category: frontend
+altitude: low
 maturity: established
 short_description: >-
   Split UI components that fetch, subscribe or mutate state from components that only render a view from explicit inputs and callbacks.

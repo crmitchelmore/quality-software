@@ -2,7 +2,7 @@
 
 > Detect invalid state, bad input, or missing configuration immediately and stop at the closest responsible boundary.
 
-**Scale:** implementation · **Category:** implementation · **Maturity:** time-tested
+**Scale:** implementation · **Altitude:** low · **Category:** implementation · **Maturity:** time-tested
 
 **Also known as:** Fast Failure
 

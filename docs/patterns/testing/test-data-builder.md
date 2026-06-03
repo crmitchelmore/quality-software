@@ -2,7 +2,7 @@
 
 > Create test fixtures with intention-revealing defaults and fluent overrides so each test states only the data that matters.
 
-**Scale:** implementation · **Category:** testing · **Maturity:** time-tested
+**Scale:** implementation · **Altitude:** low · **Category:** testing · **Maturity:** time-tested
 
 **Also known as:** Fixture builder, Object builder
 

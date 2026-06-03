@@ -2,6 +2,7 @@ id: open-host-service
 title: Open Host Service
 scale: integration
 category: ddd-strategic
+altitude: high
 maturity: time-tested
 short_description: >-
   Offer a stable, well-documented service interface that multiple downstream contexts can use without bespoke point-to-point integrations.

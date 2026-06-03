@@ -4,6 +4,7 @@ aka:
   - Command Query Responsibility Segregation
 scale: architectural
 category: architecture
+altitude: medium
 maturity: established
 short_description: >-
   Separate write models that enforce commands and invariants from read models optimised for queries, allowing each side to evolve for its own workload.

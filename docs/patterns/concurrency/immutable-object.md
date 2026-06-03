@@ -2,7 +2,7 @@
 
 > Represent state with objects whose observable values cannot change after construction, making them inherently safe to share between concurrent readers.
 
-**Scale:** design · **Category:** concurrency · **Maturity:** time-tested
+**Scale:** design · **Altitude:** low · **Category:** concurrency · **Maturity:** time-tested
 
 **Also known as:** Immutable value, Read-only object
 

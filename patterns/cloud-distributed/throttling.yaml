@@ -2,6 +2,7 @@ id: throttling
 title: Throttling
 scale: integration
 category: cloud-distributed
+altitude: medium
 maturity: time-tested
 short_description: >-
   Intentionally limit request or work rates so clients, services, and dependencies

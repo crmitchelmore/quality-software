@@ -2,7 +2,7 @@
 
 > Render UI as an in-memory tree and reconcile it with the real DOM so code describes desired output rather than imperative mutations.
 
-**Scale:** frontend · **Category:** frontend · **Maturity:** established
+**Scale:** frontend · **Altitude:** medium · **Category:** frontend · **Maturity:** established
 
 ## Description
 

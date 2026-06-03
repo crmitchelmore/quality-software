@@ -4,6 +4,7 @@ aka:
   - Async Boundary with Synchronous Workers
 scale: concurrency
 category: concurrency
+altitude: medium
 maturity: time-tested
 short_description: >-
   Separate asynchronous event demultiplexing from synchronous application processing using a queue boundary between event-loop code and worker threads.

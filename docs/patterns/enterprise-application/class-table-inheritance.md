@@ -2,7 +2,7 @@
 
 > Store each class in an inheritance hierarchy in its own table, joining subclass rows to superclass rows by the same primary key.
 
-**Scale:** data · **Category:** enterprise-application · **Maturity:** time-tested
+**Scale:** data · **Altitude:** medium · **Category:** enterprise-application · **Maturity:** time-tested
 
 ## Description
 

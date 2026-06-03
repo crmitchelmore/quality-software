@@ -2,6 +2,7 @@ id: metadata-mapping
 title: Metadata Mapping
 scale: data
 category: enterprise-application
+altitude: medium
 maturity: time-tested
 short_description: >-
   Describe object-relational mapping rules as metadata so generic mapper code can read columns, associations, inheritance, and conversions consistently.

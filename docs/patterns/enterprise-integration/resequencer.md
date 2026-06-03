@@ -2,7 +2,7 @@
 
 > Reorder related messages into a required sequence before forwarding them to a consumer that cannot safely process out-of-order messages.
 
-**Scale:** integration · **Category:** enterprise-integration · **Maturity:** time-tested
+**Scale:** integration · **Altitude:** medium · **Category:** enterprise-integration · **Maturity:** time-tested
 
 ## Description
 

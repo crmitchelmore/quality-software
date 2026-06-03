@@ -2,7 +2,7 @@
 
 > Build and deploy the application as one process or tightly coupled unit, centralising code, data access, and release management for operational simplicity.
 
-**Scale:** architectural · **Category:** architecture · **Maturity:** time-tested
+**Scale:** architectural · **Altitude:** high · **Category:** architecture · **Maturity:** time-tested
 
 **Also known as:** Single Deployable Application
 

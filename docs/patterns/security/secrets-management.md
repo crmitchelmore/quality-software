@@ -2,7 +2,7 @@
 
 > Store, distribute, rotate, and audit credentials through dedicated mechanisms instead of source code, images, logs, or ad-hoc environment sprawl.
 
-**Scale:** design · **Category:** security · **Maturity:** established
+**Scale:** design · **Altitude:** medium · **Category:** security · **Maturity:** established
 
 **Also known as:** Secret vaulting, Credential hygiene
 

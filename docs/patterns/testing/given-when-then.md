@@ -2,7 +2,7 @@
 
 > Describe behaviour as preconditions, user action, and expected outcome in business language that stakeholders and tests can share.
 
-**Scale:** implementation · **Category:** testing · **Maturity:** established
+**Scale:** implementation · **Altitude:** low · **Category:** testing · **Maturity:** established
 
 **Also known as:** BDD scenario format, Specification by example
 

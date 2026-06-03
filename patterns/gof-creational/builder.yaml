@@ -2,6 +2,7 @@ id: builder
 title: Builder
 scale: design
 category: gof-creational
+altitude: low
 maturity: time-tested
 short_description: >-
   Construct complex objects step by step through a focused builder API, separating validation and assembly from the final immutable product.

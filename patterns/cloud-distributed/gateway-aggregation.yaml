@@ -2,6 +2,7 @@ id: gateway-aggregation
 title: Gateway Aggregation
 scale: integration
 category: cloud-distributed
+altitude: high
 maturity: established
 short_description: >-
   Let an API gateway or edge service combine several backend calls into one client

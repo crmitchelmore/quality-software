@@ -4,6 +4,7 @@ aka:
   - Wrapper
 scale: design
 category: gof-structural
+altitude: low
 maturity: time-tested
 short_description: >-
   Add responsibilities to an object by wrapping it with another object that implements the same interface and delegates to the wrapped component.

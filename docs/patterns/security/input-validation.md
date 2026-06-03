@@ -2,7 +2,7 @@
 
 > Accept only inputs that match known-good shape, type, range, and business rules before they reach sensitive processing.
 
-**Scale:** implementation · **Category:** security · **Maturity:** time-tested
+**Scale:** implementation · **Altitude:** low · **Category:** security · **Maturity:** time-tested
 
 **Also known as:** Positive validation, Allow-list validation
 

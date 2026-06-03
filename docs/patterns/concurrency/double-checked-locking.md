@@ -2,7 +2,7 @@
 
 > Lazily initialise a shared object by checking before and after acquiring a lock, using the language's safe-publication rules to avoid partially constructed reads.
 
-**Scale:** concurrency · **Category:** concurrency · **Maturity:** established
+**Scale:** concurrency · **Altitude:** low · **Category:** concurrency · **Maturity:** established
 
 **Also known as:** DCL
 

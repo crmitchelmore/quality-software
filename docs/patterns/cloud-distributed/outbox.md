@@ -2,7 +2,7 @@
 
 > Store messages in the same transaction as domain state, then publish them asynchronously so state changes and integration events cannot be lost independently.
 
-**Scale:** data · **Category:** cloud-distributed · **Maturity:** established
+**Scale:** data · **Altitude:** medium · **Category:** cloud-distributed · **Maturity:** established
 
 **Also known as:** Outbox Pattern
 

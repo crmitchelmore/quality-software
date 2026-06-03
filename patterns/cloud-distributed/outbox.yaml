@@ -4,6 +4,7 @@ aka:
   - Outbox Pattern
 scale: data
 category: cloud-distributed
+altitude: medium
 maturity: established
 short_description: >-
   Store messages in the same transaction as domain state, then publish them

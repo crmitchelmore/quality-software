@@ -2,7 +2,7 @@
 
 > Encapsulate a business rule as a composable predicate that can validate objects, select candidates, or explain eligibility decisions.
 
-**Scale:** design · **Category:** ddd-tactical · **Maturity:** time-tested
+**Scale:** design · **Altitude:** low · **Category:** ddd-tactical · **Maturity:** time-tested
 
 ## Description
 

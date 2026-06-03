@@ -2,7 +2,7 @@
 
 > Coordinate a cluster so exactly one healthy instance owns singleton work at a time, with automatic handover when the leader fails or loses its lease.
 
-**Scale:** architectural · **Category:** cloud-distributed · **Maturity:** time-tested
+**Scale:** architectural · **Altitude:** medium · **Category:** cloud-distributed · **Maturity:** time-tested
 
 ## Description
 

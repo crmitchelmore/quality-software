@@ -4,6 +4,7 @@ aka:
   - Domain-Centred Architecture
 scale: architectural
 category: architecture
+altitude: high
 maturity: established
 short_description: >-
   Structure the application as concentric rings around a domain model, with dependencies pointing inward and infrastructure pushed to the outer shell.

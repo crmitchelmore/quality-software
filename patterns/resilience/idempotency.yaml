@@ -2,6 +2,7 @@ id: idempotency
 title: Idempotency
 scale: integration
 category: resilience
+altitude: medium
 maturity: time-tested
 aka:
   - Safe Repeatability

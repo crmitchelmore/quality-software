@@ -2,7 +2,7 @@
 
 > Wrap a primitive value in a distinct type so the compiler and API signatures carry domain meaning instead of accepting interchangeable strings or numbers.
 
-**Scale:** implementation · **Category:** implementation · **Maturity:** established
+**Scale:** implementation · **Altitude:** low · **Category:** implementation · **Maturity:** established
 
 **Also known as:** Tiny Type, Domain Primitive
 

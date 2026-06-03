@@ -2,7 +2,7 @@
 
 > Validate, constrain, and sometimes repair model outputs before they reach users, tools, or durable state.
 
-**Scale:** design · **Category:** ai-ml · **Maturity:** cutting-edge
+**Scale:** design · **Altitude:** medium · **Category:** ai-ml · **Maturity:** cutting-edge
 
 ## Description
 

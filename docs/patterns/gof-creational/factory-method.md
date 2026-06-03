@@ -2,7 +2,7 @@
 
 > Defer object creation to a method that subclasses or collaborators can override, so clients depend on a product abstraction instead of concrete construction.
 
-**Scale:** design · **Category:** gof-creational · **Maturity:** time-tested
+**Scale:** design · **Altitude:** low · **Category:** gof-creational · **Maturity:** time-tested
 
 ## Description
 

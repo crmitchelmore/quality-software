@@ -2,7 +2,7 @@
 
 > Replace a legacy system incrementally by routing selected capabilities to new components until the old system is safely surrounded and retired.
 
-**Scale:** architectural · **Category:** architecture · **Maturity:** established
+**Scale:** architectural · **Altitude:** high · **Category:** architecture · **Maturity:** established
 
 **Also known as:** Strangler application, Incremental replacement
 

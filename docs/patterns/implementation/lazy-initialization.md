@@ -2,7 +2,7 @@
 
 > Delay creating an expensive value until the first time it is actually needed, then reuse the result for later calls.
 
-**Scale:** implementation · **Category:** implementation · **Maturity:** time-tested
+**Scale:** implementation · **Altitude:** low · **Category:** implementation · **Maturity:** time-tested
 
 **Also known as:** Lazy Loading, Deferred Initialization
 

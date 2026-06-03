@@ -2,6 +2,7 @@ id: front-controller
 title: Front Controller
 scale: design
 category: enterprise-application
+altitude: medium
 maturity: time-tested
 aka:
   - Application controller endpoint

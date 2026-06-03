@@ -5,6 +5,7 @@ aka:
   - Default deny
 scale: design
 category: security
+altitude: high
 maturity: time-tested
 short_description: >-
   Design APIs, configurations, and workflows so the easiest path is the safe path and insecure behaviour requires explicit, visible opt-in.

@@ -4,6 +4,7 @@ aka:
   - Structurally Shared Data Structure
 scale: design
 category: functional
+altitude: low
 maturity: time-tested
 short_description: >-
   Preserve previous versions of a collection after updates by sharing unchanged structure between versions.

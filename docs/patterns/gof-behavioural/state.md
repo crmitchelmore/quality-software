@@ -2,7 +2,7 @@
 
 > Represent each state of an object as a separate object so behaviour and allowed transitions vary with the current state without large conditional blocks.
 
-**Scale:** design · **Category:** gof-behavioural · **Maturity:** time-tested
+**Scale:** design · **Altitude:** low · **Category:** gof-behavioural · **Maturity:** time-tested
 
 **Also known as:** State Object
 

@@ -2,6 +2,7 @@ id: materialized-view
 title: Materialized View
 scale: data
 category: cloud-distributed
+altitude: medium
 maturity: time-tested
 short_description: >-
   Precompute and store a read-optimised projection of source data so expensive or

@@ -2,6 +2,7 @@ id: unit-of-work
 title: Unit of Work
 scale: data
 category: enterprise-application
+altitude: medium
 maturity: time-tested
 aka:
   - Transactional unit

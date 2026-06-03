@@ -5,6 +5,7 @@ aka:
   - Fluent API
 scale: implementation
 category: implementation
+altitude: low
 maturity: established
 short_description: >-
   Design method chains that read like a small domain language while progressively

@@ -2,6 +2,7 @@ id: identity-map
 title: Identity Map
 scale: data
 category: enterprise-application
+altitude: medium
 maturity: time-tested
 aka:
   - Session cache

@@ -2,6 +2,7 @@ id: choreography
 title: Choreography
 scale: integration
 category: cloud-distributed
+altitude: high
 maturity: established
 short_description: >-
   Coordinate a distributed workflow through events, where each participant reacts to

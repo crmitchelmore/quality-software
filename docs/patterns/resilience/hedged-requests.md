@@ -2,7 +2,7 @@
 
 > Send a duplicate request after a short delay and use the first successful response, reducing tail latency caused by straggling replicas.
 
-**Scale:** integration · **Category:** resilience · **Maturity:** established
+**Scale:** integration · **Altitude:** medium · **Category:** resilience · **Maturity:** established
 
 **Also known as:** Backup Requests, Request Hedging
 

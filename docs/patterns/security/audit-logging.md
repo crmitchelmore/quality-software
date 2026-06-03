@@ -2,7 +2,7 @@
 
 > Record security-relevant decisions and state changes with enough integrity and context to support detection, investigation, and accountability.
 
-**Scale:** design · **Category:** security · **Maturity:** time-tested
+**Scale:** design · **Altitude:** medium · **Category:** security · **Maturity:** time-tested
 
 **Also known as:** Security audit trail
 

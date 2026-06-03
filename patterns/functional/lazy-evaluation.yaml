@@ -5,6 +5,7 @@ aka:
   - Deferred Evaluation
 scale: implementation
 category: functional
+altitude: low
 maturity: time-tested
 short_description: >-
   Delay computing a value until it is demanded, and often compute it at most once.

@@ -2,7 +2,7 @@
 
 > Split a frontend into independently owned, built and deployed slices that compose into one user experience at runtime or build time.
 
-**Scale:** architectural · **Category:** frontend · **Maturity:** established
+**Scale:** architectural · **Altitude:** high · **Category:** frontend · **Maturity:** established
 
 **Also known as:** Frontend Microservices
 

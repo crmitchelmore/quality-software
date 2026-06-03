@@ -5,6 +5,7 @@ aka:
   - Hollywood Principle
 scale: design
 category: implementation
+altitude: low
 maturity: time-tested
 short_description: >-
   Let a framework, runtime, or composition root call application code at defined

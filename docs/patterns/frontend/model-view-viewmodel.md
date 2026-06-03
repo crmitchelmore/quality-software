@@ -2,7 +2,7 @@
 
 > Bind a view to a view model that exposes display-ready state and commands while shielding the view from domain model and service details.
 
-**Scale:** frontend · **Category:** frontend · **Maturity:** time-tested
+**Scale:** frontend · **Altitude:** medium · **Category:** frontend · **Maturity:** time-tested
 
 **Also known as:** MVVM
 

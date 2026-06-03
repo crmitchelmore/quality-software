@@ -4,6 +4,7 @@ aka:
   - Synchronized Object
 scale: concurrency
 category: concurrency
+altitude: low
 maturity: time-tested
 short_description: >-
   Encapsulate shared mutable state inside an object whose methods acquire a mutual-exclusion lock and coordinate condition waits internally.

@@ -5,6 +5,7 @@ aka:
   - Function Factory
 scale: implementation
 category: functional
+altitude: low
 maturity: time-tested
 short_description: >-
   Accept functions as inputs or return functions as outputs to parameterise behaviour without inheritance or conditionals.

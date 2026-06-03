@@ -5,6 +5,7 @@ aka:
   - Read-only object
 scale: design
 category: concurrency
+altitude: low
 maturity: time-tested
 short_description: >-
   Represent state with objects whose observable values cannot change after construction, making them inherently safe to share between concurrent readers.

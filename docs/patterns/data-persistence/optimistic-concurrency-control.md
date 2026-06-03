@@ -2,7 +2,7 @@
 
 > Detect conflicting updates with versions, timestamps, or compare-and-swap conditions instead of locking records for long workflows.
 
-**Scale:** data · **Category:** data-persistence · **Maturity:** time-tested
+**Scale:** data · **Altitude:** medium · **Category:** data-persistence · **Maturity:** time-tested
 
 ## Description
 

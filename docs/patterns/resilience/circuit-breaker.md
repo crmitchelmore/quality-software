@@ -2,7 +2,7 @@
 
 > Wrap calls to a failing remote dependency so that, after a failure threshold, calls are short-circuited for a cool-down period, protecting the caller and giving the dependency time to recover.
 
-**Scale:** integration · **Category:** resilience · **Maturity:** time-tested
+**Scale:** integration · **Altitude:** medium · **Category:** resilience · **Maturity:** time-tested
 
 ## Description
 

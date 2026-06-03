@@ -2,7 +2,7 @@
 
 > Define the invariant skeleton of an algorithm in a base type while allowing subclasses to override selected steps.
 
-**Scale:** design · **Category:** gof-behavioural · **Maturity:** time-tested
+**Scale:** design · **Altitude:** low · **Category:** gof-behavioural · **Maturity:** time-tested
 
 **Also known as:** Skeleton Method
 

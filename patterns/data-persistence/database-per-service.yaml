@@ -2,6 +2,7 @@ id: database-per-service
 title: Database per Service
 scale: data
 category: data-persistence
+altitude: high
 maturity: established
 short_description: >-
   Each independently deployable service owns its durable store and exposes state through APIs or events, not shared tables.

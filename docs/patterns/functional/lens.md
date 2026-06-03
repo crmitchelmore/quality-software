@@ -2,7 +2,7 @@
 
 > Focus on a nested part of immutable data with composable get and set/update operations.
 
-**Scale:** design · **Category:** functional · **Maturity:** established
+**Scale:** design · **Altitude:** low · **Category:** functional · **Maturity:** established
 
 **Also known as:** Functional Optic
 

@@ -4,6 +4,7 @@ aka:
   - Testing pyramid
 scale: organisational
 category: testing
+altitude: medium
 maturity: established
 short_description: >-
   Balance the test suite with many fast low-level tests, fewer service/integration tests, and a small number of slow end-to-end journeys.

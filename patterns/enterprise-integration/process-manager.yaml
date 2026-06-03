@@ -2,6 +2,7 @@ id: process-manager
 title: Process Manager
 scale: integration
 category: enterprise-integration
+altitude: medium
 maturity: time-tested
 short_description: >-
   Maintain the state of a long-running integration process and decide which command or message should be sent next as events arrive.

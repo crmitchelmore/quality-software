@@ -2,7 +2,7 @@
 
 > Model state as values that are not changed in place; every update returns a new value preserving the old one.
 
-**Scale:** design · **Category:** functional · **Maturity:** time-tested
+**Scale:** design · **Altitude:** low · **Category:** functional · **Maturity:** time-tested
 
 **Also known as:** Immutable State, Value-Oriented Design
 

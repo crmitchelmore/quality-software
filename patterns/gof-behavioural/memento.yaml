@@ -5,6 +5,7 @@ aka:
   - Restore Point
 scale: design
 category: gof-behavioural
+altitude: low
 maturity: time-tested
 short_description: >-
   Capture an object's internal state as an opaque snapshot so it can be restored

@@ -2,6 +2,7 @@ id: gateway
 title: Gateway
 scale: integration
 category: enterprise-application
+altitude: medium
 maturity: time-tested
 short_description: >-
   Encapsulate access to an external system or resource behind a narrow object that hides protocol, SDK, authentication, and error-handling details.

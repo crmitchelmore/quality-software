@@ -2,6 +2,7 @@ id: agent-orchestration
 title: Agent Orchestration
 scale: architectural
 category: ai-ml
+altitude: high
 maturity: emerging
 short_description: >-
   Coordinate LLM-driven agents, tools, memory, approvals, and termination policies so autonomous workflows remain bounded and observable.

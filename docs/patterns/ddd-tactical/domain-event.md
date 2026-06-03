@@ -2,7 +2,7 @@
 
 > Capture a business-significant occurrence as an immutable fact so other parts of the domain can react without coupling to the initiating object.
 
-**Scale:** design · **Category:** ddd-tactical · **Maturity:** time-tested
+**Scale:** design · **Altitude:** medium · **Category:** ddd-tactical · **Maturity:** time-tested
 
 ## Description
 

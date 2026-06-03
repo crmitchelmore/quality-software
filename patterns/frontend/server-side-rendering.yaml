@@ -4,6 +4,7 @@ aka:
   - SSR
 scale: frontend
 category: frontend
+altitude: high
 maturity: time-tested
 short_description: >-
   Render initial HTML on the server so users and crawlers receive meaningful content before client-side JavaScript hydrates interactivity.

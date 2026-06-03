@@ -4,6 +4,7 @@ aka:
   - Fast Failure
 scale: implementation
 category: implementation
+altitude: low
 maturity: time-tested
 short_description: >-
   Detect invalid state, bad input, or missing configuration immediately and stop at

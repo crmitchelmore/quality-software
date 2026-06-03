@@ -4,6 +4,7 @@ aka:
   - Introduce Parameter Object
 scale: implementation
 category: implementation
+altitude: low
 maturity: time-tested
 short_description: >-
   Replace repeated groups of related parameters with a named object that carries the

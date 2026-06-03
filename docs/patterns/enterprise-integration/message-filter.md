@@ -2,7 +2,7 @@
 
 > Remove messages from a flow when they are irrelevant, invalid, duplicate, unauthorised, or outside a consumer's declared interest.
 
-**Scale:** integration · **Category:** enterprise-integration · **Maturity:** time-tested
+**Scale:** integration · **Altitude:** medium · **Category:** enterprise-integration · **Maturity:** time-tested
 
 ## Description
 

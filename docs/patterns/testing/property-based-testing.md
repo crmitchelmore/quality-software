@@ -2,7 +2,7 @@
 
 > Generate many inputs and assert general properties that must always hold, revealing edge cases example-based tests miss.
 
-**Scale:** implementation · **Category:** testing · **Maturity:** established
+**Scale:** implementation · **Altitude:** low · **Category:** testing · **Maturity:** established
 
 **Also known as:** Generative testing, QuickCheck-style testing
 

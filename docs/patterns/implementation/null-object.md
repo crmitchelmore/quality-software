@@ -2,7 +2,7 @@
 
 > Replace absent collaborators with an object that implements the same interface and performs safe default behaviour, removing repetitive null checks from clients.
 
-**Scale:** design · **Category:** implementation · **Maturity:** time-tested
+**Scale:** design · **Altitude:** low · **Category:** implementation · **Maturity:** time-tested
 
 **Also known as:** Null Object Pattern, Do-Nothing Object
 

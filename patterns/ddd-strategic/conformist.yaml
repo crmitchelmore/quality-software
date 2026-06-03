@@ -2,6 +2,7 @@ id: conformist
 title: Conformist
 scale: organisational
 category: ddd-strategic
+altitude: high
 maturity: time-tested
 short_description: >-
   Deliberately adopt an upstream model as-is when the downstream team has little influence and translation would cost more than conformity.

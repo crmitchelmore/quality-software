@@ -11,6 +11,12 @@ scales:
   - frontend        # UI/client structural patterns
   - organisational  # team/process-shaped patterns
 
+# Scope of application — independent of the thematic `scale` above.
+altitudes:
+  - low             # method / class / file        (e.g. Strategy, Factory, Builder)
+  - medium          # component / service          (e.g. Repository, CQRS, Event-Driven)
+  - high            # application / platform        (e.g. Microservices, Event Sourcing, Hexagonal)
+
 categories:
   - gof-creational
   - gof-structural

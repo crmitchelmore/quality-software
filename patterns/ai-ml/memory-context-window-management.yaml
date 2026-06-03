@@ -2,6 +2,7 @@ id: memory-context-window-management
 title: Memory & Context-Window Management
 scale: design
 category: ai-ml
+altitude: medium
 maturity: emerging
 short_description: >-
   Select, summarise, evict, and persist context deliberately so LLM workflows stay relevant, private, and within token limits.

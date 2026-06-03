@@ -2,7 +2,7 @@
 
 > Track all object changes made during a business transaction and write them as one atomic commit.
 
-**Scale:** data · **Category:** enterprise-application · **Maturity:** time-tested
+**Scale:** data · **Altitude:** medium · **Category:** enterprise-application · **Maturity:** time-tested
 
 **Also known as:** Transactional unit, Change set
 

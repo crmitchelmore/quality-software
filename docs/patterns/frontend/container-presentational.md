@@ -2,7 +2,7 @@
 
 > Split UI components that fetch, subscribe or mutate state from components that only render a view from explicit inputs and callbacks.
 
-**Scale:** frontend · **Category:** frontend · **Maturity:** established
+**Scale:** frontend · **Altitude:** low · **Category:** frontend · **Maturity:** established
 
 **Also known as:** Smart and Dumb Components, Connected and Pure Components
 

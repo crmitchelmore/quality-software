@@ -2,7 +2,7 @@
 
 > Represent success or failure as a value, carrying either the successful result or typed error information.
 
-**Scale:** design · **Category:** functional · **Maturity:** time-tested
+**Scale:** design · **Altitude:** low · **Category:** functional · **Maturity:** time-tested
 
 **Also known as:** Result Type, Either Type, Expected
 

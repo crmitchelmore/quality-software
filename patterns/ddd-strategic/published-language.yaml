@@ -2,6 +2,7 @@ id: published-language
 title: Published Language
 scale: integration
 category: ddd-strategic
+altitude: high
 maturity: time-tested
 short_description: >-
   Define a stable, documented language of messages or representations that bounded contexts use to integrate without sharing internal models.

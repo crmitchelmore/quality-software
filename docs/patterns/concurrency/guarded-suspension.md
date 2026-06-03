@@ -2,7 +2,7 @@
 
 > Suspend a thread inside a synchronised object until a guarded condition becomes true, then proceed while the condition is protected.
 
-**Scale:** concurrency · **Category:** concurrency · **Maturity:** time-tested
+**Scale:** concurrency · **Altitude:** low · **Category:** concurrency · **Maturity:** time-tested
 
 **Also known as:** Wait Until Predicate
 

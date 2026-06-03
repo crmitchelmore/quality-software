@@ -2,6 +2,7 @@ id: wire-tap
 title: Wire Tap
 scale: integration
 category: enterprise-integration
+altitude: low
 maturity: time-tested
 short_description: >-
   Copy messages from a channel to a secondary destination for observation, audit or analytics without changing the primary route.

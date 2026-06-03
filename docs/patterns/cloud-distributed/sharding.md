@@ -2,7 +2,7 @@
 
 > Split one logical dataset across multiple storage partitions by a stable shard key, so write load, storage volume, and tenant isolation scale beyond a single database.
 
-**Scale:** data · **Category:** cloud-distributed · **Maturity:** time-tested
+**Scale:** data · **Altitude:** high · **Category:** cloud-distributed · **Maturity:** time-tested
 
 ## Description
 

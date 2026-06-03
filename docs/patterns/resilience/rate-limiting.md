@@ -2,7 +2,7 @@
 
 > Control how many requests a client, tenant or workload may perform in a time window, protecting shared capacity and enforcing fair use.
 
-**Scale:** integration · **Category:** resilience · **Maturity:** time-tested
+**Scale:** integration · **Altitude:** medium · **Category:** resilience · **Maturity:** time-tested
 
 **Also known as:** Token Bucket, Quota Enforcement
 

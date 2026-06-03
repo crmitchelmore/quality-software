@@ -2,7 +2,7 @@
 
 > Make message handling safe under duplicate delivery by detecting repeated message or operation identifiers before applying side effects.
 
-**Scale:** integration · **Category:** enterprise-integration · **Maturity:** time-tested
+**Scale:** integration · **Altitude:** medium · **Category:** enterprise-integration · **Maturity:** time-tested
 
 ## Description
 

@@ -2,6 +2,7 @@ id: pessimistic-offline-lock
 title: Pessimistic Offline Lock
 scale: data
 category: enterprise-application
+altitude: medium
 maturity: time-tested
 short_description: >-
   Prevent conflicting business transactions by acquiring an application-level lock before a user starts a long-running edit.

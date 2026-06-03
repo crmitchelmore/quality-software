@@ -2,7 +2,7 @@
 
 > Share a deliberately small, jointly owned subset of model or code between bounded contexts when divergence would be more costly than coordination.
 
-**Scale:** organisational · **Category:** ddd-strategic · **Maturity:** time-tested
+**Scale:** organisational · **Altitude:** high · **Category:** ddd-strategic · **Maturity:** time-tested
 
 ## Description
 

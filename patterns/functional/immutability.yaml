@@ -5,6 +5,7 @@ aka:
   - Value-Oriented Design
 scale: design
 category: functional
+altitude: low
 maturity: time-tested
 short_description: >-
   Model state as values that are not changed in place; every update returns a new value preserving the old one.

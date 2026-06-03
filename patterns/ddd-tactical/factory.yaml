@@ -2,6 +2,7 @@ id: factory
 title: Factory (DDD)
 scale: design
 category: ddd-tactical
+altitude: low
 maturity: time-tested
 short_description: >-
   Encapsulate complex creation of aggregates or value objects so newly created domain objects are valid and intention-revealing from the start.

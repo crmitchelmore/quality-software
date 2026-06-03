@@ -2,6 +2,7 @@ id: repository
 title: Repository
 scale: design
 category: data-persistence
+altitude: medium
 maturity: time-tested
 short_description: >-
   Mediate between the domain and data mapping layers using a collection-like

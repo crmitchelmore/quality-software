@@ -2,7 +2,7 @@
 
 > Demultiplex readiness events from many I/O handles and dispatch each ready event to a short, non-blocking handler on one or more event-loop threads.
 
-**Scale:** concurrency · **Category:** concurrency · **Maturity:** time-tested
+**Scale:** concurrency · **Altitude:** medium · **Category:** concurrency · **Maturity:** time-tested
 
 **Also known as:** Event demultiplexer, Non-blocking event loop
 

@@ -2,6 +2,7 @@ id: cache-aside
 title: Cache-Aside
 scale: data
 category: cloud-distributed
+altitude: medium
 maturity: time-tested
 short_description: >-
   Let application code read through a cache on misses and explicitly invalidate or

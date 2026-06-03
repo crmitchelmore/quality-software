@@ -2,6 +2,7 @@ id: client-server
 title: Client-Server
 scale: architectural
 category: architecture
+altitude: high
 maturity: time-tested
 short_description: >-
   Split responsibilities between clients that initiate requests and servers that

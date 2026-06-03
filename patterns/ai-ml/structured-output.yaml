@@ -2,6 +2,7 @@ id: structured-output
 title: Structured Output (Schema-Constrained Generation)
 scale: implementation
 category: ai-ml
+altitude: low
 maturity: cutting-edge
 short_description: >-
   Make the model return data that conforms to a declared schema, such as JSON Schema or a typed object, instead of free-form prose.

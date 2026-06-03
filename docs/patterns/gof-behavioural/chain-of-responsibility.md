@@ -2,7 +2,7 @@
 
 > Pass a request along an ordered chain of handlers until one handles it or all have declined, decoupling the sender from the concrete receiver.
 
-**Scale:** design · **Category:** gof-behavioural · **Maturity:** time-tested
+**Scale:** design · **Altitude:** low · **Category:** gof-behavioural · **Maturity:** time-tested
 
 **Also known as:** Chain of Command
 

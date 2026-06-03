@@ -4,6 +4,7 @@ aka:
   - Worker Pool
 scale: concurrency
 category: concurrency
+altitude: low
 maturity: time-tested
 short_description: >-
   Execute many independent tasks using a bounded set of reusable worker threads rather than creating one thread per task.

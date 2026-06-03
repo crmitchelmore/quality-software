@@ -2,6 +2,7 @@ id: registry
 title: Registry
 scale: design
 category: enterprise-application
+altitude: medium
 maturity: time-tested
 short_description: >-
   Provide a well-known object for locating shared services or configuration when passing every dependency explicitly is impractical.

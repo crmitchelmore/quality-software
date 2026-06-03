@@ -2,7 +2,7 @@
 
 > Move common edge responsibilities such as TLS termination, authentication, rate limiting, caching, and compression from services into a gateway.
 
-**Scale:** integration · **Category:** cloud-distributed · **Maturity:** established
+**Scale:** integration · **Altitude:** high · **Category:** cloud-distributed · **Maturity:** established
 
 ## Description
 

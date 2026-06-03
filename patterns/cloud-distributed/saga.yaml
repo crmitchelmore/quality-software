@@ -2,6 +2,7 @@ id: saga
 title: Saga
 scale: integration
 category: cloud-distributed
+altitude: high
 maturity: time-tested
 short_description: >-
   Manage a long-running distributed transaction as a sequence of local transactions,

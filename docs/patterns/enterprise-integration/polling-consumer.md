@@ -2,7 +2,7 @@
 
 > Let a receiver control when it checks a channel for work, trading latency for predictable resource use and simpler scheduling.
 
-**Scale:** integration · **Category:** enterprise-integration · **Maturity:** time-tested
+**Scale:** integration · **Altitude:** medium · **Category:** enterprise-integration · **Maturity:** time-tested
 
 ## Description
 

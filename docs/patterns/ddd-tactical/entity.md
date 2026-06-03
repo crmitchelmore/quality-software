@@ -2,7 +2,7 @@
 
 > Model a domain concept whose identity and lifecycle matter more than its attributes. Entities protect invariants around identity, behaviour, and state transitions.
 
-**Scale:** design · **Category:** ddd-tactical · **Maturity:** time-tested
+**Scale:** design · **Altitude:** low · **Category:** ddd-tactical · **Maturity:** time-tested
 
 ## Description
 

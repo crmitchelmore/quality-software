@@ -2,6 +2,7 @@ id: routing-slip
 title: Routing Slip
 scale: integration
 category: enterprise-integration
+altitude: medium
 maturity: time-tested
 short_description: >-
   Attach a dynamic itinerary to a message so each processing step sends it to the next endpoint listed on the slip.

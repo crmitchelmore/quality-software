@@ -5,6 +5,7 @@ aka:
   - Bulkheaded cells
 scale: architectural
 category: architecture
+altitude: high
 maturity: established
 short_description: >-
   Partition a platform into self-contained cells so each cell serves a subset of

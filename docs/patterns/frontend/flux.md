@@ -2,7 +2,7 @@
 
 > Organise UI state changes as a one-way flow from actions through a dispatcher into stores, with views observing store updates.
 
-**Scale:** frontend · **Category:** frontend · **Maturity:** established
+**Scale:** frontend · **Altitude:** medium · **Category:** frontend · **Maturity:** established
 
 ## Description
 

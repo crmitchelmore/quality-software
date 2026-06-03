@@ -2,7 +2,7 @@
 
 > Let nodes act as both clients and servers, sharing resources directly without a permanently central coordinator for every interaction.
 
-**Scale:** architectural · **Category:** architecture · **Maturity:** established
+**Scale:** architectural · **Altitude:** high · **Category:** architecture · **Maturity:** established
 
 **Also known as:** P2P
 

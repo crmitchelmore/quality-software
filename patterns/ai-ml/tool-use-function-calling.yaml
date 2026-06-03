@@ -2,6 +2,7 @@ id: tool-use-function-calling
 title: Tool Use / Function Calling
 scale: integration
 category: ai-ml
+altitude: low
 maturity: cutting-edge
 short_description: >-
   Expose typed, permissioned functions to an LLM so it can request external actions through controlled contracts rather than free-form text.

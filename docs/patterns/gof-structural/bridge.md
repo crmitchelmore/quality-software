@@ -2,7 +2,7 @@
 
 > Split an abstraction from its implementation hierarchy so both can vary independently without an explosion of subclasses.
 
-**Scale:** design · **Category:** gof-structural · **Maturity:** time-tested
+**Scale:** design · **Altitude:** low · **Category:** gof-structural · **Maturity:** time-tested
 
 ## Description
 

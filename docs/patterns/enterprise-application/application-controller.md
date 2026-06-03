@@ -2,7 +2,7 @@
 
 > Centralise navigation and use-case flow decisions in an application-level object, keeping page, endpoint, or UI handlers focused on request parsing and response rendering.
 
-**Scale:** design · **Category:** enterprise-application · **Maturity:** time-tested
+**Scale:** design · **Altitude:** medium · **Category:** enterprise-application · **Maturity:** time-tested
 
 ## Description
 

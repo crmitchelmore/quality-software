@@ -6,6 +6,7 @@ aka:
   - Scale Unit
 scale: architectural
 category: cloud-distributed
+altitude: high
 maturity: established
 short_description: >-
   Replicate a complete slice of application infrastructure as many isolated stamps,

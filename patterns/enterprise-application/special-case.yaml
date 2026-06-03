@@ -2,6 +2,7 @@ id: special-case
 title: Special Case
 scale: design
 category: enterprise-application
+altitude: low
 maturity: time-tested
 short_description: >-
   Represent exceptional or boundary cases with objects that obey the normal interface, reducing scattered null checks and exceptional branches.

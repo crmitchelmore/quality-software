@@ -2,7 +2,7 @@
 
 > Partition execution resources so one slow or failing dependency cannot consume every thread, connection, queue slot or worker needed by the rest of the system.
 
-**Scale:** integration · **Category:** resilience · **Maturity:** time-tested
+**Scale:** integration · **Altitude:** medium · **Category:** resilience · **Maturity:** time-tested
 
 **Also known as:** Resource Partitioning, Isolation Pool
 

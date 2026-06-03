@@ -5,6 +5,7 @@ aka:
   - Component-Oriented UI
 scale: frontend
 category: frontend
+altitude: medium
 maturity: established
 short_description: >-
   Build interfaces from encapsulated, composable units that own their rendering contract and, where appropriate, local behaviour.

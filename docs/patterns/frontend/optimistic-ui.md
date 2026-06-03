@@ -2,7 +2,7 @@
 
 > Update the interface immediately as if an operation will succeed, then reconcile, confirm or roll back when the server responds.
 
-**Scale:** frontend · **Category:** frontend · **Maturity:** established
+**Scale:** frontend · **Altitude:** low · **Category:** frontend · **Maturity:** established
 
 ## Description
 

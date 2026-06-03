@@ -2,7 +2,7 @@
 
 > Split responsibilities between clients that initiate requests and servers that provide shared capabilities, data, policy, and coordination.
 
-**Scale:** architectural · **Category:** architecture · **Maturity:** time-tested
+**Scale:** architectural · **Altitude:** high · **Category:** architecture · **Maturity:** time-tested
 
 ## Description
 

@@ -2,7 +2,7 @@
 
 > Expose coarse-grained business capabilities as reusable services coordinated through stable contracts, often with shared integration infrastructure and enterprise governance.
 
-**Scale:** architectural · **Category:** architecture · **Maturity:** time-tested
+**Scale:** architectural · **Altitude:** high · **Category:** architecture · **Maturity:** time-tested
 
 **Also known as:** SOA
 

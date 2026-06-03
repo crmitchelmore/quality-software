@@ -2,7 +2,7 @@
 
 > Register a consumer that is invoked when messages arrive, reducing latency and letting the messaging infrastructure drive delivery.
 
-**Scale:** integration · **Category:** enterprise-integration · **Maturity:** time-tested
+**Scale:** integration · **Altitude:** medium · **Category:** enterprise-integration · **Maturity:** time-tested
 
 **Also known as:** Message-Driven Consumer
 

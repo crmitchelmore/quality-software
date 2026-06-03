@@ -2,6 +2,7 @@ id: etag-conditional-request
 title: ETag / Conditional Request
 scale: integration
 category: api-design
+altitude: medium
 maturity: time-tested
 short_description: >-
   Use entity tags with If-None-Match or If-Match headers to validate cached representations and prevent lost updates over HTTP.

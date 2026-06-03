@@ -2,6 +2,7 @@ id: event-driven-consumer
 title: Event-Driven Consumer
 scale: integration
 category: enterprise-integration
+altitude: medium
 maturity: time-tested
 aka:
   - Message-Driven Consumer

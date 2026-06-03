@@ -52,6 +52,7 @@ function main(): void {
 
     check(errors, where, "scale", [p.scale], vocab.scales);
     check(errors, where, "category", [p.category], vocab.categories);
+    check(errors, where, "altitude", [p.altitude], vocab.altitudes);
     check(errors, where, "maturity", [p.maturity], vocab.maturity);
     check(errors, where, "languages", p.languages, vocab.languages);
     check(errors, where, "frameworks", p.frameworks, vocab.frameworks);

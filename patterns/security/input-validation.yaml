@@ -5,6 +5,7 @@ aka:
   - Allow-list validation
 scale: implementation
 category: security
+altitude: low
 maturity: time-tested
 short_description: >-
   Accept only inputs that match known-good shape, type, range, and business rules before they reach sensitive processing.

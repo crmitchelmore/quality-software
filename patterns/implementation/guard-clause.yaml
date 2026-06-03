@@ -5,6 +5,7 @@ aka:
   - Bouncer Pattern
 scale: implementation
 category: implementation
+altitude: low
 maturity: time-tested
 short_description: >-
   Handle preconditions and edge cases up front with early returns, so the main

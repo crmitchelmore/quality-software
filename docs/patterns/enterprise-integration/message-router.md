@@ -2,7 +2,7 @@
 
 > Consume a message from one channel and forward it to one or more output channels without changing the message's essential meaning.
 
-**Scale:** integration · **Category:** enterprise-integration · **Maturity:** time-tested
+**Scale:** integration · **Altitude:** medium · **Category:** enterprise-integration · **Maturity:** time-tested
 
 ## Description
 

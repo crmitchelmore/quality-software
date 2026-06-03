@@ -4,6 +4,7 @@ aka:
   - Given-When-Then at test level
 scale: implementation
 category: testing
+altitude: low
 maturity: time-tested
 short_description: >-
   Structure each test into setup, one behaviour trigger, and observable assertions so the reader can see cause and effect immediately.

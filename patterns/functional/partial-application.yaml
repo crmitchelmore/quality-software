@@ -4,6 +4,7 @@ aka:
   - Argument Binding
 scale: implementation
 category: functional
+altitude: low
 maturity: time-tested
 short_description: >-
   Create a new function by fixing some arguments of an existing function, leaving the remaining arguments to be supplied later.

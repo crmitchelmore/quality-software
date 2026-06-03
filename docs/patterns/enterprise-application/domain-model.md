@@ -2,7 +2,7 @@
 
 > Represent business concepts as objects with behaviour, invariants, and relationships rather than as passive records.
 
-**Scale:** design · **Category:** enterprise-application · **Maturity:** time-tested
+**Scale:** design · **Altitude:** medium · **Category:** enterprise-application · **Maturity:** time-tested
 
 **Also known as:** Rich domain model, Object model
 

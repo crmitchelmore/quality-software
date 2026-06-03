@@ -2,6 +2,7 @@ id: prototype
 title: Prototype
 scale: design
 category: gof-creational
+altitude: low
 maturity: time-tested
 short_description: >-
   Create new objects by copying a configured exemplar, preserving expensive or intricate setup while varying only the changed parts.

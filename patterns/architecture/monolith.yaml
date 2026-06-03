@@ -4,6 +4,7 @@ aka:
   - Single Deployable Application
 scale: architectural
 category: architecture
+altitude: high
 maturity: time-tested
 short_description: >-
   Build and deploy the application as one process or tightly coupled unit, centralising code, data access, and release management for operational simplicity.

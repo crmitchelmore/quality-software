@@ -2,6 +2,7 @@ id: claim-check
 title: Claim Check
 scale: integration
 category: cloud-distributed
+altitude: medium
 maturity: time-tested
 short_description: >-
   Store a large payload externally and send only a lightweight reference through

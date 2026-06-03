@@ -2,6 +2,7 @@ id: proxy
 title: Proxy
 scale: design
 category: gof-structural
+altitude: low
 maturity: time-tested
 short_description: >-
   Stand in for another object behind the same interface to control access, defer work, add protection, or represent a remote resource.

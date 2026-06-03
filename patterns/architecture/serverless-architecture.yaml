@@ -5,6 +5,7 @@ aka:
   - Event-driven serverless
 scale: architectural
 category: architecture
+altitude: high
 maturity: established
 short_description: >-
   Compose managed functions, events, and cloud services so teams ship behaviour

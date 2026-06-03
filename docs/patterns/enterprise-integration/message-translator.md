@@ -2,7 +2,7 @@
 
 > Convert messages between the data model, schema, protocol, or vocabulary expected by different applications while preserving business meaning.
 
-**Scale:** integration · **Category:** enterprise-integration · **Maturity:** time-tested
+**Scale:** integration · **Altitude:** medium · **Category:** enterprise-integration · **Maturity:** time-tested
 
 ## Description
 

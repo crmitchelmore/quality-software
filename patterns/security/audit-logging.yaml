@@ -4,6 +4,7 @@ aka:
   - Security audit trail
 scale: design
 category: security
+altitude: medium
 maturity: time-tested
 short_description: >-
   Record security-relevant decisions and state changes with enough integrity and context to support detection, investigation, and accountability.

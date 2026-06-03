@@ -2,7 +2,7 @@
 
 > Define an interface in one package or layer while implementations live elsewhere, allowing clients to depend on a stable contract rather than concrete infrastructure.
 
-**Scale:** design · **Category:** enterprise-application · **Maturity:** time-tested
+**Scale:** design · **Altitude:** low · **Category:** enterprise-application · **Maturity:** time-tested
 
 ## Description
 

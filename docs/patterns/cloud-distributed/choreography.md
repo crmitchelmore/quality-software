@@ -2,7 +2,7 @@
 
 > Coordinate a distributed workflow through events, where each participant reacts to facts it owns instead of being commanded by a central orchestrator.
 
-**Scale:** integration · **Category:** cloud-distributed · **Maturity:** established
+**Scale:** integration · **Altitude:** high · **Category:** cloud-distributed · **Maturity:** established
 
 ## Description
 

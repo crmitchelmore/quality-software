@@ -2,6 +2,7 @@ id: problem-details
 title: Problem Details (RFC 7807 Errors)
 scale: integration
 category: api-design
+altitude: medium
 maturity: established
 short_description: >-
   Return machine-readable HTTP error bodies with standard fields such as type, title, status, detail, and instance.

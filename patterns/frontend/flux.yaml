@@ -2,6 +2,7 @@ id: flux
 title: Flux
 scale: frontend
 category: frontend
+altitude: medium
 maturity: established
 short_description: >-
   Organise UI state changes as a one-way flow from actions through a dispatcher into stores, with views observing store updates.

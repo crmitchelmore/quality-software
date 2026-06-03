@@ -2,7 +2,7 @@
 
 > Structure the application as concentric rings around a domain model, with dependencies pointing inward and infrastructure pushed to the outer shell.
 
-**Scale:** architectural · **Category:** architecture · **Maturity:** established
+**Scale:** architectural · **Altitude:** high · **Category:** architecture · **Maturity:** established
 
 **Also known as:** Domain-Centred Architecture
 

@@ -4,6 +4,7 @@ aka:
   - Resource Pool
 scale: design
 category: implementation
+altitude: low
 maturity: established
 short_description: >-
   Reuse a bounded set of expensive objects instead of creating and destroying them

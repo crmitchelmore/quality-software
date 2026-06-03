@@ -5,6 +5,7 @@ aka:
   - Listener
 scale: design
 category: gof-behavioural
+altitude: low
 maturity: time-tested
 short_description: >-
   Let interested observers subscribe to state changes in a subject so the subject

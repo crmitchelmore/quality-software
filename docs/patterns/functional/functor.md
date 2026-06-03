@@ -2,7 +2,7 @@
 
 > Provide a lawful map operation that transforms values inside a context without changing the context shape.
 
-**Scale:** design · **Category:** functional · **Maturity:** time-tested
+**Scale:** design · **Altitude:** low · **Category:** functional · **Maturity:** time-tested
 
 **Also known as:** Mappable Context
 

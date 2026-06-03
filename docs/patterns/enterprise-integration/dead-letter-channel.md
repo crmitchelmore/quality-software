@@ -2,7 +2,7 @@
 
 > Route messages that cannot be delivered or processed after bounded attempts to a separate, observable channel for diagnosis and recovery.
 
-**Scale:** integration · **Category:** enterprise-integration · **Maturity:** time-tested
+**Scale:** integration · **Altitude:** medium · **Category:** enterprise-integration · **Maturity:** time-tested
 
 ## Description
 

@@ -4,6 +4,7 @@ aka:
   - Client-specific backend
 scale: architectural
 category: architecture
+altitude: high
 maturity: established
 short_description: >-
   Create a backend tailored to one frontend or channel so the client receives

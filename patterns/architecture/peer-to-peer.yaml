@@ -4,6 +4,7 @@ aka:
   - P2P
 scale: architectural
 category: architecture
+altitude: high
 maturity: established
 short_description: >-
   Let nodes act as both clients and servers, sharing resources directly without a

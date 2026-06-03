@@ -2,6 +2,7 @@ id: active-record
 title: Active Record
 scale: data
 category: enterprise-application
+altitude: medium
 maturity: time-tested
 aka:
   - Record object

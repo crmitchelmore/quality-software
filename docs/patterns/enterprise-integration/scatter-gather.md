@@ -2,7 +2,7 @@
 
 > Send a request to multiple recipients in parallel, collect the responses, and continue with a combined, best, quorum, or first-success result.
 
-**Scale:** integration · **Category:** enterprise-integration · **Maturity:** time-tested
+**Scale:** integration · **Altitude:** medium · **Category:** enterprise-integration · **Maturity:** time-tested
 
 ## Description
 

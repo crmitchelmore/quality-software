@@ -4,6 +4,7 @@ aka:
   - Abstract Syntax Tree Interpreter
 scale: design
 category: gof-behavioural
+altitude: low
 maturity: time-tested
 short_description: >-
   Represent a small language grammar as composable expression objects and evaluate

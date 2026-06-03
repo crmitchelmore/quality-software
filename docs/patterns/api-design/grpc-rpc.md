@@ -2,7 +2,7 @@
 
 > Define strongly typed service operations and messages, commonly over HTTP/2 with Protocol Buffers, for internal calls and streaming.
 
-**Scale:** integration · **Category:** api-design · **Maturity:** established
+**Scale:** integration · **Altitude:** medium · **Category:** api-design · **Maturity:** established
 
 ## Description
 

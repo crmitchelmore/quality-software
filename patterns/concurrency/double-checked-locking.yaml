@@ -4,6 +4,7 @@ aka:
   - DCL
 scale: concurrency
 category: concurrency
+altitude: low
 maturity: established
 short_description: >-
   Lazily initialise a shared object by checking before and after acquiring a lock, using the language's safe-publication rules to avoid partially constructed reads.

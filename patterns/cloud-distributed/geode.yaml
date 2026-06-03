@@ -5,6 +5,7 @@ aka:
   - Active-Active Regions
 scale: architectural
 category: cloud-distributed
+altitude: high
 maturity: established
 short_description: >-
   Deploy a service in multiple geographic regions as cooperating active units so users

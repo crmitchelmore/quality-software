@@ -2,6 +2,7 @@ id: sidecar
 title: Sidecar
 scale: architectural
 category: cloud-distributed
+altitude: medium
 maturity: established
 short_description: >-
   Attach a helper process or container to an application instance so cross-cutting

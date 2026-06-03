@@ -2,7 +2,7 @@
 
 > Capture the current output of complex behaviour as an approved reference, then fail future tests when output changes unexpectedly.
 
-**Scale:** implementation · **Category:** testing · **Maturity:** established
+**Scale:** implementation · **Altitude:** low · **Category:** testing · **Maturity:** established
 
 **Also known as:** Approval testing, Snapshot testing
 

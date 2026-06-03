@@ -2,7 +2,7 @@
 
 > Decompose a complex LLM task into explicit, typed steps where each prompt consumes the previous step's checked output.
 
-**Scale:** design · **Category:** ai-ml · **Maturity:** cutting-edge
+**Scale:** design · **Altitude:** medium · **Category:** ai-ml · **Maturity:** cutting-edge
 
 ## Description
 

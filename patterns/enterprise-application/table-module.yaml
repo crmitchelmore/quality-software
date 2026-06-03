@@ -2,6 +2,7 @@ id: table-module
 title: Table Module
 scale: design
 category: enterprise-application
+altitude: medium
 maturity: time-tested
 aka:
   - Table-oriented domain logic

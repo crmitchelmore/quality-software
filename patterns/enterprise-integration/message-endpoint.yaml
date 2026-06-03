@@ -2,6 +2,7 @@ id: message-endpoint
 title: Message Endpoint
 scale: integration
 category: enterprise-integration
+altitude: medium
 maturity: time-tested
 short_description: >-
   Encapsulate the code that connects an application to a messaging system so domain logic deals with commands and events rather than broker APIs.

@@ -4,6 +4,7 @@ aka:
   - Layered security
 scale: architectural
 category: security
+altitude: high
 maturity: time-tested
 short_description: >-
   Protect important assets with multiple independent controls so one failed or bypassed defence does not expose the whole system.

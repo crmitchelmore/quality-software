@@ -2,7 +2,7 @@
 
 > Sequence computations wrapped in a context, where each step can depend on the previous unwrapped value while preserving the context.
 
-**Scale:** design · **Category:** functional · **Maturity:** time-tested
+**Scale:** design · **Altitude:** low · **Category:** functional · **Maturity:** time-tested
 
 **Also known as:** Bind, FlatMap
 

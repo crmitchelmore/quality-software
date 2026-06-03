@@ -2,7 +2,7 @@
 
 > Require clients to send a stable key for retried non-idempotent requests so the server can return the original result.
 
-**Scale:** integration · **Category:** api-design · **Maturity:** established
+**Scale:** integration · **Altitude:** medium · **Category:** api-design · **Maturity:** established
 
 ## Description
 

@@ -2,6 +2,7 @@ id: sharding
 title: Sharding
 scale: data
 category: cloud-distributed
+altitude: high
 maturity: time-tested
 short_description: >-
   Split one logical dataset across multiple storage partitions by a stable shard key,

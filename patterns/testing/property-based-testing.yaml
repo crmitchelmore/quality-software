@@ -5,6 +5,7 @@ aka:
   - QuickCheck-style testing
 scale: implementation
 category: testing
+altitude: low
 maturity: established
 short_description: >-
   Generate many inputs and assert general properties that must always hold, revealing edge cases example-based tests miss.

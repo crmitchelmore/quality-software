@@ -2,7 +2,7 @@
 
 > Isolate application core logic from external concerns by expressing all interactions through technology-agnostic ports, with adapters that bind those ports to concrete drivers (UI, DB, queues) at the edges.
 
-**Scale:** architectural · **Category:** architecture · **Maturity:** time-tested
+**Scale:** architectural · **Altitude:** high · **Category:** architecture · **Maturity:** time-tested
 
 **Also known as:** Ports and Adapters, Onion Architecture (close relative)
 

@@ -2,7 +2,7 @@
 
 > Attach a helper process or container to an application instance so cross-cutting capabilities such as proxying, telemetry, configuration, or secret refresh can be added without changing the application code.
 
-**Scale:** architectural · **Category:** cloud-distributed · **Maturity:** established
+**Scale:** architectural · **Altitude:** medium · **Category:** cloud-distributed · **Maturity:** established
 
 ## Description
 

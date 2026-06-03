@@ -2,6 +2,7 @@ id: bulkhead
 title: Bulkhead
 scale: integration
 category: resilience
+altitude: medium
 maturity: time-tested
 aka:
   - Resource Partitioning

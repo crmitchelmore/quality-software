@@ -2,7 +2,7 @@
 
 > Give an object its own execution context and request queue so callers invoke methods asynchronously while the object's state is mutated serially.
 
-**Scale:** concurrency · **Category:** concurrency · **Maturity:** time-tested
+**Scale:** concurrency · **Altitude:** low · **Category:** concurrency · **Maturity:** time-tested
 
 **Also known as:** Serialized Method Invocation
 

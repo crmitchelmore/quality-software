@@ -4,6 +4,7 @@ aka:
   - Serialized Method Invocation
 scale: concurrency
 category: concurrency
+altitude: low
 maturity: time-tested
 short_description: >-
   Give an object its own execution context and request queue so callers invoke methods asynchronously while the object's state is mutated serially.

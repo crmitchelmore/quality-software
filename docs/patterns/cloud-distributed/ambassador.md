@@ -2,7 +2,7 @@
 
 > Put a local proxy in front of remote services so an application delegates outbound connectivity concerns such as discovery, protocol adaptation, retries, and observability to a companion component.
 
-**Scale:** architectural · **Category:** cloud-distributed · **Maturity:** established
+**Scale:** architectural · **Altitude:** medium · **Category:** cloud-distributed · **Maturity:** established
 
 ## Description
 

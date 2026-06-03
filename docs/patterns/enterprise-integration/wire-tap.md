@@ -2,7 +2,7 @@
 
 > Copy messages from a channel to a secondary destination for observation, audit or analytics without changing the primary route.
 
-**Scale:** integration · **Category:** enterprise-integration · **Maturity:** time-tested
+**Scale:** integration · **Altitude:** low · **Category:** enterprise-integration · **Maturity:** time-tested
 
 ## Description
 

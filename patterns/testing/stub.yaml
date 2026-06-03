@@ -4,6 +4,7 @@ aka:
   - Canned response
 scale: implementation
 category: testing
+altitude: low
 maturity: time-tested
 short_description: >-
   Use a simple double that returns predetermined values so the test can drive a branch or scenario deterministically.

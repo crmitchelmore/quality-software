@@ -5,6 +5,7 @@ aka:
   - Onion Architecture (close relative)
 scale: architectural
 category: architecture
+altitude: high
 maturity: time-tested
 short_description: >-
   Isolate application core logic from external concerns by expressing all

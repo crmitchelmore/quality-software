@@ -2,7 +2,7 @@
 
 > Encapsulate table- or query-oriented persistence operations behind an object dedicated to data access, distinct from domain repositories.
 
-**Scale:** design · **Category:** data-persistence · **Maturity:** time-tested
+**Scale:** design · **Altitude:** medium · **Category:** data-persistence · **Maturity:** time-tested
 
 ## Description
 

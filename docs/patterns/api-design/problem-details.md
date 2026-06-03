@@ -2,7 +2,7 @@
 
 > Return machine-readable HTTP error bodies with standard fields such as type, title, status, detail, and instance.
 
-**Scale:** integration · **Category:** api-design · **Maturity:** established
+**Scale:** integration · **Altitude:** medium · **Category:** api-design · **Maturity:** established
 
 ## Description
 

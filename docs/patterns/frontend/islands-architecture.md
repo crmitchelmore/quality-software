@@ -2,7 +2,7 @@
 
 > Serve mostly static or server-rendered HTML and hydrate only isolated interactive components, leaving the rest of the page inert.
 
-**Scale:** architectural · **Category:** frontend · **Maturity:** emerging
+**Scale:** architectural · **Altitude:** high · **Category:** frontend · **Maturity:** emerging
 
 **Also known as:** Partial Hydration, Component Islands
 

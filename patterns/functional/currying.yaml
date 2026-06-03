@@ -4,6 +4,7 @@ aka:
   - Curried Functions
 scale: implementation
 category: functional
+altitude: low
 maturity: time-tested
 short_description: >-
   Represent a multi-argument function as a chain of one-argument functions, enabling staged configuration and reuse.

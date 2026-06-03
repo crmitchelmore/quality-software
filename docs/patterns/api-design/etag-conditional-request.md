@@ -2,7 +2,7 @@
 
 > Use entity tags with If-None-Match or If-Match headers to validate cached representations and prevent lost updates over HTTP.
 
-**Scale:** integration · **Category:** api-design · **Maturity:** time-tested
+**Scale:** integration · **Altitude:** medium · **Category:** api-design · **Maturity:** time-tested
 
 ## Description
 

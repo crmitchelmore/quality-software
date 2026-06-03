@@ -5,6 +5,7 @@ aka:
   - Least authority
 scale: design
 category: security
+altitude: high
 maturity: time-tested
 short_description: >-
   Grant each user, service, token, and process only the permissions required for its current task, for the shortest practical time.

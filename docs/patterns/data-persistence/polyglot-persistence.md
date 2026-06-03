@@ -2,7 +2,7 @@
 
 > Use different storage technologies for different data models and access patterns instead of forcing all data into one database engine.
 
-**Scale:** data · **Category:** data-persistence · **Maturity:** established
+**Scale:** data · **Altitude:** high · **Category:** data-persistence · **Maturity:** established
 
 ## Description
 

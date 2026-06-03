@@ -2,7 +2,7 @@
 
 > Undo or neutralise the effects of completed distributed steps with explicit business actions when a long-running workflow cannot use one atomic transaction.
 
-**Scale:** integration · **Category:** cloud-distributed · **Maturity:** time-tested
+**Scale:** integration · **Altitude:** medium · **Category:** cloud-distributed · **Maturity:** time-tested
 
 ## Description
 

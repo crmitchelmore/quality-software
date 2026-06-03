@@ -5,6 +5,7 @@ aka:
   - Counting semaphore
 scale: concurrency
 category: concurrency
+altitude: low
 maturity: time-tested
 short_description: >-
   Control access to a finite set of permits so only a bounded number of concurrent operations can enter a critical or resource-limited section.

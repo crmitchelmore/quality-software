@@ -2,7 +2,7 @@
 
 > Intentionally limit request or work rates so clients, services, and dependencies stay within agreed capacity instead of failing unpredictably under load.
 
-**Scale:** integration · **Category:** cloud-distributed · **Maturity:** time-tested
+**Scale:** integration · **Altitude:** medium · **Category:** cloud-distributed · **Maturity:** time-tested
 
 ## Description
 

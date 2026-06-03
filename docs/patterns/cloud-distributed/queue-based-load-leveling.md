@@ -2,7 +2,7 @@
 
 > Insert a queue between producers and consumers so bursts are buffered and downstream services process work at a sustainable, controlled rate.
 
-**Scale:** integration · **Category:** cloud-distributed · **Maturity:** time-tested
+**Scale:** integration · **Altitude:** medium · **Category:** cloud-distributed · **Maturity:** time-tested
 
 ## Description
 

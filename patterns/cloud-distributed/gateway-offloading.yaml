@@ -2,6 +2,7 @@ id: gateway-offloading
 title: Gateway Offloading
 scale: integration
 category: cloud-distributed
+altitude: high
 maturity: established
 short_description: >-
   Move common edge responsibilities such as TLS termination, authentication, rate

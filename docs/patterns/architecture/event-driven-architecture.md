@@ -2,7 +2,7 @@
 
 > Let services publish immutable facts about state changes and have other components react asynchronously, reducing temporal coupling between producers and consumers.
 
-**Scale:** architectural · **Category:** architecture · **Maturity:** established
+**Scale:** architectural · **Altitude:** medium · **Category:** architecture · **Maturity:** established
 
 **Also known as:** EDA
 

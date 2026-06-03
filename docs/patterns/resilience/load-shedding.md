@@ -2,7 +2,7 @@
 
 > Deliberately reject or degrade lower-value work during overload so the system can continue serving its most important traffic within safe resource limits.
 
-**Scale:** integration · **Category:** resilience · **Maturity:** established
+**Scale:** integration · **Altitude:** medium · **Category:** resilience · **Maturity:** established
 
 **Also known as:** Controlled Rejection, Brownout
 

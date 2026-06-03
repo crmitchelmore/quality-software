@@ -4,6 +4,7 @@ aka:
   - Mock
 scale: implementation
 category: testing
+altitude: low
 maturity: time-tested
 short_description: >-
   Use a test double with explicit interaction expectations when the behaviour is the collaboration itself rather than a returned state.

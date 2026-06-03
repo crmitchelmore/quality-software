@@ -2,6 +2,7 @@ id: queue-based-load-leveling
 title: Queue-Based Load Leveling
 scale: integration
 category: cloud-distributed
+altitude: medium
 maturity: time-tested
 short_description: >-
   Insert a queue between producers and consumers so bursts are buffered and

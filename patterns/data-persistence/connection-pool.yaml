@@ -2,6 +2,7 @@ id: connection-pool
 title: Connection Pool
 scale: data
 category: data-persistence
+altitude: low
 maturity: time-tested
 short_description: >-
   Reuse a bounded set of database connections to avoid per-request setup and protect the database from unbounded concurrency.

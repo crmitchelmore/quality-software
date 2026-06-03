@@ -2,7 +2,7 @@
 
 > Split a task into independent subtasks, run them in parallel, then join their results into one deterministic outcome.
 
-**Scale:** concurrency · **Category:** concurrency · **Maturity:** time-tested
+**Scale:** concurrency · **Altitude:** low · **Category:** concurrency · **Maturity:** time-tested
 
 **Also known as:** Divide and conquer parallelism, Work-stealing fork/join
 

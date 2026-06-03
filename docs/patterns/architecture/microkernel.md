@@ -2,7 +2,7 @@
 
 > Keep a small stable core that owns lifecycle and shared abstractions, while optional or variable behaviour is supplied by independently developed plugins.
 
-**Scale:** architectural · **Category:** architecture · **Maturity:** time-tested
+**Scale:** architectural · **Altitude:** high · **Category:** architecture · **Maturity:** time-tested
 
 **Also known as:** Plugin Architecture
 

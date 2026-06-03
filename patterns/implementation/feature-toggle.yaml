@@ -5,6 +5,7 @@ aka:
   - Feature Switch
 scale: implementation
 category: implementation
+altitude: low
 maturity: established
 short_description: >-
   Route behaviour through a named runtime switch so code can be released separately

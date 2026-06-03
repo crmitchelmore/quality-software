@@ -2,6 +2,7 @@ id: optimistic-ui
 title: Optimistic UI
 scale: frontend
 category: frontend
+altitude: low
 maturity: established
 short_description: >-
   Update the interface immediately as if an operation will succeed, then reconcile, confirm or roll back when the server responds.

@@ -2,6 +2,7 @@ id: grpc-rpc
 title: gRPC / RPC
 scale: integration
 category: api-design
+altitude: medium
 maturity: established
 short_description: >-
   Define strongly typed service operations and messages, commonly over HTTP/2 with Protocol Buffers, for internal calls and streaming.

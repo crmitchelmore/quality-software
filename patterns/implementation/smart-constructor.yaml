@@ -5,6 +5,7 @@ aka:
   - Factory Function
 scale: implementation
 category: implementation
+altitude: low
 maturity: established
 short_description: >-
   Hide raw construction behind a named function that validates inputs and only

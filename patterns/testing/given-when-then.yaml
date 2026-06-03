@@ -5,6 +5,7 @@ aka:
   - Specification by example
 scale: implementation
 category: testing
+altitude: low
 maturity: established
 short_description: >-
   Describe behaviour as preconditions, user action, and expected outcome in business language that stakeholders and tests can share.

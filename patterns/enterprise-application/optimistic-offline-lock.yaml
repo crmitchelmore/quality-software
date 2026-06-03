@@ -2,6 +2,7 @@ id: optimistic-offline-lock
 title: Optimistic Offline Lock
 scale: data
 category: enterprise-application
+altitude: medium
 maturity: time-tested
 short_description: >-
   Detect conflicting business transactions by checking a version or timestamp at commit time instead of holding locks while users think or work offline.

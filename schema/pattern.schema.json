@@ -9,6 +9,7 @@
     "title",
     "scale",
     "category",
+    "altitude",
     "maturity",
     "short_description",
     "description",
@@ -32,6 +33,11 @@
     },
     "scale": { "type": "string" },
     "category": { "type": "string" },
+    "altitude": {
+      "type": "string",
+      "enum": ["low", "medium", "high"],
+      "description": "Scope of application: low = method/class/file, medium = component/service, high = application/platform."
+    },
     "maturity": { "type": "string" },
     "short_description": {
       "type": "string",

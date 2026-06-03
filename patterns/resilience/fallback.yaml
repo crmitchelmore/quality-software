@@ -2,6 +2,7 @@ id: fallback
 title: Fallback
 scale: integration
 category: resilience
+altitude: medium
 maturity: established
 aka:
   - Graceful Degradation

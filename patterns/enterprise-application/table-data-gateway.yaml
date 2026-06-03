@@ -2,6 +2,7 @@ id: table-data-gateway
 title: Table Data Gateway
 scale: data
 category: enterprise-application
+altitude: medium
 maturity: time-tested
 aka:
   - Table gateway

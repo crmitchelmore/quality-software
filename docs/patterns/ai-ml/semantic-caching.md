@@ -2,7 +2,7 @@
 
 > Cache model responses by semantic similarity rather than exact prompt text to reduce cost and latency for repeated intent.
 
-**Scale:** data · **Category:** ai-ml · **Maturity:** emerging
+**Scale:** data · **Altitude:** medium · **Category:** ai-ml · **Maturity:** emerging
 
 ## Description
 

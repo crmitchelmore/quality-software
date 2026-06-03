@@ -5,6 +5,7 @@ aka:
   - Work Queue
 scale: concurrency
 category: concurrency
+altitude: low
 maturity: time-tested
 short_description: >-
   Decouple work creation from work execution by passing items through a thread-safe queue, often bounded so producers cannot outrun consumers indefinitely.

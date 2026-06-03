@@ -4,6 +4,7 @@ aka:
   - Pipeline Architecture
 scale: architectural
 category: architecture
+altitude: medium
 maturity: time-tested
 short_description: >-
   Process data through a sequence of independent filters connected by pipes, where each filter transforms, enriches, validates, or routes the stream.

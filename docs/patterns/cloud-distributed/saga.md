@@ -2,7 +2,7 @@
 
 > Manage a long-running distributed transaction as a sequence of local transactions, with compensating actions that restore business consistency after failure.
 
-**Scale:** integration · **Category:** cloud-distributed · **Maturity:** time-tested
+**Scale:** integration · **Altitude:** high · **Category:** cloud-distributed · **Maturity:** time-tested
 
 ## Description
 

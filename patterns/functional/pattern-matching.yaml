@@ -5,6 +5,7 @@ aka:
   - Algebraic Matching
 scale: implementation
 category: functional
+altitude: low
 maturity: time-tested
 short_description: >-
   Branch by matching data shape and variants, often with exhaustive compiler checking.

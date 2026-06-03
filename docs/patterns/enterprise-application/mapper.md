@@ -2,7 +2,7 @@
 
 > Move data between two representations while keeping both sides independent of each other's structure and lifecycle.
 
-**Scale:** design · **Category:** enterprise-application · **Maturity:** time-tested
+**Scale:** design · **Altitude:** low · **Category:** enterprise-application · **Maturity:** time-tested
 
 ## Description
 

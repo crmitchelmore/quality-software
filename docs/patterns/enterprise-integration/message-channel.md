@@ -2,7 +2,7 @@
 
 > Connect applications through a named logical conduit so senders and receivers can exchange messages without knowing each other's location, protocol details, or runtime availability.
 
-**Scale:** integration · **Category:** enterprise-integration · **Maturity:** time-tested
+**Scale:** integration · **Altitude:** medium · **Category:** enterprise-integration · **Maturity:** time-tested
 
 ## Description
 

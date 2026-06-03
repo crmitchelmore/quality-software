@@ -2,7 +2,7 @@
 
 > Run repeatable test suites over prompts, models, tools, retrieval, and judges so LLM behaviour can be compared and regressed deliberately.
 
-**Scale:** design · **Category:** ai-ml · **Maturity:** cutting-edge
+**Scale:** design · **Altitude:** medium · **Category:** ai-ml · **Maturity:** cutting-edge
 
 ## Description
 

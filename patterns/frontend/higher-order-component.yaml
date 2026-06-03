@@ -4,6 +4,7 @@ aka:
   - HOC
 scale: frontend
 category: frontend
+altitude: low
 maturity: established
 short_description: >-
   Reuse component behaviour by wrapping a component in a function that returns an enhanced component with additional props or lifecycle wiring.

@@ -2,6 +2,7 @@ id: domain-model
 title: Domain Model
 scale: design
 category: enterprise-application
+altitude: medium
 maturity: time-tested
 aka:
   - Rich domain model

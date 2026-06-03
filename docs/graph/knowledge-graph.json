@@ -4,1651 +4,1926 @@
       "id": "agent-orchestration",
       "kind": "software-pattern",
       "title": "Agent Orchestration",
-      "group": "ai-ml"
+      "group": "ai-ml",
+      "altitude": "high"
     },
     {
       "id": "evaluation-harness",
       "kind": "software-pattern",
       "title": "LLM Evaluation Harness",
-      "group": "ai-ml"
+      "group": "ai-ml",
+      "altitude": "medium"
     },
     {
       "id": "guardrails-output-validation",
       "kind": "software-pattern",
       "title": "Guardrails & Output Validation",
-      "group": "ai-ml"
+      "group": "ai-ml",
+      "altitude": "medium"
     },
     {
       "id": "human-in-the-loop",
       "kind": "software-pattern",
       "title": "Human-in-the-Loop Approval",
-      "group": "ai-ml"
+      "group": "ai-ml",
+      "altitude": "medium"
     },
     {
       "id": "llm-as-judge",
       "kind": "software-pattern",
       "title": "LLM-as-Judge / Model-Graded Evaluation",
-      "group": "ai-ml"
+      "group": "ai-ml",
+      "altitude": "medium"
     },
     {
       "id": "memory-context-window-management",
       "kind": "software-pattern",
       "title": "Memory & Context-Window Management",
-      "group": "ai-ml"
+      "group": "ai-ml",
+      "altitude": "medium"
     },
     {
       "id": "prompt-chaining",
       "kind": "software-pattern",
       "title": "Prompt Chaining",
-      "group": "ai-ml"
+      "group": "ai-ml",
+      "altitude": "medium"
     },
     {
       "id": "reflection-self-critique",
       "kind": "software-pattern",
       "title": "Reflection / Self-Critique Loop",
-      "group": "ai-ml"
+      "group": "ai-ml",
+      "altitude": "low"
     },
     {
       "id": "retrieval-augmented-generation",
       "kind": "software-pattern",
       "title": "Retrieval-Augmented Generation (RAG)",
-      "group": "ai-ml"
+      "group": "ai-ml",
+      "altitude": "medium"
     },
     {
       "id": "semantic-caching",
       "kind": "software-pattern",
       "title": "Semantic Caching",
-      "group": "ai-ml"
+      "group": "ai-ml",
+      "altitude": "medium"
     },
     {
       "id": "structured-output",
       "kind": "software-pattern",
       "title": "Structured Output (Schema-Constrained Generation)",
-      "group": "ai-ml"
+      "group": "ai-ml",
+      "altitude": "low"
     },
     {
       "id": "tool-use-function-calling",
       "kind": "software-pattern",
       "title": "Tool Use / Function Calling",
-      "group": "ai-ml"
+      "group": "ai-ml",
+      "altitude": "low"
     },
     {
       "id": "api-versioning",
       "kind": "software-pattern",
       "title": "API Versioning",
-      "group": "api-design"
+      "group": "api-design",
+      "altitude": "medium"
     },
     {
       "id": "contract-first-api",
       "kind": "software-pattern",
       "title": "Contract-First API (OpenAPI)",
-      "group": "api-design"
+      "group": "api-design",
+      "altitude": "medium"
     },
     {
       "id": "etag-conditional-request",
       "kind": "software-pattern",
       "title": "ETag / Conditional Request",
-      "group": "api-design"
+      "group": "api-design",
+      "altitude": "medium"
     },
     {
       "id": "graphql",
       "kind": "software-pattern",
       "title": "GraphQL Schema",
-      "group": "api-design"
+      "group": "api-design",
+      "altitude": "medium"
     },
     {
       "id": "grpc-rpc",
       "kind": "software-pattern",
       "title": "gRPC / RPC",
-      "group": "api-design"
+      "group": "api-design",
+      "altitude": "medium"
     },
     {
       "id": "hateoas",
       "kind": "software-pattern",
       "title": "HATEOAS",
-      "group": "api-design"
+      "group": "api-design",
+      "altitude": "medium"
     },
     {
       "id": "idempotency-key",
       "kind": "software-pattern",
       "title": "Idempotency Key",
-      "group": "api-design"
+      "group": "api-design",
+      "altitude": "medium"
     },
     {
       "id": "pagination",
       "kind": "software-pattern",
       "title": "Pagination",
-      "group": "api-design"
+      "group": "api-design",
+      "altitude": "medium"
     },
     {
       "id": "problem-details",
       "kind": "software-pattern",
       "title": "Problem Details (RFC 7807 Errors)",
-      "group": "api-design"
+      "group": "api-design",
+      "altitude": "medium"
     },
     {
       "id": "rest",
       "kind": "software-pattern",
       "title": "REST",
-      "group": "api-design"
+      "group": "api-design",
+      "altitude": "medium"
     },
     {
       "id": "webhook",
       "kind": "software-pattern",
       "title": "Webhook",
-      "group": "api-design"
+      "group": "api-design",
+      "altitude": "medium"
     },
     {
       "id": "api-gateway",
       "kind": "software-pattern",
       "title": "API Gateway",
-      "group": "architecture"
+      "group": "architecture",
+      "altitude": "high"
     },
     {
       "id": "backend-for-frontend",
       "kind": "software-pattern",
       "title": "Backend for Frontend (BFF)",
-      "group": "architecture"
+      "group": "architecture",
+      "altitude": "high"
     },
     {
       "id": "broker-architecture",
       "kind": "software-pattern",
       "title": "Broker Architecture",
-      "group": "architecture"
+      "group": "architecture",
+      "altitude": "high"
     },
     {
       "id": "cell-based-architecture",
       "kind": "software-pattern",
       "title": "Cell-Based Architecture",
-      "group": "architecture"
+      "group": "architecture",
+      "altitude": "high"
     },
     {
       "id": "clean-architecture",
       "kind": "software-pattern",
       "title": "Clean Architecture",
-      "group": "architecture"
+      "group": "architecture",
+      "altitude": "high"
     },
     {
       "id": "client-server",
       "kind": "software-pattern",
       "title": "Client-Server",
-      "group": "architecture"
+      "group": "architecture",
+      "altitude": "high"
     },
     {
       "id": "cqrs",
       "kind": "software-pattern",
       "title": "CQRS (Command Query Responsibility Segregation)",
-      "group": "architecture"
+      "group": "architecture",
+      "altitude": "medium"
     },
     {
       "id": "event-driven-architecture",
       "kind": "software-pattern",
       "title": "Event-Driven Architecture",
-      "group": "architecture"
+      "group": "architecture",
+      "altitude": "medium"
     },
     {
       "id": "event-sourcing",
       "kind": "software-pattern",
       "title": "Event Sourcing",
-      "group": "architecture"
+      "group": "architecture",
+      "altitude": "high"
     },
     {
       "id": "hexagonal-architecture",
       "kind": "software-pattern",
       "title": "Hexagonal Architecture (Ports & Adapters)",
-      "group": "architecture"
+      "group": "architecture",
+      "altitude": "high"
     },
     {
       "id": "layered-architecture",
       "kind": "software-pattern",
       "title": "Layered (N-Tier) Architecture",
-      "group": "architecture"
+      "group": "architecture",
+      "altitude": "high"
     },
     {
       "id": "microkernel",
       "kind": "software-pattern",
       "title": "Microkernel (Plugin) Architecture",
-      "group": "architecture"
+      "group": "architecture",
+      "altitude": "high"
     },
     {
       "id": "microservices",
       "kind": "software-pattern",
       "title": "Microservices",
-      "group": "architecture"
+      "group": "architecture",
+      "altitude": "high"
     },
     {
       "id": "model-view-controller",
       "kind": "software-pattern",
       "title": "Model-View-Controller (MVC)",
-      "group": "architecture"
+      "group": "architecture",
+      "altitude": "medium"
     },
     {
       "id": "modular-monolith",
       "kind": "software-pattern",
       "title": "Modular Monolith",
-      "group": "architecture"
+      "group": "architecture",
+      "altitude": "high"
     },
     {
       "id": "monolith",
       "kind": "software-pattern",
       "title": "Monolith",
-      "group": "architecture"
+      "group": "architecture",
+      "altitude": "high"
     },
     {
       "id": "onion-architecture",
       "kind": "software-pattern",
       "title": "Onion Architecture",
-      "group": "architecture"
+      "group": "architecture",
+      "altitude": "high"
     },
     {
       "id": "peer-to-peer",
       "kind": "software-pattern",
       "title": "Peer-to-Peer",
-      "group": "architecture"
+      "group": "architecture",
+      "altitude": "high"
     },
     {
       "id": "pipes-and-filters",
       "kind": "software-pattern",
       "title": "Pipes and Filters",
-      "group": "architecture"
+      "group": "architecture",
+      "altitude": "medium"
     },
     {
       "id": "serverless-architecture",
       "kind": "software-pattern",
       "title": "Serverless / FaaS Architecture",
-      "group": "architecture"
+      "group": "architecture",
+      "altitude": "high"
     },
     {
       "id": "service-mesh",
       "kind": "software-pattern",
       "title": "Service Mesh",
-      "group": "architecture"
+      "group": "architecture",
+      "altitude": "high"
     },
     {
       "id": "service-oriented-architecture",
       "kind": "software-pattern",
       "title": "Service-Oriented Architecture (SOA)",
-      "group": "architecture"
+      "group": "architecture",
+      "altitude": "high"
     },
     {
       "id": "space-based-architecture",
       "kind": "software-pattern",
       "title": "Space-Based Architecture",
-      "group": "architecture"
+      "group": "architecture",
+      "altitude": "high"
     },
     {
       "id": "strangler-fig",
       "kind": "software-pattern",
       "title": "Strangler Fig",
-      "group": "architecture"
+      "group": "architecture",
+      "altitude": "high"
     },
     {
       "id": "ambassador",
       "kind": "software-pattern",
       "title": "Ambassador",
-      "group": "cloud-distributed"
+      "group": "cloud-distributed",
+      "altitude": "medium"
     },
     {
       "id": "anti-corruption-layer",
       "kind": "software-pattern",
       "title": "Anti-Corruption Layer",
-      "group": "cloud-distributed"
+      "group": "cloud-distributed",
+      "altitude": "medium"
     },
     {
       "id": "cache-aside",
       "kind": "software-pattern",
       "title": "Cache-Aside",
-      "group": "cloud-distributed"
+      "group": "cloud-distributed",
+      "altitude": "medium"
     },
     {
       "id": "choreography",
       "kind": "software-pattern",
       "title": "Choreography",
-      "group": "cloud-distributed"
+      "group": "cloud-distributed",
+      "altitude": "high"
     },
     {
       "id": "claim-check",
       "kind": "software-pattern",
       "title": "Claim Check",
-      "group": "cloud-distributed"
+      "group": "cloud-distributed",
+      "altitude": "medium"
     },
     {
       "id": "compensating-transaction",
       "kind": "software-pattern",
       "title": "Compensating Transaction",
-      "group": "cloud-distributed"
+      "group": "cloud-distributed",
+      "altitude": "medium"
     },
     {
       "id": "competing-consumers",
       "kind": "software-pattern",
       "title": "Competing Consumers",
-      "group": "cloud-distributed"
+      "group": "cloud-distributed",
+      "altitude": "medium"
     },
     {
       "id": "deployment-stamp",
       "kind": "software-pattern",
       "title": "Deployment Stamp (Cells)",
-      "group": "cloud-distributed"
+      "group": "cloud-distributed",
+      "altitude": "high"
     },
     {
       "id": "federated-identity",
       "kind": "software-pattern",
       "title": "Federated Identity",
-      "group": "cloud-distributed"
+      "group": "cloud-distributed",
+      "altitude": "high"
     },
     {
       "id": "gatekeeper",
       "kind": "software-pattern",
       "title": "Gatekeeper",
-      "group": "cloud-distributed"
+      "group": "cloud-distributed",
+      "altitude": "medium"
     },
     {
       "id": "gateway-aggregation",
       "kind": "software-pattern",
       "title": "Gateway Aggregation",
-      "group": "cloud-distributed"
+      "group": "cloud-distributed",
+      "altitude": "high"
     },
     {
       "id": "gateway-offloading",
       "kind": "software-pattern",
       "title": "Gateway Offloading",
-      "group": "cloud-distributed"
+      "group": "cloud-distributed",
+      "altitude": "high"
     },
     {
       "id": "geode",
       "kind": "software-pattern",
       "title": "Geode (Geo-Distributed)",
-      "group": "cloud-distributed"
+      "group": "cloud-distributed",
+      "altitude": "high"
     },
     {
       "id": "health-endpoint-monitoring",
       "kind": "software-pattern",
       "title": "Health Endpoint Monitoring",
-      "group": "cloud-distributed"
+      "group": "cloud-distributed",
+      "altitude": "medium"
     },
     {
       "id": "leader-election",
       "kind": "software-pattern",
       "title": "Leader Election",
-      "group": "cloud-distributed"
+      "group": "cloud-distributed",
+      "altitude": "medium"
     },
     {
       "id": "materialized-view",
       "kind": "software-pattern",
       "title": "Materialized View",
-      "group": "cloud-distributed"
+      "group": "cloud-distributed",
+      "altitude": "medium"
     },
     {
       "id": "outbox",
       "kind": "software-pattern",
       "title": "Transactional Outbox",
-      "group": "cloud-distributed"
+      "group": "cloud-distributed",
+      "altitude": "medium"
     },
     {
       "id": "queue-based-load-leveling",
       "kind": "software-pattern",
       "title": "Queue-Based Load Leveling",
-      "group": "cloud-distributed"
+      "group": "cloud-distributed",
+      "altitude": "medium"
     },
     {
       "id": "saga",
       "kind": "software-pattern",
       "title": "Saga",
-      "group": "cloud-distributed"
+      "group": "cloud-distributed",
+      "altitude": "high"
     },
     {
       "id": "scheduler-agent-supervisor",
       "kind": "software-pattern",
       "title": "Scheduler-Agent-Supervisor",
-      "group": "cloud-distributed"
+      "group": "cloud-distributed",
+      "altitude": "high"
     },
     {
       "id": "sharding",
       "kind": "software-pattern",
       "title": "Sharding",
-      "group": "cloud-distributed"
+      "group": "cloud-distributed",
+      "altitude": "high"
     },
     {
       "id": "sidecar",
       "kind": "software-pattern",
       "title": "Sidecar",
-      "group": "cloud-distributed"
+      "group": "cloud-distributed",
+      "altitude": "medium"
     },
     {
       "id": "throttling",
       "kind": "software-pattern",
       "title": "Throttling",
-      "group": "cloud-distributed"
+      "group": "cloud-distributed",
+      "altitude": "medium"
     },
     {
       "id": "valet-key",
       "kind": "software-pattern",
       "title": "Valet Key",
-      "group": "cloud-distributed"
+      "group": "cloud-distributed",
+      "altitude": "medium"
     },
     {
       "id": "active-object",
       "kind": "software-pattern",
       "title": "Active Object",
-      "group": "concurrency"
+      "group": "concurrency",
+      "altitude": "low"
     },
     {
       "id": "actor-model",
       "kind": "software-pattern",
       "title": "Actor Model",
-      "group": "concurrency"
+      "group": "concurrency",
+      "altitude": "medium"
     },
     {
       "id": "balking",
       "kind": "software-pattern",
       "title": "Balking",
-      "group": "concurrency"
+      "group": "concurrency",
+      "altitude": "low"
     },
     {
       "id": "barrier",
       "kind": "software-pattern",
       "title": "Barrier",
-      "group": "concurrency"
+      "group": "concurrency",
+      "altitude": "low"
     },
     {
       "id": "communicating-sequential-processes",
       "kind": "software-pattern",
       "title": "Communicating Sequential Processes (CSP)",
-      "group": "concurrency"
+      "group": "concurrency",
+      "altitude": "medium"
     },
     {
       "id": "copy-on-write",
       "kind": "software-pattern",
       "title": "Copy-on-Write",
-      "group": "concurrency"
+      "group": "concurrency",
+      "altitude": "low"
     },
     {
       "id": "double-checked-locking",
       "kind": "software-pattern",
       "title": "Double-Checked Locking",
-      "group": "concurrency"
+      "group": "concurrency",
+      "altitude": "low"
     },
     {
       "id": "fork-join",
       "kind": "software-pattern",
       "title": "Fork-Join",
-      "group": "concurrency"
+      "group": "concurrency",
+      "altitude": "low"
     },
     {
       "id": "future-promise",
       "kind": "software-pattern",
       "title": "Future / Promise",
-      "group": "concurrency"
+      "group": "concurrency",
+      "altitude": "low"
     },
     {
       "id": "guarded-suspension",
       "kind": "software-pattern",
       "title": "Guarded Suspension",
-      "group": "concurrency"
+      "group": "concurrency",
+      "altitude": "low"
     },
     {
       "id": "half-sync-half-async",
       "kind": "software-pattern",
       "title": "Half-Sync/Half-Async",
-      "group": "concurrency"
+      "group": "concurrency",
+      "altitude": "medium"
     },
     {
       "id": "immutable-object",
       "kind": "software-pattern",
       "title": "Immutable Object",
-      "group": "concurrency"
+      "group": "concurrency",
+      "altitude": "low"
     },
     {
       "id": "monitor-object",
       "kind": "software-pattern",
       "title": "Monitor Object",
-      "group": "concurrency"
+      "group": "concurrency",
+      "altitude": "low"
     },
     {
       "id": "proactor",
       "kind": "software-pattern",
       "title": "Proactor",
-      "group": "concurrency"
+      "group": "concurrency",
+      "altitude": "medium"
     },
     {
       "id": "producer-consumer",
       "kind": "software-pattern",
       "title": "Producer-Consumer",
-      "group": "concurrency"
+      "group": "concurrency",
+      "altitude": "low"
     },
     {
       "id": "reactor",
       "kind": "software-pattern",
       "title": "Reactor",
-      "group": "concurrency"
+      "group": "concurrency",
+      "altitude": "medium"
     },
     {
       "id": "read-write-lock",
       "kind": "software-pattern",
       "title": "Read-Write Lock",
-      "group": "concurrency"
+      "group": "concurrency",
+      "altitude": "low"
     },
     {
       "id": "semaphore",
       "kind": "software-pattern",
       "title": "Semaphore",
-      "group": "concurrency"
+      "group": "concurrency",
+      "altitude": "low"
     },
     {
       "id": "thread-pool",
       "kind": "software-pattern",
       "title": "Thread Pool",
-      "group": "concurrency"
+      "group": "concurrency",
+      "altitude": "low"
     },
     {
       "id": "thread-specific-storage",
       "kind": "software-pattern",
       "title": "Thread-Specific Storage",
-      "group": "concurrency"
+      "group": "concurrency",
+      "altitude": "low"
     },
     {
       "id": "change-data-capture",
       "kind": "software-pattern",
       "title": "Change Data Capture (CDC)",
-      "group": "data-persistence"
+      "group": "data-persistence",
+      "altitude": "medium"
     },
     {
       "id": "connection-pool",
       "kind": "software-pattern",
       "title": "Connection Pool",
-      "group": "data-persistence"
+      "group": "data-persistence",
+      "altitude": "low"
     },
     {
       "id": "data-access-object",
       "kind": "software-pattern",
       "title": "Data Access Object (DAO)",
-      "group": "data-persistence"
+      "group": "data-persistence",
+      "altitude": "medium"
     },
     {
       "id": "database-per-service",
       "kind": "software-pattern",
       "title": "Database per Service",
-      "group": "data-persistence"
+      "group": "data-persistence",
+      "altitude": "high"
     },
     {
       "id": "optimistic-concurrency-control",
       "kind": "software-pattern",
       "title": "Optimistic Concurrency Control",
-      "group": "data-persistence"
+      "group": "data-persistence",
+      "altitude": "medium"
     },
     {
       "id": "polyglot-persistence",
       "kind": "software-pattern",
       "title": "Polyglot Persistence",
-      "group": "data-persistence"
+      "group": "data-persistence",
+      "altitude": "high"
     },
     {
       "id": "read-replica",
       "kind": "software-pattern",
       "title": "Read Replica",
-      "group": "data-persistence"
+      "group": "data-persistence",
+      "altitude": "medium"
     },
     {
       "id": "repository",
       "kind": "software-pattern",
       "title": "Repository",
-      "group": "data-persistence"
+      "group": "data-persistence",
+      "altitude": "medium"
     },
     {
       "id": "write-behind-cache",
       "kind": "software-pattern",
       "title": "Write-Behind Cache",
-      "group": "data-persistence"
+      "group": "data-persistence",
+      "altitude": "medium"
     },
     {
       "id": "write-through-cache",
       "kind": "software-pattern",
       "title": "Write-Through Cache",
-      "group": "data-persistence"
+      "group": "data-persistence",
+      "altitude": "medium"
     },
     {
       "id": "bounded-context",
       "kind": "software-pattern",
       "title": "Bounded Context",
-      "group": "ddd-strategic"
+      "group": "ddd-strategic",
+      "altitude": "high"
     },
     {
       "id": "conformist",
       "kind": "software-pattern",
       "title": "Conformist",
-      "group": "ddd-strategic"
+      "group": "ddd-strategic",
+      "altitude": "high"
     },
     {
       "id": "context-map",
       "kind": "software-pattern",
       "title": "Context Map",
-      "group": "ddd-strategic"
+      "group": "ddd-strategic",
+      "altitude": "high"
     },
     {
       "id": "customer-supplier",
       "kind": "software-pattern",
       "title": "Customer-Supplier",
-      "group": "ddd-strategic"
+      "group": "ddd-strategic",
+      "altitude": "high"
     },
     {
       "id": "open-host-service",
       "kind": "software-pattern",
       "title": "Open Host Service",
-      "group": "ddd-strategic"
+      "group": "ddd-strategic",
+      "altitude": "high"
     },
     {
       "id": "published-language",
       "kind": "software-pattern",
       "title": "Published Language",
-      "group": "ddd-strategic"
+      "group": "ddd-strategic",
+      "altitude": "high"
     },
     {
       "id": "shared-kernel",
       "kind": "software-pattern",
       "title": "Shared Kernel",
-      "group": "ddd-strategic"
+      "group": "ddd-strategic",
+      "altitude": "high"
     },
     {
       "id": "ubiquitous-language",
       "kind": "software-pattern",
       "title": "Ubiquitous Language",
-      "group": "ddd-strategic"
+      "group": "ddd-strategic",
+      "altitude": "high"
     },
     {
       "id": "aggregate",
       "kind": "software-pattern",
       "title": "Aggregate",
-      "group": "ddd-tactical"
+      "group": "ddd-tactical",
+      "altitude": "medium"
     },
     {
       "id": "domain-event",
       "kind": "software-pattern",
       "title": "Domain Event",
-      "group": "ddd-tactical"
+      "group": "ddd-tactical",
+      "altitude": "medium"
     },
     {
       "id": "domain-service",
       "kind": "software-pattern",
       "title": "Domain Service",
-      "group": "ddd-tactical"
+      "group": "ddd-tactical",
+      "altitude": "medium"
     },
     {
       "id": "entity",
       "kind": "software-pattern",
       "title": "Entity",
-      "group": "ddd-tactical"
+      "group": "ddd-tactical",
+      "altitude": "low"
     },
     {
       "id": "factory",
       "kind": "software-pattern",
       "title": "Factory (DDD)",
-      "group": "ddd-tactical"
+      "group": "ddd-tactical",
+      "altitude": "low"
     },
     {
       "id": "specification",
       "kind": "software-pattern",
       "title": "Specification",
-      "group": "ddd-tactical"
+      "group": "ddd-tactical",
+      "altitude": "low"
     },
     {
       "id": "value-object",
       "kind": "software-pattern",
       "title": "Value Object",
-      "group": "ddd-tactical"
+      "group": "ddd-tactical",
+      "altitude": "low"
     },
     {
       "id": "active-record",
       "kind": "software-pattern",
       "title": "Active Record",
-      "group": "enterprise-application"
+      "group": "enterprise-application",
+      "altitude": "medium"
     },
     {
       "id": "application-controller",
       "kind": "software-pattern",
       "title": "Application Controller",
-      "group": "enterprise-application"
+      "group": "enterprise-application",
+      "altitude": "medium"
     },
     {
       "id": "class-table-inheritance",
       "kind": "software-pattern",
       "title": "Class Table Inheritance",
-      "group": "enterprise-application"
+      "group": "enterprise-application",
+      "altitude": "medium"
     },
     {
       "id": "data-mapper",
       "kind": "software-pattern",
       "title": "Data Mapper",
-      "group": "enterprise-application"
+      "group": "enterprise-application",
+      "altitude": "medium"
     },
     {
       "id": "data-transfer-object",
       "kind": "software-pattern",
       "title": "Data Transfer Object (DTO)",
-      "group": "enterprise-application"
+      "group": "enterprise-application",
+      "altitude": "low"
     },
     {
       "id": "domain-model",
       "kind": "software-pattern",
       "title": "Domain Model",
-      "group": "enterprise-application"
+      "group": "enterprise-application",
+      "altitude": "medium"
     },
     {
       "id": "front-controller",
       "kind": "software-pattern",
       "title": "Front Controller",
-      "group": "enterprise-application"
+      "group": "enterprise-application",
+      "altitude": "medium"
     },
     {
       "id": "gateway",
       "kind": "software-pattern",
       "title": "Gateway",
-      "group": "enterprise-application"
+      "group": "enterprise-application",
+      "altitude": "medium"
     },
     {
       "id": "identity-map",
       "kind": "software-pattern",
       "title": "Identity Map",
-      "group": "enterprise-application"
+      "group": "enterprise-application",
+      "altitude": "medium"
     },
     {
       "id": "layer-supertype",
       "kind": "software-pattern",
       "title": "Layer Supertype",
-      "group": "enterprise-application"
+      "group": "enterprise-application",
+      "altitude": "low"
     },
     {
       "id": "lazy-load",
       "kind": "software-pattern",
       "title": "Lazy Load",
-      "group": "enterprise-application"
+      "group": "enterprise-application",
+      "altitude": "low"
     },
     {
       "id": "mapper",
       "kind": "software-pattern",
       "title": "Mapper",
-      "group": "enterprise-application"
+      "group": "enterprise-application",
+      "altitude": "low"
     },
     {
       "id": "metadata-mapping",
       "kind": "software-pattern",
       "title": "Metadata Mapping",
-      "group": "enterprise-application"
+      "group": "enterprise-application",
+      "altitude": "medium"
     },
     {
       "id": "optimistic-offline-lock",
       "kind": "software-pattern",
       "title": "Optimistic Offline Lock",
-      "group": "enterprise-application"
+      "group": "enterprise-application",
+      "altitude": "medium"
     },
     {
       "id": "page-controller",
       "kind": "software-pattern",
       "title": "Page Controller",
-      "group": "enterprise-application"
+      "group": "enterprise-application",
+      "altitude": "medium"
     },
     {
       "id": "pessimistic-offline-lock",
       "kind": "software-pattern",
       "title": "Pessimistic Offline Lock",
-      "group": "enterprise-application"
+      "group": "enterprise-application",
+      "altitude": "medium"
     },
     {
       "id": "query-object",
       "kind": "software-pattern",
       "title": "Query Object",
-      "group": "enterprise-application"
+      "group": "enterprise-application",
+      "altitude": "medium"
     },
     {
       "id": "registry",
       "kind": "software-pattern",
       "title": "Registry",
-      "group": "enterprise-application"
+      "group": "enterprise-application",
+      "altitude": "medium"
     },
     {
       "id": "row-data-gateway",
       "kind": "software-pattern",
       "title": "Row Data Gateway",
-      "group": "enterprise-application"
+      "group": "enterprise-application",
+      "altitude": "medium"
     },
     {
       "id": "separated-interface",
       "kind": "software-pattern",
       "title": "Separated Interface",
-      "group": "enterprise-application"
+      "group": "enterprise-application",
+      "altitude": "low"
     },
     {
       "id": "service-layer",
       "kind": "software-pattern",
       "title": "Service Layer",
-      "group": "enterprise-application"
+      "group": "enterprise-application",
+      "altitude": "medium"
     },
     {
       "id": "single-table-inheritance",
       "kind": "software-pattern",
       "title": "Single Table Inheritance",
-      "group": "enterprise-application"
+      "group": "enterprise-application",
+      "altitude": "medium"
     },
     {
       "id": "special-case",
       "kind": "software-pattern",
       "title": "Special Case",
-      "group": "enterprise-application"
+      "group": "enterprise-application",
+      "altitude": "low"
     },
     {
       "id": "table-data-gateway",
       "kind": "software-pattern",
       "title": "Table Data Gateway",
-      "group": "enterprise-application"
+      "group": "enterprise-application",
+      "altitude": "medium"
     },
     {
       "id": "table-module",
       "kind": "software-pattern",
       "title": "Table Module",
-      "group": "enterprise-application"
+      "group": "enterprise-application",
+      "altitude": "medium"
     },
     {
       "id": "template-view",
       "kind": "software-pattern",
       "title": "Template View",
-      "group": "enterprise-application"
+      "group": "enterprise-application",
+      "altitude": "medium"
     },
     {
       "id": "transaction-script",
       "kind": "software-pattern",
       "title": "Transaction Script",
-      "group": "enterprise-application"
+      "group": "enterprise-application",
+      "altitude": "medium"
     },
     {
       "id": "unit-of-work",
       "kind": "software-pattern",
       "title": "Unit of Work",
-      "group": "enterprise-application"
+      "group": "enterprise-application",
+      "altitude": "medium"
     },
     {
       "id": "aggregator",
       "kind": "software-pattern",
       "title": "Aggregator",
-      "group": "enterprise-integration"
+      "group": "enterprise-integration",
+      "altitude": "medium"
     },
     {
       "id": "canonical-data-model",
       "kind": "software-pattern",
       "title": "Canonical Data Model",
-      "group": "enterprise-integration"
+      "group": "enterprise-integration",
+      "altitude": "high"
     },
     {
       "id": "content-based-router",
       "kind": "software-pattern",
       "title": "Content-Based Router",
-      "group": "enterprise-integration"
+      "group": "enterprise-integration",
+      "altitude": "medium"
     },
     {
       "id": "correlation-identifier",
       "kind": "software-pattern",
       "title": "Correlation Identifier",
-      "group": "enterprise-integration"
+      "group": "enterprise-integration",
+      "altitude": "low"
     },
     {
       "id": "dead-letter-channel",
       "kind": "software-pattern",
       "title": "Dead Letter Channel",
-      "group": "enterprise-integration"
+      "group": "enterprise-integration",
+      "altitude": "medium"
     },
     {
       "id": "event-driven-consumer",
       "kind": "software-pattern",
       "title": "Event-Driven Consumer",
-      "group": "enterprise-integration"
+      "group": "enterprise-integration",
+      "altitude": "medium"
     },
     {
       "id": "guaranteed-delivery",
       "kind": "software-pattern",
       "title": "Guaranteed Delivery",
-      "group": "enterprise-integration"
+      "group": "enterprise-integration",
+      "altitude": "medium"
     },
     {
       "id": "idempotent-receiver",
       "kind": "software-pattern",
       "title": "Idempotent Receiver",
-      "group": "enterprise-integration"
+      "group": "enterprise-integration",
+      "altitude": "medium"
     },
     {
       "id": "message-bus",
       "kind": "software-pattern",
       "title": "Message Bus",
-      "group": "enterprise-integration"
+      "group": "enterprise-integration",
+      "altitude": "high"
     },
     {
       "id": "message-channel",
       "kind": "software-pattern",
       "title": "Message Channel",
-      "group": "enterprise-integration"
+      "group": "enterprise-integration",
+      "altitude": "medium"
     },
     {
       "id": "message-endpoint",
       "kind": "software-pattern",
       "title": "Message Endpoint",
-      "group": "enterprise-integration"
+      "group": "enterprise-integration",
+      "altitude": "medium"
     },
     {
       "id": "message-filter",
       "kind": "software-pattern",
       "title": "Message Filter",
-      "group": "enterprise-integration"
+      "group": "enterprise-integration",
+      "altitude": "medium"
     },
     {
       "id": "message-router",
       "kind": "software-pattern",
       "title": "Message Router",
-      "group": "enterprise-integration"
+      "group": "enterprise-integration",
+      "altitude": "medium"
     },
     {
       "id": "message-translator",
       "kind": "software-pattern",
       "title": "Message Translator",
-      "group": "enterprise-integration"
+      "group": "enterprise-integration",
+      "altitude": "medium"
     },
     {
       "id": "polling-consumer",
       "kind": "software-pattern",
       "title": "Polling Consumer",
-      "group": "enterprise-integration"
+      "group": "enterprise-integration",
+      "altitude": "medium"
     },
     {
       "id": "process-manager",
       "kind": "software-pattern",
       "title": "Process Manager",
-      "group": "enterprise-integration"
+      "group": "enterprise-integration",
+      "altitude": "medium"
     },
     {
       "id": "publish-subscribe",
       "kind": "software-pattern",
       "title": "Publish-Subscribe Channel",
-      "group": "enterprise-integration"
+      "group": "enterprise-integration",
+      "altitude": "medium"
     },
     {
       "id": "request-reply",
       "kind": "software-pattern",
       "title": "Request-Reply",
-      "group": "enterprise-integration"
+      "group": "enterprise-integration",
+      "altitude": "medium"
     },
     {
       "id": "resequencer",
       "kind": "software-pattern",
       "title": "Resequencer",
-      "group": "enterprise-integration"
+      "group": "enterprise-integration",
+      "altitude": "medium"
     },
     {
       "id": "routing-slip",
       "kind": "software-pattern",
       "title": "Routing Slip",
-      "group": "enterprise-integration"
+      "group": "enterprise-integration",
+      "altitude": "medium"
     },
     {
       "id": "scatter-gather",
       "kind": "software-pattern",
       "title": "Scatter-Gather",
-      "group": "enterprise-integration"
+      "group": "enterprise-integration",
+      "altitude": "medium"
     },
     {
       "id": "splitter",
       "kind": "software-pattern",
       "title": "Splitter",
-      "group": "enterprise-integration"
+      "group": "enterprise-integration",
+      "altitude": "medium"
     },
     {
       "id": "wire-tap",
       "kind": "software-pattern",
       "title": "Wire Tap",
-      "group": "enterprise-integration"
+      "group": "enterprise-integration",
+      "altitude": "low"
     },
     {
       "id": "atomic-design",
       "kind": "software-pattern",
       "title": "Atomic Design",
-      "group": "frontend"
+      "group": "frontend",
+      "altitude": "medium"
     },
     {
       "id": "component-based-ui",
       "kind": "software-pattern",
       "title": "Component-Based UI",
-      "group": "frontend"
+      "group": "frontend",
+      "altitude": "medium"
     },
     {
       "id": "container-presentational",
       "kind": "software-pattern",
       "title": "Container / Presentational",
-      "group": "frontend"
+      "group": "frontend",
+      "altitude": "low"
     },
     {
       "id": "debounce-throttle-ui",
       "kind": "software-pattern",
       "title": "Debounce / Throttle (UI)",
-      "group": "frontend"
+      "group": "frontend",
+      "altitude": "low"
     },
     {
       "id": "flux",
       "kind": "software-pattern",
       "title": "Flux",
-      "group": "frontend"
+      "group": "frontend",
+      "altitude": "medium"
     },
     {
       "id": "higher-order-component",
       "kind": "software-pattern",
       "title": "Higher-Order Component",
-      "group": "frontend"
+      "group": "frontend",
+      "altitude": "low"
     },
     {
       "id": "hooks",
       "kind": "software-pattern",
       "title": "Hooks",
-      "group": "frontend"
+      "group": "frontend",
+      "altitude": "low"
     },
     {
       "id": "islands-architecture",
       "kind": "software-pattern",
       "title": "Islands Architecture",
-      "group": "frontend"
+      "group": "frontend",
+      "altitude": "high"
     },
     {
       "id": "micro-frontends",
       "kind": "software-pattern",
       "title": "Micro-Frontends",
-      "group": "frontend"
+      "group": "frontend",
+      "altitude": "high"
     },
     {
       "id": "model-view-presenter",
       "kind": "software-pattern",
       "title": "Model-View-Presenter (MVP)",
-      "group": "frontend"
+      "group": "frontend",
+      "altitude": "medium"
     },
     {
       "id": "model-view-viewmodel",
       "kind": "software-pattern",
       "title": "Model-View-ViewModel (MVVM)",
-      "group": "frontend"
+      "group": "frontend",
+      "altitude": "medium"
     },
     {
       "id": "optimistic-ui",
       "kind": "software-pattern",
       "title": "Optimistic UI",
-      "group": "frontend"
+      "group": "frontend",
+      "altitude": "low"
     },
     {
       "id": "redux-pattern",
       "kind": "software-pattern",
       "title": "Redux (Unidirectional Store)",
-      "group": "frontend"
+      "group": "frontend",
+      "altitude": "medium"
     },
     {
       "id": "render-props",
       "kind": "software-pattern",
       "title": "Render Props",
-      "group": "frontend"
+      "group": "frontend",
+      "altitude": "low"
     },
     {
       "id": "server-side-rendering",
       "kind": "software-pattern",
       "title": "Server-Side Rendering",
-      "group": "frontend"
+      "group": "frontend",
+      "altitude": "high"
     },
     {
       "id": "state-machine-ui",
       "kind": "software-pattern",
       "title": "State Machine UI",
-      "group": "frontend"
+      "group": "frontend",
+      "altitude": "medium"
     },
     {
       "id": "virtual-dom",
       "kind": "software-pattern",
       "title": "Virtual DOM",
-      "group": "frontend"
+      "group": "frontend",
+      "altitude": "medium"
     },
     {
       "id": "currying",
       "kind": "software-pattern",
       "title": "Currying",
-      "group": "functional"
+      "group": "functional",
+      "altitude": "low"
     },
     {
       "id": "either-result",
       "kind": "software-pattern",
       "title": "Either / Result",
-      "group": "functional"
+      "group": "functional",
+      "altitude": "low"
     },
     {
       "id": "function-composition",
       "kind": "software-pattern",
       "title": "Function Composition",
-      "group": "functional"
+      "group": "functional",
+      "altitude": "low"
     },
     {
       "id": "functor",
       "kind": "software-pattern",
       "title": "Functor",
-      "group": "functional"
+      "group": "functional",
+      "altitude": "low"
     },
     {
       "id": "higher-order-function",
       "kind": "software-pattern",
       "title": "Higher-Order Function",
-      "group": "functional"
+      "group": "functional",
+      "altitude": "low"
     },
     {
       "id": "immutability",
       "kind": "software-pattern",
       "title": "Immutability",
-      "group": "functional"
+      "group": "functional",
+      "altitude": "low"
     },
     {
       "id": "lazy-evaluation",
       "kind": "software-pattern",
       "title": "Lazy Evaluation",
-      "group": "functional"
+      "group": "functional",
+      "altitude": "low"
     },
     {
       "id": "lens",
       "kind": "software-pattern",
       "title": "Lens",
-      "group": "functional"
+      "group": "functional",
+      "altitude": "low"
     },
     {
       "id": "map-filter-reduce",
       "kind": "software-pattern",
       "title": "Map-Filter-Reduce",
-      "group": "functional"
+      "group": "functional",
+      "altitude": "low"
     },
     {
       "id": "memoization",
       "kind": "software-pattern",
       "title": "Memoization",
-      "group": "functional"
+      "group": "functional",
+      "altitude": "low"
     },
     {
       "id": "monad",
       "kind": "software-pattern",
       "title": "Monad",
-      "group": "functional"
+      "group": "functional",
+      "altitude": "low"
     },
     {
       "id": "option-maybe",
       "kind": "software-pattern",
       "title": "Option / Maybe",
-      "group": "functional"
+      "group": "functional",
+      "altitude": "low"
     },
     {
       "id": "partial-application",
       "kind": "software-pattern",
       "title": "Partial Application",
-      "group": "functional"
+      "group": "functional",
+      "altitude": "low"
     },
     {
       "id": "pattern-matching",
       "kind": "software-pattern",
       "title": "Pattern Matching",
-      "group": "functional"
+      "group": "functional",
+      "altitude": "low"
     },
     {
       "id": "persistent-data-structure",
       "kind": "software-pattern",
       "title": "Persistent Data Structure",
-      "group": "functional"
+      "group": "functional",
+      "altitude": "low"
     },
     {
       "id": "pure-function",
       "kind": "software-pattern",
       "title": "Pure Function",
-      "group": "functional"
+      "group": "functional",
+      "altitude": "low"
     },
     {
       "id": "tail-recursion",
       "kind": "software-pattern",
       "title": "Tail Recursion",
-      "group": "functional"
+      "group": "functional",
+      "altitude": "low"
     },
     {
       "id": "chain-of-responsibility",
       "kind": "software-pattern",
       "title": "Chain of Responsibility",
-      "group": "gof-behavioural"
+      "group": "gof-behavioural",
+      "altitude": "low"
     },
     {
       "id": "command",
       "kind": "software-pattern",
       "title": "Command",
-      "group": "gof-behavioural"
+      "group": "gof-behavioural",
+      "altitude": "low"
     },
     {
       "id": "interpreter",
       "kind": "software-pattern",
       "title": "Interpreter",
-      "group": "gof-behavioural"
+      "group": "gof-behavioural",
+      "altitude": "low"
     },
     {
       "id": "iterator",
       "kind": "software-pattern",
       "title": "Iterator",
-      "group": "gof-behavioural"
+      "group": "gof-behavioural",
+      "altitude": "low"
     },
     {
       "id": "mediator",
       "kind": "software-pattern",
       "title": "Mediator",
-      "group": "gof-behavioural"
+      "group": "gof-behavioural",
+      "altitude": "low"
     },
     {
       "id": "memento",
       "kind": "software-pattern",
       "title": "Memento",
-      "group": "gof-behavioural"
+      "group": "gof-behavioural",
+      "altitude": "low"
     },
     {
       "id": "observer",
       "kind": "software-pattern",
       "title": "Observer",
-      "group": "gof-behavioural"
+      "group": "gof-behavioural",
+      "altitude": "low"
     },
     {
       "id": "state",
       "kind": "software-pattern",
       "title": "State",
-      "group": "gof-behavioural"
+      "group": "gof-behavioural",
+      "altitude": "low"
     },
     {
       "id": "strategy",
       "kind": "software-pattern",
       "title": "Strategy",
-      "group": "gof-behavioural"
+      "group": "gof-behavioural",
+      "altitude": "low"
     },
     {
       "id": "template-method",
       "kind": "software-pattern",
       "title": "Template Method",
-      "group": "gof-behavioural"
+      "group": "gof-behavioural",
+      "altitude": "low"
     },
     {
       "id": "visitor",
       "kind": "software-pattern",
       "title": "Visitor",
-      "group": "gof-behavioural"
+      "group": "gof-behavioural",
+      "altitude": "low"
     },
     {
       "id": "abstract-factory",
       "kind": "software-pattern",
       "title": "Abstract Factory",
-      "group": "gof-creational"
+      "group": "gof-creational",
+      "altitude": "low"
     },
     {
       "id": "builder",
       "kind": "software-pattern",
       "title": "Builder",
-      "group": "gof-creational"
+      "group": "gof-creational",
+      "altitude": "low"
     },
     {
       "id": "factory-method",
       "kind": "software-pattern",
       "title": "Factory Method",
-      "group": "gof-creational"
+      "group": "gof-creational",
+      "altitude": "low"
     },
     {
       "id": "prototype",
       "kind": "software-pattern",
       "title": "Prototype",
-      "group": "gof-creational"
+      "group": "gof-creational",
+      "altitude": "low"
     },
     {
       "id": "singleton",
       "kind": "software-pattern",
       "title": "Singleton",
-      "group": "gof-creational"
+      "group": "gof-creational",
+      "altitude": "low"
     },
     {
       "id": "adapter",
       "kind": "software-pattern",
       "title": "Adapter",
-      "group": "gof-structural"
+      "group": "gof-structural",
+      "altitude": "low"
     },
     {
       "id": "bridge",
       "kind": "software-pattern",
       "title": "Bridge",
-      "group": "gof-structural"
+      "group": "gof-structural",
+      "altitude": "low"
     },
     {
       "id": "composite",
       "kind": "software-pattern",
       "title": "Composite",
-      "group": "gof-structural"
+      "group": "gof-structural",
+      "altitude": "low"
     },
     {
       "id": "decorator",
       "kind": "software-pattern",
       "title": "Decorator",
-      "group": "gof-structural"
+      "group": "gof-structural",
+      "altitude": "low"
     },
     {
       "id": "facade",
       "kind": "software-pattern",
       "title": "Facade",
-      "group": "gof-structural"
+      "group": "gof-structural",
+      "altitude": "low"
     },
     {
       "id": "flyweight",
       "kind": "software-pattern",
       "title": "Flyweight",
-      "group": "gof-structural"
+      "group": "gof-structural",
+      "altitude": "low"
     },
     {
       "id": "proxy",
       "kind": "software-pattern",
       "title": "Proxy",
-      "group": "gof-structural"
+      "group": "gof-structural",
+      "altitude": "low"
     },
     {
       "id": "composition-over-inheritance",
       "kind": "software-pattern",
       "title": "Composition over Inheritance",
-      "group": "implementation"
+      "group": "implementation",
+      "altitude": "low"
     },
     {
       "id": "dependency-injection",
       "kind": "software-pattern",
       "title": "Dependency Injection",
-      "group": "implementation"
+      "group": "implementation",
+      "altitude": "low"
     },
     {
       "id": "dry",
       "kind": "software-pattern",
       "title": "DRY (Don't Repeat Yourself)",
-      "group": "implementation"
+      "group": "implementation",
+      "altitude": "low"
     },
     {
       "id": "event-emitter",
       "kind": "software-pattern",
       "title": "Event Emitter (Pub-Sub in-process)",
-      "group": "implementation"
+      "group": "implementation",
+      "altitude": "low"
     },
     {
       "id": "fail-fast",
       "kind": "software-pattern",
       "title": "Fail Fast",
-      "group": "implementation"
+      "group": "implementation",
+      "altitude": "low"
     },
     {
       "id": "feature-toggle",
       "kind": "software-pattern",
       "title": "Feature Toggle",
-      "group": "implementation"
+      "group": "implementation",
+      "altitude": "low"
     },
     {
       "id": "fluent-interface",
       "kind": "software-pattern",
       "title": "Fluent Interface",
-      "group": "implementation"
+      "group": "implementation",
+      "altitude": "low"
     },
     {
       "id": "guard-clause",
       "kind": "software-pattern",
       "title": "Guard Clause (Early Return)",
-      "group": "implementation"
+      "group": "implementation",
+      "altitude": "low"
     },
     {
       "id": "inversion-of-control",
       "kind": "software-pattern",
       "title": "Inversion of Control",
-      "group": "implementation"
+      "group": "implementation",
+      "altitude": "low"
     },
     {
       "id": "lazy-initialization",
       "kind": "software-pattern",
       "title": "Lazy Initialization",
-      "group": "implementation"
+      "group": "implementation",
+      "altitude": "low"
     },
     {
       "id": "middleware-pipeline",
       "kind": "software-pattern",
       "title": "Middleware Pipeline",
-      "group": "implementation"
+      "group": "implementation",
+      "altitude": "medium"
     },
     {
       "id": "newtype-wrapper",
       "kind": "software-pattern",
       "title": "Newtype / Wrapper Type",
-      "group": "implementation"
+      "group": "implementation",
+      "altitude": "low"
     },
     {
       "id": "null-object",
       "kind": "software-pattern",
       "title": "Null Object",
-      "group": "implementation"
+      "group": "implementation",
+      "altitude": "low"
     },
     {
       "id": "object-pool",
       "kind": "software-pattern",
       "title": "Object Pool",
-      "group": "implementation"
+      "group": "implementation",
+      "altitude": "low"
     },
     {
       "id": "options-object",
       "kind": "software-pattern",
       "title": "Options Object",
-      "group": "implementation"
+      "group": "implementation",
+      "altitude": "low"
     },
     {
       "id": "parameter-object",
       "kind": "software-pattern",
       "title": "Parameter Object",
-      "group": "implementation"
+      "group": "implementation",
+      "altitude": "low"
     },
     {
       "id": "raii",
       "kind": "software-pattern",
       "title": "RAII (Resource Acquisition Is Initialization)",
-      "group": "implementation"
+      "group": "implementation",
+      "altitude": "low"
     },
     {
       "id": "service-locator",
       "kind": "software-pattern",
       "title": "Service Locator",
-      "group": "implementation"
+      "group": "implementation",
+      "altitude": "low"
     },
     {
       "id": "smart-constructor",
       "kind": "software-pattern",
       "title": "Smart Constructor",
-      "group": "implementation"
+      "group": "implementation",
+      "altitude": "low"
     },
     {
       "id": "type-state",
       "kind": "software-pattern",
       "title": "Type State",
-      "group": "implementation"
+      "group": "implementation",
+      "altitude": "low"
     },
     {
       "id": "backpressure",
       "kind": "software-pattern",
       "title": "Backpressure",
-      "group": "resilience"
+      "group": "resilience",
+      "altitude": "medium"
     },
     {
       "id": "bulkhead",
       "kind": "software-pattern",
       "title": "Bulkhead",
-      "group": "resilience"
+      "group": "resilience",
+      "altitude": "medium"
     },
     {
       "id": "circuit-breaker",
       "kind": "software-pattern",
       "title": "Circuit Breaker",
-      "group": "resilience"
+      "group": "resilience",
+      "altitude": "medium"
     },
     {
       "id": "fallback",
       "kind": "software-pattern",
       "title": "Fallback",
-      "group": "resilience"
+      "group": "resilience",
+      "altitude": "medium"
     },
     {
       "id": "hedged-requests",
       "kind": "software-pattern",
       "title": "Hedged Requests",
-      "group": "resilience"
+      "group": "resilience",
+      "altitude": "medium"
     },
     {
       "id": "idempotency",
       "kind": "software-pattern",
       "title": "Idempotency",
-      "group": "resilience"
+      "group": "resilience",
+      "altitude": "medium"
     },
     {
       "id": "load-shedding",
       "kind": "software-pattern",
       "title": "Load Shedding",
-      "group": "resilience"
+      "group": "resilience",
+      "altitude": "medium"
     },
     {
       "id": "rate-limiting",
       "kind": "software-pattern",
       "title": "Rate Limiting",
-      "group": "resilience"
+      "group": "resilience",
+      "altitude": "medium"
     },
     {
       "id": "retry",
       "kind": "software-pattern",
       "title": "Retry with Backoff",
-      "group": "resilience"
+      "group": "resilience",
+      "altitude": "medium"
     },
     {
       "id": "timeout",
       "kind": "software-pattern",
       "title": "Timeout",
-      "group": "resilience"
+      "group": "resilience",
+      "altitude": "medium"
     },
     {
       "id": "audit-logging",
       "kind": "software-pattern",
       "title": "Audit Logging",
-      "group": "security"
+      "group": "security",
+      "altitude": "medium"
     },
     {
       "id": "defense-in-depth",
       "kind": "software-pattern",
       "title": "Defense in Depth",
-      "group": "security"
+      "group": "security",
+      "altitude": "high"
     },
     {
       "id": "input-validation",
       "kind": "software-pattern",
       "title": "Input Validation (Allow-List)",
-      "group": "security"
+      "group": "security",
+      "altitude": "low"
     },
     {
       "id": "least-privilege",
       "kind": "software-pattern",
       "title": "Principle of Least Privilege",
-      "group": "security"
+      "group": "security",
+      "altitude": "high"
     },
     {
       "id": "output-encoding",
       "kind": "software-pattern",
       "title": "Output Encoding",
-      "group": "security"
+      "group": "security",
+      "altitude": "low"
     },
     {
       "id": "secrets-management",
       "kind": "software-pattern",
       "title": "Secrets Management",
-      "group": "security"
+      "group": "security",
+      "altitude": "medium"
     },
     {
       "id": "secure-by-default",
       "kind": "software-pattern",
       "title": "Secure by Default",
-      "group": "security"
+      "group": "security",
+      "altitude": "high"
     },
     {
       "id": "token-based-auth",
       "kind": "software-pattern",
       "title": "Token-Based Authentication",
-      "group": "security"
+      "group": "security",
+      "altitude": "medium"
     },
     {
       "id": "arrange-act-assert",
       "kind": "software-pattern",
       "title": "Arrange-Act-Assert",
-      "group": "testing"
+      "group": "testing",
+      "altitude": "low"
     },
     {
       "id": "contract-testing",
       "kind": "software-pattern",
       "title": "Consumer-Driven Contract Testing",
-      "group": "testing"
+      "group": "testing",
+      "altitude": "medium"
     },
     {
       "id": "fake-object",
       "kind": "software-pattern",
       "title": "Fake Object",
-      "group": "testing"
+      "group": "testing",
+      "altitude": "low"
     },
     {
       "id": "given-when-then",
       "kind": "software-pattern",
       "title": "Given-When-Then (BDD)",
-      "group": "testing"
+      "group": "testing",
+      "altitude": "low"
     },
     {
       "id": "golden-master",
       "kind": "software-pattern",
       "title": "Golden Master (Approval)",
-      "group": "testing"
+      "group": "testing",
+      "altitude": "low"
     },
     {
       "id": "mock-object",
       "kind": "software-pattern",
       "title": "Mock Object",
-      "group": "testing"
+      "group": "testing",
+      "altitude": "low"
     },
     {
       "id": "object-mother",
       "kind": "software-pattern",
       "title": "Object Mother",
-      "group": "testing"
+      "group": "testing",
+      "altitude": "low"
     },
     {
       "id": "page-object",
       "kind": "software-pattern",
       "title": "Page Object",
-      "group": "testing"
+      "group": "testing",
+      "altitude": "low"
     },
     {
       "id": "property-based-testing",
       "kind": "software-pattern",
       "title": "Property-Based Testing",
-      "group": "testing"
+      "group": "testing",
+      "altitude": "low"
     },
     {
       "id": "stub",
       "kind": "software-pattern",
       "title": "Stub",
-      "group": "testing"
+      "group": "testing",
+      "altitude": "low"
     },
     {
       "id": "test-data-builder",
       "kind": "software-pattern",
       "title": "Test Data Builder",
-      "group": "testing"
+      "group": "testing",
+      "altitude": "low"
     },
     {
       "id": "test-double",
       "kind": "software-pattern",
       "title": "Test Double",
-      "group": "testing"
+      "group": "testing",
+      "altitude": "low"
     },
     {
       "id": "test-pyramid",
       "kind": "software-pattern",
       "title": "Test Pyramid",
-      "group": "testing"
+      "group": "testing",
+      "altitude": "medium"
     },
     {
       "id": "ab-test-design",

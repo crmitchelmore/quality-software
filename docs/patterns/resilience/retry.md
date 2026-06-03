@@ -2,7 +2,7 @@
 
 > Re-attempt transiently failing operations after increasing delays, usually with jitter, so brief faults can clear without synchronising callers into a retry storm.
 
-**Scale:** integration · **Category:** resilience · **Maturity:** time-tested
+**Scale:** integration · **Altitude:** medium · **Category:** resilience · **Maturity:** time-tested
 
 **Also known as:** Exponential Backoff, Retry with Jitter
 

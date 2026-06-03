@@ -2,6 +2,7 @@ id: health-endpoint-monitoring
 title: Health Endpoint Monitoring
 scale: integration
 category: cloud-distributed
+altitude: medium
 maturity: established
 short_description: >-
   Expose lightweight health endpoints that external monitors, load balancers, and

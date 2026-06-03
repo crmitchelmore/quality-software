@@ -2,7 +2,7 @@
 
 > Store an entire inheritance hierarchy in one database table, using a discriminator column to identify the concrete subtype for each row.
 
-**Scale:** data · **Category:** enterprise-application · **Maturity:** time-tested
+**Scale:** data · **Altitude:** medium · **Category:** enterprise-application · **Maturity:** time-tested
 
 ## Description
 

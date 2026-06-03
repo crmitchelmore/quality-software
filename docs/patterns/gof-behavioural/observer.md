@@ -2,7 +2,7 @@
 
 > Let interested observers subscribe to state changes in a subject so the subject can notify them without knowing their concrete types.
 
-**Scale:** design · **Category:** gof-behavioural · **Maturity:** time-tested
+**Scale:** design · **Altitude:** low · **Category:** gof-behavioural · **Maturity:** time-tested
 
 **Also known as:** Publish Subscribe, Listener
 

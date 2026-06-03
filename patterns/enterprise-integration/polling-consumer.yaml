@@ -2,6 +2,7 @@ id: polling-consumer
 title: Polling Consumer
 scale: integration
 category: enterprise-integration
+altitude: medium
 maturity: time-tested
 short_description: >-
   Let a receiver control when it checks a channel for work, trading latency for predictable resource use and simpler scheduling.

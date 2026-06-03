@@ -2,7 +2,7 @@
 
 > Use a lightweight working implementation of a collaborator when tests need realistic behaviour without the real infrastructure.
 
-**Scale:** implementation · **Category:** testing · **Maturity:** time-tested
+**Scale:** implementation · **Altitude:** low · **Category:** testing · **Maturity:** time-tested
 
 **Also known as:** In-memory implementation, Fake
 

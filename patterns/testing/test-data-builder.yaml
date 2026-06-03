@@ -5,6 +5,7 @@ aka:
   - Object builder
 scale: implementation
 category: testing
+altitude: low
 maturity: time-tested
 short_description: >-
   Create test fixtures with intention-revealing defaults and fluent overrides so each test states only the data that matters.

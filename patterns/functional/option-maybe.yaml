@@ -5,6 +5,7 @@ aka:
   - Maybe
 scale: design
 category: functional
+altitude: low
 maturity: time-tested
 short_description: >-
   Represent possible absence explicitly as Some(value) or None instead of using null or undefined.

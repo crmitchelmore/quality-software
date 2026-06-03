@@ -5,6 +5,7 @@ aka:
   - Rendezvous barrier
 scale: concurrency
 category: concurrency
+altitude: low
 maturity: time-tested
 short_description: >-
   Make a fixed group of concurrent workers wait at a known point until every participant has arrived, then release them together.

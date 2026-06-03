@@ -2,7 +2,7 @@
 
 > Ensure a type has exactly one process-local instance and provide a controlled access point to it, usually for coordinating shared infrastructure.
 
-**Scale:** design · **Category:** gof-creational · **Maturity:** time-tested
+**Scale:** design · **Altitude:** low · **Category:** gof-creational · **Maturity:** time-tested
 
 **Also known as:** Single Instance
 

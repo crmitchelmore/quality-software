@@ -2,7 +2,7 @@
 
 > Reuse component behaviour by wrapping a component in a function that returns an enhanced component with additional props or lifecycle wiring.
 
-**Scale:** frontend · **Category:** frontend · **Maturity:** established
+**Scale:** frontend · **Altitude:** low · **Category:** frontend · **Maturity:** established
 
 **Also known as:** HOC
 

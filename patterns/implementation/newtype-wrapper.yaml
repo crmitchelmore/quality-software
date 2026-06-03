@@ -5,6 +5,7 @@ aka:
   - Domain Primitive
 scale: implementation
 category: implementation
+altitude: low
 maturity: established
 short_description: >-
   Wrap a primitive value in a distinct type so the compiler and API signatures carry

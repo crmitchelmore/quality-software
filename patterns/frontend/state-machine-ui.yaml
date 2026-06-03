@@ -2,6 +2,7 @@ id: state-machine-ui
 title: State Machine UI
 scale: frontend
 category: frontend
+altitude: medium
 maturity: established
 short_description: >-
   Model UI behaviour as explicit states, events and transitions so only valid screens and interactions are representable.

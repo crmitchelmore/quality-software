@@ -2,6 +2,7 @@ id: context-map
 title: Context Map
 scale: architectural
 category: ddd-strategic
+altitude: high
 maturity: time-tested
 short_description: >-
   Document bounded contexts and their relationships so teams can reason about upstream/downstream influence, translation, and integration risk.

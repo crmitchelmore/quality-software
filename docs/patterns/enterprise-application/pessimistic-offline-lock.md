@@ -2,7 +2,7 @@
 
 > Prevent conflicting business transactions by acquiring an application-level lock before a user starts a long-running edit.
 
-**Scale:** data · **Category:** enterprise-application · **Maturity:** time-tested
+**Scale:** data · **Altitude:** medium · **Category:** enterprise-application · **Maturity:** time-tested
 
 ## Description
 

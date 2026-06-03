@@ -2,7 +2,7 @@
 
 > Create families of related objects through a common factory interface, ensuring clients receive compatible products without naming concrete classes.
 
-**Scale:** design · **Category:** gof-creational · **Maturity:** time-tested
+**Scale:** design · **Altitude:** low · **Category:** gof-creational · **Maturity:** time-tested
 
 ## Description
 

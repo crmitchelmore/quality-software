@@ -2,7 +2,7 @@
 
 > Scale high-volume workloads by colocating processing with an in-memory data grid, reducing database contention and coordinating state through a shared space.
 
-**Scale:** architectural · **Category:** architecture · **Maturity:** established
+**Scale:** architectural · **Altitude:** high · **Category:** architecture · **Maturity:** established
 
 **Also known as:** Tuple space architecture, Shared space architecture
 

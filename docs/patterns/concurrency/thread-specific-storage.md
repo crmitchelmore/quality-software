@@ -2,7 +2,7 @@
 
 > Give each thread its own instance of otherwise global-looking state so code can access per-thread context without sharing mutable data across threads.
 
-**Scale:** concurrency · **Category:** concurrency · **Maturity:** time-tested
+**Scale:** concurrency · **Altitude:** low · **Category:** concurrency · **Maturity:** time-tested
 
 **Also known as:** Thread-local storage, TLS
 

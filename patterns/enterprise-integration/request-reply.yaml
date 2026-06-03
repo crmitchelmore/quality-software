@@ -2,6 +2,7 @@ id: request-reply
 title: Request-Reply
 scale: integration
 category: enterprise-integration
+altitude: medium
 maturity: time-tested
 aka:
   - Request-Response Messaging

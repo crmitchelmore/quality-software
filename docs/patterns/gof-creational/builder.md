@@ -2,7 +2,7 @@
 
 > Construct complex objects step by step through a focused builder API, separating validation and assembly from the final immutable product.
 
-**Scale:** design · **Category:** gof-creational · **Maturity:** time-tested
+**Scale:** design · **Altitude:** low · **Category:** gof-creational · **Maturity:** time-tested
 
 ## Description
 

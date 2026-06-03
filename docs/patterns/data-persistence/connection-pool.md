@@ -2,7 +2,7 @@
 
 > Reuse a bounded set of database connections to avoid per-request setup and protect the database from unbounded concurrency.
 
-**Scale:** data · **Category:** data-persistence · **Maturity:** time-tested
+**Scale:** data · **Altitude:** low · **Category:** data-persistence · **Maturity:** time-tested
 
 ## Description
 

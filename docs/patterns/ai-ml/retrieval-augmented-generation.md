@@ -2,7 +2,7 @@
 
 > Ground language-model responses in retrieved private or domain-specific context instead of relying only on model parameters.
 
-**Scale:** architectural · **Category:** ai-ml · **Maturity:** emerging
+**Scale:** architectural · **Altitude:** medium · **Category:** ai-ml · **Maturity:** emerging
 
 ## Description
 

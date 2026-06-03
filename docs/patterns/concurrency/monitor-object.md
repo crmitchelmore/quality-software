@@ -2,7 +2,7 @@
 
 > Encapsulate shared mutable state inside an object whose methods acquire a mutual-exclusion lock and coordinate condition waits internally.
 
-**Scale:** concurrency · **Category:** concurrency · **Maturity:** time-tested
+**Scale:** concurrency · **Altitude:** low · **Category:** concurrency · **Maturity:** time-tested
 
 **Also known as:** Synchronized Object
 

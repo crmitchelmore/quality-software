@@ -2,7 +2,7 @@
 
 > Add operations over a stable object structure by moving the operation into a visitor object that each element accepts.
 
-**Scale:** design · **Category:** gof-behavioural · **Maturity:** time-tested
+**Scale:** design · **Altitude:** low · **Category:** gof-behavioural · **Maturity:** time-tested
 
 **Also known as:** Double Dispatch Visitor
 

@@ -2,7 +2,7 @@
 
 > Write functions whose result depends only on inputs and that produce no observable side effects.
 
-**Scale:** implementation · **Category:** functional · **Maturity:** time-tested
+**Scale:** implementation · **Altitude:** low · **Category:** functional · **Maturity:** time-tested
 
 **Also known as:** Referentially Transparent Function
 

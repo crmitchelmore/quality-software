@@ -2,7 +2,7 @@
 
 > Break a composite message into a sequence of smaller messages so each part can be processed independently and, if needed, correlated back to the original.
 
-**Scale:** integration · **Category:** enterprise-integration · **Maturity:** time-tested
+**Scale:** integration · **Altitude:** medium · **Category:** enterprise-integration · **Maturity:** time-tested
 
 ## Description
 

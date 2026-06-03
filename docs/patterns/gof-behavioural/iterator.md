@@ -2,7 +2,7 @@
 
 > Provide a uniform way to traverse elements of a collection without exposing the collection's internal representation.
 
-**Scale:** design · **Category:** gof-behavioural · **Maturity:** time-tested
+**Scale:** design · **Altitude:** low · **Category:** gof-behavioural · **Maturity:** time-tested
 
 **Also known as:** Cursor, Enumerator
 

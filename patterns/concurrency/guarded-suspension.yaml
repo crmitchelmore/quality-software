@@ -4,6 +4,7 @@ aka:
   - Wait Until Predicate
 scale: concurrency
 category: concurrency
+altitude: low
 maturity: time-tested
 short_description: >-
   Suspend a thread inside a synchronised object until a guarded condition becomes true, then proceed while the condition is protected.

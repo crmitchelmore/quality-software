@@ -2,7 +2,7 @@
 
 > Separate asynchronous event demultiplexing from synchronous application processing using a queue boundary between event-loop code and worker threads.
 
-**Scale:** concurrency · **Category:** concurrency · **Maturity:** time-tested
+**Scale:** concurrency · **Altitude:** medium · **Category:** concurrency · **Maturity:** time-tested
 
 **Also known as:** Async Boundary with Synchronous Workers
 

@@ -2,7 +2,7 @@
 
 > Build larger behaviours by connecting small functions where each output becomes the next input.
 
-**Scale:** implementation · **Category:** functional · **Maturity:** time-tested
+**Scale:** implementation · **Altitude:** low · **Category:** functional · **Maturity:** time-tested
 
 **Also known as:** Compose, Pipe
 

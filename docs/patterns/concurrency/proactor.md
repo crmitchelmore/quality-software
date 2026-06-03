@@ -2,7 +2,7 @@
 
 > Start asynchronous operations and dispatch handlers only when the operating system or runtime reports that each operation has completed.
 
-**Scale:** concurrency · **Category:** concurrency · **Maturity:** time-tested
+**Scale:** concurrency · **Altitude:** medium · **Category:** concurrency · **Maturity:** time-tested
 
 **Also known as:** Asynchronous completion dispatch, Completion event loop
 

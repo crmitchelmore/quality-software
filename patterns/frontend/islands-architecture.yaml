@@ -5,6 +5,7 @@ aka:
   - Component Islands
 scale: architectural
 category: frontend
+altitude: high
 maturity: emerging
 short_description: >-
   Serve mostly static or server-rendered HTML and hydrate only isolated interactive components, leaving the rest of the page inert.

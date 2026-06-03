@@ -2,6 +2,7 @@ id: abstract-factory
 title: Abstract Factory
 scale: design
 category: gof-creational
+altitude: low
 maturity: time-tested
 short_description: >-
   Create families of related objects through a common factory interface, ensuring clients receive compatible products without naming concrete classes.

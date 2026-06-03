@@ -2,7 +2,7 @@
 
 > Define application operations as a boundary that coordinates domain logic, transactions, security, and integration.
 
-**Scale:** design · **Category:** enterprise-application · **Maturity:** time-tested
+**Scale:** design · **Altitude:** medium · **Category:** enterprise-application · **Maturity:** time-tested
 
 **Also known as:** Application service layer, Use-case layer
 

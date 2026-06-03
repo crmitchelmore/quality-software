@@ -2,7 +2,7 @@
 
 > Keep shared client state in a single predictable store updated by pure reducers in response to explicit actions.
 
-**Scale:** frontend · **Category:** frontend · **Maturity:** established
+**Scale:** frontend · **Altitude:** medium · **Category:** frontend · **Maturity:** established
 
 **Also known as:** Redux, Reducer Store
 

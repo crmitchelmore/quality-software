@@ -2,6 +2,7 @@ id: resequencer
 title: Resequencer
 scale: integration
 category: enterprise-integration
+altitude: medium
 maturity: time-tested
 short_description: >-
   Reorder related messages into a required sequence before forwarding them to a consumer that cannot safely process out-of-order messages.

@@ -5,6 +5,7 @@ aka:
   - Snapshot-on-write
 scale: concurrency
 category: concurrency
+altitude: low
 maturity: time-tested
 short_description: >-
   Let readers share an immutable snapshot while writers create and publish a fresh copy, avoiding reader locks for read-mostly data.

@@ -2,7 +2,7 @@
 
 > Add responsibilities to an object by wrapping it with another object that implements the same interface and delegates to the wrapped component.
 
-**Scale:** design · **Category:** gof-structural · **Maturity:** time-tested
+**Scale:** design · **Altitude:** low · **Category:** gof-structural · **Maturity:** time-tested
 
 **Also known as:** Wrapper
 

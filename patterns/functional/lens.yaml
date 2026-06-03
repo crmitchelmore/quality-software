@@ -4,6 +4,7 @@ aka:
   - Functional Optic
 scale: design
 category: functional
+altitude: low
 maturity: established
 short_description: >-
   Focus on a nested part of immutable data with composable get and set/update operations.

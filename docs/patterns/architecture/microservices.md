@@ -2,7 +2,7 @@
 
 > Decompose a system into independently deployable services aligned to business capabilities, each owning its data and exposing contracts through APIs, events, or messages.
 
-**Scale:** architectural · **Category:** architecture · **Maturity:** established
+**Scale:** architectural · **Altitude:** high · **Category:** architecture · **Maturity:** established
 
 **Also known as:** Microservice Architecture
 

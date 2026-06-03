@@ -2,7 +2,7 @@
 
 > Create a backend tailored to one frontend or channel so the client receives purpose-built APIs without inheriting generic service topology or contracts.
 
-**Scale:** architectural · **Category:** architecture · **Maturity:** established
+**Scale:** architectural · **Altitude:** high · **Category:** architecture · **Maturity:** established
 
 **Also known as:** Client-specific backend
 

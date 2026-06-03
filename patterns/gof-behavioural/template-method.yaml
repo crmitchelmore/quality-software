@@ -4,6 +4,7 @@ aka:
   - Skeleton Method
 scale: design
 category: gof-behavioural
+altitude: low
 maturity: time-tested
 short_description: >-
   Define the invariant skeleton of an algorithm in a base type while allowing

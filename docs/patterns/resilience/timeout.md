@@ -2,7 +2,7 @@
 
 > Bound how long a caller waits for an operation so slow dependencies release resources predictably instead of turning latency into cascading failure.
 
-**Scale:** integration · **Category:** resilience · **Maturity:** time-tested
+**Scale:** integration · **Altitude:** medium · **Category:** resilience · **Maturity:** time-tested
 
 **Also known as:** Deadline, Request Budget
 

@@ -2,7 +2,7 @@
 
 > Deploy a service in multiple geographic regions as cooperating active units so users are served near their location and the system can survive regional failure.
 
-**Scale:** architectural · **Category:** cloud-distributed · **Maturity:** established
+**Scale:** architectural · **Altitude:** high · **Category:** cloud-distributed · **Maturity:** established
 
 **Also known as:** Geo-Distributed Deployment, Active-Active Regions
 

@@ -2,6 +2,7 @@ id: message-channel
 title: Message Channel
 scale: integration
 category: enterprise-integration
+altitude: medium
 maturity: time-tested
 short_description: >-
   Connect applications through a named logical conduit so senders and receivers can exchange messages without knowing each other's location, protocol details, or runtime availability.

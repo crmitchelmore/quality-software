@@ -2,7 +2,7 @@
 
 > Render initial HTML on the server so users and crawlers receive meaningful content before client-side JavaScript hydrates interactivity.
 
-**Scale:** frontend · **Category:** frontend · **Maturity:** time-tested
+**Scale:** frontend · **Altitude:** high · **Category:** frontend · **Maturity:** time-tested
 
 **Also known as:** SSR
 

@@ -2,6 +2,7 @@ id: lazy-load
 title: Lazy Load
 scale: data
 category: enterprise-application
+altitude: low
 maturity: time-tested
 aka:
   - Lazy loading

@@ -2,6 +2,7 @@ id: api-versioning
 title: API Versioning
 scale: integration
 category: api-design
+altitude: medium
 maturity: time-tested
 short_description: >-
   Evolve API contracts without breaking existing clients by making compatibility, deprecation, and migration rules explicit.

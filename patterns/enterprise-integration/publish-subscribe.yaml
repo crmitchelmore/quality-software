@@ -2,6 +2,7 @@ id: publish-subscribe
 title: Publish-Subscribe Channel
 scale: integration
 category: enterprise-integration
+altitude: medium
 maturity: time-tested
 aka:
   - Pub-Sub

@@ -2,7 +2,7 @@
 
 > Represent one database row with an object that exposes finder-independent persistence operations for that row.
 
-**Scale:** data · **Category:** enterprise-application · **Maturity:** time-tested
+**Scale:** data · **Altitude:** medium · **Category:** enterprise-application · **Maturity:** time-tested
 
 **Also known as:** Row gateway
 

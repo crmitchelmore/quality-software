@@ -2,7 +2,7 @@
 
 > Route behaviour through a named runtime switch so code can be released separately from enabling the feature for users.
 
-**Scale:** implementation · **Category:** implementation · **Maturity:** established
+**Scale:** implementation · **Altitude:** low · **Category:** implementation · **Maturity:** established
 
 **Also known as:** Feature Flag, Feature Switch
 

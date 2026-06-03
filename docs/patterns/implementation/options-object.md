@@ -2,7 +2,7 @@
 
 > Replace long lists of optional arguments with a single object whose named fields describe configuration choices at the call site.
 
-**Scale:** implementation · **Category:** implementation · **Maturity:** established
+**Scale:** implementation · **Altitude:** low · **Category:** implementation · **Maturity:** established
 
 **Also known as:** Named Options, Configuration Object
 

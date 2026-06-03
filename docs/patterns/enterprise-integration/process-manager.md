@@ -2,7 +2,7 @@
 
 > Maintain the state of a long-running integration process and decide which command or message should be sent next as events arrive.
 
-**Scale:** integration · **Category:** enterprise-integration · **Maturity:** time-tested
+**Scale:** integration · **Altitude:** medium · **Category:** enterprise-integration · **Maturity:** time-tested
 
 ## Description
 

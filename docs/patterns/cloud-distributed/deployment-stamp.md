@@ -2,7 +2,7 @@
 
 > Replicate a complete slice of application infrastructure as many isolated stamps, each serving a subset of tenants, regions, or traffic.
 
-**Scale:** architectural · **Category:** cloud-distributed · **Maturity:** established
+**Scale:** architectural · **Altitude:** high · **Category:** cloud-distributed · **Maturity:** established
 
 **Also known as:** Cell, Stamp, Scale Unit
 

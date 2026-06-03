@@ -2,7 +2,7 @@
 
 > Send a request message and receive a corresponding reply message, preserving synchronous semantics over asynchronous infrastructure.
 
-**Scale:** integration · **Category:** enterprise-integration · **Maturity:** time-tested
+**Scale:** integration · **Altitude:** medium · **Category:** enterprise-integration · **Maturity:** time-tested
 
 **Also known as:** Request-Response Messaging
 

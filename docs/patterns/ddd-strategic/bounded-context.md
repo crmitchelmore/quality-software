@@ -2,7 +2,7 @@
 
 > Draw an explicit boundary around a model, language, codebase, and team ownership so terms and rules are consistent inside and deliberately translated outside.
 
-**Scale:** architectural · **Category:** ddd-strategic · **Maturity:** time-tested
+**Scale:** architectural · **Altitude:** high · **Category:** ddd-strategic · **Maturity:** time-tested
 
 ## Description
 

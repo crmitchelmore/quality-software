@@ -2,6 +2,7 @@ id: debounce-throttle-ui
 title: Debounce / Throttle (UI)
 scale: frontend
 category: frontend
+altitude: low
 maturity: time-tested
 short_description: >-
   Limit how often high-frequency UI events trigger expensive work by waiting for quiet time or enforcing a maximum call rate.

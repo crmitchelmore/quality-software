@@ -2,7 +2,7 @@
 
 > Move cross-service traffic policy, telemetry, security, and resilience controls into a dedicated infrastructure layer managed consistently across services.
 
-**Scale:** architectural · **Category:** architecture · **Maturity:** established
+**Scale:** architectural · **Altitude:** high · **Category:** architecture · **Maturity:** established
 
 ## Description
 

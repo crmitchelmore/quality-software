@@ -2,7 +2,7 @@
 
 > Keep a passive view thin by routing user events to a presenter that coordinates model access and updates the view through an interface.
 
-**Scale:** frontend · **Category:** frontend · **Maturity:** time-tested
+**Scale:** frontend · **Altitude:** medium · **Category:** frontend · **Maturity:** time-tested
 
 **Also known as:** MVP
 

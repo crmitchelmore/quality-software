@@ -2,7 +2,7 @@
 
 > Treat individual objects and tree-shaped groups uniformly through a shared component interface.
 
-**Scale:** design · **Category:** gof-structural · **Maturity:** time-tested
+**Scale:** design · **Altitude:** low · **Category:** gof-structural · **Maturity:** time-tested
 
 ## Description
 

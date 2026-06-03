@@ -26,6 +26,7 @@ interface GraphNode {
   kind: NodeKind;
   title: string;
   group: string; // category or discipline
+  altitude?: "low" | "medium" | "high"; // scope (software-patterns only)
 }
 
 interface GraphEdge {
@@ -51,7 +52,7 @@ function main(): void {
     }
   };
 
-  for (const p of patterns) addNode({ id: p.id, kind: "software-pattern", title: p.title, group: p.category });
+  for (const p of patterns) addNode({ id: p.id, kind: "software-pattern", title: p.title, group: p.category, altitude: p.altitude });
   for (const p of practice) addNode({ id: p.id, kind: "practice-pattern", title: p.title, group: `${p.discipline}:${p.category}` });
   for (const ph of philosophies) addNode({ id: ph.id, kind: "philosophy", title: ph.title, group: ph.discipline ?? "software" });
 

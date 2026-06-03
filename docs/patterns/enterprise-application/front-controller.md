@@ -2,7 +2,7 @@
 
 > Route all web requests through one controller entry point for shared dispatch, security, and request handling.
 
-**Scale:** design · **Category:** enterprise-application · **Maturity:** time-tested
+**Scale:** design · **Altitude:** medium · **Category:** enterprise-application · **Maturity:** time-tested
 
 **Also known as:** Application controller endpoint, Central request controller
 

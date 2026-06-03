@@ -2,6 +2,7 @@ id: rate-limiting
 title: Rate Limiting
 scale: integration
 category: resilience
+altitude: medium
 maturity: time-tested
 aka:
   - Token Bucket

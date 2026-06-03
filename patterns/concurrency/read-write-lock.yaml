@@ -4,6 +4,7 @@ aka:
   - Shared-Exclusive Lock
 scale: concurrency
 category: concurrency
+altitude: low
 maturity: time-tested
 short_description: >-
   Allow many concurrent readers or one exclusive writer for shared state whose reads are frequent and writes are comparatively rare.

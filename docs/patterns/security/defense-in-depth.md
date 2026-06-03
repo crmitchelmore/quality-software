@@ -2,7 +2,7 @@
 
 > Protect important assets with multiple independent controls so one failed or bypassed defence does not expose the whole system.
 
-**Scale:** architectural · **Category:** security · **Maturity:** time-tested
+**Scale:** architectural · **Altitude:** high · **Category:** security · **Maturity:** time-tested
 
 **Also known as:** Layered security
 

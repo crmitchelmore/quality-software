@@ -2,7 +2,7 @@
 
 > Document bounded contexts and their relationships so teams can reason about upstream/downstream influence, translation, and integration risk.
 
-**Scale:** architectural · **Category:** ddd-strategic · **Maturity:** time-tested
+**Scale:** architectural · **Altitude:** high · **Category:** ddd-strategic · **Maturity:** time-tested
 
 ## Description
 

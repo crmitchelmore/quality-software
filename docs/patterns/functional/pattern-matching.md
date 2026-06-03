@@ -2,7 +2,7 @@
 
 > Branch by matching data shape and variants, often with exhaustive compiler checking.
 
-**Scale:** implementation · **Category:** functional · **Maturity:** time-tested
+**Scale:** implementation · **Altitude:** low · **Category:** functional · **Maturity:** time-tested
 
 **Also known as:** Destructuring Match, Algebraic Matching
 

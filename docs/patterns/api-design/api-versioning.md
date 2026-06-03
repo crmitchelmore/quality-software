@@ -2,7 +2,7 @@
 
 > Evolve API contracts without breaking existing clients by making compatibility, deprecation, and migration rules explicit.
 
-**Scale:** integration · **Category:** api-design · **Maturity:** time-tested
+**Scale:** integration · **Altitude:** medium · **Category:** api-design · **Maturity:** time-tested
 
 ## Description
 

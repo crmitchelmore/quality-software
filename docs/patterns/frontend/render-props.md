@@ -2,7 +2,7 @@
 
 > Share stateful behaviour through a component prop that is a function, letting the caller decide exactly what UI to render.
 
-**Scale:** frontend · **Category:** frontend · **Maturity:** established
+**Scale:** frontend · **Altitude:** low · **Category:** frontend · **Maturity:** established
 
 **Also known as:** Function as Child
 

@@ -5,6 +5,7 @@ aka:
   - Snapshot testing
 scale: implementation
 category: testing
+altitude: low
 maturity: established
 short_description: >-
   Capture the current output of complex behaviour as an approved reference, then fail future tests when output changes unexpectedly.

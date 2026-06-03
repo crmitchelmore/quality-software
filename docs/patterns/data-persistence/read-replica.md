@@ -2,7 +2,7 @@
 
 > Serve read-only traffic from replicated database copies while writes continue on the primary, improving read scale at the cost of replica lag.
 
-**Scale:** data · **Category:** data-persistence · **Maturity:** time-tested
+**Scale:** data · **Altitude:** medium · **Category:** data-persistence · **Maturity:** time-tested
 
 ## Description
 

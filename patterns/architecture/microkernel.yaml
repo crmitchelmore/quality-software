@@ -4,6 +4,7 @@ aka:
   - Plugin Architecture
 scale: architectural
 category: architecture
+altitude: high
 maturity: time-tested
 short_description: >-
   Keep a small stable core that owns lifecycle and shared abstractions, while optional or variable behaviour is supplied by independently developed plugins.

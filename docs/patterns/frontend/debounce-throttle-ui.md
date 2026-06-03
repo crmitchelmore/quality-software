@@ -2,7 +2,7 @@
 
 > Limit how often high-frequency UI events trigger expensive work by waiting for quiet time or enforcing a maximum call rate.
 
-**Scale:** frontend · **Category:** frontend · **Maturity:** time-tested
+**Scale:** frontend · **Altitude:** low · **Category:** frontend · **Maturity:** time-tested
 
 ## Description
 

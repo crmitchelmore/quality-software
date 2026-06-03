@@ -2,7 +2,7 @@
 
 > Organise business logic as one procedure per request or use case, usually with straightforward database access.
 
-**Scale:** design · **Category:** enterprise-application · **Maturity:** time-tested
+**Scale:** design · **Altitude:** medium · **Category:** enterprise-application · **Maturity:** time-tested
 
 **Also known as:** Procedure script, Use-case script
 

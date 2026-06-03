@@ -4,6 +4,7 @@ aka:
   - Tail Call Recursion
 scale: implementation
 category: functional
+altitude: low
 maturity: time-tested
 short_description: >-
   Structure recursion so the recursive call is the final action, allowing stack-safe optimisation or straightforward loop conversion.

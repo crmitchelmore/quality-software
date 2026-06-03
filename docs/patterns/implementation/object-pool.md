@@ -2,7 +2,7 @@
 
 > Reuse a bounded set of expensive objects instead of creating and destroying them for every operation.
 
-**Scale:** design · **Category:** implementation · **Maturity:** established
+**Scale:** design · **Altitude:** low · **Category:** implementation · **Maturity:** established
 
 **Also known as:** Resource Pool
 

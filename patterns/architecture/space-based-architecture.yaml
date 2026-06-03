@@ -5,6 +5,7 @@ aka:
   - Shared space architecture
 scale: architectural
 category: architecture
+altitude: high
 maturity: established
 short_description: >-
   Scale high-volume workloads by colocating processing with an in-memory data

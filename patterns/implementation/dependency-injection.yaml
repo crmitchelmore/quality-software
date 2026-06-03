@@ -5,6 +5,7 @@ aka:
   - Constructor Injection
 scale: design
 category: implementation
+altitude: low
 maturity: time-tested
 short_description: >-
   Provide an object's dependencies from the outside rather than constructing them

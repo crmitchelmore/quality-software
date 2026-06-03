@@ -2,6 +2,7 @@ id: rest
 title: REST
 scale: integration
 category: api-design
+altitude: medium
 maturity: time-tested
 short_description: >-
   Model an HTTP API around resources, representations, standard methods, status codes, and cache semantics.

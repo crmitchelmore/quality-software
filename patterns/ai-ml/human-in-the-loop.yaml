@@ -2,6 +2,7 @@ id: human-in-the-loop
 title: Human-in-the-Loop Approval
 scale: design
 category: ai-ml
+altitude: medium
 maturity: cutting-edge
 short_description: >-
   Route high-risk AI outputs or actions to a person for review, approval, correction, or escalation before they affect users or systems.

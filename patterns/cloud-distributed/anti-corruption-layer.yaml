@@ -2,6 +2,7 @@ id: anti-corruption-layer
 title: Anti-Corruption Layer
 scale: integration
 category: cloud-distributed
+altitude: medium
 maturity: time-tested
 short_description: >-
   Insert a translation boundary between systems so an external model, protocol,

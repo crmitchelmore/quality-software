@@ -2,7 +2,7 @@
 
 > Grant each user, service, token, and process only the permissions required for its current task, for the shortest practical time.
 
-**Scale:** design · **Category:** security · **Maturity:** time-tested
+**Scale:** design · **Altitude:** high · **Category:** security · **Maturity:** time-tested
 
 **Also known as:** PoLP, Least authority
 

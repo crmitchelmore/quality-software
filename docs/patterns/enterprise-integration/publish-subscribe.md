@@ -2,7 +2,7 @@
 
 > Let a producer publish one message to a channel that independently delivers copies to all interested subscribers.
 
-**Scale:** integration · **Category:** enterprise-integration · **Maturity:** time-tested
+**Scale:** integration · **Altitude:** medium · **Category:** enterprise-integration · **Maturity:** time-tested
 
 **Also known as:** Pub-Sub, Topic
 

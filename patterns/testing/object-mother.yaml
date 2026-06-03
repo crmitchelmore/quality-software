@@ -4,6 +4,7 @@ aka:
   - Fixture Mother
 scale: implementation
 category: testing
+altitude: low
 maturity: time-tested
 short_description: >-
   Provide named factory methods for common test fixtures so tests can ask for well-known example objects in domain language.

@@ -2,7 +2,7 @@
 
 > Transform collections with small pure steps: map values, filter unwanted elements, then reduce the remaining values into a result.
 
-**Scale:** implementation · **Category:** functional · **Maturity:** time-tested
+**Scale:** implementation · **Altitude:** low · **Category:** functional · **Maturity:** time-tested
 
 **Also known as:** Map/Filter/Fold, Transform-Select-Aggregate
 

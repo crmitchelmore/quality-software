@@ -2,7 +2,7 @@
 
 > Split distributed work into a scheduler that assigns jobs, agents that execute them, and a supervisor that monitors progress and recovery.
 
-**Scale:** integration · **Category:** cloud-distributed · **Maturity:** established
+**Scale:** integration · **Altitude:** high · **Category:** cloud-distributed · **Maturity:** established
 
 ## Description
 

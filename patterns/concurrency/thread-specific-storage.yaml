@@ -5,6 +5,7 @@ aka:
   - TLS
 scale: concurrency
 category: concurrency
+altitude: low
 maturity: time-tested
 short_description: >-
   Give each thread its own instance of otherwise global-looking state so code can access per-thread context without sharing mutable data across threads.

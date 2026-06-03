@@ -2,6 +2,7 @@ id: atomic-design
 title: Atomic Design
 scale: frontend
 category: frontend
+altitude: medium
 maturity: established
 short_description: >-
   Structure a design system as progressively composed atoms, molecules, organisms, templates and pages.

@@ -5,6 +5,7 @@ aka:
   - Task
 scale: concurrency
 category: concurrency
+altitude: low
 maturity: time-tested
 short_description: >-
   Represent a result that will be available later, allowing work to run concurrently while callers compose, await, cancel, or observe completion.

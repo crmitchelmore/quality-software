@@ -2,7 +2,7 @@
 
 > Represent a small language grammar as composable expression objects and evaluate those objects against a context.
 
-**Scale:** design · **Category:** gof-behavioural · **Maturity:** time-tested
+**Scale:** design · **Altitude:** low · **Category:** gof-behavioural · **Maturity:** time-tested
 
 **Also known as:** Abstract Syntax Tree Interpreter
 

@@ -5,6 +5,7 @@ aka:
   - State-Encoded Types
 scale: design
 category: implementation
+altitude: low
 maturity: established
 short_description: >-
   Encode an object's lifecycle state in its type so invalid operations are rejected

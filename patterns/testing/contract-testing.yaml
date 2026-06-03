@@ -5,6 +5,7 @@ aka:
   - Pact testing
 scale: integration
 category: testing
+altitude: medium
 maturity: established
 short_description: >-
   Let API consumers define executable expectations that providers verify, catching integration breakage before services are deployed together.

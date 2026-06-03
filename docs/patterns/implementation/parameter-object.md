@@ -2,7 +2,7 @@
 
 > Replace repeated groups of related parameters with a named object that carries the concept and its invariants together.
 
-**Scale:** implementation · **Category:** implementation · **Maturity:** time-tested
+**Scale:** implementation · **Altitude:** low · **Category:** implementation · **Maturity:** time-tested
 
 **Also known as:** Introduce Parameter Object
 

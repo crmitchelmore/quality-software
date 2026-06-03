@@ -5,6 +5,7 @@ aka:
   - Share-nothing message passing
 scale: concurrency
 category: concurrency
+altitude: medium
 maturity: time-tested
 short_description: >-
   Encapsulate mutable state inside independently scheduled actors that communicate only by asynchronous messages.

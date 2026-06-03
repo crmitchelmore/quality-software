@@ -2,7 +2,7 @@
 
 > Decouple participants by routing requests, commands, or events through a broker that mediates discovery, delivery, protocol translation, and sometimes workflow.
 
-**Scale:** architectural · **Category:** architecture · **Maturity:** time-tested
+**Scale:** architectural · **Altitude:** high · **Category:** architecture · **Maturity:** time-tested
 
 **Also known as:** Hub-and-spoke broker, Message broker architecture
 

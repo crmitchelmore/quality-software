@@ -2,7 +2,7 @@
 
 > Route high-risk AI outputs or actions to a person for review, approval, correction, or escalation before they affect users or systems.
 
-**Scale:** design · **Category:** ai-ml · **Maturity:** cutting-edge
+**Scale:** design · **Altitude:** medium · **Category:** ai-ml · **Maturity:** cutting-edge
 
 ## Description
 

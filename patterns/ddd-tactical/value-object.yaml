@@ -2,6 +2,7 @@ id: value-object
 title: Value Object
 scale: design
 category: ddd-tactical
+altitude: low
 maturity: time-tested
 short_description: >-
   Model a descriptive domain concept by its value, making it immutable, validated, and equality-by-contents rather than equality-by-identity.

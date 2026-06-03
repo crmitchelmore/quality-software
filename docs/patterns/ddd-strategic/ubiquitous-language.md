@@ -2,7 +2,7 @@
 
 > Use one precise, shared language between domain experts and developers inside a bounded context, and reflect it in code, tests, and conversations.
 
-**Scale:** organisational · **Category:** ddd-strategic · **Maturity:** time-tested
+**Scale:** organisational · **Altitude:** high · **Category:** ddd-strategic · **Maturity:** time-tested
 
 ## Description
 

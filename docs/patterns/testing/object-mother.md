@@ -2,7 +2,7 @@
 
 > Provide named factory methods for common test fixtures so tests can ask for well-known example objects in domain language.
 
-**Scale:** implementation · **Category:** testing · **Maturity:** time-tested
+**Scale:** implementation · **Altitude:** low · **Category:** testing · **Maturity:** time-tested
 
 **Also known as:** Fixture Mother
 

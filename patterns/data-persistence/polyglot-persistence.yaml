@@ -2,6 +2,7 @@ id: polyglot-persistence
 title: Polyglot Persistence
 scale: data
 category: data-persistence
+altitude: high
 maturity: established
 short_description: >-
   Use different storage technologies for different data models and access patterns instead of forcing all data into one database engine.

@@ -2,6 +2,7 @@ id: dead-letter-channel
 title: Dead Letter Channel
 scale: integration
 category: enterprise-integration
+altitude: medium
 maturity: time-tested
 short_description: >-
   Route messages that cannot be delivered or processed after bounded attempts to a separate, observable channel for diagnosis and recovery.

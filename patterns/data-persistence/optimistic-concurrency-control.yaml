@@ -2,6 +2,7 @@ id: optimistic-concurrency-control
 title: Optimistic Concurrency Control
 scale: data
 category: data-persistence
+altitude: medium
 maturity: time-tested
 short_description: >-
   Detect conflicting updates with versions, timestamps, or compare-and-swap conditions instead of locking records for long workflows.

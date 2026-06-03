@@ -2,6 +2,7 @@ id: retry
 title: Retry with Backoff
 scale: integration
 category: resilience
+altitude: medium
 maturity: time-tested
 aka:
   - Exponential Backoff

@@ -4,6 +4,7 @@ aka:
   - Policy
 scale: design
 category: gof-behavioural
+altitude: low
 maturity: time-tested
 short_description: >-
   Define a family of interchangeable algorithms behind a common interface and let

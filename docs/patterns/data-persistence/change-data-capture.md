@@ -2,7 +2,7 @@
 
 > Capture committed database changes and publish them as a stream for projections, integration, auditing, or replication.
 
-**Scale:** data · **Category:** data-persistence · **Maturity:** established
+**Scale:** data · **Altitude:** medium · **Category:** data-persistence · **Maturity:** established
 
 ## Description
 

@@ -2,7 +2,7 @@
 
 > Insert a translation boundary between systems so an external model, protocol, or lifecycle cannot leak into and distort the local domain model.
 
-**Scale:** integration · **Category:** cloud-distributed · **Maturity:** time-tested
+**Scale:** integration · **Altitude:** medium · **Category:** cloud-distributed · **Maturity:** time-tested
 
 ## Description
 

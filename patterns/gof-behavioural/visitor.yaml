@@ -4,6 +4,7 @@ aka:
   - Double Dispatch Visitor
 scale: design
 category: gof-behavioural
+altitude: low
 maturity: time-tested
 short_description: >-
   Add operations over a stable object structure by moving the operation into a

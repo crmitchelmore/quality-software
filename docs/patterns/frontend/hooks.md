@@ -2,7 +2,7 @@
 
 > Encapsulate reusable stateful behaviour in functions that compose directly inside components without wrapper components or inheritance.
 
-**Scale:** frontend · **Category:** frontend · **Maturity:** established
+**Scale:** frontend · **Altitude:** low · **Category:** frontend · **Maturity:** established
 
 **Also known as:** Composable Hooks, Custom Hooks
 

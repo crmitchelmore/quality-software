@@ -5,6 +5,7 @@ aka:
   - Single Source of Truth
 scale: implementation
 category: implementation
+altitude: low
 maturity: time-tested
 short_description: >-
   Keep each piece of knowledge, policy, or rule in one authoritative place so changes

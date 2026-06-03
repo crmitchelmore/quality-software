@@ -2,6 +2,7 @@ id: circuit-breaker
 title: Circuit Breaker
 scale: integration
 category: resilience
+altitude: medium
 maturity: time-tested
 short_description: >-
   Wrap calls to a failing remote dependency so that, after a failure threshold,

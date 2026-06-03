@@ -2,6 +2,7 @@ id: row-data-gateway
 title: Row Data Gateway
 scale: data
 category: enterprise-application
+altitude: medium
 maturity: time-tested
 aka:
   - Row gateway

@@ -4,6 +4,7 @@ aka:
   - MVC
 scale: architectural
 category: architecture
+altitude: medium
 maturity: time-tested
 short_description: >-
   Separate user interaction into models, views, and controllers so presentation,

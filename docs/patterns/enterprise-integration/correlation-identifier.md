@@ -2,7 +2,7 @@
 
 > Carry a stable identifier through related messages so receivers, logs and requesters can reconstruct which messages belong together.
 
-**Scale:** integration · **Category:** enterprise-integration · **Maturity:** time-tested
+**Scale:** integration · **Altitude:** low · **Category:** enterprise-integration · **Maturity:** time-tested
 
 **Also known as:** Correlation ID, Conversation ID
 

@@ -2,7 +2,7 @@
 
 > Combine a row-shaped domain object with persistence methods such as find, save, and destroy.
 
-**Scale:** data · **Category:** enterprise-application · **Maturity:** time-tested
+**Scale:** data · **Altitude:** medium · **Category:** enterprise-application · **Maturity:** time-tested
 
 **Also known as:** Record object
 

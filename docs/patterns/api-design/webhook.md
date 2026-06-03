@@ -2,7 +2,7 @@
 
 > Send event notifications to customer- or partner-owned HTTP endpoints so external systems can react without polling.
 
-**Scale:** integration · **Category:** api-design · **Maturity:** established
+**Scale:** integration · **Altitude:** medium · **Category:** api-design · **Maturity:** established
 
 ## Description
 

@@ -34,7 +34,7 @@ function renderPattern(p: Pattern, index: Map<string, Pattern>): string {
   out.push(`> ${p.short_description}`);
   out.push("");
   out.push(
-    `**Scale:** ${p.scale} · **Category:** ${p.category} · **Maturity:** ${p.maturity}`,
+    `**Scale:** ${p.scale} · **Altitude:** ${p.altitude} · **Category:** ${p.category} · **Maturity:** ${p.maturity}`,
   );
   if (p.aka?.length) out.push(`\n**Also known as:** ${p.aka.join(", ")}`);
   out.push("");
@@ -143,11 +143,11 @@ function renderIndex(patterns: Pattern[]): string {
   for (const category of [...byCategory.keys()].sort()) {
     const list = byCategory.get(category)!.sort((a, b) => a.title.localeCompare(b.title));
     out.push(`## ${category} (${list.length})\n`);
-    out.push("| Pattern | Scale | Maturity | Small | Medium | Large |");
-    out.push("| --- | --- | --- | :-: | :-: | :-: |");
+    out.push("| Pattern | Scale | Altitude | Maturity | Small | Medium | Large |");
+    out.push("| --- | --- | --- | --- | :-: | :-: | :-: |");
     for (const p of list) {
       out.push(
-        `| [${p.title}](patterns/${p.category}/${p.id}.md) | ${p.scale} | ${p.maturity} | ${p.ratings.small.score} | ${p.ratings.medium.score} | ${p.ratings.large.score} |`,
+        `| [${p.title}](patterns/${p.category}/${p.id}.md) | ${p.scale} | ${p.altitude} | ${p.maturity} | ${p.ratings.small.score} | ${p.ratings.medium.score} | ${p.ratings.large.score} |`,
       );
     }
     out.push("");

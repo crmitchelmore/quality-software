@@ -2,7 +2,7 @@
 
 > Define a family of interchangeable algorithms behind a common interface and let the client select one at runtime, decoupling the algorithm from the code that uses it.
 
-**Scale:** design · **Category:** gof-behavioural · **Maturity:** time-tested
+**Scale:** design · **Altitude:** low · **Category:** gof-behavioural · **Maturity:** time-tested
 
 **Also known as:** Policy
 

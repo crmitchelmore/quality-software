@@ -2,7 +2,7 @@
 
 > Provide a small, intention-revealing interface over a complex subsystem so clients use common workflows without knowing internal collaborators.
 
-**Scale:** design · **Category:** gof-structural · **Maturity:** time-tested
+**Scale:** design · **Altitude:** low · **Category:** gof-structural · **Maturity:** time-tested
 
 ## Description
 

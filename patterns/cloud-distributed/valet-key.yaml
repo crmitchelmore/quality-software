@@ -2,6 +2,7 @@ id: valet-key
 title: Valet Key
 scale: integration
 category: cloud-distributed
+altitude: medium
 maturity: established
 short_description: >-
   Give a client a short-lived, tightly scoped token or URL so it can access a

@@ -4,6 +4,7 @@ aka:
   - Single Instance
 scale: design
 category: gof-creational
+altitude: low
 maturity: time-tested
 short_description: >-
   Ensure a type has exactly one process-local instance and provide a controlled access point to it, usually for coordinating shared infrastructure.

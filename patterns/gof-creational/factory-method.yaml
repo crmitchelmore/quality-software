@@ -2,6 +2,7 @@ id: factory-method
 title: Factory Method
 scale: design
 category: gof-creational
+altitude: low
 maturity: time-tested
 short_description: >-
   Defer object creation to a method that subclasses or collaborators can override, so clients depend on a product abstraction instead of concrete construction.

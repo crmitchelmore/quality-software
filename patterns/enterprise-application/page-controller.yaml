@@ -2,6 +2,7 @@ id: page-controller
 title: Page Controller
 scale: design
 category: enterprise-application
+altitude: medium
 maturity: time-tested
 aka:
   - Action controller

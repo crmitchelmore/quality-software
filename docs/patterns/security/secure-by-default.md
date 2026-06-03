@@ -2,7 +2,7 @@
 
 > Design APIs, configurations, and workflows so the easiest path is the safe path and insecure behaviour requires explicit, visible opt-in.
 
-**Scale:** design · **Category:** security · **Maturity:** time-tested
+**Scale:** design · **Altitude:** high · **Category:** security · **Maturity:** time-tested
 
 **Also known as:** Safe defaults, Default deny
 

@@ -2,7 +2,7 @@
 
 > Check an object's state under synchronisation and immediately return or reject when the requested operation is not currently valid.
 
-**Scale:** concurrency · **Category:** concurrency · **Maturity:** time-tested
+**Scale:** concurrency · **Altitude:** low · **Category:** concurrency · **Maturity:** time-tested
 
 **Also known as:** Return If Not Ready
 

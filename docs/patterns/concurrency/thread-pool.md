@@ -2,7 +2,7 @@
 
 > Execute many independent tasks using a bounded set of reusable worker threads rather than creating one thread per task.
 
-**Scale:** concurrency · **Category:** concurrency · **Maturity:** time-tested
+**Scale:** concurrency · **Altitude:** low · **Category:** concurrency · **Maturity:** time-tested
 
 **Also known as:** Worker Pool
 

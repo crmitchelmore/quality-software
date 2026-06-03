@@ -2,6 +2,7 @@ id: evaluation-harness
 title: LLM Evaluation Harness
 scale: design
 category: ai-ml
+altitude: medium
 maturity: cutting-edge
 short_description: >-
   Run repeatable test suites over prompts, models, tools, retrieval, and judges so LLM behaviour can be compared and regressed deliberately.

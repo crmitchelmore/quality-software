@@ -2,7 +2,7 @@
 
 > Capture an object's internal state as an opaque snapshot so it can be restored later without exposing its representation.
 
-**Scale:** design · **Category:** gof-behavioural · **Maturity:** time-tested
+**Scale:** design · **Altitude:** low · **Category:** gof-behavioural · **Maturity:** time-tested
 
 **Also known as:** Snapshot, Restore Point
 

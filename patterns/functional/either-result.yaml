@@ -6,6 +6,7 @@ aka:
   - Expected
 scale: design
 category: functional
+altitude: low
 maturity: time-tested
 short_description: >-
   Represent success or failure as a value, carrying either the successful result or typed error information.

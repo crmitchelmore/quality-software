@@ -2,7 +2,7 @@
 
 > Represent a database query as an object so selection criteria, ordering, paging, and joins can be composed and reused without scattering SQL strings.
 
-**Scale:** data · **Category:** enterprise-application · **Maturity:** time-tested
+**Scale:** data · **Altitude:** medium · **Category:** enterprise-application · **Maturity:** time-tested
 
 ## Description
 

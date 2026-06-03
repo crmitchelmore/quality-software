@@ -2,7 +2,7 @@
 
 > Represent exceptional or boundary cases with objects that obey the normal interface, reducing scattered null checks and exceptional branches.
 
-**Scale:** design · **Category:** enterprise-application · **Maturity:** time-tested
+**Scale:** design · **Altitude:** low · **Category:** enterprise-application · **Maturity:** time-tested
 
 ## Description
 

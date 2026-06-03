@@ -4,6 +4,7 @@ aka:
   - MVVM
 scale: frontend
 category: frontend
+altitude: medium
 maturity: time-tested
 short_description: >-
   Bind a view to a view model that exposes display-ready state and commands while shielding the view from domain model and service details.

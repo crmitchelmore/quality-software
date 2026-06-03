@@ -2,7 +2,7 @@
 
 > Defer loading related data until a caller actually needs it, while preserving the object interface.
 
-**Scale:** data · **Category:** enterprise-application · **Maturity:** time-tested
+**Scale:** data · **Altitude:** low · **Category:** enterprise-application · **Maturity:** time-tested
 
 **Also known as:** Lazy loading, Virtual proxy, Ghost object
 

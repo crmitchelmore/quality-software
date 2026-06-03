@@ -2,6 +2,7 @@ id: gatekeeper
 title: Gatekeeper
 scale: architectural
 category: cloud-distributed
+altitude: medium
 maturity: established
 short_description: >-
   Route external requests through a hardened entry component that validates,

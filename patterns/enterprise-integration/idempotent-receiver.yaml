@@ -2,6 +2,7 @@ id: idempotent-receiver
 title: Idempotent Receiver
 scale: integration
 category: enterprise-integration
+altitude: medium
 maturity: time-tested
 short_description: >-
   Make message handling safe under duplicate delivery by detecting repeated message or operation identifiers before applying side effects.

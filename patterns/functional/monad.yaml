@@ -5,6 +5,7 @@ aka:
   - FlatMap
 scale: design
 category: functional
+altitude: low
 maturity: time-tested
 short_description: >-
   Sequence computations wrapped in a context, where each step can depend on the previous unwrapped value while preserving the context.

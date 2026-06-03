@@ -2,7 +2,7 @@
 
 > Share immutable intrinsic state across many fine-grained objects while keeping per-use extrinsic state outside the shared instance.
 
-**Scale:** design · **Category:** gof-structural · **Maturity:** time-tested
+**Scale:** design · **Altitude:** low · **Category:** gof-structural · **Maturity:** time-tested
 
 ## Description
 

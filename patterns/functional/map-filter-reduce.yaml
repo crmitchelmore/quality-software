@@ -5,6 +5,7 @@ aka:
   - Transform-Select-Aggregate
 scale: implementation
 category: functional
+altitude: low
 maturity: time-tested
 short_description: >-
   Transform collections with small pure steps: map values, filter unwanted elements, then reduce the remaining values into a result.

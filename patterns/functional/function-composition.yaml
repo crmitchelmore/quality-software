@@ -5,6 +5,7 @@ aka:
   - Pipe
 scale: implementation
 category: functional
+altitude: low
 maturity: time-tested
 short_description: >-
   Build larger behaviours by connecting small functions where each output becomes the next input.

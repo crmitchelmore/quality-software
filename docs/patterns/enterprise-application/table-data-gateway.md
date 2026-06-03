@@ -2,7 +2,7 @@
 
 > Provide one object that contains all SQL operations for a table or view and returns records or DTOs.
 
-**Scale:** data · **Category:** enterprise-application · **Maturity:** time-tested
+**Scale:** data · **Altitude:** medium · **Category:** enterprise-application · **Maturity:** time-tested
 
 **Also known as:** Table gateway
 

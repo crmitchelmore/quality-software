@@ -2,7 +2,7 @@
 
 > Handle each logical page or route with its own controller action that prepares model data and selects a view.
 
-**Scale:** design · **Category:** enterprise-application · **Maturity:** time-tested
+**Scale:** design · **Altitude:** medium · **Category:** enterprise-application · **Maturity:** time-tested
 
 **Also known as:** Action controller, Page handler
 

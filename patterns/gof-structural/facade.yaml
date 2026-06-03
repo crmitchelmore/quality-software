@@ -2,6 +2,7 @@ id: facade
 title: Facade
 scale: design
 category: gof-structural
+altitude: low
 maturity: time-tested
 short_description: >-
   Provide a small, intention-revealing interface over a complex subsystem so clients use common workflows without knowing internal collaborators.

@@ -5,6 +5,7 @@ aka:
   - Incremental replacement
 scale: architectural
 category: architecture
+altitude: high
 maturity: established
 short_description: >-
   Replace a legacy system incrementally by routing selected capabilities to new

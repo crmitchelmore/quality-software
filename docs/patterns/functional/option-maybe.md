@@ -2,7 +2,7 @@
 
 > Represent possible absence explicitly as Some(value) or None instead of using null or undefined.
 
-**Scale:** design · **Category:** functional · **Maturity:** time-tested
+**Scale:** design · **Altitude:** low · **Category:** functional · **Maturity:** time-tested
 
 **Also known as:** Optional, Maybe
 

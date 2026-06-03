@@ -2,6 +2,7 @@ id: correlation-identifier
 title: Correlation Identifier
 scale: integration
 category: enterprise-integration
+altitude: low
 maturity: time-tested
 aka:
   - Correlation ID

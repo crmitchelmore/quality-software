@@ -2,7 +2,7 @@
 
 > Build interfaces from encapsulated, composable units that own their rendering contract and, where appropriate, local behaviour.
 
-**Scale:** frontend · **Category:** frontend · **Maturity:** established
+**Scale:** frontend · **Altitude:** medium · **Category:** frontend · **Maturity:** established
 
 **Also known as:** Component Architecture, Component-Oriented UI
 

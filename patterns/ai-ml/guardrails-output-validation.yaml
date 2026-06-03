@@ -2,6 +2,7 @@ id: guardrails-output-validation
 title: Guardrails & Output Validation
 scale: design
 category: ai-ml
+altitude: medium
 maturity: cutting-edge
 short_description: >-
   Validate, constrain, and sometimes repair model outputs before they reach users, tools, or durable state.

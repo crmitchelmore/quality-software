@@ -2,7 +2,7 @@
 
 > Ask a model to critique, verify, or revise its own intermediate work under bounded rules before accepting the final output.
 
-**Scale:** design · **Category:** ai-ml · **Maturity:** emerging
+**Scale:** design · **Altitude:** low · **Category:** ai-ml · **Maturity:** emerging
 
 ## Description
 

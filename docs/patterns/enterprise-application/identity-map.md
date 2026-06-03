@@ -2,7 +2,7 @@
 
 > Keep exactly one in-memory object instance for each database identity within a business transaction.
 
-**Scale:** data · **Category:** enterprise-application · **Maturity:** time-tested
+**Scale:** data · **Altitude:** medium · **Category:** enterprise-application · **Maturity:** time-tested
 
 **Also known as:** Session cache, First-level cache
 

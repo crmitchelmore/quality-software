@@ -2,7 +2,7 @@
 
 > Make the model return data that conforms to a declared schema, such as JSON Schema or a typed object, instead of free-form prose.
 
-**Scale:** implementation · **Category:** ai-ml · **Maturity:** cutting-edge
+**Scale:** implementation · **Altitude:** low · **Category:** ai-ml · **Maturity:** cutting-edge
 
 ## Description
 

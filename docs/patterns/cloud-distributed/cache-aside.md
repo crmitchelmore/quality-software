@@ -2,7 +2,7 @@
 
 > Let application code read through a cache on misses and explicitly invalidate or refresh cached entries after writes, keeping the database as the source of truth.
 
-**Scale:** data · **Category:** cloud-distributed · **Maturity:** time-tested
+**Scale:** data · **Altitude:** medium · **Category:** cloud-distributed · **Maturity:** time-tested
 
 ## Description
 

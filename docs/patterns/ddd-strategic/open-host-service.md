@@ -2,7 +2,7 @@
 
 > Offer a stable, well-documented service interface that multiple downstream contexts can use without bespoke point-to-point integrations.
 
-**Scale:** integration · **Category:** ddd-strategic · **Maturity:** time-tested
+**Scale:** integration · **Altitude:** high · **Category:** ddd-strategic · **Maturity:** time-tested
 
 ## Description
 

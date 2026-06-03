@@ -2,7 +2,7 @@
 
 > Include hypermedia links and actions in representations so clients can discover valid next transitions rather than hard-coding workflows.
 
-**Scale:** integration · **Category:** api-design · **Maturity:** established
+**Scale:** integration · **Altitude:** medium · **Category:** api-design · **Maturity:** established
 
 ## Description
 

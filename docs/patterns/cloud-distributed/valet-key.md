@@ -2,7 +2,7 @@
 
 > Give a client a short-lived, tightly scoped token or URL so it can access a specific resource directly without receiving broad service credentials.
 
-**Scale:** integration · **Category:** cloud-distributed · **Maturity:** established
+**Scale:** integration · **Altitude:** medium · **Category:** cloud-distributed · **Maturity:** established
 
 ## Description
 

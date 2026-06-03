@@ -2,6 +2,7 @@ id: application-controller
 title: Application Controller
 scale: design
 category: enterprise-application
+altitude: medium
 maturity: time-tested
 short_description: >-
   Centralise navigation and use-case flow decisions in an application-level object, keeping page, endpoint, or UI handlers focused on request parsing and response rendering.

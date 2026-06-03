@@ -2,7 +2,7 @@
 
 > Process a request through an ordered chain of small middleware components, each of which can inspect, enrich, short-circuit, or delegate to the next component.
 
-**Scale:** design · **Category:** implementation · **Maturity:** established
+**Scale:** design · **Altitude:** medium · **Category:** implementation · **Maturity:** established
 
 **Also known as:** Interceptor Pipeline, Request Pipeline
 

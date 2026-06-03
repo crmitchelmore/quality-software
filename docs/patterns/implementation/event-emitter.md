@@ -2,7 +2,7 @@
 
 > Let components publish named in-process events to registered listeners without directly calling every interested collaborator.
 
-**Scale:** design · **Category:** implementation · **Maturity:** established
+**Scale:** design · **Altitude:** low · **Category:** implementation · **Maturity:** established
 
 **Also known as:** In-Process Pub-Sub, Event Dispatcher
 

@@ -2,7 +2,7 @@
 
 > Detect conflicting business transactions by checking a version or timestamp at commit time instead of holding locks while users think or work offline.
 
-**Scale:** data · **Category:** enterprise-application · **Maturity:** time-tested
+**Scale:** data · **Altitude:** medium · **Category:** enterprise-application · **Maturity:** time-tested
 
 ## Description
 

@@ -2,6 +2,7 @@ id: aggregate
 title: Aggregate
 scale: design
 category: ddd-tactical
+altitude: medium
 maturity: time-tested
 short_description: >-
   Group entities and value objects behind a root that enforces consistency boundaries and transactional invariants.

@@ -2,7 +2,7 @@
 
 > Place enterprise rules and use cases at the centre of the system and force dependencies inward so frameworks, databases, and delivery mechanisms are replaceable details.
 
-**Scale:** architectural · **Category:** architecture · **Maturity:** established
+**Scale:** architectural · **Altitude:** high · **Category:** architecture · **Maturity:** established
 
 **Also known as:** The Dependency Rule, Entities and Use Cases
 

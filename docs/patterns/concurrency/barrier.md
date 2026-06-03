@@ -2,7 +2,7 @@
 
 > Make a fixed group of concurrent workers wait at a known point until every participant has arrived, then release them together.
 
-**Scale:** concurrency · **Category:** concurrency · **Maturity:** time-tested
+**Scale:** concurrency · **Altitude:** low · **Category:** concurrency · **Maturity:** time-tested
 
 **Also known as:** Synchronisation barrier, Rendezvous barrier
 

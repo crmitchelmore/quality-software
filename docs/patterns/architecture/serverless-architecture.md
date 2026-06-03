@@ -2,7 +2,7 @@
 
 > Compose managed functions, events, and cloud services so teams ship behaviour without managing servers, scaling infrastructure, or idle capacity directly.
 
-**Scale:** architectural · **Category:** architecture · **Maturity:** established
+**Scale:** architectural · **Altitude:** high · **Category:** architecture · **Maturity:** established
 
 **Also known as:** Function as a Service, Event-driven serverless
 

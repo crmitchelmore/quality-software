@@ -2,6 +2,7 @@ id: guaranteed-delivery
 title: Guaranteed Delivery
 scale: integration
 category: enterprise-integration
+altitude: medium
 maturity: time-tested
 short_description: >-
   Store messages durably and acknowledge them only at safe boundaries so delivery survives process crashes, broker restarts and network failures.

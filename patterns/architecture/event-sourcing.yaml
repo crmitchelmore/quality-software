@@ -4,6 +4,7 @@ aka:
   - Event Store as Source of Truth
 scale: architectural
 category: architecture
+altitude: high
 maturity: established
 short_description: >-
   Persist every state change as an immutable event and derive current state by replaying the event stream, preserving history as the system of record.

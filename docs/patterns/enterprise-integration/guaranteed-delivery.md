@@ -2,7 +2,7 @@
 
 > Store messages durably and acknowledge them only at safe boundaries so delivery survives process crashes, broker restarts and network failures.
 
-**Scale:** integration · **Category:** enterprise-integration · **Maturity:** time-tested
+**Scale:** integration · **Altitude:** medium · **Category:** enterprise-integration · **Maturity:** time-tested
 
 ## Description
 

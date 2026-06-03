@@ -2,7 +2,7 @@
 
 > Persist every state change as an immutable event and derive current state by replaying the event stream, preserving history as the system of record.
 
-**Scale:** architectural · **Category:** architecture · **Maturity:** established
+**Scale:** architectural · **Altitude:** high · **Category:** architecture · **Maturity:** established
 
 **Also known as:** Event Store as Source of Truth
 

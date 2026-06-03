@@ -2,6 +2,7 @@ id: bridge
 title: Bridge
 scale: design
 category: gof-structural
+altitude: low
 maturity: time-tested
 short_description: >-
   Split an abstraction from its implementation hierarchy so both can vary independently without an explosion of subclasses.

@@ -2,7 +2,7 @@
 
 > Provide a common superclass or base abstraction for all objects in a layer so shared layer responsibilities have one consistent home.
 
-**Scale:** design · **Category:** enterprise-application · **Maturity:** time-tested
+**Scale:** design · **Altitude:** low · **Category:** enterprise-application · **Maturity:** time-tested
 
 ## Description
 

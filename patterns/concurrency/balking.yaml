@@ -4,6 +4,7 @@ aka:
   - Return If Not Ready
 scale: concurrency
 category: concurrency
+altitude: low
 maturity: time-tested
 short_description: >-
   Check an object's state under synchronisation and immediately return or reject when the requested operation is not currently valid.

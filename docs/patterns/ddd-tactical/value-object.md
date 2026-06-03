@@ -2,7 +2,7 @@
 
 > Model a descriptive domain concept by its value, making it immutable, validated, and equality-by-contents rather than equality-by-identity.
 
-**Scale:** design · **Category:** ddd-tactical · **Maturity:** time-tested
+**Scale:** design · **Altitude:** low · **Category:** ddd-tactical · **Maturity:** time-tested
 
 ## Description
 

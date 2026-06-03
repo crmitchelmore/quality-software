@@ -4,6 +4,7 @@ aka:
   - Function as Child
 scale: frontend
 category: frontend
+altitude: low
 maturity: established
 short_description: >-
   Share stateful behaviour through a component prop that is a function, letting the caller decide exactly what UI to render.

@@ -2,7 +2,7 @@
 
 > Separate user interaction into models, views, and controllers so presentation, input handling, and application state can evolve with clearer responsibilities.
 
-**Scale:** architectural · **Category:** architecture · **Maturity:** time-tested
+**Scale:** architectural · **Altitude:** medium · **Category:** architecture · **Maturity:** time-tested
 
 **Also known as:** MVC
 

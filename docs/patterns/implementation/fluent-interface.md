@@ -2,7 +2,7 @@
 
 > Design method chains that read like a small domain language while progressively configuring or composing an object.
 
-**Scale:** implementation · **Category:** implementation · **Maturity:** established
+**Scale:** implementation · **Altitude:** low · **Category:** implementation · **Maturity:** established
 
 **Also known as:** Method Chaining, Fluent API
 

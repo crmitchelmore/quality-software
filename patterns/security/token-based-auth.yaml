@@ -5,6 +5,7 @@ aka:
   - JWT auth
 scale: integration
 category: security
+altitude: medium
 maturity: established
 short_description: >-
   Authenticate requests with signed, time-bound tokens carrying identity, audience, issuer, and scope claims verified at each resource boundary.

@@ -5,6 +5,7 @@ aka:
   - Custom Hooks
 scale: frontend
 category: frontend
+altitude: low
 maturity: established
 short_description: >-
   Encapsulate reusable stateful behaviour in functions that compose directly inside components without wrapper components or inheritance.

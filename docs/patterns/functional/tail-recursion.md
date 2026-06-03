@@ -2,7 +2,7 @@
 
 > Structure recursion so the recursive call is the final action, allowing stack-safe optimisation or straightforward loop conversion.
 
-**Scale:** implementation · **Category:** functional · **Maturity:** time-tested
+**Scale:** implementation · **Altitude:** low · **Category:** functional · **Maturity:** time-tested
 
 **Also known as:** Tail Call Recursion
 

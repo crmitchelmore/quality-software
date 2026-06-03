@@ -38,6 +38,7 @@ export interface Pattern {
   aka?: string[];
   scale: string;
   category: string;
+  altitude: "low" | "medium" | "high";
   maturity: string;
   short_description: string;
   description: string;
@@ -62,6 +63,7 @@ export interface Pattern {
 
 export interface Vocabularies {
   scales: string[];
+  altitudes: string[];
   categories: string[];
   maturity: string[];
   languages: string[];

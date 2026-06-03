@@ -2,6 +2,7 @@ id: ubiquitous-language
 title: Ubiquitous Language
 scale: organisational
 category: ddd-strategic
+altitude: high
 maturity: time-tested
 short_description: >-
   Use one precise, shared language between domain experts and developers inside a bounded context, and reflect it in code, tests, and conversations.

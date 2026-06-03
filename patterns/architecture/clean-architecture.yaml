@@ -5,6 +5,7 @@ aka:
   - Entities and Use Cases
 scale: architectural
 category: architecture
+altitude: high
 maturity: established
 short_description: >-
   Place enterprise rules and use cases at the centre of the system and force dependencies inward so frameworks, databases, and delivery mechanisms are replaceable details.

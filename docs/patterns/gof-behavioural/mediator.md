@@ -2,7 +2,7 @@
 
 > Centralise complex collaboration between peer objects in a mediator so peers do not depend on each other directly.
 
-**Scale:** design · **Category:** gof-behavioural · **Maturity:** time-tested
+**Scale:** design · **Altitude:** low · **Category:** gof-behavioural · **Maturity:** time-tested
 
 **Also known as:** Coordinator, Controller Object
 

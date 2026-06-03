@@ -2,7 +2,7 @@
 
 > Define a stable, documented language of messages or representations that bounded contexts use to integrate without sharing internal models.
 
-**Scale:** integration · **Category:** ddd-strategic · **Maturity:** time-tested
+**Scale:** integration · **Altitude:** high · **Category:** ddd-strategic · **Maturity:** time-tested
 
 ## Description
 

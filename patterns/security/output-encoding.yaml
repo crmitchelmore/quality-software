@@ -5,6 +5,7 @@ aka:
   - Output escaping
 scale: implementation
 category: security
+altitude: low
 maturity: time-tested
 short_description: >-
   Encode untrusted data for the exact output context before rendering it, preventing valid data from becoming executable code.

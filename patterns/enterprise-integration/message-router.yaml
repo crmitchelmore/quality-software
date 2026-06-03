@@ -2,6 +2,7 @@ id: message-router
 title: Message Router
 scale: integration
 category: enterprise-integration
+altitude: medium
 maturity: time-tested
 short_description: >-
   Consume a message from one channel and forward it to one or more output channels without changing the message's essential meaning.

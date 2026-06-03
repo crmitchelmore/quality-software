@@ -2,6 +2,7 @@ id: llm-as-judge
 title: LLM-as-Judge / Model-Graded Evaluation
 scale: design
 category: ai-ml
+altitude: medium
 maturity: emerging
 short_description: >-
   Use a model to grade outputs against a rubric, preferably with calibration, examples, and spot checks against human judgement.

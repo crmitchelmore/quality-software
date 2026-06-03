@@ -8,6 +8,7 @@ aka:
   - Fake
 scale: implementation
 category: testing
+altitude: low
 maturity: time-tested
 short_description: >-
   Replace a real collaborator in a test with a controlled substitute so behaviour can be exercised without slow, unavailable, or nondeterministic dependencies.

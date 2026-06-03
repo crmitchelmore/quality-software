@@ -5,6 +5,7 @@ aka:
   - Work-stealing fork/join
 scale: concurrency
 category: concurrency
+altitude: low
 maturity: time-tested
 short_description: >-
   Split a task into independent subtasks, run them in parallel, then join their results into one deterministic outcome.

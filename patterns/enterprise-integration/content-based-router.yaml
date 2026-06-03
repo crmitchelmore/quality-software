@@ -2,6 +2,7 @@ id: content-based-router
 title: Content-Based Router
 scale: integration
 category: enterprise-integration
+altitude: medium
 maturity: time-tested
 short_description: >-
   Route each message to an output channel by evaluating fields in the message content or headers against explicit business predicates.

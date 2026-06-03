@@ -2,7 +2,7 @@
 
 > Hide raw construction behind a named function that validates inputs and only returns a value when its invariants hold.
 
-**Scale:** implementation · **Category:** implementation · **Maturity:** established
+**Scale:** implementation · **Altitude:** low · **Category:** implementation · **Maturity:** established
 
 **Also known as:** Named Constructor with Validation, Factory Function
 

@@ -5,6 +5,7 @@ aka:
   - Configuration Object
 scale: implementation
 category: implementation
+altitude: low
 maturity: established
 short_description: >-
   Replace long lists of optional arguments with a single object whose named fields

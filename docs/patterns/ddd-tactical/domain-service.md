@@ -2,7 +2,7 @@
 
 > Place domain behaviour that does not naturally belong to one entity or value object into a stateless service expressed in ubiquitous language.
 
-**Scale:** design · **Category:** ddd-tactical · **Maturity:** time-tested
+**Scale:** design · **Altitude:** medium · **Category:** ddd-tactical · **Maturity:** time-tested
 
 ## Description
 

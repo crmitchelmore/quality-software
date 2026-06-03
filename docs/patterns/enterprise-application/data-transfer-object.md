@@ -2,7 +2,7 @@
 
 > Carry data across process, layer, or network boundaries in simple serialisable structures tailored to the contract rather than the domain model.
 
-**Scale:** design · **Category:** enterprise-application · **Maturity:** time-tested
+**Scale:** design · **Altitude:** low · **Category:** enterprise-application · **Maturity:** time-tested
 
 ## Description
 

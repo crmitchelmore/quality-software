@@ -2,7 +2,7 @@
 
 > Allow many concurrent readers or one exclusive writer for shared state whose reads are frequent and writes are comparatively rare.
 
-**Scale:** concurrency · **Category:** concurrency · **Maturity:** time-tested
+**Scale:** concurrency · **Altitude:** low · **Category:** concurrency · **Maturity:** time-tested
 
 **Also known as:** Shared-Exclusive Lock
 

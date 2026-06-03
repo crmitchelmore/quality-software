@@ -2,6 +2,7 @@ id: contract-first-api
 title: Contract-First API (OpenAPI)
 scale: integration
 category: api-design
+altitude: medium
 maturity: established
 short_description: >-
   Design and review the API contract before implementation, then generate docs, clients, tests, or server stubs from it.

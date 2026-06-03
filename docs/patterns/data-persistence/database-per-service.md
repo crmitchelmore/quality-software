@@ -2,7 +2,7 @@
 
 > Each independently deployable service owns its durable store and exposes state through APIs or events, not shared tables.
 
-**Scale:** data · **Category:** data-persistence · **Maturity:** established
+**Scale:** data · **Altitude:** high · **Category:** data-persistence · **Maturity:** established
 
 ## Description
 
