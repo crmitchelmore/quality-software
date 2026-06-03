@@ -15,11 +15,13 @@ import type { Catalogue } from "./catalogue.js";
 
 interface RawProfile {
   projectSize?: string;
-  philosophies?: {
-    adopt?: ({ id: string; weight?: string } | string)[];
-    reject?: ({ id: string; reason?: string } | string)[];
-    tie_breakers?: unknown[];
-  };
+  philosophies?:
+    | (string | { id: string; weight?: string })[]
+    | {
+        adopt?: ({ id: string; weight?: string } | string)[];
+        reject?: ({ id: string; reason?: string } | string)[];
+        tie_breakers?: unknown[];
+      };
   adopt?: RawAdopt;
   ban?: RawBan;
   /**
@@ -95,13 +97,18 @@ export function loadProfile(path: string, catalogue: Catalogue): ResolvedProfile
 
   const knows = (id: string) => catalogue.nodeById.has(id);
 
-  const philosophiesAdopt = (raw.philosophies?.adopt ?? []).map((v) => ({
+  // Philosophies may be a bare list (generated configs: `philosophies: [id, ...]`)
+  // or an object with adopt/reject (hand-written). Normalise both.
+  const rawPhil = raw.philosophies;
+  const philAdoptRaw = Array.isArray(rawPhil) ? rawPhil : (rawPhil?.adopt ?? []);
+  const philRejectRaw = Array.isArray(rawPhil) ? [] : (rawPhil?.reject ?? []);
+  const philosophiesAdopt = philAdoptRaw.map((v) => ({
     id: idOf(v),
     weight: (typeof v === "object" && v.weight === "secondary" ? "secondary" : "primary") as
       | "primary"
       | "secondary",
   }));
-  const philosophiesReject = (raw.philosophies?.reject ?? []).map(idOf);
+  const philosophiesReject = philRejectRaw.map(idOf);
 
   // `adopt`/`ban` may live at the top level (hand-written profiles) or nested
   // under `patterns:` (generated configs). Adopt entries may be grouped by

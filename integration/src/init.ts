@@ -1,5 +1,6 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { load as parseYaml } from "js-yaml";
 import type { ResolvedProfile } from "./contract.js";
 import type { Catalogue } from "./catalogue.js";
 
@@ -137,7 +138,55 @@ export function proposeProfile(cwd: string, catalogue: Catalogue, answers: InitA
 }
 
 /** Concise north-star primer injected at sessionStart (design 12.5). */
-export function sessionPrimer(profile: ResolvedProfile, catalogue: Catalogue): string {
+/**
+ * Canonical homes pulled from the detailed `patterns.map.yaml` (when present). This
+ * is the single highest-leverage anti-duplication signal: telling the agent WHERE
+ * the project's shared helpers and patterns already live, BEFORE it writes, turns
+ * the loop from "report a duplicate afterwards" into "reuse it in the first place".
+ */
+interface RawPatternMap {
+  patterns?: { id?: string; title?: string; anchors?: string[] }[];
+  capabilities?: {
+    id?: string;
+    title?: string;
+    status?: string;
+    canonical?: string | null;
+  }[];
+}
+
+function canonicalHomes(cwd: string, name: (id: string) => string): string[] {
+  const mapPath = join(cwd, "patterns.map.yaml");
+  if (!existsSync(mapPath)) return [];
+  let map: RawPatternMap;
+  try {
+    map = (parseYaml(readFileSync(mapPath, "utf8")) ?? {}) as RawPatternMap;
+  } catch {
+    return [];
+  }
+  const lines: string[] = [];
+
+  // Shared cross-cutting helpers — the classic duplication trap (a second date util).
+  const homes = (map.capabilities ?? [])
+    .filter((c) => c.canonical)
+    .map((c) => `${c.title ?? c.id}: use ${c.canonical}`);
+  if (homes.length) {
+    lines.push(
+      "Canonical helpers — reuse these, do NOT add a parallel implementation: " +
+        homes.slice(0, 12).join("; ") + ".",
+    );
+  }
+
+  // Where the project's adopted patterns already live, so new code joins them.
+  const anchored = (map.patterns ?? [])
+    .filter((p) => p.id && p.anchors && p.anchors.length)
+    .map((p) => `${p.title ?? name(p.id!)} → ${p.anchors![0]}`);
+  if (anchored.length) {
+    lines.push("Patterns already live here (follow the existing home): " + anchored.slice(0, 10).join("; ") + ".");
+  }
+  return lines;
+}
+
+export function sessionPrimer(profile: ResolvedProfile, catalogue: Catalogue, cwd?: string): string {
   const name = (id: string) => catalogue.nodeById.get(id)?.title ?? id;
   const parts: string[] = ["This project follows a conformance profile. Align your work to it:"];
   if (profile.philosophies.adopt.length) {
@@ -146,6 +195,7 @@ export function sessionPrimer(profile: ResolvedProfile, catalogue: Catalogue): s
   const enforced = profile.adopt.slice(0, 12).map((p) => `${name(p.id)} (${p.enforcement})`);
   if (enforced.length) parts.push("Adopted patterns: " + enforced.join("; ") + ".");
   if (profile.ban.length) parts.push("Banned (do not introduce): " + profile.ban.map((b) => name(b.id)).join("; ") + ".");
+  if (cwd) parts.push(...canonicalHomes(cwd, name));
   parts.push("Reuse existing abstractions rather than reinventing them. Findings will cite the philosophy → pattern → fix chain.");
   return parts.join("\n");
 }

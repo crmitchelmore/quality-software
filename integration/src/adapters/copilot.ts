@@ -68,7 +68,7 @@ export function handleSessionStart(payload: CopilotPayload): string {
     if (!existsSync(profilePath)) return "{}";
     const catalogue = loadCatalogue(cwd);
     const profile = loadProfile(profilePath, catalogue);
-    return JSON.stringify({ additionalContext: sessionPrimer(profile, catalogue) });
+    return JSON.stringify({ additionalContext: sessionPrimer(profile, catalogue, cwd) });
   } catch {
     return "{}";
   }

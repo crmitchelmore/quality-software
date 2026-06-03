@@ -101,7 +101,7 @@ export async function evaluatePhase(phase: Phase, p: NormalPayload): Promise<Neu
         if (!existsSync(profilePath)) return {};
         const catalogue = loadCatalogue(p.cwd);
         const profile = loadProfile(profilePath, catalogue);
-        return { additionalContext: sessionPrimer(profile, catalogue) };
+        return { additionalContext: sessionPrimer(profile, catalogue, p.cwd) };
       }
       case "post-write": {
         const engine = buildEngine(p.cwd);

@@ -5,6 +5,49 @@ import { fingerprint } from "../contract.js";
 import { relPath } from "./util.js";
 import { factsFor } from "./facts.js";
 import { walkAllFiles } from "../fs-util.js";
+import { isTestPath } from "../model/layers.js";
+
+/**
+ * Names so common across unrelated modules that a bare name collision carries
+ * essentially no reuse signal (every codebase has many independent `Result`s,
+ * `Options`, `Config`s …). Flagging them trains the agent to ignore ALL reuse
+ * advice, so they are suppressed at write-time. Domain-specific duplication
+ * (`calculateVat`, `OrderTotal`) still surfaces.
+ */
+const NOISY_NAMES = new Set(
+  [
+    "result", "options", "option", "config", "configuration", "context", "handler",
+    "service", "controller", "repository", "manager", "factory", "builder", "provider",
+    "client", "request", "response", "error", "exception", "logger", "module", "props",
+    "state", "store", "model", "entity", "dto", "mapper", "type", "types", "data",
+    "item", "items", "value", "values", "key", "node", "event", "command", "query",
+    "id", "name", "status", "default", "index", "main", "app", "base", "util", "utils",
+    "helper", "helpers", "constants", "schema", "validator", "filter", "create", "update",
+    "delete", "get", "list", "find", "run", "execute", "init", "setup", "test",
+  ],
+);
+
+/** A declared name worth indexing/flagging for reuse: long enough and not noisy. */
+function isMeaningfulName(name: string): boolean {
+  if (name.length < 4) return false;
+  return !NOISY_NAMES.has(name.toLowerCase());
+}
+
+/** Barrel/re-export aggregators (`index.ts`, `mod.rs`, `__init__.py`) carry no original code. */
+function isBarrelPath(rel: string): boolean {
+  return /(^|\/)(index|mod|__init__|package)\.[a-z]+$/i.test(rel);
+}
+
+/** Generated code should never be offered as the canonical home to reuse. */
+function isGeneratedPath(rel: string): boolean {
+  return /(^|\/)(generated|gen|build|dist|out|node_modules|\.next|target|__generated__)(\/|$)/i.test(rel) ||
+    /\.(g|generated)\.[a-z]+$/i.test(rel);
+}
+
+/** Files that should be neither indexed as a reuse home nor flagged as duplicators. */
+function isSkippablePath(rel: string): boolean {
+  return isTestPath(rel) || isBarrelPath(rel) || isGeneratedPath(rel);
+}
 
 /**
  * Reuse detector (design 07-reuse-enforcement + 13.9). Flags when a change adds a
@@ -27,6 +70,7 @@ function declaredNames(rel: string, content: string): string[] {
   const names = new Set<string>();
   for (const e of facts.exports) {
     if (e.kind === "reexport" || e.name === "default") continue;
+    if (!isMeaningfulName(e.name)) continue;
     names.add(e.name);
   }
   return [...names];
@@ -44,12 +88,14 @@ export function reuseDetector(srcGlobs: string[] = ["src"]): Detector {
     run(change: ChangeSet, _ctx: DetectorContext): Finding[] {
       const changedRel = new Set(change.files.map((f) => relPath(change.repoRoot, f.path)));
 
-      // Build an index of existing declared names -> files (excluding changed files).
+      // Build an index of existing declared names -> files (excluding changed files,
+      // tests, barrels and generated code — none are a canonical home to reuse).
       const index = new Map<string, string[]>();
       for (const dir of srcGlobs) {
         for (const abs of walkAllFiles(join(change.repoRoot, dir))) {
           const rel = relPath(change.repoRoot, abs);
           if (changedRel.has(rel)) continue;
+          if (isSkippablePath(rel)) continue;
           let content: string;
           try {
             content = readFileSync(abs, "utf8");
@@ -68,6 +114,7 @@ export function reuseDetector(srcGlobs: string[] = ["src"]): Detector {
       for (const file of change.files) {
         if (!file.content) continue;
         const rel = relPath(change.repoRoot, file.path);
+        if (isSkippablePath(rel)) continue;
         for (const name of declaredNames(rel, file.content)) {
           const existing = index.get(name);
           if (existing && existing.length) {
