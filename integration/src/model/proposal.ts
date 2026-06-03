@@ -23,20 +23,28 @@ export function proposeProfileFromEvidence(map: EvidenceMap, catalogue: Catalogu
   const adopt: ProfileProposal["adopt"] = [];
   const philSet = new Map<string, string>();
 
-  // Seed adopt entries from medium+ confidence candidates only.
+  // Seed adopt entries from medium+ confidence candidates only, deduped by pattern
+  // id (multiple structural hubs can imply the same pattern) keeping the strongest.
+  const rank = { high: 3, medium: 2, low: 1 } as const;
+  const byId = new Map<string, ProfileProposal["adopt"][number]>();
   for (const cand of map.candidatePatterns) {
     if (cand.confidence === "low") continue;
     if (!catalogue.nodeById.get(cand.patternId)) continue;
-    adopt.push({
+    const entry = {
       id: cand.patternId,
       enforcement: confidenceToEnforcement(cand.confidence),
       confidence: cand.confidence,
       reason: cand.evidence[0] ?? "structural evidence",
-    });
+    };
+    const existing = byId.get(cand.patternId);
+    if (!existing || rank[cand.confidence] > rank[existing.confidence as keyof typeof rank]) {
+      byId.set(cand.patternId, entry);
+    }
     for (const phil of catalogue.philosophyForPattern.get(cand.patternId) ?? []) {
       if (!philSet.has(phil.philosophyId)) philSet.set(phil.philosophyId, `implied by adopted pattern ${cand.patternId}`);
     }
   }
+  adopt.push(...byId.values());
 
   // Candidate canonical anchors from high/medium-confidence duplicate clusters.
   const anchors: ProfileProposal["anchors"] = [];
