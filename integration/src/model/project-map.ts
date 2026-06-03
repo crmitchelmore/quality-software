@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { execSync } from "node:child_process";
+import { execFileSync } from "node:child_process";
 import { walkAllFiles } from "../fs-util.js";
 import { relPath } from "../detectors/util.js";
 import type { ExportedSymbol } from "./extract.js";
@@ -93,7 +93,10 @@ export interface BuildOptions {
 
 function gitCommit(repoRoot: string): string | undefined {
   try {
-    return execSync(`git -C "${repoRoot}" rev-parse --short HEAD`, { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim();
+    return execFileSync("git", ["-C", repoRoot, "rev-parse", "--short", "HEAD"], {
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "ignore"],
+    }).trim();
   } catch {
     return undefined;
   }

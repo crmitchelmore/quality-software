@@ -1,4 +1,4 @@
-import { execSync } from "node:child_process";
+import { execFileSync } from "node:child_process";
 import type { Finding, ResolvedProfile, CanonicalEvent } from "../contract.js";
 import {
   parseModules,
@@ -289,15 +289,18 @@ function summarise(decision: ReviewResult["decision"], blocking: Finding[], advi
 
 // --- git adapter -----------------------------------------------------------
 
-function git(repoRoot: string, args: string): string {
-  return execSync(`git -C "${repoRoot}" ${args}`, { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] });
+function git(repoRoot: string, args: string[]): string {
+  return execFileSync("git", ["-C", repoRoot, ...args], {
+    encoding: "utf8",
+    stdio: ["ignore", "pipe", "ignore"],
+  });
 }
 
 /** Parse `git diff --name-status <base>...HEAD` into ChangeEntry[]. */
 export function changesFromGit(repoRoot: string, base: string): ChangeEntry[] {
   let raw: string;
   try {
-    raw = git(repoRoot, `diff --name-status -M ${base}...HEAD`);
+    raw = git(repoRoot, ["diff", "--name-status", "-M", `${base}...HEAD`]);
   } catch {
     return [];
   }
@@ -322,7 +325,7 @@ export function changesFromGit(repoRoot: string, base: string): ChangeEntry[] {
 export function gitBaseContent(repoRoot: string, base: string): (path: string) => string | undefined {
   return (path: string) => {
     try {
-      return git(repoRoot, `show ${base}:"${path}"`);
+      return git(repoRoot, ["show", `${base}:${path}`]);
     } catch {
       return undefined;
     }

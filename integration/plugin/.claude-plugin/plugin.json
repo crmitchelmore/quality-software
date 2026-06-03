@@ -1,0 +1,18 @@
+{
+  "name": "quality-software-conformance",
+  "version": "0.1.0",
+  "description": "Repo-local pattern conformance for Copilot CLI: advisory hooks, skills, commands, and MCP tools.",
+  "author": {
+    "name": "Quality Software"
+  },
+  "repository": "https://github.com/crmitchelmore/quality-software",
+  "license": "MIT",
+  "keywords": [
+    "copilot-cli",
+    "conformance",
+    "patterns",
+    "architecture",
+    "code-review"
+  ]
+}
+

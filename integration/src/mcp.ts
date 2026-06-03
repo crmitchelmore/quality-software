@@ -1,6 +1,7 @@
 import { createInterface } from "node:readline";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { isAbsolute, join } from "node:path";
+import { pathToFileURL } from "node:url";
 import { loadCatalogue } from "./catalogue.js";
 import { loadProfile } from "./profile.js";
 import { proposeProfile } from "./init.js";
@@ -21,7 +22,14 @@ interface RpcRequest {
   jsonrpc: "2.0";
   id?: number | string | null;
   method: string;
-  params?: any;
+  params?: unknown;
+}
+
+type JsonRecord = Record<string, unknown>;
+
+interface ToolFileParam {
+  path: string;
+  content?: string;
 }
 
 const TOOLS = [
@@ -77,11 +85,38 @@ const TOOLS = [
   },
 ];
 
-function resolveCwd(params: any): string {
-  return params?.cwd && typeof params.cwd === "string" ? params.cwd : process.cwd();
+function isRecord(value: unknown): value is JsonRecord {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
 }
 
-async function runCheck(event: ChangeSet["event"], cwd: string, files: { path: string; content?: string }[]) {
+function stringParam(params: unknown, key: string): string | undefined {
+  if (!isRecord(params)) return undefined;
+  const value = params[key];
+  return typeof value === "string" ? value : undefined;
+}
+
+function booleanParam(params: unknown, key: string): boolean | undefined {
+  if (!isRecord(params)) return undefined;
+  const value = params[key];
+  return typeof value === "boolean" ? value : undefined;
+}
+
+function resolveCwd(params: unknown): string {
+  return stringParam(params, "cwd") ?? process.cwd();
+}
+
+function fileParams(params: unknown): ToolFileParam[] {
+  if (!isRecord(params) || !Array.isArray(params.files)) return [];
+  return params.files.flatMap((file): ToolFileParam[] => {
+    if (!isRecord(file)) return [];
+    const path = file.path;
+    if (typeof path !== "string") return [];
+    const content = typeof file.content === "string" ? file.content : undefined;
+    return [{ path, content }];
+  });
+}
+
+async function runCheck(event: ChangeSet["event"], cwd: string, files: ToolFileParam[]) {
   const catalogue = loadCatalogue(cwd);
   const profile = loadProfile(join(cwd, "patterns.config.yaml"), catalogue);
   const engine = new Engine(profile, catalogue);
@@ -95,7 +130,7 @@ async function runCheck(event: ChangeSet["event"], cwd: string, files: { path: s
   return engine.evaluate({ event, repoRoot: cwd, files: norm });
 }
 
-async function callTool(name: string, params: any): Promise<{ text: string }> {
+export async function callTool(name: string, params: unknown): Promise<{ text: string }> {
   const cwd = resolveCwd(params);
   switch (name) {
     case "conformance_profile": {
@@ -104,12 +139,14 @@ async function callTool(name: string, params: any): Promise<{ text: string }> {
       return { text: JSON.stringify(profile, null, 2) };
     }
     case "conformance_check_change": {
-      const { findings } = await runCheck("BATCH", cwd, params.files ?? []);
+      const { findings } = await runCheck("BATCH", cwd, fileParams(params));
       return { text: findings.length ? JSON.stringify(findings, null, 2) : "No conformance findings." };
     }
     case "conformance_suggest_reuse": {
+      const path = stringParam(params, "path") ?? "src/__proposed__.ts";
+      const content = stringParam(params, "content") ?? "";
       const { findings } = await runCheck("BATCH", cwd, [
-        { path: params.path ?? "src/__proposed__.ts", content: params.content },
+        { path, content },
       ]);
       const reuse = findings.filter((f) => f.detectorId === "reuse.duplicate-export");
       return { text: reuse.length ? JSON.stringify(reuse, null, 2) : "No existing equivalent found — safe to add." };
@@ -117,7 +154,7 @@ async function callTool(name: string, params: any): Promise<{ text: string }> {
     case "conformance_init": {
       const catalogue = loadCatalogue(cwd);
       const { yaml, report } = proposeProfile(cwd, catalogue, {});
-      if (params.write === true) {
+      if (booleanParam(params, "write") === true) {
         const target = join(cwd, "patterns.config.yaml");
         if (existsSync(target)) return { text: `Refusing to overwrite existing ${target}.` };
         writeFileSync(target, yaml);
@@ -134,7 +171,7 @@ function send(msg: object): void {
   process.stdout.write(JSON.stringify(msg) + "\n");
 }
 
-async function handle(req: RpcRequest): Promise<void> {
+export async function handle(req: RpcRequest): Promise<void> {
   if (req.method === "notifications/initialized" || req.id === undefined || req.id === null) return;
   try {
     switch (req.method) {
@@ -153,7 +190,17 @@ async function handle(req: RpcRequest): Promise<void> {
         send({ jsonrpc: "2.0", id: req.id, result: { tools: TOOLS } });
         return;
       case "tools/call": {
-        const { name, arguments: args } = req.params ?? {};
+        const toolParams = isRecord(req.params) ? req.params : {};
+        const name = typeof toolParams.name === "string" ? toolParams.name : undefined;
+        const args = toolParams.arguments;
+        if (!name) {
+          send({
+            jsonrpc: "2.0",
+            id: req.id,
+            result: { content: [{ type: "text", text: "Error: tools/call requires a string tool name." }], isError: true },
+          });
+          return;
+        }
         try {
           const out = await callTool(name, args ?? {});
           send({ jsonrpc: "2.0", id: req.id, result: { content: [{ type: "text", text: out.text }] } });
@@ -174,7 +221,7 @@ async function handle(req: RpcRequest): Promise<void> {
   }
 }
 
-function main(): void {
+export function main(): void {
   const rl = createInterface({ input: process.stdin });
   rl.on("line", (line) => {
     const trimmed = line.trim();
@@ -189,4 +236,6 @@ function main(): void {
   });
 }
 
-main();
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main();
+}

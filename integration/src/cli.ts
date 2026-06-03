@@ -1,6 +1,8 @@
-import { readFileSync, writeFileSync, existsSync } from "node:fs";
-import { isAbsolute, join } from "node:path";
-import { execSync } from "node:child_process";
+import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { dirname, isAbsolute, join, resolve } from "node:path";
+import { execFileSync } from "node:child_process";
+import { homedir } from "node:os";
+import { fileURLToPath } from "node:url";
 import { runHook, type Phase, type Dialect } from "./adapters/runtimes.js";
 import { loadCatalogue } from "./catalogue.js";
 import { loadProfile, ProfileError } from "./profile.js";
@@ -14,7 +16,6 @@ import { renderOnboardingReport, renderAnchorsYaml } from "./model/report.js";
 import { buildInventory, renderInventory } from "./model/inventory.js";
 import { buildPatternMap, renderPatternMapYaml } from "./model/pattern-map.js";
 import { reviewPR, changesFromGit, gitBaseContent } from "./review/pr-review.js";
-import { mkdirSync } from "node:fs";
 
 async function readStdin(): Promise<string> {
   const chunks: Buffer[] = [];
@@ -42,7 +43,7 @@ async function cmdHook(which: string, rest: string[]): Promise<void> {
 
 function cmdInit(write: boolean): void {
   const cwd = process.cwd();
-  const catalogue = loadCatalogue(cwd);
+  const catalogue = loadActiveCatalogue(cwd);
   const { yaml, report } = proposeProfile(cwd, catalogue, {});
   process.stderr.write(report + "\n\n");
   const target = join(cwd, "patterns.config.yaml");
@@ -62,7 +63,7 @@ function cmdInit(write: boolean): void {
 function changedFiles(cwd: string, base?: string): string[] {
   try {
     const ref = base ?? "HEAD";
-    const out = execSync(`git -C "${cwd}" diff --name-only --diff-filter=ACMR ${ref}`, {
+    const out = execFileSync("git", ["-C", cwd, "diff", "--name-only", "--diff-filter=ACMR", ref], {
       encoding: "utf8",
       stdio: ["ignore", "pipe", "ignore"],
     });
@@ -81,7 +82,7 @@ async function cmdCheck(args: string[]): Promise<void> {
   const explicit = args.filter((a) => !a.startsWith("--") && a !== base && a !== event);
 
   const profilePath = join(cwd, "patterns.config.yaml");
-  const catalogue = loadCatalogue(cwd);
+  const catalogue = loadActiveCatalogue(cwd);
   let profile;
   try {
     profile = loadProfile(profilePath, catalogue);
@@ -144,7 +145,7 @@ function printFindings(findings: Finding[]): void {
 
 function cmdProfile(): void {
   const cwd = process.cwd();
-  const catalogue = loadCatalogue(cwd);
+  const catalogue = loadActiveCatalogue(cwd);
   try {
     const profile = loadProfile(join(cwd, "patterns.config.yaml"), catalogue);
     process.stdout.write(JSON.stringify(profile, null, 2) + "\n");
@@ -156,7 +157,7 @@ function cmdProfile(): void {
 
 function cmdOnboard(args: string[]): void {
   const cwd = process.cwd();
-  const catalogue = loadCatalogue(cwd);
+  const catalogue = loadActiveCatalogue(cwd);
   const map = buildEvidenceMap(cwd, {});
 
   // Persist the derived map (gitignored artifact, design 14).
@@ -208,7 +209,7 @@ function cmdReview(args: string[]): void {
   const cwd = process.cwd();
   const i = args.indexOf("--base");
   const base = i >= 0 ? args[i + 1] : "origin/main";
-  const catalogue = loadCatalogue(cwd);
+  const catalogue = loadActiveCatalogue(cwd);
   let profile;
   try {
     profile = loadProfile(join(cwd, "patterns.config.yaml"), catalogue);
@@ -219,6 +220,22 @@ function cmdReview(args: string[]): void {
   }
   const changes = changesFromGit(cwd, base);
   if (changes.length === 0) {
+    if (args.includes("--json")) {
+      process.stdout.write(
+        JSON.stringify(
+          {
+            decision: "allow",
+            blocking: [],
+            advisories: [],
+            findings: [],
+            summary: `No changes detected against ${base}.`,
+          },
+          null,
+          2,
+        ) + "\n",
+      );
+      return;
+    }
     process.stdout.write(`No changes detected against ${base}.\n`);
     return;
   }
@@ -231,6 +248,173 @@ function cmdReview(args: string[]): void {
   process.stdout.write(result.summary + "\n\n");
   printFindings(result.findings);
   if (result.decision === "block") process.exitCode = 1;
+}
+
+function repoCatalogueRoot(): string {
+  if (process.env.CONFORMANCE_CATALOGUE_ROOT) return resolve(process.env.CONFORMANCE_CATALOGUE_ROOT);
+  return resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
+}
+
+function loadActiveCatalogue(cwd: string): ReturnType<typeof loadCatalogue> {
+  try {
+    return loadCatalogue(cwd);
+  } catch {
+    return loadCatalogue(repoCatalogueRoot());
+  }
+}
+
+function sh(value: string): string {
+  return `'${value.replace(/'/g, "'\\''")}'`;
+}
+
+function hookCommand(catalogueRoot: string, phase: Phase): string {
+  const bin = join(catalogueRoot, "integration", "bin", "conformance.mjs");
+  const inner = `CONFORMANCE_CATALOGUE_ROOT=${sh(catalogueRoot)} ${sh(process.execPath)} ${sh(bin)} hook ${phase} || printf '{}'`;
+  return `/bin/sh -lc ${sh(inner)}`;
+}
+
+function pluginManifest(): Record<string, unknown> {
+  return {
+    name: "quality-software-conformance",
+    version: "0.1.0",
+    description: "Repo-local pattern conformance for Copilot CLI: advisory hooks, skills, commands, and MCP tools.",
+    author: { name: "Quality Software" },
+    repository: "https://github.com/crmitchelmore/quality-software",
+    license: "MIT",
+    keywords: ["copilot-cli", "conformance", "patterns", "architecture", "code-review"],
+  };
+}
+
+function pluginHooks(catalogueRoot: string): Record<string, unknown> {
+  return {
+    hooks: {
+      SessionStart: [
+        {
+          hooks: [{ type: "command", command: hookCommand(catalogueRoot, "session-start"), timeout: 5000 }],
+        },
+      ],
+      PostToolUse: [
+        {
+          matcher: "edit|create|apply_patch|Write|Edit|MultiEdit",
+          hooks: [{ type: "command", command: hookCommand(catalogueRoot, "post-write"), timeout: 5000 }],
+        },
+      ],
+      AgentStop: [
+        {
+          hooks: [{ type: "command", command: hookCommand(catalogueRoot, "turn-end"), timeout: 5000 }],
+        },
+      ],
+    },
+  };
+}
+
+function pluginMcp(catalogueRoot: string): Record<string, unknown> {
+  return {
+    conformance: {
+      type: "stdio",
+      command: process.execPath,
+      args: [join(catalogueRoot, "integration", "bin", "conformance-mcp.mjs")],
+      env: {
+        CONFORMANCE_CATALOGUE_ROOT: catalogueRoot,
+      },
+    },
+  };
+}
+
+function commandFiles(): Record<string, string> {
+  return {
+    "conformance-doctor.md": `---\ndescription: Diagnose the Quality Software conformance plugin and project wiring\nallowed-tools: Bash, Read\n---\n\nRun \`conformance doctor\` in the current repository. If it reports missing artefacts, explain the smallest next command to fix them. Do not promote advisory findings to blocking findings.\n`,
+    "conformance-onboard.md": `---\ndescription: Onboard a repository into Quality Software conformance artefacts\nallowed-tools: Bash, Read, Write\n---\n\nRun \`conformance onboard --write-profile --write-map --write-anchors\` only when the repository does not already have ratified conformance artefacts. If artefacts exist, run \`conformance onboard --inventory\` and report candidate gaps without overwriting files.\n`,
+    "conformance-review.md": `---\ndescription: Run a baseline-aware Quality Software conformance review\nallowed-tools: Bash, Read\n---\n\nRun \`conformance review --base origin/main\` unless the PR base is known to be different. Report findings as advisory unless the tool returns a blocking decision from a certified deterministic rule.\n`,
+  };
+}
+
+function cmdInstallCopilot(args: string[]): void {
+  const catalogueRoot = repoCatalogueRoot();
+  const prefixIdx = args.indexOf("--prefix");
+  const prefix =
+    prefixIdx >= 0 ? resolve(args[prefixIdx + 1]) : join(homedir(), ".copilot", "installed-plugins", "_direct");
+  const target = join(prefix, "quality-software--conformance");
+  const force = args.includes("--force");
+
+  if (existsSync(target)) {
+    if (!force) {
+      process.stderr.write(`Plugin already installed at ${target}. Re-run with --force to replace it.\n`);
+      process.exitCode = 1;
+      return;
+    }
+    rmSync(target, { recursive: true, force: true });
+  }
+
+  mkdirSync(join(target, ".claude-plugin"), { recursive: true });
+  mkdirSync(join(target, "hooks"), { recursive: true });
+  mkdirSync(join(target, "commands"), { recursive: true });
+  mkdirSync(join(target, "skills"), { recursive: true });
+
+  writeJson(join(target, ".claude-plugin", "plugin.json"), pluginManifest());
+  writeJson(join(target, "hooks", "hooks.json"), pluginHooks(catalogueRoot));
+  writeJson(join(target, ".mcp.json"), pluginMcp(catalogueRoot));
+  for (const [name, body] of Object.entries(commandFiles())) writeFileSync(join(target, "commands", name), body);
+
+  const skills = ["conformance-review", "codebase-onboarding", "pr-pattern-review"];
+  for (const skill of skills) {
+    cpSync(join(catalogueRoot, ".github", "skills", skill), join(target, "skills", skill), {
+      recursive: true,
+    });
+  }
+
+  process.stdout.write(`Installed Quality Software conformance plugin at ${target}\n`);
+  process.stdout.write("Restart Copilot CLI or start a new session for plugin discovery if commands/hooks are not visible.\n");
+}
+
+function cmdDoctor(): void {
+  const cwd = process.cwd();
+  const catalogueRoot = repoCatalogueRoot();
+  const checks: { label: string; ok: boolean; detail: string }[] = [
+    {
+      label: "catalogue root",
+      ok: existsSync(join(catalogueRoot, "docs", "graph", "knowledge-graph.json")),
+      detail: catalogueRoot,
+    },
+    {
+      label: "project profile",
+      ok: existsSync(join(cwd, "patterns.config.yaml")),
+      detail: join(cwd, "patterns.config.yaml"),
+    },
+    {
+      label: "project map",
+      ok: existsSync(join(cwd, "patterns.map.yaml")),
+      detail: join(cwd, "patterns.map.yaml"),
+    },
+    {
+      label: "project anchors",
+      ok: existsSync(join(cwd, "patterns.anchors.yaml")),
+      detail: join(cwd, "patterns.anchors.yaml"),
+    },
+    {
+      label: "copilot plugin",
+      ok: existsSync(join(homedir(), ".copilot", "installed-plugins", "_direct", "quality-software--conformance")),
+      detail: join(homedir(), ".copilot", "installed-plugins", "_direct", "quality-software--conformance"),
+    },
+  ];
+
+  process.stdout.write("Quality Software conformance doctor\n\n");
+  for (const c of checks) process.stdout.write(`${c.ok ? "✔" : "✘"} ${c.label}: ${c.detail}\n`);
+  process.stdout.write("\n");
+
+  try {
+    const catalogue = loadActiveCatalogue(cwd);
+    const profile = loadProfile(join(cwd, "patterns.config.yaml"), catalogue);
+    process.stdout.write(`✔ resolved profile: ${profile.adopt.length} adopted pattern(s)\n`);
+    for (const warning of profile.warnings) process.stdout.write(`profile warning: ${warning}\n`);
+  } catch (e) {
+    process.stdout.write(`✘ resolved profile: ${(e as Error).message}\n`);
+    process.exitCode = 1;
+  }
+}
+
+function writeJson(path: string, value: unknown): void {
+  writeFileSync(path, JSON.stringify(value, null, 2) + "\n");
 }
 
 async function main(): Promise<void> {
@@ -254,6 +438,12 @@ async function main(): Promise<void> {
     case "review":
       cmdReview(rest);
       break;
+    case "install-copilot":
+      cmdInstallCopilot(rest);
+      break;
+    case "doctor":
+      cmdDoctor();
+      break;
     default:
       process.stderr.write(
         "Usage:\n" +
@@ -263,6 +453,8 @@ async function main(): Promise<void> {
           "  conformance onboard [--inventory] [--write-profile] [--write-anchors] [--write-map]  (scan codebase; print pattern inventory + evidence)\n" +
           "  conformance check [--event PR_REVIEW|BATCH] [--base <ref>] [paths…] (run the engine; exit 1 on block)\n" +
           "  conformance review [--base <ref>] [--json]                          (baseline-aware PR review; exit 1 on net-new block)\n" +
+          "  conformance install-copilot [--prefix <dir>] [--force]              (install local Copilot CLI plugin bundle)\n" +
+          "  conformance doctor                                                  (diagnose catalogue/profile/plugin wiring)\n" +
           "  conformance profile                                                 (print the resolved profile)\n",
       );
       process.exitCode = cmd && !["help", "-h", "--help"].includes(cmd) ? 1 : 0;

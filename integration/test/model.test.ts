@@ -177,6 +177,26 @@ test("onboard CLI: exits 0 and prints preview sections", () => {
   assert.match(out, /Next steps/);
 });
 
+test("review CLI: --json returns ReviewResult shape when there are no changes", () => {
+  const dir = makeProject({ profile: "projectSize: small\nadopt: []\nban: []\n" });
+  writeFile(dir, "src/domain/user.ts", "export interface User { id: string }\n");
+  execFileSync("git", ["init"], { cwd: dir, stdio: "ignore" });
+  execFileSync("git", ["config", "user.email", "test@example.invalid"], { cwd: dir });
+  execFileSync("git", ["config", "user.name", "Test User"], { cwd: dir });
+  execFileSync("git", ["add", "."], { cwd: dir });
+  execFileSync("git", ["commit", "-m", "init"], { cwd: dir, stdio: "ignore" });
+
+  const out = execFileSync(
+    process.execPath,
+    [join(REPO_ROOT, "integration", "bin", "conformance.mjs"), "review", "--base", "HEAD", "--json"],
+    { cwd: dir, encoding: "utf8", env: { ...process.env, CONFORMANCE_CATALOGUE_ROOT: REPO_ROOT } },
+  );
+  const result = JSON.parse(out);
+  assert.equal(result.decision, "allow");
+  assert.deepEqual(result.findings, []);
+  assert.match(result.summary, /No changes detected/);
+});
+
 // Universal L0 provider: a non-JS (Kotlin) project produces a usable evidence map
 // with FQN cross-file edges resolved by the orchestrator symbol index (design 15.4/15.5).
 function kotlinProject() {

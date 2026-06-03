@@ -74,16 +74,30 @@ scored heuristic (`{path, confidence, reasons[]}`), never authoritatively. See
 
 ## Wiring into GitHub Copilot CLI
 
-1. **Hooks** — copy `.github/hooks/conformance.json` into the target repo (or
-   `~/.copilot/hooks/`). It wires `sessionStart` (prime), `postToolUse` on `edit|create`
-   (advise), `preToolUse` on `bash` (guard), `agentStop` (nudge). Requires `conformance` on
-   PATH and `CONFORMANCE_CATALOGUE_ROOT` exported.
-2. **Skill** — `.github/skills/conformance-review/SKILL.md` lets you ask the agent to "review
-   conformance".
-3. **MCP** — merge `mcp-config.example.json` into `~/.copilot/mcp-config.json` for the
-   `conformance_*` tools.
-4. **Plugin** — `plugin/plugin.json` bundles all of the above.
-5. **PR Action** — `.github/workflows/conformance.yml` runs the PR gate.
+Recommended local install:
+
+```bash
+cd /abs/path/to/quality-software/integration
+npm link
+conformance install-copilot --force
+```
+
+The installer writes an Open Plugins-compatible bundle to
+`~/.copilot/installed-plugins/_direct/quality-software--conformance`, with:
+
+1. **Advisory hooks** — `SessionStart` (prime), `PostToolUse` on edits (advise), and
+   `AgentStop` (nudge). The plugin intentionally does **not** install a `PreToolUse` bash
+   guard because local AI development must fail open.
+2. **Skills** — conformance review, PR pattern review, and codebase onboarding.
+3. **Commands** — `conformance-doctor`, `conformance-onboard`, and `conformance-review`.
+4. **MCP config** — `.mcp.json` pointing at the local catalogue checkout.
+
+Run `conformance doctor` inside a target repo to verify that the catalogue, profile, map,
+anchors, and plugin install are visible.
+
+For CI, prefer a normal GitHub Action or reusable workflow over an agentic workflow for the
+first PR integration. PR checks are reproducible, auditable, and can stay advisory until a
+deterministic certified rule is promoted to blocking.
 
 ## Multi-runtime & remote
 
