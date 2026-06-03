@@ -10,6 +10,7 @@ import {
 } from "../model/project-map.js";
 import { certify, certifiedFindings } from "../policy/certify.js";
 import { policiesFromProfile } from "../policy/from-profile.js";
+import { CAPABILITIES, findCanonicalHelper, moduleUsesCapability } from "../model/capabilities.js";
 import { fingerprint } from "../contract.js";
 
 /**
@@ -117,7 +118,11 @@ export function reviewPR(input: ReviewInput): ReviewResult {
   // --- 2. Reuse-against-baseline (advisory) ---
   const reuse = reuseAgainstBaseline(input, headByPath, baseMap.modules);
 
-  const advisories = [...certAdvisory, ...reuse];
+  // --- 3. Capability bypass: PR adds inline use of a cross-cutting capability
+  //        (date/time, JSON, crypto, …) when a canonical helper already exists. ---
+  const capBypass = capabilityBypass(input, headByPath, baseMap.modules);
+
+  const advisories = [...certAdvisory, ...reuse, ...capBypass];
   const findings = [...blocking, ...advisories];
   const decision: ReviewResult["decision"] = blocking.length > 0 ? "block" : "allow";
   return { decision, blocking, advisories, findings, summary: summarise(decision, blocking, advisories) };
@@ -200,6 +205,67 @@ function reuseAgainstBaseline(
   return out;
 }
 
+/**
+ * Flag a changed file that NEWLY reaches for a cross-cutting capability inline
+ * (e.g. java.time, Jackson, MessageDigest) when the baseline already has a
+ * canonical helper for it. This connects onboarding's localised-capability
+ * detection to enforcement: "you added date logic directly; route it through
+ * the existing helper". Only NET-NEW usage counts — a modified file that already
+ * used the capability at base is not re-flagged, and files that already import
+ * the helper are skipped.
+ */
+function capabilityBypass(
+  input: ReviewInput,
+  headByPath: Map<string, ModuleInfo>,
+  baseModules: ModuleInfo[],
+): Finding[] {
+  // Canonical helper per capability, derived once from the baseline.
+  const helpers = new Map<string, ModuleInfo>();
+  for (const cap of CAPABILITIES) {
+    const h = findCanonicalHelper(baseModules, cap);
+    if (h) helpers.set(cap.id, h);
+  }
+  if (helpers.size === 0) return [];
+
+  const out: Finding[] = [];
+  for (const c of input.changes) {
+    if (c.status !== "added" && c.status !== "modified") continue;
+    const head = headByPath.get(c.path);
+    if (!head || head.isTest || head.isGenerated || head.isBarrel) continue;
+
+    // Base version of this file, to enforce NET-NEW only.
+    const baseSrc = c.status === "modified" ? input.baseContent(c.path) : undefined;
+    const baseMod =
+      baseSrc !== undefined ? moduleFromFile(c.path, baseSrc, undefined, input.buildOpts?.registry) : undefined;
+
+    for (const cap of CAPABILITIES) {
+      const canonical = helpers.get(cap.id);
+      if (!canonical || canonical.path === c.path) continue;
+      if (!moduleUsesCapability(head, cap)) continue; // file doesn't use the capability
+      if (baseMod && moduleUsesCapability(baseMod, cap)) continue; // not net-new
+      if (head.imports.some((i) => i.resolved === canonical.path)) continue; // already routes through helper
+
+      out.push({
+        fingerprint: fingerprint({
+          detectorId: "reuse.capability-bypass",
+          detectorVersion: "1.0.0",
+          symbol: cap.id,
+          evidence: `inline ${cap.id}`,
+          scopePath: c.path,
+        }),
+        detectorId: "reuse.capability-bypass",
+        detectorVersion: "1.0.0",
+        severity: "advice",
+        path: c.path,
+        message: `New inline ${cap.title.toLowerCase()} — a canonical helper already exists at ${canonical.path}.`,
+        suggestion: `Route ${cap.title.toLowerCase()} through ${canonical.path} instead of using the underlying library directly, so behaviour stays consistent.`,
+        evidence: `inline ${cap.id}`,
+      });
+    }
+  }
+  return out;
+}
+
 function summarise(decision: ReviewResult["decision"], blocking: Finding[], advisories: Finding[]): string {
   const lines: string[] = [];
   lines.push(
@@ -212,6 +278,11 @@ function summarise(decision: ReviewResult["decision"], blocking: Finding[], advi
   if (reuse.length) {
     lines.push(`Reuse advisories (${reuse.length}):`);
     for (const f of reuse.slice(0, 20)) lines.push(`  [${f.severity}] ${f.path} — ${f.message}`);
+  }
+  const capBypass = advisories.filter((a) => a.detectorId === "reuse.capability-bypass");
+  if (capBypass.length) {
+    lines.push(`Capability-bypass advisories (${capBypass.length}):`);
+    for (const f of capBypass.slice(0, 20)) lines.push(`  [${f.severity}] ${f.path} — ${f.message}`);
   }
   return lines.join("\n");
 }

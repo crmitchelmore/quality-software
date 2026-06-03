@@ -97,22 +97,44 @@ export interface CapabilityCluster {
 const MIN_USING = 3;
 const MIN_BYPASSING = 2;
 
+/** True when the module imports the underlying library for this capability. */
+export function moduleUsesCapability(m: ModuleInfo, cap: Capability): boolean {
+  return m.imports.some((i) => cap.importMatchers.some((re) => re.test(i.spec)));
+}
+
+/** The capability whose import library a raw import specifier matches, if any. */
+export function capabilityForSpec(spec: string): Capability | undefined {
+  return CAPABILITIES.find((cap) => cap.importMatchers.some((re) => re.test(spec)));
+}
+
+/**
+ * The existing canonical helper module for a capability in a module set, if one
+ * exists: a non-test module that uses the capability, is named like its helper,
+ * and is already a dependency hub (inbound >= 2). Used by PR review to decide
+ * whether a change should route through an established helper.
+ */
+export function findCanonicalHelper(modules: ModuleInfo[], cap: Capability): ModuleInfo | undefined {
+  return modules
+    .filter(
+      (m) =>
+        !m.isTest &&
+        !m.isGenerated &&
+        moduleUsesCapability(m, cap) &&
+        m.inbound >= 2 &&
+        cap.homeTokens.some((t) => nameTokens(m.path).has(t)),
+    )
+    .sort((a, b) => b.inbound - a.inbound)[0];
+}
+
 export function detectCapabilities(modules: ModuleInfo[]): CapabilityCluster[] {
   const nonTest = modules.filter((m) => !m.isTest && !m.isGenerated);
   const out: CapabilityCluster[] = [];
 
   for (const cap of CAPABILITIES) {
-    const using = nonTest.filter((m) => m.imports.some((i) => cap.importMatchers.some((re) => re.test(i.spec))));
+    const using = nonTest.filter((m) => moduleUsesCapability(m, cap));
     if (using.length < MIN_USING) continue;
 
-    // A shared helper is a non-test module that (a) actually uses the capability
-    // (imports the underlying library), (b) has a name token identifying it as the
-    // helper for this capability, and (c) is already depended upon (inbound >= 2).
-    const usingSet = new Set(using.map((m) => m.path));
-    const candidates = nonTest
-      .filter((m) => usingSet.has(m.path) && m.inbound >= 2 && cap.homeTokens.some((t) => nameTokens(m.path).has(t)))
-      .sort((a, b) => b.inbound - a.inbound);
-    const canonical = candidates[0];
+    const canonical = findCanonicalHelper(nonTest, cap);
 
     if (canonical) {
       const bypassing = using.filter(

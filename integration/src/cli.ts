@@ -217,6 +217,11 @@ function cmdReview(args: string[]): void {
     return;
   }
   const result = reviewPR({ repoRoot: cwd, profile, changes, baseContent: gitBaseContent(cwd, base) });
+  if (args.includes("--json")) {
+    process.stdout.write(JSON.stringify(result, null, 2) + "\n");
+    if (result.decision === "block") process.exitCode = 1;
+    return;
+  }
   process.stdout.write(result.summary + "\n\n");
   printFindings(result.findings);
   if (result.decision === "block") process.exitCode = 1;
@@ -251,7 +256,7 @@ async function main(): Promise<void> {
           "  conformance init [--write]                                          (propose a candidate profile)\n" +
           "  conformance onboard [--inventory] [--write-profile] [--write-anchors]  (scan codebase; print pattern inventory + evidence)\n" +
           "  conformance check [--event PR_REVIEW|BATCH] [--base <ref>] [paths…] (run the engine; exit 1 on block)\n" +
-          "  conformance review [--base <ref>]                                   (baseline-aware PR review; exit 1 on net-new block)\n" +
+          "  conformance review [--base <ref>] [--json]                          (baseline-aware PR review; exit 1 on net-new block)\n" +
           "  conformance profile                                                 (print the resolved profile)\n",
       );
       process.exitCode = cmd && !["help", "-h", "--help"].includes(cmd) ? 1 : 0;

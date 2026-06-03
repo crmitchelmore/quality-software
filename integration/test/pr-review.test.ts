@@ -150,3 +150,52 @@ test("a modified file's pre-existing own symbol is NOT flagged as a duplicate", 
   // Logger pre-existed in the modified file itself ⇒ not a net-new re-implementation.
   assert.equal(reuse.length, 0);
 });
+
+test("a PR adding inline capability usage when a canonical helper exists raises a capability-bypass advisory", () => {
+  const dir = makeProject({
+    profile: todoProfile("block"),
+    files: {
+      // canonical date helper: uses dayjs and is depended upon by a & b (inbound 2).
+      "src/util/clock.ts": `import dayjs from "dayjs";\nexport function now() { return dayjs(); }\n`,
+      "src/a.ts": `import { now } from "./util/clock";\nexport const a = now();\n`,
+      "src/b.ts": `import { now } from "./util/clock";\nexport const b = now();\n`,
+      // PR-added file that reaches for dayjs directly instead of the helper.
+      "src/feature/report.ts": `import dayjs from "dayjs";\nexport function report() { return dayjs().toString(); }\n`,
+    },
+  });
+  const profile = profileFor(dir);
+  const result = reviewPR({
+    repoRoot: dir,
+    profile,
+    changes: [{ path: "src/feature/report.ts", status: "added" }],
+    baseContent: () => undefined,
+  });
+  assert.equal(result.decision, "allow"); // advisory, never blocks
+  const cap = result.advisories.filter((a) => a.detectorId === "reuse.capability-bypass");
+  assert.ok(
+    cap.some((f) => f.path === "src/feature/report.ts" && /clock\.ts/.test(f.message)),
+    "expected a capability-bypass advisory pointing at the clock helper",
+  );
+});
+
+test("a PR file that routes through the canonical helper raises NO capability-bypass advisory", () => {
+  const dir = makeProject({
+    profile: todoProfile("block"),
+    files: {
+      "src/util/clock.ts": `import dayjs from "dayjs";\nexport function now() { return dayjs(); }\n`,
+      "src/a.ts": `import { now } from "./util/clock";\nexport const a = now();\n`,
+      "src/b.ts": `import { now } from "./util/clock";\nexport const b = now();\n`,
+      // PR-added file that correctly reuses the helper (no direct dayjs import).
+      "src/feature/report.ts": `import { now } from "../util/clock";\nexport function report() { return now().toString(); }\n`,
+    },
+  });
+  const profile = profileFor(dir);
+  const result = reviewPR({
+    repoRoot: dir,
+    profile,
+    changes: [{ path: "src/feature/report.ts", status: "added" }],
+    baseContent: () => undefined,
+  });
+  const cap = result.advisories.filter((a) => a.detectorId === "reuse.capability-bypass");
+  assert.equal(cap.length, 0);
+});
