@@ -8,6 +8,7 @@ import { defaultRegistry, type ProviderRegistry } from "./lang/registry.js";
 import type { Provenance } from "./lang/types.js";
 import { DEFAULT_LAYER_PREFIXES, classifyLayer } from "./layers.js";
 import { detectCapabilities, type CapabilityCluster } from "./capabilities.js";
+import { registryCandidates } from "./detectors.js";
 
 /**
  * The codebase EVIDENCE MAP (design 14). Deliberately NOT an authoritative
@@ -497,5 +498,37 @@ function inferCandidates(
     });
   }
 
-  return out;
+  // Broad declarative sweep (naming + import fingerprints across the catalogue).
+  out.push(...registryCandidates(modules));
+
+  return mergeCandidates(out);
+}
+
+/** Merge duplicate pattern ids: keep the highest confidence, union evidence/locations. */
+function mergeCandidates(cands: CandidatePattern[]): CandidatePattern[] {
+  const RANK = { low: 1, medium: 2, high: 3 } as const;
+  const byId = new Map<string, CandidatePattern>();
+  for (const c of cands) {
+    const prev = byId.get(c.patternId);
+    if (!prev) {
+      byId.set(c.patternId, {
+        ...c,
+        evidence: [...c.evidence],
+        locations: [...c.locations],
+      });
+      continue;
+    }
+    if (RANK[c.confidence] > RANK[prev.confidence]) {
+      prev.confidence = c.confidence;
+      prev.consistency = c.consistency ?? prev.consistency;
+      // Promote the stronger candidate's evidence to the front so the headline
+      // reason (evidence[0], used by proposal.ts) reflects why confidence rose.
+      prev.evidence = [...c.evidence, ...prev.evidence.filter((e) => !c.evidence.includes(e))];
+    }
+    for (const e of c.evidence) if (!prev.evidence.includes(e)) prev.evidence.push(e);
+    for (const l of c.locations) if (!prev.locations.includes(l)) prev.locations.push(l);
+    prev.evidence = prev.evidence.slice(0, 6);
+    prev.locations = prev.locations.slice(0, 12);
+  }
+  return [...byId.values()];
 }
