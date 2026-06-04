@@ -26,7 +26,6 @@ jobs:
           fetch-depth: 0
 
       - name: Run advisory conformance review
-        # Pin @main to a release tag or commit SHA before making this check required.
-        uses: crmitchelmore/quality-software/.github/actions/conformance-pr-review@main
+        uses: crmitchelmore/quality-software/.github/actions/conformance-pr-review@v0.1.0
         with:
           base-ref: ${{ github.base_ref || 'main' }}
