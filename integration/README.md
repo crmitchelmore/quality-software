@@ -115,6 +115,31 @@ exceptions:
 Entries without a non-empty `reason` are ignored. Suppressions apply to local checks and PR
 review findings.
 
+## Advisory consistency policies
+
+PR review also reports net-new consistency drift without promoting it to a merge block. When the
+evidence map has a candidate pattern consistency score, certified findings for the same pattern
+include that score so reviewers can see whether the PR made the whole-codebase pattern less
+consistent. Patterns without a certified policy are reported as separate advisory consistency
+findings.
+
+Profiles can add deterministic naming-convention predicates under an adopted pattern:
+
+```yaml
+adopt:
+  - id: repository
+    enforcement: warn
+    options:
+      namingConvention:
+        scopeGlob: "src/domain/**"
+        exportKind: interface
+        namePattern: "^[A-Z][A-Za-z0-9]*Repository$"
+```
+
+Naming-convention findings are PR-time advisories/warnings only. They do not block, even when the
+owning pattern is otherwise configured with `enforcement: block`, until that predicate has its own
+fixture-backed blocking calibration.
+
 ## Multi-runtime & remote
 
 `adapters/` is the expansion seam. See `adapters/README.md` for Claude Code / Codex / OpenCode

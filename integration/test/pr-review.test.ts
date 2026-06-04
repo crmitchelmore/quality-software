@@ -43,6 +43,26 @@ phases:
   later: { enabled: true }
 `;
 
+const NAMING_PROFILE = `projectSize: small
+philosophies:
+  adopt:
+    - id: a-philosophy-of-software-design
+      weight: primary
+  reject: []
+adopt:
+  - id: repository
+    enforcement: warn
+    options:
+      namingConvention:
+        scopeGlob: "src/domain/**"
+        exportKind: interface
+        namePattern: "^[A-Z][A-Za-z0-9]*Repository$"
+phases:
+  write: { enabled: true, mode: advise, failMode: open, llm: false, block: false }
+  pr:    { enabled: true, llm: true, failOn: block }
+  later: { enabled: true }
+`;
+
 test("net-new boundary violation introduced by a PR is blocked", () => {
   const dir = makeProject({
     profile: todoProfile("block"),
@@ -126,6 +146,75 @@ test("configured boundary globs drive PR certifier layer classification", () => 
   });
   assert.equal(result.decision, "block");
   assert.ok(result.blocking.some((f) => f.path === "src/features/orders/model/order.ts"));
+});
+
+test("net-new candidate consistency score is attached to certified PR advisories without duplicate findings", () => {
+  const dir = makeProject({
+    profile: todoProfile("warn"),
+    files: {
+      "src/domain/order.ts": BAD_ORDER,
+      "src/domain/ports.ts": PORTS,
+      "src/infrastructure/db.ts": DB,
+    },
+  });
+  const profile = profileFor(dir);
+  const result = reviewPR({
+    repoRoot: dir,
+    profile,
+    changes: [{ path: "src/domain/order.ts", status: "modified" }],
+    baseContent: (p) => (p === "src/domain/order.ts" ? GOOD_ORDER : undefined),
+  });
+
+  assert.equal(result.decision, "allow");
+  const boundary = result.advisories.filter((f) => f.detectorId.startsWith("policy-certifier:boundary"));
+  assert.equal(boundary.length, 1, "expected the certified boundary advisory, not a duplicate consistency finding");
+  assert.match(boundary[0].message, /Pattern consistency is now/);
+  assert.equal(result.advisories.filter((f) => f.detectorId === "consistency.candidate-pattern").length, 0);
+});
+
+test("pre-existing candidate consistency violations are not re-advised", () => {
+  const dir = makeProject({
+    profile: todoProfile("warn"),
+    files: {
+      "src/domain/order.ts": BAD_ORDER,
+      "src/infrastructure/db.ts": DB,
+      "src/application/foo.ts": "export const foo = 1;\n",
+    },
+  });
+  const profile = profileFor(dir);
+  const result = reviewPR({
+    repoRoot: dir,
+    profile,
+    changes: [{ path: "src/application/foo.ts", status: "added" }],
+    baseContent: () => undefined,
+  });
+
+  assert.equal(result.decision, "allow");
+  assert.equal(result.advisories.filter((f) => /Pattern consistency is now/.test(f.message)).length, 0);
+  assert.equal(result.advisories.filter((f) => f.detectorId === "consistency.candidate-pattern").length, 0);
+});
+
+test("profile naming-convention policy flags inconsistent exported symbols as advisory", () => {
+  const dir = makeProject({
+    profile: NAMING_PROFILE,
+    files: {
+      "src/domain/user.ts": "export interface UserStore { find(id: string): Promise<unknown>; }\n",
+    },
+  });
+  const profile = profileFor(dir);
+  const result = reviewPR({
+    repoRoot: dir,
+    profile,
+    changes: [{ path: "src/domain/user.ts", status: "added" }],
+    baseContent: () => undefined,
+  });
+
+  assert.equal(result.decision, "allow");
+  const naming = result.advisories.filter((f) => f.detectorId === "policy-certifier:naming:repository:0");
+  assert.equal(naming.length, 1);
+  assert.equal(naming[0].severity, "warning");
+  assert.match(naming[0].evidence ?? "", /UserStore/);
+  assert.match(result.summary, /Policy advisories/);
 });
 
 test("patterns.exceptions.yaml suppresses PR review findings by fingerprint", () => {

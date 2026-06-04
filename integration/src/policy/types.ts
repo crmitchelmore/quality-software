@@ -1,4 +1,5 @@
 import type { Severity } from "../contract.js";
+import type { ExportedSymbol } from "../model/extract.js";
 import type { Layer } from "../model/lang/types.js";
 
 /**
@@ -14,7 +15,14 @@ export type PredicateSpec =
   /** Modules whose path matches `fromGlob` must not import a spec matching `importPattern`. */
   | { kind: "forbidden-import"; fromGlob?: string; importPattern: string }
   /** A symbol must not be declared in more than `max` distinct non-test modules. */
-  | { kind: "no-duplicate-symbol"; symbol: string; max?: number };
+  | { kind: "no-duplicate-symbol"; symbol: string; max?: number }
+  /** Exported symbols in `scopeGlob` must match the configured naming regex. */
+  | {
+      kind: "naming-convention";
+      scopeGlob?: string;
+      exportKind?: ExportedSymbol["kind"];
+      namePattern: string;
+    };
 
 export interface Policy {
   /** Stable, configured id — the thing that blocks (not a vague pattern name). */

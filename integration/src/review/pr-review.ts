@@ -8,6 +8,7 @@ import {
   resolveLayerPrefixes,
   type ModuleInfo,
   type BuildOptions,
+  type EvidenceMap,
 } from "../model/project-map.js";
 import { layerPrefixesFromProfile } from "../model/layers.js";
 import { certify, certifiedFindings } from "../policy/certify.js";
@@ -120,10 +121,16 @@ export function reviewPR(input: ReviewInput): ReviewResult {
   const baseFindings = certifiedFindings(certify(policies, baseMap));
   const baseFps = new Set(baseFindings.map((f) => f.fingerprint));
   const netNew = headFindings.filter((f) => !baseFps.has(f.fingerprint));
+  const consistencyChanges = candidateConsistencyChanges(headMap, baseMap);
+  const certifiedPatternIds = new Set(netNew.flatMap((f) => (f.patternId ? [f.patternId] : [])));
   const exceptions = loadFindingExceptions(input.repoRoot);
-  const unsuppressed = filterSuppressedFindings(netNew, exceptions);
+  const unsuppressed = withConsistencyContext(filterSuppressedFindings(netNew, exceptions), consistencyChanges);
   const blocking = unsuppressed.filter((f) => f.severity === "block");
   const certAdvisory = unsuppressed.filter((f) => f.severity !== "block");
+  const consistency = filterSuppressedFindings(
+    candidateConsistencyAdvisories(consistencyChanges, certifiedPatternIds),
+    exceptions,
+  );
 
   // --- 2. Reuse-against-baseline (advisory) ---
   const reuse = filterSuppressedFindings(reuseAgainstBaseline(inputWithBuildOpts, headByPath, baseMap.modules), exceptions);
@@ -132,10 +139,92 @@ export function reviewPR(input: ReviewInput): ReviewResult {
   //        (date/time, JSON, crypto, …) when a canonical helper already exists. ---
   const capBypass = filterSuppressedFindings(capabilityBypass(inputWithBuildOpts, headByPath, baseMap.modules), exceptions);
 
-  const advisories = [...certAdvisory, ...reuse, ...capBypass];
+  const advisories = [...certAdvisory, ...consistency, ...reuse, ...capBypass];
   const findings = [...blocking, ...advisories];
   const decision: ReviewResult["decision"] = blocking.length > 0 ? "block" : "allow";
   return { decision, blocking, advisories, findings, summary: summarise(decision, blocking, advisories) };
+}
+
+type ConsistencyChange = {
+  patternId: string;
+  baseScore: number;
+  headScore: number;
+  violations: number;
+  newLocations: string[];
+};
+
+function candidateConsistencyChanges(headMap: EvidenceMap, baseMap: EvidenceMap): Map<string, ConsistencyChange> {
+  const baseByPattern = new Map(baseMap.candidatePatterns.map((c) => [c.patternId, c]));
+  const changes = new Map<string, ConsistencyChange>();
+  for (const head of headMap.candidatePatterns) {
+    if (!head.consistency || head.consistency.violations === 0) continue;
+    const base = baseByPattern.get(head.patternId);
+    const baseLocations = new Set(base?.consistency ? base.locations : []);
+    const newLocations = head.locations.filter((loc) => !baseLocations.has(loc));
+    if (newLocations.length === 0) continue;
+    changes.set(head.patternId, {
+      patternId: head.patternId,
+      baseScore: base?.consistency?.score ?? 1,
+      headScore: head.consistency.score,
+      violations: head.consistency.violations,
+      newLocations,
+    });
+  }
+  return changes;
+}
+
+function percent(score: number): string {
+  return `${Math.round(score * 100)}%`;
+}
+
+function consistencyText(change: ConsistencyChange): string {
+  return `Pattern consistency is now ${percent(change.headScore)} (${change.violations} violation(s); was ${percent(
+    change.baseScore,
+  )}).`;
+}
+
+function withConsistencyContext(findings: Finding[], changes: Map<string, ConsistencyChange>): Finding[] {
+  return findings.map((finding) => {
+    const change = finding.patternId ? changes.get(finding.patternId) : undefined;
+    if (!change || !change.newLocations.includes(finding.path)) return finding;
+    const context = consistencyText(change);
+    return {
+      ...finding,
+      message: `${finding.message} ${context}`,
+      evidence: [finding.evidence, context].filter(Boolean).join(" | "),
+      rationale: [finding.rationale, context].filter(Boolean).join(" "),
+    };
+  });
+}
+
+function candidateConsistencyAdvisories(
+  changes: Map<string, ConsistencyChange>,
+  certifiedPatternIds: Set<string>,
+): Finding[] {
+  const out: Finding[] = [];
+  for (const change of changes.values()) {
+    if (certifiedPatternIds.has(change.patternId)) continue;
+    const path = change.newLocations[0];
+    out.push({
+      fingerprint: fingerprint({
+        patternId: change.patternId,
+        detectorId: "consistency.candidate-pattern",
+        detectorVersion: "1.0.0",
+        symbol: change.patternId,
+        evidence: `${change.newLocations.join(",")} ${change.headScore}`,
+        scopePath: path,
+      }),
+      detectorId: "consistency.candidate-pattern",
+      detectorVersion: "1.0.0",
+      patternId: change.patternId,
+      severity: "advice",
+      path,
+      message: `Candidate pattern consistency changed for '${change.patternId}'. ${consistencyText(change)}`,
+      suggestion: `Align the new inconsistent module(s) with the existing ${change.patternId} structure, or record an explicit exception if the divergence is intentional.`,
+      evidence: `new inconsistent module(s): ${change.newLocations.join(", ")}`,
+    });
+  }
+  return out;
 }
 
 /**
@@ -286,6 +375,16 @@ function summarise(decision: ReviewResult["decision"], blocking: Finding[], advi
       : "PASS: no net-new boundary violations introduced.",
   );
   for (const f of blocking.slice(0, 20)) lines.push(`  [block] ${f.path} — ${f.message}`);
+  const policy = advisories.filter((a) => a.detectorId.startsWith("policy-certifier:"));
+  if (policy.length) {
+    lines.push(`Policy advisories (${policy.length}):`);
+    for (const f of policy.slice(0, 20)) lines.push(`  [${f.severity}] ${f.path} — ${f.message}`);
+  }
+  const consistency = advisories.filter((a) => a.detectorId === "consistency.candidate-pattern");
+  if (consistency.length) {
+    lines.push(`Consistency advisories (${consistency.length}):`);
+    for (const f of consistency.slice(0, 20)) lines.push(`  [${f.severity}] ${f.path} — ${f.message}`);
+  }
   const reuse = advisories.filter((a) => a.detectorId === "reuse.canonical-baseline");
   if (reuse.length) {
     lines.push(`Reuse advisories (${reuse.length}):`);

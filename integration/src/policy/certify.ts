@@ -61,6 +61,28 @@ export function certifyPolicy(policy: Policy, map: EvidenceMap): CertifiedViolat
         for (const f of nonTest) evidence.push({ path: f, detail: `declares '${p.symbol}'` });
       }
     }
+  } else if (p.kind === "naming-convention") {
+    const scopeRe = p.scopeGlob ? globToRe(p.scopeGlob) : null;
+    let nameRe: RegExp;
+    try {
+      nameRe = new RegExp(p.namePattern);
+    } catch {
+      return null;
+    }
+    for (const m of map.modules) {
+      if (m.isTest || m.isGenerated || m.isBarrel) continue;
+      if (scopeRe && !scopeRe.test(m.path)) continue;
+      for (const exp of m.exports) {
+        if (exp.kind === "default" || exp.kind === "reexport") continue;
+        if (p.exportKind && exp.kind !== p.exportKind) continue;
+        if (!nameRe.test(exp.name)) {
+          evidence.push({
+            path: m.path,
+            detail: `${exp.kind} '${exp.name}' does not match /${p.namePattern}/`,
+          });
+        }
+      }
+    }
   }
 
   if (evidence.length === 0) return null;
