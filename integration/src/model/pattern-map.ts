@@ -1,6 +1,7 @@
 import type { EvidenceMap, ModuleInfo } from "./project-map.js";
 import type { Catalogue } from "../catalogue.js";
 import { buildInventory, type Altitude, type InventoryEntry } from "./inventory.js";
+import { pathExistsInEvidenceMap } from "./validation.js";
 
 /**
  * The DETAILED companion to the (intentionally small) patterns.config.yaml. Where
@@ -108,20 +109,25 @@ export function buildPatternMap(map: EvidenceMap, catalogue: Catalogue): Pattern
     confidence: e.confidence,
     flavour: flavourFor(e.id, fw),
     evidence: e.evidence,
-    anchors: e.locations.filter((p) => !isTestPath(p)),
+    anchors: e.locations.filter((p) => !isTestPath(p) && pathExistsInEvidenceMap(map, p)),
     philosophies: (catalogue.philosophyForPattern.get(e.id) ?? []).map((p) => p.philosophyId),
   });
 
   const patterns = [...inv.high, ...inv.medium, ...inv.low].map(toEntry);
 
-  const capabilities: CapabilityMapEntry[] = inv.capabilities.map((c) => ({
-    id: c.id,
-    title: c.title,
-    status: c.recommendation === "route-through-canonical" ? "canonical-bypassed" : "no-canonical-helper",
-    canonical: c.canonical?.path ?? null,
-    usedIn: c.usingFiles.length,
-    sample: (c.recommendation === "route-through-canonical" ? c.bypassing : c.usingFiles).slice(0, 8),
-  }));
+  const capabilities: CapabilityMapEntry[] = inv.capabilities.map((c) => {
+    const canonical = c.canonical && pathExistsInEvidenceMap(map, c.canonical.path) ? c.canonical.path : null;
+    return {
+      id: c.id,
+      title: c.title,
+      status: c.recommendation === "route-through-canonical" && canonical ? "canonical-bypassed" : "no-canonical-helper",
+      canonical,
+      usedIn: c.usingFiles.length,
+      sample: (c.recommendation === "route-through-canonical" ? c.bypassing : c.usingFiles)
+        .filter((path) => pathExistsInEvidenceMap(map, path))
+        .slice(0, 8),
+    };
+  });
 
   return {
     meta: {

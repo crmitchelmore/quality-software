@@ -136,6 +136,34 @@ test("proposal stays warn-only and never auto-bans", () => {
   for (const a of proposal.adopt) assert.notEqual(a.enforcement, "block");
 });
 
+test("proposal filters invalid anchors and warns on copied domain wording", () => {
+  const dir = modelProject();
+  const map = buildEvidenceMap(dir, {});
+  map.duplicateSymbols.push({
+    name: "MissingAnchor",
+    files: ["src/domain/user.ts"],
+    canonical: {
+      path: "src/missing/DetectorConfiguration.ts",
+      confidence: "high",
+      reasons: ["synthetic invalid anchor"],
+    },
+    sameLayer: true,
+    layers: ["domain"],
+  });
+  map.candidatePatterns.unshift({
+    patternId: "facade",
+    confidence: "high",
+    evidence: ["Keep landing-page concerns behind a simple interface."],
+    locations: ["src/domain/user.ts"],
+  });
+
+  const proposal = proposeProfileFromEvidence(map, loadCatalogue(REPO_ROOT));
+
+  assert.ok(!proposal.anchors.some((a) => a.path === "src/missing/DetectorConfiguration.ts"));
+  assert.ok(proposal.notes.some((note) => note.includes("path \"src/missing/DetectorConfiguration.ts\"")));
+  assert.ok(proposal.notes.some((note) => note.includes('"landing-page"')));
+});
+
 test("proposal puts testing patterns + philosophies in an independent testing section", () => {
   const catalogue = loadCatalogue(REPO_ROOT);
   // Synthetic evidence: a testing pattern (mock-object) + an architecture pattern (repository).

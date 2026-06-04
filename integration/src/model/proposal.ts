@@ -2,6 +2,7 @@ import type { Catalogue } from "../catalogue.js";
 import type { EvidenceMap, CandidatePattern } from "./project-map.js";
 import { selectCorePhilosophies, disciplineOf, DEFAULT_TESTING_CAP } from "./philosophies.js";
 import { altitudeOf, type Altitude } from "./inventory.js";
+import { missingRepoSpecificTerms, pathExistsInEvidenceMap } from "./validation.js";
 
 /**
  * Turn the (advisory) evidence map into a CONSERVATIVE, warn-only candidate profile
@@ -47,9 +48,16 @@ export function proposeProfileFromEvidence(map: EvidenceMap, catalogue: Catalogu
 
   // Candidate canonical anchors from high/medium-confidence duplicate clusters.
   const anchors: ProfileProposal["anchors"] = [];
+  const validationNotes: string[] = [];
   for (const dup of map.duplicateSymbols) {
     if (dup.canonical && dup.canonical.confidence !== "low") {
-      anchors.push({ name: dup.name, path: dup.canonical.path, confidence: dup.canonical.confidence });
+      if (pathExistsInEvidenceMap(map, dup.canonical.path)) {
+        anchors.push({ name: dup.name, path: dup.canonical.path, confidence: dup.canonical.confidence });
+      } else {
+        validationNotes.push(
+          `Candidate anchor "${dup.name}" omitted because path "${dup.canonical.path}" was not observed in the scan.`,
+        );
+      }
     }
   }
 
@@ -84,7 +92,14 @@ export function proposeProfileFromEvidence(map: EvidenceMap, catalogue: Catalogu
     "No patterns are banned automatically — add bans deliberately.",
     "Philosophies are reduced to the core set to avoid contradictory guidance; add/remove deliberately.",
     "Testing philosophies and patterns are kept in an independent `testing:` section.",
+    ...validationNotes,
   ];
+  const knownTerms = new Set(catalogue.nodeById.keys());
+  for (const term of missingRepoSpecificTerms(map, adopt.map((a) => a.reason), knownTerms)) {
+    notes.push(
+      `Review generated wording: reason mentions "${term}" but no matching repository vocabulary was observed.`,
+    );
+  }
   if (!adopt.length) notes.push("No medium+ confidence patterns detected; profile left intentionally minimal.");
 
   return {
