@@ -10,12 +10,12 @@ The cloud agent runs the **same** `.github/hooks/conformance.json` as the local 
 "deny"). Two things must be true in the sandbox:
 
 1. the `conformance` binary is on `PATH`, and
-2. `CONFORMANCE_CATALOGUE_ROOT` points at a checkout of this catalogue.
+2. `CONFORMANCE_CATALOGUE_ROOT` points at a checkout/download of this catalogue.
 
 `.github/workflows/copilot-setup-steps.yml` (copied into the target repo) does both:
-it checks out `crmitchelmore/quality-software`, `npm link`s the binary, and exports
-the env var via `$GITHUB_ENV`. After that the advisory write-time feedback and the
-shell guardrails apply to the cloud agent automatically.
+it downloads a pinned public `crmitchelmore/quality-software` archive, `npm link`s
+the binary, and exports the env var via `$GITHUB_ENV`. After that the advisory
+write-time feedback and the shell guardrails apply to the cloud agent automatically.
 
 > Because the cloud sandbox is non-interactive, keep write-time **advisory** (the
 > default). Use the **PR gate** as the authoritative control for agent PRs.
@@ -45,4 +45,5 @@ and CI verdicts agree.
 ## Expansion
 
 The same model extends to other remote runners (self-hosted, other CI). The only
-requirements are Node 22, a catalogue checkout, and `CONFORMANCE_CATALOGUE_ROOT`.
+requirements are Node 22, a catalogue download or checkout, and
+`CONFORMANCE_CATALOGUE_ROOT`.

@@ -22,24 +22,17 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Checkout conformance catalogue
-        uses: actions/checkout@v4
-        with:
-          repository: crmitchelmore/quality-software
-          path: .conformance-catalogue
-          token: ${{ secrets.CONFORMANCE_CATALOGUE_TOKEN }}
-
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
 
       - name: Install conformance
-        working-directory: .conformance-catalogue/integration
+        working-directory: integration
         run: npm ci || npm install
 
       - name: Run conformance check
         env:
-          CONFORMANCE_CATALOGUE_ROOT: ${{ github.workspace }}/.conformance-catalogue
+          CONFORMANCE_CATALOGUE_ROOT: ${{ github.workspace }}
           BASE_REF: ${{ github.base_ref }}
         run: |
           node "$CONFORMANCE_CATALOGUE_ROOT/integration/bin/conformance.mjs" \

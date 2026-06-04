@@ -22,12 +22,13 @@
 - Keep automation output contracts stable. In particular, `conformance review --json` must
   emit JSON for every path, including no-change/no-diff cases, and PR automation paths need
   focused regression coverage.
-- Advisory conformance PR workflows that checkout the private `crmitchelmore/quality-software`
-  catalogue must fail open when `CONFORMANCE_CATALOGUE_TOKEN` is missing, and should report the
-  skipped advisory review in the job summary instead of failing the PR.
+- Advisory conformance PR workflows should resolve the catalogue without repository secrets by
+  downloading a pinned public tarball, release, or package. If the catalogue is private or
+  unavailable, fail open and report the skipped advisory review in the job summary instead of
+  failing the PR.
 - Pilot PR workflows should pin external action refs and the conformance catalogue `ref`, pin
-  Node.js for `npm ci`, set `persist-credentials: false` on the external catalogue checkout, and
-  upload a minimal skipped JSON artefact when any advisory setup step is unavailable. Make the
+  Node.js for `npm ci`, avoid persisting external checkout credentials, and upload a minimal
+  skipped JSON artefact when any advisory setup step is unavailable. Make the
   primary repository checkout fail open too, and do not request `pull-requests: read` unless the
   workflow actually calls the GitHub PR API.
 - `patterns.map.yaml` `anchors:` entries are file-path evidence consumed by primers/reviews.
