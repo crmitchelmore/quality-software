@@ -29,7 +29,8 @@ Each pilot needs:
 4. Refresh hand-authored maps with generated onboarding output once the CLI is stable.
 5. Convert useful pilot findings into eval cases before promoting rules.
 6. Keep advisory PR workflows reproducible: pin the catalogue `ref`, pin action SHAs, pin Node.js,
-   and emit/upload a skipped JSON artefact when the private catalogue cannot be checked out.
+   avoid unused token permissions, and emit/upload a skipped JSON artefact when repository
+   checkout, private catalogue checkout, install, or base fetch is unavailable.
 
 ## Validation loop
 

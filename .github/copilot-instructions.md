@@ -27,7 +27,9 @@
   skipped advisory review in the job summary instead of failing the PR.
 - Pilot PR workflows should pin external action refs and the conformance catalogue `ref`, pin
   Node.js for `npm ci`, set `persist-credentials: false` on the external catalogue checkout, and
-  upload a minimal skipped JSON artefact when any advisory setup step is unavailable.
+  upload a minimal skipped JSON artefact when any advisory setup step is unavailable. Make the
+  primary repository checkout fail open too, and do not request `pull-requests: read` unless the
+  workflow actually calls the GitHub PR API.
 - `patterns.map.yaml` `anchors:` entries are file-path evidence consumed by primers/reviews.
   Do not rewrite them to symbolic `patterns.anchors.yaml` names unless the map loader is changed
   to resolve those symbols.
