@@ -18,6 +18,7 @@ export interface PatternMapEntry {
   confidence: "low" | "medium" | "high";
   flavour: string;
   evidence: string[];
+  /** File-path evidence for where the pattern lives; symbolic anchors stay in patterns.anchors.yaml. */
   anchors: string[];
   philosophies: string[];
 }

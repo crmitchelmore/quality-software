@@ -17,7 +17,7 @@ Pilot repositories should start in advisory mode. The goal is to gather evidence
 Each pilot needs:
 
 - `patterns.config.yaml` for selected philosophies, phases, and trust policy.
-- `patterns.map.yaml` for observed architecture, patterns, and gaps.
+- `patterns.map.yaml` for observed architecture, patterns, gaps, and file-path evidence.
 - `patterns.anchors.yaml` for canonical helpers, modules, and examples agents should reuse.
 - An advisory activation path, preferably `.github/workflows/conformance-advisory.yml`.
 
@@ -28,6 +28,8 @@ Each pilot needs:
 3. Treat LLM-only findings as advisory, even when they are high-confidence.
 4. Refresh hand-authored maps with generated onboarding output once the CLI is stable.
 5. Convert useful pilot findings into eval cases before promoting rules.
+6. Keep advisory PR workflows reproducible: pin the catalogue `ref`, pin action SHAs, pin Node.js,
+   and emit/upload a skipped JSON artefact when the private catalogue cannot be checked out.
 
 ## Validation loop
 
@@ -38,4 +40,3 @@ For each pilot:
 3. Run advisory conformance review in CI.
 4. Classify findings as useful, noisy, missed gap, or unsafe.
 5. Add at least one useful or missed case to `gh-aw-workflow-evals`.
-

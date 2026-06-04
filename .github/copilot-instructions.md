@@ -25,6 +25,12 @@
 - Advisory conformance PR workflows that checkout the private `crmitchelmore/quality-software`
   catalogue must fail open when `CONFORMANCE_CATALOGUE_TOKEN` is missing, and should report the
   skipped advisory review in the job summary instead of failing the PR.
+- Pilot PR workflows should pin external action refs and the conformance catalogue `ref`, pin
+  Node.js for `npm ci`, set `persist-credentials: false` on the external catalogue checkout, and
+  upload a minimal skipped JSON artefact when any advisory setup step is unavailable.
+- `patterns.map.yaml` `anchors:` entries are file-path evidence consumed by primers/reviews.
+  Do not rewrite them to symbolic `patterns.anchors.yaml` names unless the map loader is changed
+  to resolve those symbols.
 - Do not hand-edit generated catalogue docs under `docs/patterns/**`,
   `docs/product-patterns/**`, `docs/ux-patterns/**`, or `docs/philosophies/**`; edit source
   YAML and regenerate instead.
