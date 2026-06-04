@@ -17,6 +17,8 @@ import { basename } from "node:path";
 export interface ExportedSymbol {
   name: string;
   kind: "function" | "class" | "interface" | "type" | "enum" | "const" | "default" | "reexport";
+  signatureShape?: string;
+  lexicalTokens?: string[];
 }
 
 export interface ImportRef {
@@ -51,6 +53,69 @@ function scriptKindFor(fileName: string): ts.ScriptKind {
   if (fileName.endsWith(".jsx")) return ts.ScriptKind.JSX;
   if (/\.(js|mjs|cjs)$/.test(fileName)) return ts.ScriptKind.JS;
   return ts.ScriptKind.TS;
+}
+
+const TOKEN_STOPWORDS = new Set([
+  "and",
+  "any",
+  "async",
+  "await",
+  "boolean",
+  "class",
+  "const",
+  "default",
+  "else",
+  "export",
+  "false",
+  "for",
+  "function",
+  "if",
+  "interface",
+  "let",
+  "new",
+  "null",
+  "number",
+  "object",
+  "promise",
+  "return",
+  "string",
+  "this",
+  "true",
+  "type",
+  "undefined",
+  "unknown",
+  "var",
+  "void",
+]);
+
+function normaliseType(node: ts.TypeNode | undefined): string | undefined {
+  if (!node) return undefined;
+  return node.getText().replace(/\s+/g, "").toLowerCase();
+}
+
+function signatureShape(node: ts.SignatureDeclarationBase): string | undefined {
+  const paramTypes = node.parameters.map((p) => normaliseType(p.type));
+  const returnType = normaliseType(node.type);
+  if (!returnType || paramTypes.some((p) => !p)) return undefined;
+  return `fn(${paramTypes.join(",")}):${returnType}`;
+}
+
+function words(text: string): string[] {
+  const raw = text.match(/[A-Za-z][A-Za-z0-9]*/g) ?? [];
+  const out: string[] = [];
+  for (const token of raw) {
+    const split = token
+      .replace(/([A-Z]+)([A-Z][a-z])/g, "$1 $2")
+      .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+      .toLowerCase()
+      .split(/\s+/);
+    out.push(token.toLowerCase(), ...split);
+  }
+  return out.filter((token) => token.length >= 3 && !TOKEN_STOPWORDS.has(token));
+}
+
+function lexicalTokens(name: string, node: ts.Node): string[] {
+  return [...new Set([...words(name), ...words(node.getText())])].slice(0, 40);
 }
 
 export function extractFile(fileName: string, content: string): FileSyntax {
@@ -98,7 +163,13 @@ export function extractFile(fileName: string, content: string): FileSyntax {
       (ts.getModifiers(stmt)?.some((m) => m.kind === ts.SyntaxKind.DefaultKeyword) ?? false);
 
     if (ts.isFunctionDeclaration(stmt)) {
-      exports.push({ name: isDefault ? "default" : stmt.name?.text ?? "default", kind: isDefault ? "default" : "function" });
+      const name = isDefault ? "default" : stmt.name?.text ?? "default";
+      exports.push({
+        name,
+        kind: isDefault ? "default" : "function",
+        signatureShape: isDefault ? undefined : signatureShape(stmt),
+        lexicalTokens: isDefault ? undefined : lexicalTokens(name, stmt),
+      });
       ownExportCount++;
     } else if (ts.isClassDeclaration(stmt)) {
       exports.push({ name: isDefault ? "default" : stmt.name?.text ?? "default", kind: isDefault ? "default" : "class" });
@@ -115,7 +186,16 @@ export function extractFile(fileName: string, content: string): FileSyntax {
     } else if (ts.isVariableStatement(stmt)) {
       for (const decl of stmt.declarationList.declarations) {
         if (ts.isIdentifier(decl.name)) {
-          exports.push({ name: decl.name.text, kind: "const" });
+          const callable =
+            decl.initializer && (ts.isArrowFunction(decl.initializer) || ts.isFunctionExpression(decl.initializer))
+              ? decl.initializer
+              : undefined;
+          exports.push({
+            name: decl.name.text,
+            kind: "const",
+            signatureShape: callable ? signatureShape(callable) : undefined,
+            lexicalTokens: callable ? lexicalTokens(decl.name.text, callable) : undefined,
+          });
           ownExportCount++;
         }
       }

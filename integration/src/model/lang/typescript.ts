@@ -30,7 +30,12 @@ export const typeScriptProvider: LanguageProvider = {
       isBarrel: syntax.isBarrel,
       isTest: isTest(path),
       isGenerated: /\.d\.ts$/.test(path) || /(^|\/)(dist|build|generated|__generated__)(\/|$)/.test(path),
-      exports: syntax.exports.map((e) => ({ name: e.name, kind: e.kind })),
+      exports: syntax.exports.map((e) => ({
+        name: e.name,
+        kind: e.kind,
+        signatureShape: e.signatureShape,
+        lexicalTokens: e.lexicalTokens,
+      })),
       imports: syntax.imports.map((i) => ({ raw: i.spec, typeOnly: i.typeOnly })),
       provenance: { provider: "typescript", tier: 2, confidence: "high", method: "ts-compiler", version: VERSION },
     };

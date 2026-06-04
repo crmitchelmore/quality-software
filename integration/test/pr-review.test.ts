@@ -288,6 +288,69 @@ test("re-implementing an existing symbol raises a reuse advisory (never blocks)"
   assert.ok(reuse.every((f) => f.severity !== "block"));
 });
 
+test("signature-similar implementation raises a semantic reuse advisory when lexically corroborated", () => {
+  const dir = makeProject({
+    profile: todoProfile("block"),
+    files: {
+      "src/application/dates.ts": "export function formatDate(value: Date): string { return value.toISOString(); }\n",
+      "src/application/iso.ts": "export function toIsoString(input: Date): string { return input.toISOString(); }\n",
+    },
+  });
+  const profile = profileFor(dir);
+  const result = reviewPR({
+    repoRoot: dir,
+    profile,
+    changes: [{ path: "src/application/iso.ts", status: "added" }],
+    baseContent: () => undefined,
+  });
+
+  assert.equal(result.decision, "allow");
+  const semantic = result.advisories.filter((a) => a.detectorId === "reuse.signature-baseline");
+  assert.equal(semantic.length, 1);
+  assert.match(semantic[0].message, /formatDate/);
+  assert.match(semantic[0].evidence ?? "", /signature fn\(date\):string/);
+  assert.match(result.summary, /Signature-reuse advisories/);
+});
+
+test("signature reuse requires lexical corroboration, not just a shared signature shape", () => {
+  const dir = makeProject({
+    profile: todoProfile("block"),
+    files: {
+      "src/application/dates.ts": "export function formatDate(value: Date): string { return value.toISOString(); }\n",
+      "src/application/users.ts": "export function describeUser(birth: Date): string { return birth.getFullYear().toString(); }\n",
+    },
+  });
+  const profile = profileFor(dir);
+  const result = reviewPR({
+    repoRoot: dir,
+    profile,
+    changes: [{ path: "src/application/users.ts", status: "added" }],
+    baseContent: () => undefined,
+  });
+
+  assert.equal(result.advisories.filter((a) => a.detectorId === "reuse.signature-baseline").length, 0);
+});
+
+test("exact-name reuse suppresses duplicate signature reuse noise", () => {
+  const dir = makeProject({
+    profile: todoProfile("block"),
+    files: {
+      "src/application/dates.ts": "export function formatDate(value: Date): string { return value.toISOString(); }\n",
+      "src/application/format.ts": "export function formatDate(input: Date): string { return input.toISOString(); }\n",
+    },
+  });
+  const profile = profileFor(dir);
+  const result = reviewPR({
+    repoRoot: dir,
+    profile,
+    changes: [{ path: "src/application/format.ts", status: "added" }],
+    baseContent: () => undefined,
+  });
+
+  assert.ok(result.advisories.some((a) => a.detectorId === "reuse.canonical-baseline"));
+  assert.equal(result.advisories.filter((a) => a.detectorId === "reuse.signature-baseline").length, 0);
+});
+
 test("a modified file's pre-existing own symbol is NOT flagged as a duplicate", () => {
   const dir = makeProject({
     profile: todoProfile("block"),

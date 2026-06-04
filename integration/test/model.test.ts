@@ -55,6 +55,8 @@ test("TS extractor handles type-only, default, re-export and multiline", () => {
       "export type T = {",
       "  x: number;",
       "};",
+      "export function formatDate(value: Date): string { return value.toISOString(); }",
+      "export const toIsoString = (value: Date): string => value.toISOString();",
       "export default class C {}",
       "export { foo } from './foo';",
     ].join("\n"),
@@ -64,6 +66,12 @@ test("TS extractor handles type-only, default, re-export and multiline", () => {
   assert.ok(r.exports.some((e) => e.kind === "type" && e.name === "T"));
   assert.ok(r.exports.some((e) => e.kind === "default"));
   assert.ok(r.exports.some((e) => e.kind === "reexport" && e.name === "foo"));
+  const formatDate = r.exports.find((e) => e.name === "formatDate");
+  assert.equal(formatDate?.signatureShape, "fn(date):string");
+  assert.ok(formatDate?.lexicalTokens?.includes("date"));
+  assert.ok(formatDate?.lexicalTokens?.includes("toisostring"));
+  const toIsoString = r.exports.find((e) => e.name === "toIsoString");
+  assert.equal(toIsoString?.signatureShape, "fn(date):string");
   // ./foo is a re-export source => counts as an import dependency
   assert.ok(r.imports.some((i) => i.spec === "./foo"));
 });

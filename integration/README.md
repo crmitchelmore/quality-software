@@ -22,6 +22,9 @@ see `examples/patterns.config.yaml`). The engine then:
   pipe-to-shell). This is not a security boundary.
 - **Gates PRs** — re-checks the whole change; patterns marked `enforcement: block` (and backed
   by a certified detector, e.g. the hexagonal/DDD import-boundary rule) fail CI.
+- **Reviews reuse drift** — PR review flags exact duplicate exported symbols and
+  signature-similar reimplementations when the signature shape is corroborated by lexical
+  evidence. This is advisory only; embedding-backed similarity is still deferred.
 
 ## Architecture (the stable seam)
 

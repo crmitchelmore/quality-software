@@ -43,6 +43,9 @@ export interface SymbolFact {
   name: string;
   kind: SymbolKind;
   span?: Span;
+  /** Optional shape and lexical evidence for advisory semantic-reuse checks. */
+  signatureShape?: string;
+  lexicalTokens?: string[];
 }
 
 export interface RefFact {

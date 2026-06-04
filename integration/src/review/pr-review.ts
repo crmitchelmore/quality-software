@@ -241,6 +241,7 @@ function reuseAgainstBaseline(
   const baseByPath = new Map(baseModules.map((m) => [m.path, m]));
   const prefixes = resolveLayerPrefixes(input.buildOpts ?? {});
   const declIndex = new Map<string, ModuleInfo[]>(); // symbol -> baseline modules declaring it
+  const signatureIndex = new Map<string, BaselineDeclaration[]>();
   for (const m of baseModules) {
     if (m.isTest || m.isBarrel || m.isGenerated) continue;
     for (const e of m.exports) {
@@ -248,6 +249,11 @@ function reuseAgainstBaseline(
       const arr = declIndex.get(e.name) ?? [];
       arr.push(m);
       declIndex.set(e.name, arr);
+      if (e.signatureShape && e.lexicalTokens?.length) {
+        const sigs = signatureIndex.get(e.signatureShape) ?? [];
+        sigs.push({ module: m, name: e.name, lexicalTokens: e.lexicalTokens });
+        signatureIndex.set(e.signatureShape, sigs);
+      }
     }
   }
 
@@ -272,37 +278,109 @@ function reuseAgainstBaseline(
       const elsewhere = (declIndex.get(e.name) ?? []).filter(
         (m) => m.path !== c.path && m.exports.some((x) => x.name === e.name && x.kind === e.kind),
       );
-      if (elsewhere.length === 0) continue;
-      const canonical = pickCanonical(
-        elsewhere.map((m) => m.path),
-        baseByPath,
-      );
-      const sameLayer = elsewhere.some((m) => m.layer === head.layer);
-      // Soften a cross-layer collision: same-named things in different layers are
-      // frequently legitimately distinct (e.g. a domain Order vs a DTO Order).
-      const severity = sameLayer ? "advice" : "info";
-      out.push({
-        fingerprint: fingerprint({
+      if (elsewhere.length) {
+        const canonical = pickCanonical(
+          elsewhere.map((m) => m.path),
+          baseByPath,
+        );
+        const sameLayer = elsewhere.some((m) => m.layer === head.layer);
+        // Soften a cross-layer collision: same-named things in different layers are
+        // frequently legitimately distinct (e.g. a domain Order vs a DTO Order).
+        const severity = sameLayer ? "advice" : "info";
+        out.push({
+          fingerprint: fingerprint({
+            detectorId: "reuse.canonical-baseline",
+            detectorVersion: "1.0.0",
+            symbol: e.name,
+            evidence: `declares ${e.name}`,
+            scopePath: c.path,
+          }),
           detectorId: "reuse.canonical-baseline",
           detectorVersion: "1.0.0",
-          symbol: e.name,
+          severity,
+          path: c.path,
+          message:
+            `Possible re-implementation: '${e.name}' already exists at ${canonical.path}` +
+            (elsewhere.length > 1 ? ` (+${elsewhere.length - 1} more)` : "") +
+            (sameLayer ? "." : ` (different layer — confirm it is genuinely distinct).`),
+          suggestion: `Reuse the canonical '${e.name}' from ${canonical.path} instead of defining a parallel implementation.`,
           evidence: `declares ${e.name}`,
-          scopePath: c.path,
-        }),
-        detectorId: "reuse.canonical-baseline",
-        detectorVersion: "1.0.0",
-        severity,
-        path: c.path,
-        message:
-          `Possible re-implementation: '${e.name}' already exists at ${canonical.path}` +
-          (elsewhere.length > 1 ? ` (+${elsewhere.length - 1} more)` : "") +
-          (sameLayer ? "." : ` (different layer — confirm it is genuinely distinct).`),
-        suggestion: `Reuse the canonical '${e.name}' from ${canonical.path} instead of defining a parallel implementation.`,
-        evidence: `declares ${e.name}`,
-      });
+        });
+        continue;
+      }
+
+      const signatureFinding = signatureReuseFinding(c.path, head, e, signatureIndex);
+      if (signatureFinding) out.push(signatureFinding);
     }
   }
   return out;
+}
+
+type BaselineDeclaration = {
+  module: ModuleInfo;
+  name: string;
+  lexicalTokens: string[];
+};
+
+function primitiveOnlySignature(shape: string): boolean {
+  const parts = shape.match(/[a-z][a-z0-9]*/g) ?? [];
+  return parts.every((part) => ["fn", "string", "number", "boolean", "void", "unknown", "any"].includes(part));
+}
+
+function tokenSimilarity(
+  left: readonly string[] | undefined,
+  right: readonly string[] | undefined,
+): { score: number; overlap: string[] } {
+  const a = new Set(left ?? []);
+  const b = new Set(right ?? []);
+  if (a.size === 0 || b.size === 0) return { score: 0, overlap: [] };
+  const overlap = [...a].filter((token) => b.has(token)).sort();
+  const unionSize = new Set([...a, ...b]).size;
+  return { score: unionSize ? overlap.length / unionSize : 0, overlap };
+}
+
+function signatureReuseFinding(
+  path: string,
+  head: ModuleInfo,
+  exported: ModuleInfo["exports"][number],
+  signatureIndex: Map<string, BaselineDeclaration[]>,
+): Finding | undefined {
+  if (!exported.signatureShape || !exported.lexicalTokens?.length) return undefined;
+  const candidates = (signatureIndex.get(exported.signatureShape) ?? []).filter(
+    (candidate) => candidate.module.path !== path && candidate.name !== exported.name,
+  );
+  let best: { candidate: BaselineDeclaration; score: number; overlap: string[] } | undefined;
+  for (const candidate of candidates) {
+    const { score, overlap } = tokenSimilarity(exported.lexicalTokens, candidate.lexicalTokens);
+    if (!best || score > best.score) best = { candidate, score, overlap };
+  }
+  if (!best) return undefined;
+
+  const primitiveOnly = primitiveOnlySignature(exported.signatureShape);
+  const minOverlap = primitiveOnly ? 3 : 2;
+  const minScore = primitiveOnly ? 0.45 : 0.3;
+  if (best.overlap.length < minOverlap || best.score < minScore) return undefined;
+
+  const severity = best.candidate.module.layer === head.layer ? "advice" : "info";
+  const evidence = `signature ${exported.signatureShape}; overlapping tokens: ${best.overlap.slice(0, 6).join(", ")}`;
+  return {
+    fingerprint: fingerprint({
+      detectorId: "reuse.signature-baseline",
+      detectorVersion: "1.0.0",
+      symbol: `${exported.signatureShape}:${exported.name}`,
+      evidence,
+      scopePath: path,
+    }),
+    detectorId: "reuse.signature-baseline",
+    detectorVersion: "1.0.0",
+    severity,
+    path,
+    message:
+      `Possible semantic re-implementation: '${exported.name}' has the same signature shape as ` +
+      `'${best.candidate.name}' at ${best.candidate.module.path} and overlapping lexical evidence.`,
+    suggestion: `Reuse '${best.candidate.name}' from ${best.candidate.module.path}, or rename/document why this similarly-shaped implementation is distinct.`,
+    evidence,
+  };
 }
 
 /**
@@ -389,6 +467,11 @@ function summarise(decision: ReviewResult["decision"], blocking: Finding[], advi
   if (reuse.length) {
     lines.push(`Reuse advisories (${reuse.length}):`);
     for (const f of reuse.slice(0, 20)) lines.push(`  [${f.severity}] ${f.path} — ${f.message}`);
+  }
+  const semanticReuse = advisories.filter((a) => a.detectorId === "reuse.signature-baseline");
+  if (semanticReuse.length) {
+    lines.push(`Signature-reuse advisories (${semanticReuse.length}):`);
+    for (const f of semanticReuse.slice(0, 20)) lines.push(`  [${f.severity}] ${f.path} — ${f.message}`);
   }
   const capBypass = advisories.filter((a) => a.detectorId === "reuse.capability-bypass");
   if (capBypass.length) {

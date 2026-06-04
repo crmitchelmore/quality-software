@@ -177,7 +177,12 @@ export function moduleFromFile(
     isBarrel: facts.isBarrel,
     isTest: facts.isTest,
     isGenerated: facts.isGenerated,
-    exports: facts.exports.map((e) => ({ name: e.name, kind: e.kind })),
+    exports: facts.exports.map((e) => ({
+      name: e.name,
+      kind: e.kind,
+      signatureShape: e.signatureShape,
+      lexicalTokens: e.lexicalTokens,
+    })),
     imports: facts.imports.map((i) => ({ spec: i.raw, typeOnly: i.typeOnly ?? false, resolved: i.resolved })),
     inbound: 0,
     packageName: facts.semanticFacts?.packageName as string | undefined,
