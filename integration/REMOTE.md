@@ -32,10 +32,11 @@ merge. This is the recommended enforcement point for any agentic workflow.
 Any workflow that drives an agent in CI can call the same binary:
 
 ```yaml
-- name: Conformance gate
-  env:
-    CONFORMANCE_CATALOGUE_ROOT: ${{ github.workspace }}/.conformance-catalogue
-  run: node "$CONFORMANCE_CATALOGUE_ROOT/integration/bin/conformance.mjs" check --event PR_REVIEW --base "origin/${{ github.base_ref }}"
+- name: Run advisory conformance review
+  # Pin @main to a release tag or commit SHA before making this check required.
+  uses: crmitchelmore/quality-software/.github/actions/conformance-pr-review@main
+  with:
+    base-ref: ${{ github.base_ref || 'main' }}
 ```
 
 Or expose the MCP server (`conformance-mcp`) to an MCP-capable agent step for

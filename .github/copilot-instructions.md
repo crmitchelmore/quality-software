@@ -23,9 +23,10 @@
   emit JSON for every path, including no-change/no-diff cases, and PR automation paths need
   focused regression coverage.
 - Advisory conformance PR workflows should resolve the catalogue without repository secrets by
-  downloading a pinned public tarball, release, or package. If the catalogue is private or
-  unavailable, fail open and report the skipped advisory review in the job summary instead of
-  failing the PR.
+  using the shared `crmitchelmore/quality-software/.github/actions/conformance-pr-review`
+  action or, for unsupported runners, a pinned public tarball/release/package download. If the
+  catalogue is unavailable, fail open and report the skipped advisory review in the job summary
+  instead of failing the PR.
 - Pilot PR workflows should pin external action refs and the conformance catalogue `ref`, pin
   Node.js for `npm ci`, avoid persisting external checkout credentials, and upload a minimal
   skipped JSON artefact when any advisory setup step is unavailable. Make the

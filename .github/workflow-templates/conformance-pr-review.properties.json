@@ -1,0 +1,6 @@
+{
+  "name": "Conformance PR Review",
+  "description": "Run advisory Quality Software pattern-conformance review on pull requests.",
+  "iconName": "check-circle",
+  "categories": ["Code review", "Continuous integration"]
+}
