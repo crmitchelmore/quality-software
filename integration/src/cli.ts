@@ -16,6 +16,8 @@ import { renderOnboardingReport, renderAnchorsYaml } from "./model/report.js";
 import { buildInventory, renderInventory } from "./model/inventory.js";
 import { buildPatternMap, renderPatternMapYaml } from "./model/pattern-map.js";
 import { reviewPR, changesFromGit, gitBaseContent } from "./review/pr-review.js";
+import { layerPrefixesFromProfile } from "./model/layers.js";
+import { boundaryProfileLayerWarnings } from "./model/validation.js";
 
 async function readStdin(): Promise<string> {
   const chunks: Buffer[] = [];
@@ -158,7 +160,16 @@ function cmdProfile(): void {
 function cmdOnboard(args: string[]): void {
   const cwd = process.cwd();
   const catalogue = loadActiveCatalogue(cwd);
-  const map = buildEvidenceMap(cwd, {});
+  const profilePath = join(cwd, "patterns.config.yaml");
+  let profile: ReturnType<typeof loadProfile> | undefined;
+  if (existsSync(profilePath)) {
+    try {
+      profile = loadProfile(profilePath, catalogue);
+    } catch (e) {
+      process.stderr.write(`warning: could not load existing profile for onboarding context: ${(e as Error).message}\n`);
+    }
+  }
+  const map = buildEvidenceMap(cwd, { layerPrefixes: profile ? layerPrefixesFromProfile(profile) : undefined });
 
   // Persist the derived map (gitignored artifact, design 14).
   const outDir = join(cwd, ".conformance");
@@ -170,6 +181,7 @@ function cmdOnboard(args: string[]): void {
   }
 
   const proposal = proposeProfileFromEvidence(map, catalogue);
+  if (profile) proposal.notes.push(...boundaryProfileLayerWarnings(map, profile));
   const inventory = buildInventory(map, catalogue);
 
   // `--inventory` prints ONLY the altitude-grouped pattern/philosophy inventory.

@@ -1,4 +1,6 @@
 import type { EvidenceMap } from "./project-map.js";
+import type { ResolvedProfile } from "../contract.js";
+import { boundaryLayerConfig, boundaryPatternFromProfile, type Layer } from "./layers.js";
 
 const ALLOWED_HYPHENATED_TERMS = new Set([
   "best-effort",
@@ -74,4 +76,26 @@ export function missingRepoSpecificTerms(
   }
 
   return [...missing].sort();
+}
+
+function hasAnyLayer(map: EvidenceMap, layers: Layer[]): boolean {
+  const wanted = new Set(layers);
+  return map.modules.some((m) => wanted.has(m.layer));
+}
+
+export function boundaryProfileLayerWarnings(map: EvidenceMap, profile: ResolvedProfile): string[] {
+  const boundaryPattern = boundaryPatternFromProfile(profile);
+  if (!boundaryPattern) return [];
+
+  const { fromLayers, toLayers } = boundaryLayerConfig(boundaryPattern.options);
+  const missing: string[] = [];
+  if (!hasAnyLayer(map, fromLayers)) missing.push(`source layers (${fromLayers.join(", ")})`);
+  if (!hasAnyLayer(map, toLayers)) missing.push(`forbidden target layers (${toLayers.join(", ")})`);
+  if (!missing.length) return [];
+
+  return [
+    `Boundary profile "${boundaryPattern.id}" is adopted, but the scan found no modules in ${missing.join(
+      " or ",
+    )}. Check domainGlobs/forbidImportsFrom before relying on boundary enforcement.`,
+  ];
 }

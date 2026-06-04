@@ -205,6 +205,35 @@ test("onboard CLI: exits 0 and prints preview sections", () => {
   assert.match(out, /Next steps/);
 });
 
+test("onboard CLI warns when an adopted boundary profile matches no layers", () => {
+  const dir = makeProject({
+    profile: `projectSize: small
+adopt:
+  - id: hexagonal-architecture
+    enforcement: block
+    options:
+      domainGlobs: ["src/domain/**", "src/application/**"]
+      forbidImportsFrom: ["src/infrastructure/**"]
+ban: []
+`,
+  });
+  writeFile(
+    dir,
+    "src/features/orders/model/order.ts",
+    `import { Db } from "../data/db";\nexport class Order { constructor(private db: Db) {} }\n`,
+  );
+  writeFile(dir, "src/features/orders/data/db.ts", "export class Db {}\n");
+
+  const out = execFileSync(
+    process.execPath,
+    [join(REPO_ROOT, "integration", "bin", "conformance.mjs"), "onboard"],
+    { cwd: dir, encoding: "utf8", env: { ...process.env, CONFORMANCE_CATALOGUE_ROOT: REPO_ROOT } },
+  );
+
+  assert.match(out, /Boundary profile "hexagonal-architecture" is adopted/);
+  assert.match(out, /domainGlobs\/forbidImportsFrom/);
+});
+
 test("review CLI: --json returns ReviewResult shape when there are no changes", () => {
   const dir = makeProject({ profile: "projectSize: small\nadopt: []\nban: []\n" });
   writeFile(dir, "src/domain/user.ts", "export interface User { id: string }\n");
