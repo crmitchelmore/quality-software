@@ -5,7 +5,7 @@ import { loadCatalogue } from "../src/catalogue.js";
 import { loadProfile, ProfileError } from "../src/profile.js";
 import { Engine } from "../src/engine.js";
 import type { ChangeSet } from "../src/contract.js";
-import { makeProject, todoProfile, cleanupAll, REPO_ROOT } from "./helpers.js";
+import { makeProject, writeFile, todoProfile, cleanupAll, REPO_ROOT } from "./helpers.js";
 
 after(cleanupAll);
 
@@ -122,6 +122,36 @@ test("fingerprint is stable across runs and identical findings dedupe", async ()
   const boundaryB = b.findings.filter((f) => f.detectorId === "forbidden-import.dependency-rule");
   assert.equal(boundaryB.length, 1, "duplicate findings dedupe by fingerprint");
   assert.equal(boundaryB[0].fingerprint, fpA, "fingerprint stable across evaluations");
+});
+
+test("patterns.exceptions.yaml suppresses findings by fingerprint only with a reason", async () => {
+  const dir = makeProject({ profile: todoProfile("warn") });
+  const file = { path: join(dir, "src/domain/order-service.ts"), content: DOMAIN_BAD };
+  const first = await engineFor(dir).evaluate({ event: "POST_WRITE_CONTENT", repoRoot: dir, files: [file] });
+  const fp = first.findings.find((f) => f.detectorId === "forbidden-import.dependency-rule")!.fingerprint;
+
+  writeFile(
+    dir,
+    "patterns.exceptions.yaml",
+    `version: 1
+exceptions:
+  - fingerprint: ${fp}
+    reason: Accepted legacy dependency while migration is in progress.
+`,
+  );
+  const suppressed = await engineFor(dir).evaluate({ event: "POST_WRITE_CONTENT", repoRoot: dir, files: [file] });
+  assert.equal(suppressed.findings.filter((f) => f.detectorId === "forbidden-import.dependency-rule").length, 0);
+
+  writeFile(
+    dir,
+    "patterns.exceptions.yaml",
+    `version: 1
+exceptions:
+  - fingerprint: ${fp}
+`,
+  );
+  const unsuppressed = await engineFor(dir).evaluate({ event: "POST_WRITE_CONTENT", repoRoot: dir, files: [file] });
+  assert.equal(unsuppressed.findings.filter((f) => f.detectorId === "forbidden-import.dependency-rule").length, 1);
 });
 
 test("profile coherence: adopting and banning the same pattern is a hard error", () => {

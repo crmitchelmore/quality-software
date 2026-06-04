@@ -99,6 +99,22 @@ For CI, prefer a normal GitHub Action or reusable workflow over an agentic workf
 first PR integration. PR checks are reproducible, auditable, and can stay advisory until a
 deterministic certified rule is promoted to blocking.
 
+## Suppressing known false positives
+
+Suppressions are per finding fingerprint and must carry a reason, so one false positive does
+not require disabling an entire pattern:
+
+```yaml
+# patterns.exceptions.yaml
+version: 1
+exceptions:
+  - fingerprint: "<finding fingerprint>"
+    reason: "Accepted legacy dependency while the migration is in progress."
+```
+
+Entries without a non-empty `reason` are ignored. Suppressions apply to local checks and PR
+review findings.
+
 ## Multi-runtime & remote
 
 `adapters/` is the expansion seam. See `adapters/README.md` for Claude Code / Codex / OpenCode

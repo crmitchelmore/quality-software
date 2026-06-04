@@ -14,6 +14,7 @@ import { certify, certifiedFindings } from "../policy/certify.js";
 import { policiesFromProfile } from "../policy/from-profile.js";
 import { CAPABILITIES, findCanonicalHelper, moduleReachesCapabilityInline } from "../model/capabilities.js";
 import { fingerprint } from "../contract.js";
+import { filterSuppressedFindings, loadFindingExceptions } from "../exceptions.js";
 
 /**
  * Baseline-aware PR review (design 16.6/16.10). Given an ONBOARDED codebase whose
@@ -119,15 +120,17 @@ export function reviewPR(input: ReviewInput): ReviewResult {
   const baseFindings = certifiedFindings(certify(policies, baseMap));
   const baseFps = new Set(baseFindings.map((f) => f.fingerprint));
   const netNew = headFindings.filter((f) => !baseFps.has(f.fingerprint));
-  const blocking = netNew.filter((f) => f.severity === "block");
-  const certAdvisory = netNew.filter((f) => f.severity !== "block");
+  const exceptions = loadFindingExceptions(input.repoRoot);
+  const unsuppressed = filterSuppressedFindings(netNew, exceptions);
+  const blocking = unsuppressed.filter((f) => f.severity === "block");
+  const certAdvisory = unsuppressed.filter((f) => f.severity !== "block");
 
   // --- 2. Reuse-against-baseline (advisory) ---
-  const reuse = reuseAgainstBaseline(inputWithBuildOpts, headByPath, baseMap.modules);
+  const reuse = filterSuppressedFindings(reuseAgainstBaseline(inputWithBuildOpts, headByPath, baseMap.modules), exceptions);
 
   // --- 3. Capability bypass: PR adds inline use of a cross-cutting capability
   //        (date/time, JSON, crypto, …) when a canonical helper already exists. ---
-  const capBypass = capabilityBypass(inputWithBuildOpts, headByPath, baseMap.modules);
+  const capBypass = filterSuppressedFindings(capabilityBypass(inputWithBuildOpts, headByPath, baseMap.modules), exceptions);
 
   const advisories = [...certAdvisory, ...reuse, ...capBypass];
   const findings = [...blocking, ...advisories];

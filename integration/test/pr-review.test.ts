@@ -128,6 +128,38 @@ test("configured boundary globs drive PR certifier layer classification", () => 
   assert.ok(result.blocking.some((f) => f.path === "src/features/orders/model/order.ts"));
 });
 
+test("patterns.exceptions.yaml suppresses PR review findings by fingerprint", () => {
+  const dir = makeProject({
+    profile: todoProfile("block"),
+    files: {
+      "src/domain/order.ts": BAD_ORDER,
+      "src/infrastructure/db.ts": DB,
+    },
+  });
+  const profile = profileFor(dir);
+  const input = {
+    repoRoot: dir,
+    profile,
+    changes: [{ path: "src/domain/order.ts", status: "modified" as const }],
+    baseContent: (p: string) => (p === "src/domain/order.ts" ? GOOD_ORDER : undefined),
+  };
+  const blocked = reviewPR(input);
+  const fp = blocked.blocking[0].fingerprint;
+  writeFile(
+    dir,
+    "patterns.exceptions.yaml",
+    `version: 1
+exceptions:
+  - fingerprint: ${fp}
+    reason: Accepted during staged dependency inversion migration.
+`,
+  );
+
+  const suppressed = reviewPR(input);
+  assert.equal(suppressed.decision, "allow");
+  assert.equal(suppressed.blocking.length, 0);
+});
+
 test("clean PR (no net-new violations) passes", () => {
   const dir = makeProject({
     profile: todoProfile("block"),

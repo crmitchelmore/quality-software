@@ -10,6 +10,7 @@ import type {
 import type { Catalogue } from "./catalogue.js";
 import { buildDetectors } from "./detectors/index.js";
 import { matchesAny } from "./detectors/util.js";
+import { filterSuppressedFindings, loadFindingExceptions } from "./exceptions.js";
 
 const SEVERITY_ORDER: Severity[] = ["info", "advice", "warning", "block"];
 const sevRank = (s: Severity) => SEVERITY_ORDER.indexOf(s);
@@ -61,7 +62,9 @@ export class Engine {
       }
     }
 
-    const findings = this.dedupe(raw.map((f) => this.applyEnforcement(f, change)));
+    const exceptions = loadFindingExceptions(change.repoRoot);
+    const enforced = raw.map((f) => this.applyEnforcement(f, change));
+    const findings = this.dedupe(filterSuppressedFindings(enforced, exceptions));
     const verdict = this.project(change, findings);
     return { findings, verdict };
   }
