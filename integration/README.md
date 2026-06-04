@@ -143,6 +143,23 @@ Naming-convention findings are PR-time advisories/warnings only. They do not blo
 owning pattern is otherwise configured with `enforcement: block`, until that predicate has its own
 fixture-backed blocking calibration.
 
+## Optional LLM advisory review
+
+`conformance review` runs deterministic PR checks by default. To enable the catalogue-grounded
+LLM judge as an additional advisory-only pass, configure an OpenAI-compatible chat-completions
+endpoint:
+
+```bash
+export CONFORMANCE_LLM_ENDPOINT="https://example.invalid/v1/chat/completions"
+export CONFORMANCE_LLM_API_KEY="..."              # optional when a local proxy handles auth
+export CONFORMANCE_LLM_SMALL_MODEL="gpt-5.4-mini"
+export CONFORMANCE_LLM_LARGE_MODEL="gpt-5.4"
+```
+
+The LLM pass only runs when `phases.pr.llm: true`. Its findings are stamped `advisory: true` and
+never participate in merge blocking; deterministic certified findings remain the only blockable
+surface.
+
 ## Multi-runtime & remote
 
 `adapters/` is the expansion seam. See `adapters/README.md` for Claude Code / Codex / OpenCode

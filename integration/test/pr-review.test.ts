@@ -3,8 +3,9 @@ import assert from "node:assert/strict";
 import { join } from "node:path";
 import { loadCatalogue } from "../src/catalogue.js";
 import { loadProfile } from "../src/profile.js";
-import { reviewPR, type ChangeEntry } from "../src/review/pr-review.js";
-import { makeProject, writeFile, todoProfile, cleanupAll } from "./helpers.js";
+import { reviewPR, reviewPRWithLLM, type ChangeEntry } from "../src/review/pr-review.js";
+import { FakeLLMClient } from "../src/llm/types.js";
+import { makeProject, writeFile, todoProfile, cleanupAll, REPO_ROOT } from "./helpers.js";
 
 after(cleanupAll);
 
@@ -265,6 +266,43 @@ test("clean PR (no net-new violations) passes", () => {
     baseContent: () => undefined,
   });
   assert.equal(result.decision, "allow");
+});
+
+test("LLM PR review appends advisory-only judge findings without changing the deterministic decision", async () => {
+  const dir = makeProject({
+    profile: todoProfile("warn"),
+    files: {
+      "src/domain/order.ts": GOOD_ORDER,
+      "src/domain/ports.ts": PORTS,
+    },
+  });
+  const profile = profileFor(dir);
+  const client = new FakeLLMClient((req) => {
+    const patternId = req.user.match(/pattern "([^"]+)"/)?.[1] ?? "hexagonal-architecture";
+    return JSON.stringify({
+      patternId,
+      verdict: "violates",
+      confidence: 0.82,
+      claim: "The selected pattern may be inconsistently applied.",
+      evidenceSpans: [{ file: "src/domain/order.ts", startLine: 1, endLine: 1 }],
+      whyThisViolatesPolicy: "The model judged the supplied region against the selected pattern.",
+      suggestedFix: "Review the pattern alignment.",
+    });
+  });
+
+  const result = await reviewPRWithLLM({
+    repoRoot: dir,
+    profile,
+    changes: [{ path: "src/domain/order.ts", status: "added" }],
+    baseContent: () => undefined,
+    llm: { client, catalogueRoot: REPO_ROOT },
+  });
+
+  assert.equal(result.decision, "allow");
+  const llm = result.advisories.filter((a) => a.detectorId === "llm-judge");
+  assert.ok(llm.length >= 1);
+  assert.ok(llm.every((f) => f.advisory === true && f.severity !== "block"));
+  assert.match(result.summary, /LLM advisories/);
 });
 
 test("re-implementing an existing symbol raises a reuse advisory (never blocks)", () => {

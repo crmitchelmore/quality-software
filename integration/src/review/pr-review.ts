@@ -1,4 +1,6 @@
 import { execFileSync } from "node:child_process";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import type { Finding, ResolvedProfile, CanonicalEvent } from "../contract.js";
 import {
   parseModules,
@@ -16,6 +18,9 @@ import { policiesFromProfile } from "../policy/from-profile.js";
 import { CAPABILITIES, findCanonicalHelper, moduleReachesCapabilityInline } from "../model/capabilities.js";
 import { fingerprint } from "../contract.js";
 import { filterSuppressedFindings, loadFindingExceptions } from "../exceptions.js";
+import { LLMJudge } from "../judge/judge.js";
+import type { CodeRegion } from "../judge/schema.js";
+import type { LLMClient } from "../llm/types.js";
 
 /**
  * Baseline-aware PR review (design 16.6/16.10). Given an ONBOARDED codebase whose
@@ -50,6 +55,12 @@ export interface ReviewInput {
   baseContent: (path: string) => string | undefined;
   buildOpts?: BuildOptions;
   event?: CanonicalEvent;
+}
+
+export interface ReviewLLMOptions {
+  client: LLMClient;
+  catalogueRoot?: string;
+  callTimeoutMs?: number;
 }
 
 export interface ReviewResult {
@@ -143,6 +154,53 @@ export function reviewPR(input: ReviewInput): ReviewResult {
   const findings = [...blocking, ...advisories];
   const decision: ReviewResult["decision"] = blocking.length > 0 ? "block" : "allow";
   return { decision, blocking, advisories, findings, summary: summarise(decision, blocking, advisories) };
+}
+
+export async function reviewPRWithLLM(input: ReviewInput & { llm?: ReviewLLMOptions }): Promise<ReviewResult> {
+  const deterministic = reviewPR(input);
+  if (!input.llm || input.profile.phases.pr.llm !== true) return deterministic;
+
+  const pairs = llmJudgePairs(input);
+  if (pairs.length === 0) return deterministic;
+
+  const judged = await new LLMJudge({
+    repoRoot: input.llm.catalogueRoot ?? input.repoRoot,
+    client: input.llm.client,
+    event: input.event ?? "PR_REVIEW",
+    callTimeoutMs: input.llm.callTimeoutMs,
+  }).judge(pairs);
+  const exceptions = loadFindingExceptions(input.repoRoot);
+  const llmFindings = filterSuppressedFindings(judged.findings, exceptions);
+  if (llmFindings.length === 0 && !judged.incomplete) return deterministic;
+
+  const advisories = [...deterministic.advisories, ...llmFindings];
+  const findings = [...deterministic.blocking, ...advisories];
+  const summary = summarise(deterministic.decision, deterministic.blocking, advisories, judged.incomplete);
+  return { ...deterministic, advisories, findings, summary };
+}
+
+function llmJudgePairs(input: ReviewInput): { patternId: string; region: CodeRegion }[] {
+  const patternIds = [...new Set(input.profile.adopt.map((pattern) => pattern.id))];
+  if (patternIds.length === 0) return [];
+  const pairs: { patternId: string; region: CodeRegion }[] = [];
+  for (const change of input.changes) {
+    if (change.status !== "added" && change.status !== "modified") continue;
+    const region = regionForPath(input.repoRoot, change.path);
+    if (!region) continue;
+    for (const patternId of patternIds) pairs.push({ patternId, region });
+  }
+  return pairs;
+}
+
+function regionForPath(repoRoot: string, path: string): CodeRegion | undefined {
+  let content: string;
+  try {
+    content = readFileSync(join(repoRoot, path), "utf8");
+  } catch {
+    return undefined;
+  }
+  const lines = content.split("\n").slice(0, 200);
+  return { file: path, startLine: 1, endLine: Math.max(1, lines.length), content: lines.join("\n") };
 }
 
 type ConsistencyChange = {
@@ -445,7 +503,12 @@ function capabilityBypass(
   return out;
 }
 
-function summarise(decision: ReviewResult["decision"], blocking: Finding[], advisories: Finding[]): string {
+function summarise(
+  decision: ReviewResult["decision"],
+  blocking: Finding[],
+  advisories: Finding[],
+  llmIncomplete = false,
+): string {
   const lines: string[] = [];
   lines.push(
     decision === "block"
@@ -478,6 +541,12 @@ function summarise(decision: ReviewResult["decision"], blocking: Finding[], advi
     lines.push(`Capability-bypass advisories (${capBypass.length}):`);
     for (const f of capBypass.slice(0, 20)) lines.push(`  [${f.severity}] ${f.path} — ${f.message}`);
   }
+  const llm = advisories.filter((a) => a.detectorId === "llm-judge");
+  if (llm.length) {
+    lines.push(`LLM advisories (${llm.length}, advisory-only):`);
+    for (const f of llm.slice(0, 20)) lines.push(`  [${f.severity}] ${f.path} — ${f.message}`);
+  }
+  if (llmIncomplete) lines.push("LLM advisory pass incomplete: provider/budget failed open.");
   return lines.join("\n");
 }
 

@@ -15,9 +15,10 @@ import { proposeProfileFromEvidence } from "./model/proposal.js";
 import { renderOnboardingReport, renderAnchorsYaml } from "./model/report.js";
 import { buildInventory, renderInventory } from "./model/inventory.js";
 import { buildPatternMap, renderPatternMapYaml } from "./model/pattern-map.js";
-import { reviewPR, changesFromGit, gitBaseContent } from "./review/pr-review.js";
+import { reviewPRWithLLM, changesFromGit, gitBaseContent } from "./review/pr-review.js";
 import { layerPrefixesFromProfile } from "./model/layers.js";
 import { boundaryProfileLayerWarnings } from "./model/validation.js";
+import { llmClientFromEnv } from "./llm/config.js";
 
 async function readStdin(): Promise<string> {
   const chunks: Buffer[] = [];
@@ -217,7 +218,7 @@ function cmdOnboard(args: string[]): void {
   }
 }
 
-function cmdReview(args: string[]): void {
+async function cmdReview(args: string[]): Promise<void> {
   const cwd = process.cwd();
   const i = args.indexOf("--base");
   const base = i >= 0 ? args[i + 1] : "origin/main";
@@ -251,7 +252,13 @@ function cmdReview(args: string[]): void {
     process.stdout.write(`No changes detected against ${base}.\n`);
     return;
   }
-  const result = reviewPR({ repoRoot: cwd, profile, changes, baseContent: gitBaseContent(cwd, base) });
+  const result = await reviewPRWithLLM({
+    repoRoot: cwd,
+    profile,
+    changes,
+    baseContent: gitBaseContent(cwd, base),
+    llm: { client: llmClientFromEnv(), catalogueRoot: repoCatalogueRoot() },
+  });
   if (args.includes("--json")) {
     process.stdout.write(JSON.stringify(result, null, 2) + "\n");
     if (result.decision === "block") process.exitCode = 1;
@@ -448,7 +455,7 @@ async function main(): Promise<void> {
       cmdOnboard(rest);
       break;
     case "review":
-      cmdReview(rest);
+      await cmdReview(rest);
       break;
     case "install-copilot":
       cmdInstallCopilot(rest);
