@@ -34,6 +34,12 @@
   action or, for unsupported runners, a pinned public tarball/release/package download. If the
   catalogue is unavailable, fail open and report the skipped advisory review in the job summary
   instead of failing the PR.
+- Keep consumer repository workflows thin. Put reusable PR review setup, catalogue resolution,
+  fallback handling, and reporting logic in the shared action/template rather than duplicating
+  verbose shell scripts across pilot repositories.
+- After releasing or repinning the shared conformance action, verify downstream pilot pipeline
+  logs show `crmitchelmore/quality-software@<expected-ref>` on the PR head commit. Do not treat
+  generic green checks as proof that the new action version ran.
 - Pilot PR workflows should pin external action refs and the conformance catalogue `ref`, pin
   Node.js for `npm ci`, avoid persisting external checkout credentials, and upload a minimal
   skipped JSON artefact when any advisory setup step is unavailable. Make the
