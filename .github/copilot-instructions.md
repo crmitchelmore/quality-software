@@ -10,6 +10,13 @@
   running. Report blocked validation plainly and leave generated eval artefacts pending until
   `npm test`, `npm run typecheck`, YAML parsing, and `gh-aw-evals cases compile ... --check`
   have run successfully.
+- For changes touching blocking eligibility, certified policies, PR review gating, or detector
+  enforcement, run `cd integration && npm run eval:blocking` alongside tests/typecheck. Block
+  promotion must be backed by labelled calibration fixtures and the Conformance workflow step,
+  not a hand-maintained allowlist or manifest.
+- Suppress known false positives with `patterns.exceptions.yaml` entries keyed by finding
+  fingerprint and a non-empty reason. Do not disable an entire pattern to work around one false
+  positive.
 - In `integration/src/**`, do not construct git commands with shell strings. Use
   `execFile`/`execFileSync` and argument arrays. In GitHub Actions, pass GitHub refs through
   `env:` and quote them inside `run:` scripts.
