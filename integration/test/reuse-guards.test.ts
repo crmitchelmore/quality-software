@@ -47,3 +47,13 @@ test("reuse ignores short names", async () => {
   const findings = await run(dir, "src/b.ts", "export function fn() {}\nexport const ab = 2;\n");
   assert.equal(findings.length, 0);
 });
+
+test("reuse cache invalidates when indexed files change", async () => {
+  const dir = makeProject({ profile: "version: 1\nphilosophies: []\npatterns:\n  ban: []\n" });
+  writeFile(dir, "src/money/vat.ts", "export function calculateVatAmount(n: number) { return n * 0.2; }\n");
+  const duplicate = "export function calculateVatAmount(n: number) { return n * 0.2; }\n";
+  assert.equal((await run(dir, "src/billing/charge.ts", duplicate)).length, 1);
+
+  writeFile(dir, "src/money/vat.ts", "export function calculateSalesTaxAmount(n: number) { return n * 0.2; }\n");
+  assert.equal((await run(dir, "src/billing/charge.ts", duplicate)).length, 0);
+});

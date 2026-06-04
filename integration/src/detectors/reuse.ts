@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import type { Detector, Finding, ChangeSet, DetectorContext } from "../contract.js";
 import { fingerprint } from "../contract.js";
@@ -60,8 +60,8 @@ function isSkippablePath(rel: string): boolean {
  *
  * MVP scope: NEAR-EXACT name match only, ADVISORY only (no blocking). Embedding/
  * semantic similarity is deferred — it produces false positives unless corroborated
- * by lexical/signature evidence (design 13.9). The index is rebuilt per run for
- * simplicity; a real deployment caches it (design 2.5).
+ * by lexical/signature evidence (design 13.9). The repo index is cached by file
+ * mtime/size so write-time checks do not repeatedly re-parse unchanged projects.
  */
 
 function declaredNames(rel: string, content: string): string[] {
@@ -76,6 +76,61 @@ function declaredNames(rel: string, content: string): string[] {
   return [...names];
 }
 
+interface IndexedFile {
+  rel: string;
+  abs: string;
+  signature: string;
+}
+
+interface CachedReuseIndex {
+  signature: string;
+  index: Map<string, string[]>;
+}
+
+const reuseIndexCache = new Map<string, CachedReuseIndex>();
+
+function reusableFiles(repoRoot: string, srcGlobs: string[]): IndexedFile[] {
+  const files: IndexedFile[] = [];
+  for (const dir of srcGlobs) {
+    for (const abs of walkAllFiles(join(repoRoot, dir))) {
+      const rel = relPath(repoRoot, abs);
+      if (isSkippablePath(rel)) continue;
+      try {
+        const st = statSync(abs);
+        files.push({ rel, abs, signature: `${rel}:${st.size}:${st.mtimeMs}` });
+      } catch {
+        continue;
+      }
+    }
+  }
+  return files.sort((a, b) => a.rel.localeCompare(b.rel));
+}
+
+function cachedReuseIndex(repoRoot: string, srcGlobs: string[]): Map<string, string[]> {
+  const files = reusableFiles(repoRoot, srcGlobs);
+  const signature = files.map((f) => f.signature).join("\n");
+  const cacheKey = `${repoRoot}\0${srcGlobs.join("\0")}`;
+  const cached = reuseIndexCache.get(cacheKey);
+  if (cached?.signature === signature) return cached.index;
+
+  const index = new Map<string, string[]>();
+  for (const file of files) {
+    let content: string;
+    try {
+      content = readFileSync(file.abs, "utf8");
+    } catch {
+      continue;
+    }
+    for (const name of declaredNames(file.rel, content)) {
+      const arr = index.get(name) ?? [];
+      arr.push(file.rel);
+      index.set(name, arr);
+    }
+  }
+  reuseIndexCache.set(cacheKey, { signature, index });
+  return index;
+}
+
 export function reuseDetector(srcGlobs: string[] = ["src"]): Detector {
   const version = "1.1.0";
   return {
@@ -87,28 +142,7 @@ export function reuseDetector(srcGlobs: string[] = ["src"]): Detector {
     maxLatencyMs: 400,
     run(change: ChangeSet, _ctx: DetectorContext): Finding[] {
       const changedRel = new Set(change.files.map((f) => relPath(change.repoRoot, f.path)));
-
-      // Build an index of existing declared names -> files (excluding changed files,
-      // tests, barrels and generated code — none are a canonical home to reuse).
-      const index = new Map<string, string[]>();
-      for (const dir of srcGlobs) {
-        for (const abs of walkAllFiles(join(change.repoRoot, dir))) {
-          const rel = relPath(change.repoRoot, abs);
-          if (changedRel.has(rel)) continue;
-          if (isSkippablePath(rel)) continue;
-          let content: string;
-          try {
-            content = readFileSync(abs, "utf8");
-          } catch {
-            continue;
-          }
-          for (const name of declaredNames(rel, content)) {
-            const arr = index.get(name) ?? [];
-            arr.push(rel);
-            index.set(name, arr);
-          }
-        }
-      }
+      const index = cachedReuseIndex(change.repoRoot, srcGlobs);
 
       const findings: Finding[] = [];
       for (const file of change.files) {
@@ -116,7 +150,7 @@ export function reuseDetector(srcGlobs: string[] = ["src"]): Detector {
         const rel = relPath(change.repoRoot, file.path);
         if (isSkippablePath(rel)) continue;
         for (const name of declaredNames(rel, file.content)) {
-          const existing = index.get(name);
+          const existing = (index.get(name) ?? []).filter((path) => !changedRel.has(path));
           if (existing && existing.length) {
             const evidence = `declares ${name}`;
             findings.push({

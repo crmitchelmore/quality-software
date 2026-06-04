@@ -3,8 +3,8 @@ import assert from "node:assert/strict";
 import { join } from "node:path";
 import { loadCatalogue } from "../src/catalogue.js";
 import { loadProfile, ProfileError } from "../src/profile.js";
-import { Engine } from "../src/engine.js";
-import type { ChangeSet } from "../src/contract.js";
+import { Engine, runDetectorWithLatencyBudget } from "../src/engine.js";
+import type { ChangeSet, Detector, DetectorContext, Finding } from "../src/contract.js";
 import { makeProject, writeFile, todoProfile, cleanupAll, REPO_ROOT } from "./helpers.js";
 
 after(cleanupAll);
@@ -97,6 +97,56 @@ test("write-time never denies, even when the pattern is enforcement: block", asy
   };
   const { verdict } = await engineFor(dir).evaluate(change);
   assert.notEqual(verdict.decision, "deny", "POST_WRITE_CONTENT must never deny (fail-open, advisory)");
+});
+
+test("latency governor drops slow detector findings at write time", async () => {
+  const finding: Finding = {
+    fingerprint: "slow",
+    detectorId: "slow",
+    detectorVersion: "1",
+    severity: "warning",
+    path: "src/domain/order.ts",
+    message: "slow finding",
+  };
+  const slow: Detector = {
+    id: "slow",
+    version: "1",
+    requiresContext: "file",
+    events: ["POST_WRITE_CONTENT"],
+    canBlock: false,
+    maxLatencyMs: 1,
+    run: () => {
+      const started = Date.now();
+      while (Date.now() - started < 10) {
+        // simulate a synchronous detector exceeding its budget
+      }
+      return [finding];
+    },
+  };
+  const change: ChangeSet = { event: "POST_WRITE_CONTENT", repoRoot: REPO_ROOT, files: [] };
+  const skipped = await runDetectorWithLatencyBudget(slow, change, {} as DetectorContext, true);
+  assert.equal(skipped.length, 0);
+
+  const allowed = await runDetectorWithLatencyBudget(slow, change, {} as DetectorContext, false);
+  assert.equal(allowed.length, 1);
+});
+
+test("latency governor times out async detectors at write time", async () => {
+  const slow: Detector = {
+    id: "slow-async",
+    version: "1",
+    requiresContext: "file",
+    events: ["POST_WRITE_CONTENT"],
+    canBlock: false,
+    maxLatencyMs: 1,
+    run: async () => {
+      await new Promise((resolve) => setTimeout(resolve, 20));
+      return [];
+    },
+  };
+  const change: ChangeSet = { event: "POST_WRITE_CONTENT", repoRoot: REPO_ROOT, files: [] };
+  const skipped = await runDetectorWithLatencyBudget(slow, change, {} as DetectorContext, true);
+  assert.equal(skipped.length, 0);
 });
 
 test("PR review with enforcement: block yields a blocking finding", async () => {

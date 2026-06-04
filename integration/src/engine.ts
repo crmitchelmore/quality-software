@@ -20,6 +20,37 @@ export interface EngineResult {
   verdict: ConformanceVerdict;
 }
 
+function enforceLatencyBudget(event: ChangeSet["event"]): boolean {
+  return event === "POST_WRITE_CONTENT" || event === "PRE_WRITE_INTENT";
+}
+
+export async function runDetectorWithLatencyBudget(
+  detector: Detector,
+  change: ChangeSet,
+  ctx: DetectorContext,
+  enforce: boolean,
+): Promise<Finding[]> {
+  const startedAt = Date.now();
+  const run = Promise.resolve().then(() => detector.run(change, ctx));
+  if (!enforce) return await run;
+
+  let timedOut = false;
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const timeout = new Promise<Finding[]>((resolve) => {
+    timer = setTimeout(() => {
+      timedOut = true;
+      resolve([]);
+    }, Math.max(0, detector.maxLatencyMs));
+  });
+  let findings: Finding[];
+  try {
+    findings = await Promise.race([run, timeout]);
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
+  return timedOut || Date.now() - startedAt > detector.maxLatencyMs ? [] : findings;
+}
+
 /**
  * The shared, runtime-agnostic conformance engine (design 02-architecture).
  * Adapters translate native events to a ChangeSet, call evaluate(), and project
@@ -55,7 +86,7 @@ export class Engine {
     const raw: Finding[] = [];
     for (const d of active) {
       try {
-        const out = await d.run(change, this.ctx);
+        const out = await runDetectorWithLatencyBudget(d, change, this.ctx, enforceLatencyBudget(change.event));
         raw.push(...out);
       } catch {
         // Fail-open per detector (design 13.3): one broken detector never blocks the agent.
