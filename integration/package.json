@@ -10,6 +10,7 @@
   },
   "scripts": {
     "conformance": "tsx src/cli.ts",
+    "eval:blocking": "tsx src/eval/blocking-calibration.ts",
     "mcp": "tsx src/mcp.ts",
     "test": "node --import tsx --test test/*.test.ts",
     "typecheck": "tsc --noEmit"

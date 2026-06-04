@@ -4,7 +4,14 @@ import { makeProject, writeFile, REPO_ROOT } from "./helpers.js";
 import { buildEvidenceMap } from "../src/model/project-map.js";
 import { certify, certifiedFindings, corroborate } from "../src/policy/certify.js";
 import type { Policy } from "../src/policy/types.js";
-import { runJudgeEval, runBlockingEval, type JudgeCase, type BlockingCase } from "../src/eval/harness.js";
+import {
+  evaluateBlockingPromotion,
+  runJudgeEval,
+  runBlockingEval,
+  type JudgeCase,
+  type BlockingCase,
+} from "../src/eval/harness.js";
+import { runBuiltInBlockingCalibration } from "../src/eval/blocking-calibration.js";
 import { LLMJudge } from "../src/judge/judge.js";
 import { FakeLLMClient } from "../src/llm/types.js";
 import type { CodeRegion } from "../src/judge/schema.js";
@@ -160,4 +167,24 @@ test("blocking eval: a policy that blocks a conforming case is NOT promotable", 
   const m = runBlockingEval([{ id: "ok1", label: "conforms", map: goodMap, policies: [overBroad] }]);
   assert.equal(m.promotable, false);
   assert.deepEqual(m.falseBlocks, ["ok1"]);
+});
+
+test("blocking promotion requires at least one true block", () => {
+  const goodMap = buildEvidenceMap(cleanProject(), {});
+  const noOp: Policy = {
+    id: "no-op",
+    predicate: { kind: "forbidden-layer-edge", from: "domain", to: "infrastructure" },
+    severity: "block",
+    message: "no-op",
+  };
+  const m = evaluateBlockingPromotion([{ id: "ok1", label: "conforms", map: goodMap, policies: [noOp] }]);
+  assert.equal(m.promotable, false);
+  assert.ok(m.reasons.some((r) => /true blocks/.test(r)));
+});
+
+test("built-in blocking calibration is promotable", () => {
+  const m = runBuiltInBlockingCalibration();
+  assert.equal(m.promotable, true);
+  assert.equal(m.trueBlocks, 1);
+  assert.equal(m.falseBlockRate, 0);
 });

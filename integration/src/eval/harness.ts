@@ -91,6 +91,18 @@ export interface BlockingMetrics {
   promotable: boolean;
 }
 
+export interface BlockingPromotionThresholds {
+  /** Maximum acceptable false-block rate over labelled conforming cases. */
+  maxFalseBlockRate: number;
+  /** Require the policy to catch at least this many labelled violations. */
+  minTrueBlocks: number;
+}
+
+export interface BlockingPromotionResult extends BlockingMetrics {
+  thresholds: BlockingPromotionThresholds;
+  reasons: string[];
+}
+
 /**
  * Measure the certifier's false-block rate (design 16.6/16.10). The certifier is
  * deterministic, so this is a property of the policies + evidence maps, not a model.
@@ -115,5 +127,27 @@ export function runBlockingEval(cases: BlockingCase[]): BlockingMetrics {
     conformingCases: conforming,
     falseBlockRate: ratio(falseBlocks.length, conforming),
     promotable: falseBlocks.length === 0,
+  };
+}
+
+export function evaluateBlockingPromotion(
+  cases: BlockingCase[],
+  thresholds: BlockingPromotionThresholds = { maxFalseBlockRate: 0, minTrueBlocks: 1 },
+): BlockingPromotionResult {
+  const metrics = runBlockingEval(cases);
+  const reasons: string[] = [];
+  if (metrics.falseBlockRate > thresholds.maxFalseBlockRate) {
+    reasons.push(
+      `false-block rate ${metrics.falseBlockRate} exceeds threshold ${thresholds.maxFalseBlockRate}`,
+    );
+  }
+  if (metrics.trueBlocks < thresholds.minTrueBlocks) {
+    reasons.push(`true blocks ${metrics.trueBlocks} below threshold ${thresholds.minTrueBlocks}`);
+  }
+  return {
+    ...metrics,
+    thresholds,
+    reasons,
+    promotable: reasons.length === 0,
   };
 }
