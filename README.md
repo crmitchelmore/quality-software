@@ -24,6 +24,19 @@ with supporting evidence in [`patterns.map.yaml`](patterns.map.yaml),
 tracked in [`docs/launch/productionisation-roadmap.md`](docs/launch/productionisation-roadmap.md),
 with the initial pilot operating guide in [`docs/launch/pilot-rollout.md`](docs/launch/pilot-rollout.md).
 
+## What is enforced today
+
+The catalogue is intentionally broad; the runtime does **not** enforce all 275 patterns.
+In the current alpha, most findings are advisory context for agents and reviewers. Blocking
+is only appropriate for deterministic, certified checks that a profile explicitly promotes
+to `enforcement: block`; today that means the PR-level boundary/import rule for
+hexagonal/clean/onion/layered architectures.
+
+Write-time hooks are fail-open and advisory. LLM-backed judgements are advisory-only. The
+shell guard is a narrow denylist for three common footguns (`rm -rf /`, force-push to main,
+and pipe-to-shell); it is not a security boundary and does not replace normal permissions,
+branch protection, tests, SAST, secret scanning, or code review.
+
 ## Layout
 
 ```

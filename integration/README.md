@@ -18,8 +18,8 @@ see `examples/patterns.config.yaml`). The engine then:
 - **Advises at write time** — when a file is created/edited, it flags boundary violations,
   banned constructs, and missed reuse, with a `philosophy → pattern → fix` rationale. It
   **never blocks** a write (fail-open).
-- **Guards shells** — denies a tiny allowlist of destructive commands (`rm -rf /`, force-push
-  to main, pipe-to-shell).
+- **Guards shells** — denies a tiny footgun denylist (`rm -rf /`, force-push to main,
+  pipe-to-shell). This is not a security boundary.
 - **Gates PRs** — re-checks the whole change; patterns marked `enforcement: block` (and backed
   by a certified detector, e.g. the hexagonal/DDD import-boundary rule) fail CI.
 
