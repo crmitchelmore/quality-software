@@ -295,7 +295,7 @@ function hookCommand(catalogueRoot: string, phase: Phase): string {
 function pluginManifest(): Record<string, unknown> {
   return {
     name: "quality-software-conformance",
-    version: "0.1.0",
+    version: "0.2.0",
     description: "Repo-local pattern conformance for Copilot CLI: advisory hooks, skills, commands, and MCP tools.",
     author: { name: "Quality Software" },
     repository: "https://github.com/crmitchelmore/quality-software",

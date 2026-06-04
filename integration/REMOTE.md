@@ -33,7 +33,7 @@ Any workflow that drives an agent in CI can call the same binary:
 
 ```yaml
 - name: Run advisory conformance review
-  uses: crmitchelmore/quality-software/.github/actions/conformance-pr-review@v0.1.0
+  uses: crmitchelmore/quality-software/.github/actions/conformance-pr-review@v0.2.0
   with:
     base-ref: ${{ github.base_ref || 'main' }}
 ```

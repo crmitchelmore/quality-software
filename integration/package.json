@@ -1,6 +1,6 @@
 {
   "name": "@quality-software/conformance",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "description": "Runtime-agnostic pattern-conformance engine + GitHub Copilot CLI integration (hooks, skill, MCP) — MVP vertical slice.",
