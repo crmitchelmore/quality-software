@@ -1,4 +1,6 @@
 import type { Layer } from "./lang/types.js";
+import type { AdoptedPattern, ResolvedProfile } from "../contract.js";
+import { matchesGlob } from "../globs.js";
 
 export type { Layer };
 
@@ -32,11 +34,37 @@ export function isTestPath(rel: string): boolean {
 
 const ORDERED: Layer[] = ["domain", "application", "infrastructure", "interface"];
 
+const BOUNDARY_PATTERNS = new Set([
+  "hexagonal-architecture",
+  "clean-architecture",
+  "onion-architecture",
+  "layered-architecture",
+]);
+
+function cloneDefaultLayerPrefixes(): Record<Layer, string[]> {
+  return {
+    test: [...DEFAULT_LAYER_PREFIXES.test],
+    domain: [...DEFAULT_LAYER_PREFIXES.domain],
+    application: [...DEFAULT_LAYER_PREFIXES.application],
+    infrastructure: [...DEFAULT_LAYER_PREFIXES.infrastructure],
+    interface: [...DEFAULT_LAYER_PREFIXES.interface],
+    other: [],
+  };
+}
+
+function hasGlobSyntax(pattern: string): boolean {
+  return /[*?]/.test(pattern);
+}
+
+function matchesLayerPattern(rel: string, pattern: string): boolean {
+  return hasGlobSyntax(pattern) ? matchesGlob(rel, pattern) : rel.includes(pattern);
+}
+
 /** Classify a repo-relative file path into an architectural layer. */
 export function classifyLayer(rel: string, prefixes: Record<Layer, string[]> = DEFAULT_LAYER_PREFIXES): Layer {
   if (isTestPath(rel)) return "test";
   for (const layer of ORDERED) {
-    if (prefixes[layer].some((p) => rel.includes(p))) return layer;
+    if (prefixes[layer].some((p) => matchesLayerPattern(rel, p))) return layer;
   }
   return "other";
 }
@@ -76,4 +104,49 @@ export function layersFromGlobs(globs: string[] | undefined, dflt: Layer[]): Lay
     }
   }
   return layers.size ? [...layers] : dflt;
+}
+
+function stringArray(value: unknown): string[] {
+  return Array.isArray(value) ? value.filter((v): v is string => typeof v === "string" && v.trim().length > 0) : [];
+}
+
+function addConfiguredGlobs(
+  prefixes: Record<Layer, string[]>,
+  globs: string[],
+  fallbackLayer: Layer,
+): void {
+  for (const glob of globs) {
+    const layers = layersFromGlobs([glob], []);
+    for (const layer of layers.length ? layers : [fallbackLayer]) {
+      prefixes[layer].push(glob);
+    }
+  }
+}
+
+export function layerPrefixesFromBoundaryOptions(options: Record<string, unknown> | undefined): Record<Layer, string[]> {
+  const prefixes = cloneDefaultLayerPrefixes();
+  addConfiguredGlobs(prefixes, stringArray(options?.domainGlobs), "domain");
+  addConfiguredGlobs(prefixes, stringArray(options?.forbidImportsFrom), "infrastructure");
+  return prefixes;
+}
+
+export function boundaryLayerConfig(options: Record<string, unknown> | undefined): {
+  fromLayers: Layer[];
+  toLayers: Layer[];
+  layerPrefixes: Record<Layer, string[]>;
+} {
+  return {
+    fromLayers: layersFromGlobs(stringArray(options?.domainGlobs), ["domain", "application"]),
+    toLayers: layersFromGlobs(stringArray(options?.forbidImportsFrom), ["infrastructure"]),
+    layerPrefixes: layerPrefixesFromBoundaryOptions(options),
+  };
+}
+
+export function boundaryPatternFromProfile(profile: ResolvedProfile): AdoptedPattern | undefined {
+  return profile.adopt.find((p) => BOUNDARY_PATTERNS.has(p.id));
+}
+
+export function layerPrefixesFromProfile(profile: ResolvedProfile): Record<Layer, string[]> | undefined {
+  const boundaryPattern = boundaryPatternFromProfile(profile);
+  return boundaryPattern ? layerPrefixesFromBoundaryOptions(boundaryPattern.options) : undefined;
 }

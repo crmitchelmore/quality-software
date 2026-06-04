@@ -5,9 +5,11 @@ import {
   deriveEvidenceMap,
   moduleFromFile,
   pickCanonical,
+  resolveLayerPrefixes,
   type ModuleInfo,
   type BuildOptions,
 } from "../model/project-map.js";
+import { layerPrefixesFromProfile } from "../model/layers.js";
 import { certify, certifiedFindings } from "../policy/certify.js";
 import { policiesFromProfile } from "../policy/from-profile.js";
 import { CAPABILITIES, findCanonicalHelper, moduleReachesCapabilityInline } from "../model/capabilities.js";
@@ -65,13 +67,14 @@ function baselineModules(
 ): ModuleInfo[] {
   const byPath = new Map(parseModules(repoRoot, opts).map((m) => [m.path, m]));
   const registry = opts.registry;
+  const prefixes = resolveLayerPrefixes(opts);
   const reAdd = (path: string) => {
     const content = baseContent(path);
     if (content === undefined) {
       byPath.delete(path);
       return;
     }
-    const m = moduleFromFile(path, content, undefined, registry);
+    const m = moduleFromFile(path, content, prefixes, registry);
     if (m) byPath.set(path, m);
     else byPath.delete(path);
   };
@@ -96,10 +99,14 @@ function baselineModules(
 }
 
 export function reviewPR(input: ReviewInput): ReviewResult {
-  const opts: BuildOptions = input.buildOpts ?? {};
+  const opts: BuildOptions = {
+    ...(input.buildOpts ?? {}),
+    layerPrefixes: input.buildOpts?.layerPrefixes ?? layerPrefixesFromProfile(input.profile),
+  };
   const headModules = parseModules(input.repoRoot, opts);
   const headByPath = new Map(headModules.map((m) => [m.path, m]));
   const headMap = deriveEvidenceMap(headModules, input.repoRoot, opts);
+  const inputWithBuildOpts: ReviewInput = { ...input, buildOpts: opts };
   const baseMap = deriveEvidenceMap(
     baselineModules(input.repoRoot, input.changes, input.baseContent, opts),
     input.repoRoot,
@@ -116,11 +123,11 @@ export function reviewPR(input: ReviewInput): ReviewResult {
   const certAdvisory = netNew.filter((f) => f.severity !== "block");
 
   // --- 2. Reuse-against-baseline (advisory) ---
-  const reuse = reuseAgainstBaseline(input, headByPath, baseMap.modules);
+  const reuse = reuseAgainstBaseline(inputWithBuildOpts, headByPath, baseMap.modules);
 
   // --- 3. Capability bypass: PR adds inline use of a cross-cutting capability
   //        (date/time, JSON, crypto, …) when a canonical helper already exists. ---
-  const capBypass = capabilityBypass(input, headByPath, baseMap.modules);
+  const capBypass = capabilityBypass(inputWithBuildOpts, headByPath, baseMap.modules);
 
   const advisories = [...certAdvisory, ...reuse, ...capBypass];
   const findings = [...blocking, ...advisories];
@@ -140,6 +147,7 @@ function reuseAgainstBaseline(
   baseModules: ModuleInfo[],
 ): Finding[] {
   const baseByPath = new Map(baseModules.map((m) => [m.path, m]));
+  const prefixes = resolveLayerPrefixes(input.buildOpts ?? {});
   const declIndex = new Map<string, ModuleInfo[]>(); // symbol -> baseline modules declaring it
   for (const m of baseModules) {
     if (m.isTest || m.isBarrel || m.isGenerated) continue;
@@ -162,7 +170,7 @@ function reuseAgainstBaseline(
     if (c.status === "modified") {
       const baseSrc = input.baseContent(c.path);
       const baseMod =
-        baseSrc !== undefined ? moduleFromFile(c.path, baseSrc, undefined, input.buildOpts?.registry) : undefined;
+        baseSrc !== undefined ? moduleFromFile(c.path, baseSrc, prefixes, input.buildOpts?.registry) : undefined;
       for (const e of baseMod?.exports ?? []) priorOwn.add(e.name);
     }
 
@@ -228,6 +236,7 @@ function capabilityBypass(
   if (helpers.size === 0) return [];
 
   const out: Finding[] = [];
+  const prefixes = resolveLayerPrefixes(input.buildOpts ?? {});
   for (const c of input.changes) {
     if (c.status !== "added" && c.status !== "modified") continue;
     const head = headByPath.get(c.path);
@@ -236,7 +245,7 @@ function capabilityBypass(
     // Base version of this file, to enforce NET-NEW only.
     const baseSrc = c.status === "modified" ? input.baseContent(c.path) : undefined;
     const baseMod =
-      baseSrc !== undefined ? moduleFromFile(c.path, baseSrc, undefined, input.buildOpts?.registry) : undefined;
+      baseSrc !== undefined ? moduleFromFile(c.path, baseSrc, prefixes, input.buildOpts?.registry) : undefined;
 
     for (const cap of CAPABILITIES) {
       const canonical = helpers.get(cap.id);

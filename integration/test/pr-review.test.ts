@@ -25,6 +25,23 @@ export class OrderService {
 `;
 const DB = `export class Db {}\n`;
 const PORTS = `export interface OrderRepository {}\n`;
+const FEATURE_BOUNDARY_PROFILE = `projectSize: small
+philosophies:
+  adopt:
+    - id: domain-driven-design
+      weight: primary
+  reject: []
+adopt:
+  - id: hexagonal-architecture
+    enforcement: block
+    options:
+      domainGlobs: ["src/features/*/model/**"]
+      forbidImportsFrom: ["src/features/*/data/**"]
+phases:
+  write: { enabled: true, mode: advise, failMode: open, llm: false, block: false }
+  pr:    { enabled: true, llm: true, failOn: block }
+  later: { enabled: true }
+`;
 
 test("net-new boundary violation introduced by a PR is blocked", () => {
   const dir = makeProject({
@@ -89,6 +106,26 @@ test("a new infra TARGET that makes an unchanged domain import illegal IS blocke
   });
   assert.equal(result.decision, "block");
   assert.ok(result.blocking.some((f) => f.path === "src/domain/order.ts"));
+});
+
+test("configured boundary globs drive PR certifier layer classification", () => {
+  const dir = makeProject({
+    profile: FEATURE_BOUNDARY_PROFILE,
+    files: {
+      "src/features/orders/model/order.ts": `import { Db } from "../data/db";\nexport class Order { constructor(private db: Db) {} }\n`,
+      "src/features/orders/data/db.ts": DB,
+    },
+  });
+  const profile = profileFor(dir);
+  const result = reviewPR({
+    repoRoot: dir,
+    profile,
+    changes: [{ path: "src/features/orders/model/order.ts", status: "modified" }],
+    baseContent: (p) =>
+      p === "src/features/orders/model/order.ts" ? "export class Order {}\n" : undefined,
+  });
+  assert.equal(result.decision, "block");
+  assert.ok(result.blocking.some((f) => f.path === "src/features/orders/model/order.ts"));
 });
 
 test("clean PR (no net-new violations) passes", () => {

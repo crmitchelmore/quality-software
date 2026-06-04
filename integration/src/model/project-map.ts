@@ -91,6 +91,19 @@ export interface BuildOptions {
   registry?: ProviderRegistry;
 }
 
+export function resolveLayerPrefixes(opts: BuildOptions = {}): Record<Layer, string[]> {
+  const prefixes: Record<Layer, string[]> = {
+    test: [...DEFAULT_LAYER_PREFIXES.test],
+    domain: [...DEFAULT_LAYER_PREFIXES.domain],
+    application: [...DEFAULT_LAYER_PREFIXES.application],
+    infrastructure: [...DEFAULT_LAYER_PREFIXES.infrastructure],
+    interface: [...DEFAULT_LAYER_PREFIXES.interface],
+    other: [],
+  };
+  for (const [k, v] of Object.entries(opts.layerPrefixes ?? {})) prefixes[k as Layer] = v as string[];
+  return prefixes;
+}
+
 function gitCommit(repoRoot: string): string | undefined {
   try {
     return execFileSync("git", ["-C", repoRoot, "rev-parse", "--short", "HEAD"], {
@@ -114,8 +127,7 @@ export function buildEvidenceMap(repoRoot: string, opts: BuildOptions = {}): Evi
  * WITHOUT inheriting stale edges/duplicates from a previous version (design 16.6).
  */
 export function parseModules(repoRoot: string, opts: BuildOptions = {}): ModuleInfo[] {
-  const prefixes: Record<Layer, string[]> = { ...DEFAULT_LAYER_PREFIXES };
-  for (const [k, v] of Object.entries(opts.layerPrefixes ?? {})) prefixes[k as Layer] = v as string[];
+  const prefixes = resolveLayerPrefixes(opts);
   const srcDirs = opts.srcDirs ?? ["src", "lib", "app", "packages", "test", "tests"];
   const registry = opts.registry ?? defaultRegistry();
 
@@ -185,8 +197,7 @@ export function moduleFromFile(
  * relies on to diff baseline vs head (critique: never merge stale edges).
  */
 export function deriveEvidenceMap(modules: ModuleInfo[], repoRoot: string, opts: BuildOptions = {}): EvidenceMap {
-  const prefixes: Record<Layer, string[]> = { ...DEFAULT_LAYER_PREFIXES };
-  for (const [k, v] of Object.entries(opts.layerPrefixes ?? {})) prefixes[k as Layer] = v as string[];
+  const prefixes = resolveLayerPrefixes(opts);
   const registry = opts.registry ?? defaultRegistry();
   const providerIds = new Set(modules.map((m) => m.provenance.provider));
 

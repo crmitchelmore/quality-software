@@ -1,26 +1,5 @@
-/** Minimal glob matcher (supports `**`, `*`, `?`) — avoids a dependency. */
-export function globToRegExp(glob: string): RegExp {
-  let re = "";
-  for (let i = 0; i < glob.length; i++) {
-    const c = glob[i];
-    if (c === "*") {
-      if (glob[i + 1] === "*") {
-        re += ".*";
-        i++;
-        if (glob[i + 1] === "/") i++; // consume slash after **
-      } else {
-        re += "[^/]*";
-      }
-    } else if (c === "?") {
-      re += "[^/]";
-    } else if (".+^${}()|[]\\".includes(c)) {
-      re += "\\" + c;
-    } else {
-      re += c;
-    }
-  }
-  return new RegExp("^" + re + "$");
-}
+import { globToRegExp } from "../globs.js";
+export { globToRegExp };
 
 export function matchesAny(path: string, globs: string[] | undefined): boolean {
   if (!globs || globs.length === 0) return true;

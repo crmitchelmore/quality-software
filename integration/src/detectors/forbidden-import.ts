@@ -28,6 +28,7 @@ export interface BoundaryEdge {
   patternId: string;
   fromLayers: Layer[];
   toLayer: Layer;
+  layerPrefixes?: Record<Layer, string[]>;
   registry?: ProviderRegistry;
 }
 
@@ -48,10 +49,11 @@ export function forbiddenImportDetector(edge: BoundaryEdge): Detector {
     run(change: ChangeSet, ctx: DetectorContext): Finding[] {
       const findings: Finding[] = [];
       const rationale = ctx.rationaleFor(edge.patternId);
+      const layerPrefixes = edge.layerPrefixes;
       for (const file of change.files) {
         if (!file.content) continue;
         const rel = relPath(change.repoRoot, file.path);
-        const fromLayer = classifyLayer(rel);
+        const fromLayer = classifyLayer(rel, layerPrefixes);
         if (!fromSet.has(fromLayer)) continue;
         const facts = factsFor(rel, file.content, registry);
         if (!facts) continue;
@@ -61,7 +63,7 @@ export function forbiddenImportDetector(edge: BoundaryEdge): Detector {
           let heuristic = false;
           const resolved = resolveRelative(rel, spec);
           if (resolved !== undefined) {
-            targetLayer = classifyLayer(resolved);
+            targetLayer = classifyLayer(resolved, layerPrefixes);
           } else {
             targetLayer = layerOfImportSpec(spec);
             heuristic = true; // FQN/package segment-scan — not resolved against the index

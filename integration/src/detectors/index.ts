@@ -2,7 +2,7 @@ import type { Detector, ResolvedProfile } from "../contract.js";
 import { forbiddenImportDetector } from "./forbidden-import.js";
 import { bannedConstructDetector } from "./banned-construct.js";
 import { reuseDetector } from "./reuse.js";
-import { layersFromGlobs } from "../model/layers.js";
+import { boundaryLayerConfig } from "../model/layers.js";
 
 /**
  * Build the active detector set from a resolved profile. Only detectors backed
@@ -17,11 +17,9 @@ export function buildDetectors(profile: ResolvedProfile): Detector[] {
     ["hexagonal-architecture", "clean-architecture", "layered-architecture", "onion-architecture"].includes(p.id),
   );
   if (boundaryPattern) {
-    const opts = boundaryPattern.options ?? {};
-    const fromLayers = layersFromGlobs(opts.domainGlobs as string[] | undefined, ["domain", "application"]);
-    const toLayers = layersFromGlobs(opts.forbidImportsFrom as string[] | undefined, ["infrastructure"]);
+    const { fromLayers, toLayers, layerPrefixes } = boundaryLayerConfig(boundaryPattern.options);
     detectors.push(
-      forbiddenImportDetector({ patternId: boundaryPattern.id, fromLayers, toLayer: toLayers[0] }),
+      forbiddenImportDetector({ patternId: boundaryPattern.id, fromLayers, toLayer: toLayers[0], layerPrefixes }),
     );
   }
 
@@ -34,4 +32,3 @@ export function buildDetectors(profile: ResolvedProfile): Detector[] {
 
   return detectors;
 }
-

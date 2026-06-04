@@ -26,6 +26,24 @@ export class OrderService {
 }
 `;
 
+const FEATURE_BOUNDARY_PROFILE = `projectSize: small
+philosophies:
+  adopt:
+    - id: domain-driven-design
+      weight: primary
+  reject: []
+adopt:
+  - id: hexagonal-architecture
+    enforcement: block
+    options:
+      domainGlobs: ["src/features/*/model/**"]
+      forbidImportsFrom: ["src/features/*/data/**"]
+phases:
+  write: { enabled: true, mode: advise, failMode: open, llm: false, block: false }
+  pr:    { enabled: true, llm: true, failOn: block }
+  later: { enabled: true }
+`;
+
 test("boundary violation is detected (domain importing infrastructure)", async () => {
   const dir = makeProject({ profile: todoProfile("warn") });
   const change: ChangeSet = {
@@ -50,6 +68,24 @@ test("clean domain file (depends on a port) produces no boundary finding", async
   };
   const { findings } = await engineFor(dir).evaluate(change);
   assert.equal(findings.filter((f) => f.detectorId === "forbidden-import.dependency-rule").length, 0);
+});
+
+test("configured boundary globs drive write-time layer classification", async () => {
+  const dir = makeProject({ profile: FEATURE_BOUNDARY_PROFILE });
+  const change: ChangeSet = {
+    event: "POST_WRITE_CONTENT",
+    repoRoot: dir,
+    files: [
+      {
+        path: join(dir, "src/features/orders/model/order-service.ts"),
+        content: `import { Db } from "../data/db";\nexport class OrderService { constructor(private db: Db) {} }\n`,
+      },
+    ],
+  };
+  const { findings } = await engineFor(dir).evaluate(change);
+  const boundary = findings.filter((f) => f.detectorId === "forbidden-import.dependency-rule");
+  assert.equal(boundary.length, 1, "expected configured model→data boundary finding");
+  assert.equal(boundary[0].severity, "warning", "write-time remains advisory even when PR enforcement blocks");
 });
 
 test("write-time never denies, even when the pattern is enforcement: block", async () => {
