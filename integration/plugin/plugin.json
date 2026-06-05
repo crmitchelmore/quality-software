@@ -1,16 +1,21 @@
 {
-  "name": "conformance",
+  "name": "quality-software-conformance",
   "version": "0.2.0",
-  "description": "Philosophy-first pattern-conformance guidance for AI coding agents: advisory hooks, a review skill, and an MCP server. Guides agents to the project's selected design philosophies and patterns and keeps changes aligned as the codebase scales.",
-  "hooks": "../../.github/hooks/conformance.json",
-  "skills": ["../../.github/skills/conformance-review"],
-  "mcpServers": {
-    "conformance": {
-      "type": "stdio",
-      "command": "conformance-mcp",
-      "env": {
-        "CONFORMANCE_CATALOGUE_ROOT": "${CONFORMANCE_CATALOGUE_ROOT}"
-      }
-    }
-  }
+  "description": "Repo-local pattern conformance for Copilot CLI: advisory hooks, skills, commands, and MCP tools.",
+  "author": {
+    "name": "Quality Software"
+  },
+  "repository": "https://github.com/crmitchelmore/quality-software",
+  "license": "MIT",
+  "keywords": [
+    "copilot-cli",
+    "conformance",
+    "patterns",
+    "architecture",
+    "code-review"
+  ],
+  "skills": "skills/",
+  "commands": "commands/",
+  "hooks": "hooks/hooks.json",
+  "mcpServers": ".mcp.json"
 }

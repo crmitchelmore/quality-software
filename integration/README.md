@@ -102,6 +102,10 @@ to remain on disk. Verify Copilot CLI visibility with `copilot plugin list` and
 `copilot plugin update`, then run `conformance doctor` inside a target repo to verify that the
 catalogue, profile, map, anchors, and plugin install are visible.
 
+The committed bundle under `integration/plugin/` mirrors the same manifest, commands, hooks,
+and skills so drift is caught before release. The CLI installer remains the recommended path
+because it injects the absolute local catalogue and Node paths required by hooks and MCP.
+
 If an interactive `/plugin list` reports no plugins, debug the Copilot CLI runtime directly with
 `copilot plugin list` / `copilot plugin update`. Claude Code's `claude plugin` marketplace flow is
 a separate plugin system and should only be used when the target runtime is explicitly Claude Code.

@@ -13,5 +13,9 @@
     "patterns",
     "architecture",
     "code-review"
-  ]
+  ],
+  "skills": "skills/",
+  "commands": "commands/",
+  "hooks": "hooks/hooks.json",
+  "mcpServers": ".mcp.json"
 }

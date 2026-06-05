@@ -1,0 +1,9 @@
+{
+  "conformance": {
+    "type": "stdio",
+    "command": "conformance-mcp",
+    "env": {
+      "CONFORMANCE_CATALOGUE_ROOT": "${CONFORMANCE_CATALOGUE_ROOT}"
+    }
+  }
+}

@@ -5,6 +5,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import type { execFileSync } from "node:child_process";
 import {
+  COPILOT_PLUGIN_SKILLS,
   copilotPluginCommandFiles,
   copilotPluginManifest,
   copilotPluginPaths,
@@ -75,5 +76,26 @@ test("installCopilotPlugin force-uninstalls before replacing an existing cache",
     ]);
   } finally {
     rmSync(home, { recursive: true, force: true });
+  }
+});
+
+test("committed plugin bundle mirrors the generated installer contract", () => {
+  const pluginRoot = join(REPO_ROOT, "integration", "plugin");
+  const manifest = copilotPluginManifest();
+
+  assert.deepEqual(JSON.parse(readFileSync(join(pluginRoot, "plugin.json"), "utf8")), manifest);
+  assert.deepEqual(JSON.parse(readFileSync(join(pluginRoot, ".claude-plugin", "plugin.json"), "utf8")), manifest);
+  assert.equal(JSON.parse(readFileSync(join(pluginRoot, ".mcp.json"), "utf8")).conformance.command, "conformance-mcp");
+  assert.ok(JSON.parse(readFileSync(join(pluginRoot, "hooks", "hooks.json"), "utf8")).hooks.SessionStart);
+
+  for (const [commandName, commandBody] of Object.entries(copilotPluginCommandFiles())) {
+    assert.equal(readFileSync(join(pluginRoot, "commands", commandName), "utf8"), commandBody);
+  }
+
+  for (const skillName of COPILOT_PLUGIN_SKILLS) {
+    assert.equal(
+      readFileSync(join(pluginRoot, "skills", skillName, "SKILL.md"), "utf8"),
+      readFileSync(join(REPO_ROOT, ".github", "skills", skillName, "SKILL.md"), "utf8"),
+    );
   }
 });

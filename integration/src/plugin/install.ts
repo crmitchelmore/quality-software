@@ -24,6 +24,7 @@ export interface InstallCopilotPluginResult {
 }
 
 const PLUGIN_DIRECTORY = "quality-software--conformance";
+export const COPILOT_PLUGIN_SKILLS = ["conformance-review", "codebase-onboarding", "pr-pattern-review"] as const;
 
 export function copilotPluginManifest(): Record<string, unknown> {
   return {
@@ -97,8 +98,7 @@ function writePluginBundle(target: string, catalogueRoot: string, nodePath: stri
     writeFileSync(join(target, "commands", name), body);
   }
 
-  const skills = ["conformance-review", "codebase-onboarding", "pr-pattern-review"];
-  for (const skill of skills) {
+  for (const skill of COPILOT_PLUGIN_SKILLS) {
     cpSync(join(catalogueRoot, ".github", "skills", skill), join(target, "skills", skill), {
       recursive: true,
     });
