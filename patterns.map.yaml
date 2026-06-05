@@ -88,11 +88,13 @@ patterns:
     flavour: Evidence extraction, candidate selection, deterministic certification, LLM advisory judgement, and finding projection as separate stages.
     evidence:
       - project-map.ts separates parsing modules from deriving edges, duplicates, candidates, and capabilities.
+      - model/candidates.ts isolates Tier-3 advisory candidate inference from the evidence-map derivation step.
       - judge.ts routes pattern/region pairs through prompt construction, parsing, span validation, and advisory findings.
       - policy/certify.ts separately certifies deterministic violations.
       - review/pr-review.ts coordinates the PR review flow while baseline reconstruction, consistency advisories, reuse checks, and summaries live in separate review filters.
     anchors:
       - integration/src/model/project-map.ts
+      - integration/src/model/candidates.ts
       - integration/src/judge/judge.ts
       - integration/src/policy/certify.ts
       - integration/src/engine.ts
@@ -155,11 +157,13 @@ patterns:
     flavour: Construction of detectors, evidence-derived profiles, inventories, and pattern maps is centralised.
     evidence:
       - buildDetectors(profile) selects detector variants from the resolved profile.
+      - inferCandidates(modules, edges, byPath) centralises structural candidate-pattern construction.
       - proposeProfileFromEvidence(map, catalogue) converts evidence into a conservative candidate profile.
       - buildPatternMap(map, catalogue) converts evidence into reviewable anchors and flavours.
       - copilotPluginManifest() and installCopilotPlugin() centralise construction of the local plugin bundle.
     anchors:
       - integration/src/detectors/index.ts
+      - integration/src/model/candidates.ts
       - integration/src/model/proposal.ts
       - integration/src/model/pattern-map.ts
       - integration/src/model/inventory.ts
