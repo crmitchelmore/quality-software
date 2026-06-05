@@ -85,7 +85,8 @@ npm link
 conformance install-copilot --force
 ```
 
-The installer writes an Open Plugins-compatible bundle to
+The installer creates an Open Plugins-compatible bundle and registers it with
+`copilot plugin install`, which copies it to
 `~/.copilot/installed-plugins/_direct/quality-software--conformance`, with:
 
 1. **Advisory hooks** — `SessionStart` (prime), `PostToolUse` on edits (advise), and

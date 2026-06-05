@@ -1,7 +1,7 @@
-import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, isAbsolute, join, resolve } from "node:path";
 import { execFileSync } from "node:child_process";
-import { homedir } from "node:os";
+import { homedir, tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { runHook, type Phase, type Dialect } from "./adapters/runtimes.js";
 import { loadCatalogue } from "./catalogue.js";
@@ -304,6 +304,10 @@ function pluginManifest(): Record<string, unknown> {
   };
 }
 
+function copilotPluginName(): string {
+  return pluginManifest().name as string;
+}
+
 function pluginHooks(catalogueRoot: string): Record<string, unknown> {
   return {
     hooks: {
@@ -348,22 +352,79 @@ function commandFiles(): Record<string, string> {
   };
 }
 
+function commandOutput(error: unknown): string {
+  const maybe = error as { stdout?: Buffer | string; stderr?: Buffer | string; message?: string };
+  const stdout = maybe.stdout ? maybe.stdout.toString() : "";
+  const stderr = maybe.stderr ? maybe.stderr.toString() : "";
+  return `${stdout}${stderr}${maybe.message ?? ""}`.trim();
+}
+
+function unregisterCopilotPluginForForce(name: string): boolean {
+  try {
+    execFileSync("copilot", ["plugin", "uninstall", name], {
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+    return true;
+  } catch (e) {
+    const detail = commandOutput(e);
+    if (detail.includes(`Plugin "${name}" is not installed`)) return true;
+    process.stderr.write(`Failed to unregister existing Copilot plugin "${name}": ${detail}\n`);
+    return false;
+  }
+}
+
+function registerCopilotPlugin(target: string): boolean {
+  try {
+    const out = execFileSync("copilot", ["plugin", "install", target], {
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+    if (out.trim()) process.stdout.write(out);
+    return true;
+  } catch (e) {
+    const detail = commandOutput(e);
+    process.stderr.write(
+      `Plugin bundle was written, but Copilot CLI did not register it: ${detail}\n` +
+        `Run \`copilot plugin install ${target}\` after resolving the error.\n`,
+    );
+    return false;
+  }
+}
+
+function copilotPluginRegistered(name: string): boolean {
+  try {
+    const out = execFileSync("copilot", ["plugin", "list"], {
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+    return out.includes(name);
+  } catch {
+    return false;
+  }
+}
+
 function cmdInstallCopilot(args: string[]): void {
   const catalogueRoot = repoCatalogueRoot();
-  const prefixIdx = args.indexOf("--prefix");
-  const prefix =
-    prefixIdx >= 0 ? resolve(args[prefixIdx + 1]) : join(homedir(), ".copilot", "installed-plugins", "_direct");
-  const target = join(prefix, "quality-software--conformance");
+  const cacheTarget = join(homedir(), ".copilot", "installed-plugins", "_direct", "quality-software--conformance");
   const force = args.includes("--force");
+  const pluginName = copilotPluginName();
 
-  if (existsSync(target)) {
+  if (existsSync(cacheTarget)) {
     if (!force) {
-      process.stderr.write(`Plugin already installed at ${target}. Re-run with --force to replace it.\n`);
+      process.stderr.write(`Plugin already installed at ${cacheTarget}. Re-run with --force to replace it.\n`);
       process.exitCode = 1;
       return;
     }
-    rmSync(target, { recursive: true, force: true });
+    if (!unregisterCopilotPluginForForce(pluginName)) {
+      process.exitCode = 1;
+      return;
+    }
+    rmSync(cacheTarget, { recursive: true, force: true });
   }
+
+  const stagingRoot = mkdtempSync(join(tmpdir(), "quality-software-conformance-plugin-"));
+  const target = join(stagingRoot, "quality-software--conformance");
 
   mkdirSync(join(target, ".claude-plugin"), { recursive: true });
   mkdirSync(join(target, "hooks"), { recursive: true });
@@ -382,8 +443,14 @@ function cmdInstallCopilot(args: string[]): void {
     });
   }
 
-  process.stdout.write(`Installed Quality Software conformance plugin at ${target}\n`);
-  process.stdout.write("Restart Copilot CLI or start a new session for plugin discovery if commands/hooks are not visible.\n");
+  process.stdout.write(`Prepared Quality Software conformance plugin bundle at ${target}\n`);
+  if (!registerCopilotPlugin(target)) {
+    process.exitCode = 1;
+    return;
+  }
+  rmSync(stagingRoot, { recursive: true, force: true });
+  process.stdout.write(`Installed Quality Software conformance plugin at ${cacheTarget}\n`);
+  process.stdout.write("Restart Copilot CLI or start a new session for plugin hooks and commands to become active.\n");
 }
 
 function cmdDoctor(): void {
@@ -412,8 +479,10 @@ function cmdDoctor(): void {
     },
     {
       label: "copilot plugin",
-      ok: existsSync(join(homedir(), ".copilot", "installed-plugins", "_direct", "quality-software--conformance")),
-      detail: join(homedir(), ".copilot", "installed-plugins", "_direct", "quality-software--conformance"),
+      ok:
+        existsSync(join(homedir(), ".copilot", "installed-plugins", "_direct", "quality-software--conformance")) &&
+        copilotPluginRegistered(copilotPluginName()),
+      detail: `${join(homedir(), ".copilot", "installed-plugins", "_direct", "quality-software--conformance")} (${copilotPluginName()})`,
     },
   ];
 
@@ -472,7 +541,7 @@ async function main(): Promise<void> {
           "  conformance onboard [--inventory] [--write-profile] [--write-anchors] [--write-map]  (scan codebase; print pattern inventory + evidence)\n" +
           "  conformance check [--event PR_REVIEW|BATCH] [--base <ref>] [paths…] (run the engine; exit 1 on block)\n" +
           "  conformance review [--base <ref>] [--json]                          (baseline-aware PR review; exit 1 on net-new block)\n" +
-          "  conformance install-copilot [--prefix <dir>] [--force]              (install local Copilot CLI plugin bundle)\n" +
+          "  conformance install-copilot [--force]                              (install local Copilot CLI plugin bundle)\n" +
           "  conformance doctor                                                  (diagnose catalogue/profile/plugin wiring)\n" +
           "  conformance profile                                                 (print the resolved profile)\n",
       );
