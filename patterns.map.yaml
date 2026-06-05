@@ -70,9 +70,10 @@ patterns:
     confidence: low
     flavour: Core conformance engine plus plugin-like extension surfaces for hooks, skills, MCP tools, PR action, and future runtimes.
     evidence:
-      - integration/plugin/plugin.json bundles hooks, skill, and MCP.
+      - integration/src/plugin/install.ts builds and registers the Copilot plugin bundle from one runtime-facing extension seam.
       - .github/skills and adapters expose multiple runtime-specific extension points over the same core.
     anchors:
+      - integration/src/plugin/install.ts
       - integration/plugin/plugin.json
       - .github/hooks/conformance.json
       - .github/skills/conformance-review/SKILL.md
@@ -132,7 +133,7 @@ patterns:
     confidence: medium
     flavour: CLI and MCP provide simple operational surfaces over catalogue, profile, engine, onboarding, and review internals.
     evidence:
-      - cli.ts exposes hook, init, onboard, check, review, and profile commands.
+      - cli.ts exposes hook, init, onboard, check, review, install-copilot, doctor, and profile commands while delegating deeper behaviour.
       - mcp.ts exposes conformance_profile, conformance_check_change, conformance_suggest_reuse, and conformance_init.
     anchors:
       - integration/src/cli.ts
@@ -148,11 +149,13 @@ patterns:
       - buildDetectors(profile) selects detector variants from the resolved profile.
       - proposeProfileFromEvidence(map, catalogue) converts evidence into a conservative candidate profile.
       - buildPatternMap(map, catalogue) converts evidence into reviewable anchors and flavours.
+      - copilotPluginManifest() and installCopilotPlugin() centralise construction of the local plugin bundle.
     anchors:
       - integration/src/detectors/index.ts
       - integration/src/model/proposal.ts
       - integration/src/model/pattern-map.ts
       - integration/src/model/inventory.ts
+      - integration/src/plugin/install.ts
     philosophies: [a-philosophy-of-software-design]
 
   - id: dependency-injection
@@ -164,10 +167,12 @@ patterns:
       - Engine is constructed with a resolved profile and catalogue.
       - LLMJudge accepts an LLM client, router, budget, cache, and audit sink through options.
       - Evidence-map functions accept provider registries and layer-prefix options.
+      - installCopilotPlugin() accepts catalogue root, home directory, node path, output streams, and command execution boundary explicitly.
     anchors:
       - integration/src/engine.ts
       - integration/src/judge/judge.ts
       - integration/src/model/project-map.ts
+      - integration/src/plugin/install.ts
     philosophies: [clean-architecture-solid]
 
   - id: contract-first-api
@@ -179,8 +184,10 @@ patterns:
       - contract.ts is the runtime-agnostic event/verdict contract.
       - schema/ defines source-of-truth pattern, practice-pattern, and philosophy schemas.
       - design/validator/12-integration-contract.md documents canonical events and verdict fields.
+      - integration/src/plugin/install.ts owns the Copilot plugin manifest and install contract.
     anchors:
       - integration/src/contract.ts
+      - integration/src/plugin/install.ts
       - schema/pattern.schema.json
       - schema/practice-pattern.schema.json
       - schema/philosophy.schema.json
@@ -196,11 +203,12 @@ patterns:
       - Copilot adapter returns empty JSON on missing profile/path/content and catches hook errors.
       - profile.ts fails fast on missing profile and direct contradictions.
       - judge.ts returns no findings in offline mode and rejects unaligned evidence spans.
+      - installCopilotPlugin() exits early when an installed plugin is present without --force or unregistering fails.
     anchors:
       - integration/src/adapters/copilot.ts
       - integration/src/profile.ts
       - integration/src/judge/judge.ts
-      - integration/src/cli.ts
+      - integration/src/plugin/install.ts
     philosophies: [design-by-contract]
 
   - id: arrange-act-assert

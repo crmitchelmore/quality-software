@@ -1,7 +1,6 @@
-import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, isAbsolute, join, resolve } from "node:path";
 import { execFileSync } from "node:child_process";
-import { homedir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { runHook, type Phase, type Dialect } from "./adapters/runtimes.js";
 import { loadCatalogue } from "./catalogue.js";
@@ -19,6 +18,7 @@ import { reviewPRWithLLM, changesFromGit, gitBaseContent } from "./review/pr-rev
 import { layerPrefixesFromProfile } from "./model/layers.js";
 import { boundaryProfileLayerWarnings } from "./model/validation.js";
 import { llmClientFromEnv } from "./llm/config.js";
+import { copilotPluginInstalled, copilotPluginName, copilotPluginPaths, installCopilotPlugin } from "./plugin/install.js";
 
 async function readStdin(): Promise<string> {
   const chunks: Buffer[] = [];
@@ -282,181 +282,14 @@ function loadActiveCatalogue(cwd: string): ReturnType<typeof loadCatalogue> {
   }
 }
 
-function sh(value: string): string {
-  return `'${value.replace(/'/g, "'\\''")}'`;
-}
-
-function hookCommand(catalogueRoot: string, phase: Phase): string {
-  const bin = join(catalogueRoot, "integration", "bin", "conformance.mjs");
-  const inner = `CONFORMANCE_CATALOGUE_ROOT=${sh(catalogueRoot)} ${sh(process.execPath)} ${sh(bin)} hook ${phase} || printf '{}'`;
-  return `/bin/sh -lc ${sh(inner)}`;
-}
-
-function pluginManifest(): Record<string, unknown> {
-  return {
-    name: "quality-software-conformance",
-    version: "0.2.0",
-    description: "Repo-local pattern conformance for Copilot CLI: advisory hooks, skills, commands, and MCP tools.",
-    author: { name: "Quality Software" },
-    repository: "https://github.com/crmitchelmore/quality-software",
-    license: "MIT",
-    keywords: ["copilot-cli", "conformance", "patterns", "architecture", "code-review"],
-    skills: "skills/",
-    commands: "commands/",
-    hooks: "hooks/hooks.json",
-    mcpServers: ".mcp.json",
-  };
-}
-
-function copilotPluginName(): string {
-  return pluginManifest().name as string;
-}
-
-function pluginHooks(catalogueRoot: string): Record<string, unknown> {
-  return {
-    hooks: {
-      SessionStart: [
-        {
-          hooks: [{ type: "command", command: hookCommand(catalogueRoot, "session-start"), timeout: 5000 }],
-        },
-      ],
-      PostToolUse: [
-        {
-          matcher: "edit|create|apply_patch|Write|Edit|MultiEdit",
-          hooks: [{ type: "command", command: hookCommand(catalogueRoot, "post-write"), timeout: 5000 }],
-        },
-      ],
-      AgentStop: [
-        {
-          hooks: [{ type: "command", command: hookCommand(catalogueRoot, "turn-end"), timeout: 5000 }],
-        },
-      ],
-    },
-  };
-}
-
-function pluginMcp(catalogueRoot: string): Record<string, unknown> {
-  return {
-    conformance: {
-      type: "stdio",
-      command: process.execPath,
-      args: [join(catalogueRoot, "integration", "bin", "conformance-mcp.mjs")],
-      env: {
-        CONFORMANCE_CATALOGUE_ROOT: catalogueRoot,
-      },
-    },
-  };
-}
-
-function commandFiles(): Record<string, string> {
-  return {
-    "conformance-doctor.md": `---\ndescription: Diagnose the Quality Software conformance plugin and project wiring\nallowed-tools: Bash, Read\n---\n\nRun \`conformance doctor\` in the current repository. If it reports missing artefacts, explain the smallest next command to fix them. Do not promote advisory findings to blocking findings.\n`,
-    "conformance-onboard.md": `---\ndescription: Onboard a repository into Quality Software conformance artefacts\nallowed-tools: Bash, Read, Write\n---\n\nRun \`conformance onboard --write-profile --write-map --write-anchors\` only when the repository does not already have ratified conformance artefacts. If artefacts exist, run \`conformance onboard --inventory\` and report candidate gaps without overwriting files.\n`,
-    "conformance-review.md": `---\ndescription: Run a baseline-aware Quality Software conformance review\nallowed-tools: Bash, Read\n---\n\nRun \`conformance review --base origin/main\` unless the PR base is known to be different. Report findings as advisory unless the tool returns a blocking decision from a certified deterministic rule.\n`,
-  };
-}
-
-function commandOutput(error: unknown): string {
-  const maybe = error as { stdout?: Buffer | string; stderr?: Buffer | string; message?: string };
-  const stdout = maybe.stdout ? maybe.stdout.toString() : "";
-  const stderr = maybe.stderr ? maybe.stderr.toString() : "";
-  return `${stdout}${stderr}${maybe.message ?? ""}`.trim();
-}
-
-function unregisterCopilotPluginForForce(name: string): boolean {
-  try {
-    execFileSync("copilot", ["plugin", "uninstall", name], {
-      encoding: "utf8",
-      stdio: ["ignore", "pipe", "pipe"],
-    });
-    return true;
-  } catch (e) {
-    const detail = commandOutput(e);
-    if (detail.includes(`Plugin "${name}" is not installed`)) return true;
-    process.stderr.write(`Failed to unregister existing Copilot plugin "${name}": ${detail}\n`);
-    return false;
-  }
-}
-
-function registerCopilotPlugin(target: string): boolean {
-  try {
-    const out = execFileSync("copilot", ["plugin", "install", target], {
-      encoding: "utf8",
-      stdio: ["ignore", "pipe", "pipe"],
-    });
-    if (out.trim()) process.stdout.write(out);
-    return true;
-  } catch (e) {
-    const detail = commandOutput(e);
-    process.stderr.write(
-      `Plugin bundle was written, but Copilot CLI did not register it: ${detail}\n` +
-        `Run \`copilot plugin install ${target}\` after resolving the error.\n`,
-    );
-    return false;
-  }
-}
-
-function copilotPluginRegistered(name: string): boolean {
-  try {
-    const out = execFileSync("copilot", ["plugin", "list"], {
-      encoding: "utf8",
-      stdio: ["ignore", "pipe", "pipe"],
-    });
-    return out.includes(name);
-  } catch {
-    return false;
-  }
-}
-
 function cmdInstallCopilot(args: string[]): void {
-  const catalogueRoot = repoCatalogueRoot();
-  const cacheTarget = join(homedir(), ".copilot", "installed-plugins", "_direct", "quality-software--conformance");
-  const sourceTarget = join(homedir(), ".copilot", "local-plugins", "quality-software--conformance");
-  const force = args.includes("--force");
-  const pluginName = copilotPluginName();
-
-  if (existsSync(cacheTarget)) {
-    if (!force) {
-      process.stderr.write(`Plugin already installed at ${cacheTarget}. Re-run with --force to replace it.\n`);
-      process.exitCode = 1;
-      return;
-    }
-    if (!unregisterCopilotPluginForForce(pluginName)) {
-      process.exitCode = 1;
-      return;
-    }
-    rmSync(cacheTarget, { recursive: true, force: true });
-  }
-
-  rmSync(sourceTarget, { recursive: true, force: true });
-  const target = sourceTarget;
-
-  mkdirSync(join(target, ".claude-plugin"), { recursive: true });
-  mkdirSync(join(target, "hooks"), { recursive: true });
-  mkdirSync(join(target, "commands"), { recursive: true });
-  mkdirSync(join(target, "skills"), { recursive: true });
-
-  writeJson(join(target, "plugin.json"), pluginManifest());
-  writeJson(join(target, ".claude-plugin", "plugin.json"), pluginManifest());
-  writeJson(join(target, "hooks", "hooks.json"), pluginHooks(catalogueRoot));
-  writeJson(join(target, ".mcp.json"), pluginMcp(catalogueRoot));
-  for (const [name, body] of Object.entries(commandFiles())) writeFileSync(join(target, "commands", name), body);
-
-  const skills = ["conformance-review", "codebase-onboarding", "pr-pattern-review"];
-  for (const skill of skills) {
-    cpSync(join(catalogueRoot, ".github", "skills", skill), join(target, "skills", skill), {
-      recursive: true,
-    });
-  }
-
-  process.stdout.write(`Prepared Quality Software conformance plugin bundle at ${target}\n`);
-  if (!registerCopilotPlugin(target)) {
-    process.exitCode = 1;
-    return;
-  }
-  process.stdout.write(`Installed Quality Software conformance plugin at ${cacheTarget}\n`);
-  process.stdout.write(`Persistent local plugin source at ${sourceTarget}\n`);
-  process.stdout.write("Restart Copilot CLI or start a new session for plugin hooks and commands to become active.\n");
+  const result = installCopilotPlugin({
+    catalogueRoot: repoCatalogueRoot(),
+    force: args.includes("--force"),
+    stdout: process.stdout,
+    stderr: process.stderr,
+  });
+  process.exitCode = result.exitCode;
 }
 
 function cmdDoctor(): void {
@@ -485,10 +318,8 @@ function cmdDoctor(): void {
     },
     {
       label: "copilot plugin",
-      ok:
-        existsSync(join(homedir(), ".copilot", "installed-plugins", "_direct", "quality-software--conformance")) &&
-        copilotPluginRegistered(copilotPluginName()),
-      detail: `${join(homedir(), ".copilot", "installed-plugins", "_direct", "quality-software--conformance")} (${copilotPluginName()})`,
+      ok: copilotPluginInstalled(),
+      detail: `${copilotPluginPaths().cacheTarget} (${copilotPluginName()})`,
     },
   ];
 
@@ -505,10 +336,6 @@ function cmdDoctor(): void {
     process.stdout.write(`✘ resolved profile: ${(e as Error).message}\n`);
     process.exitCode = 1;
   }
-}
-
-function writeJson(path: string, value: unknown): void {
-  writeFileSync(path, JSON.stringify(value, null, 2) + "\n");
 }
 
 async function main(): Promise<void> {
