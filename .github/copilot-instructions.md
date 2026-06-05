@@ -23,7 +23,9 @@
 - When installing or testing the Copilot CLI plugin, generated hooks, MCP config, and PR
   workflows must resolve the catalogue from an absolute project root or the active
   catalogue fallback. Do not rely on a consumer repo exporting `CONFORMANCE_CATALOGUE_ROOT`;
-  smoke-test from the consumer repo with that variable unset.
+  smoke-test from the consumer repo with that variable unset. Verify installation through
+  Copilot CLI commands such as `copilot plugin list` and `copilot plugin update`; do not switch
+  to Claude Code plugin tooling unless the user explicitly asks for that runtime.
 - After changing Copilot CLI hook configuration, restart the CLI before re-testing hook
   behaviour. Running sessions and background agents can keep cached `preToolUse` hooks.
 - Keep automation output contracts stable. In particular, `conformance review --json` must

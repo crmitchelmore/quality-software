@@ -85,7 +85,8 @@ npm link
 conformance install-copilot --force
 ```
 
-The installer creates an Open Plugins-compatible bundle and registers it with
+The installer stages a persistent Open Plugins-compatible source bundle at
+`~/.copilot/local-plugins/quality-software--conformance`, then registers it with
 `copilot plugin install`, which copies it to
 `~/.copilot/installed-plugins/_direct/quality-software--conformance`, with:
 
@@ -96,8 +97,14 @@ The installer creates an Open Plugins-compatible bundle and registers it with
 3. **Commands** — `conformance-doctor`, `conformance-onboard`, and `conformance-review`.
 4. **MCP config** — `.mcp.json` pointing at the local catalogue checkout.
 
-Run `conformance doctor` inside a target repo to verify that the catalogue, profile, map,
-anchors, and plugin install are visible.
+The persistent source path is intentional: `copilot plugin update` needs the registered source
+to remain on disk. Verify Copilot CLI visibility with `copilot plugin list` and
+`copilot plugin update`, then run `conformance doctor` inside a target repo to verify that the
+catalogue, profile, map, anchors, and plugin install are visible.
+
+If an interactive `/plugin list` reports no plugins, debug the Copilot CLI runtime directly with
+`copilot plugin list` / `copilot plugin update`. Claude Code's `claude plugin` marketplace flow is
+a separate plugin system and should only be used when the target runtime is explicitly Claude Code.
 
 For CI, prefer a normal GitHub Action or reusable workflow over an agentic workflow for the
 first PR integration. PR checks are reproducible, auditable, and can stay advisory until a

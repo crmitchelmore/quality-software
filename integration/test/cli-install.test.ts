@@ -18,6 +18,7 @@ test("install-copilot registers the generated bundle with Copilot", () => {
       `#!/bin/sh
 printf '%s\\n' "$*" >> '${log}'
 if [ "$1" = "plugin" ] && [ "$2" = "install" ]; then
+  test -f "$3/plugin.json"
   test -f "$3/.claude-plugin/plugin.json"
   test -f "$3/hooks/hooks.json"
   printf 'verified %s\\n' "$3" >> '${log}'
@@ -43,10 +44,13 @@ exit 1
 
     assert.match(output, /Prepared Quality Software conformance plugin bundle/);
     assert.match(output, /Installed Quality Software conformance plugin/);
+    assert.match(output, /Persistent local plugin source/);
     assert.match(output, /Plugin "quality-software-conformance" installed successfully/);
+    const source = join(dir, ".copilot", "local-plugins", "quality-software--conformance");
+    assert.equal(JSON.parse(readFileSync(join(source, "plugin.json"), "utf8")).name, "quality-software-conformance");
     const calls = readFileSync(log, "utf8").trim().split("\n");
-    assert.match(calls[0], /^plugin install .+quality-software--conformance$/);
-    assert.match(calls[1], /^verified .+quality-software--conformance$/);
+    assert.equal(calls[0], `plugin install ${source}`);
+    assert.equal(calls[1], `verified ${source}`);
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }

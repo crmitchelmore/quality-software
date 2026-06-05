@@ -1,7 +1,7 @@
-import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, isAbsolute, join, resolve } from "node:path";
 import { execFileSync } from "node:child_process";
-import { homedir, tmpdir } from "node:os";
+import { homedir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { runHook, type Phase, type Dialect } from "./adapters/runtimes.js";
 import { loadCatalogue } from "./catalogue.js";
@@ -301,6 +301,10 @@ function pluginManifest(): Record<string, unknown> {
     repository: "https://github.com/crmitchelmore/quality-software",
     license: "MIT",
     keywords: ["copilot-cli", "conformance", "patterns", "architecture", "code-review"],
+    skills: "skills/",
+    commands: "commands/",
+    hooks: "hooks/hooks.json",
+    mcpServers: ".mcp.json",
   };
 }
 
@@ -407,6 +411,7 @@ function copilotPluginRegistered(name: string): boolean {
 function cmdInstallCopilot(args: string[]): void {
   const catalogueRoot = repoCatalogueRoot();
   const cacheTarget = join(homedir(), ".copilot", "installed-plugins", "_direct", "quality-software--conformance");
+  const sourceTarget = join(homedir(), ".copilot", "local-plugins", "quality-software--conformance");
   const force = args.includes("--force");
   const pluginName = copilotPluginName();
 
@@ -423,14 +428,15 @@ function cmdInstallCopilot(args: string[]): void {
     rmSync(cacheTarget, { recursive: true, force: true });
   }
 
-  const stagingRoot = mkdtempSync(join(tmpdir(), "quality-software-conformance-plugin-"));
-  const target = join(stagingRoot, "quality-software--conformance");
+  rmSync(sourceTarget, { recursive: true, force: true });
+  const target = sourceTarget;
 
   mkdirSync(join(target, ".claude-plugin"), { recursive: true });
   mkdirSync(join(target, "hooks"), { recursive: true });
   mkdirSync(join(target, "commands"), { recursive: true });
   mkdirSync(join(target, "skills"), { recursive: true });
 
+  writeJson(join(target, "plugin.json"), pluginManifest());
   writeJson(join(target, ".claude-plugin", "plugin.json"), pluginManifest());
   writeJson(join(target, "hooks", "hooks.json"), pluginHooks(catalogueRoot));
   writeJson(join(target, ".mcp.json"), pluginMcp(catalogueRoot));
@@ -448,8 +454,8 @@ function cmdInstallCopilot(args: string[]): void {
     process.exitCode = 1;
     return;
   }
-  rmSync(stagingRoot, { recursive: true, force: true });
   process.stdout.write(`Installed Quality Software conformance plugin at ${cacheTarget}\n`);
+  process.stdout.write(`Persistent local plugin source at ${sourceTarget}\n`);
   process.stdout.write("Restart Copilot CLI or start a new session for plugin hooks and commands to become active.\n");
 }
 
