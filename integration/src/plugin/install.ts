@@ -23,10 +23,52 @@ export interface InstallCopilotPluginResult {
   exitCode: number;
 }
 
+export interface CopilotPluginManifest {
+  name: string;
+  version: string;
+  description: string;
+  author: { name: string };
+  repository: string;
+  license: string;
+  keywords: string[];
+  skills: string;
+  commands: string;
+  hooks: string;
+  mcpServers: string;
+}
+
+interface PluginHookCommand {
+  type: "command";
+  command: string;
+  timeout: number;
+}
+
+interface PluginHookRegistration {
+  matcher?: string;
+  hooks: PluginHookCommand[];
+}
+
+interface PluginHooksConfig {
+  hooks: {
+    SessionStart: PluginHookRegistration[];
+    PostToolUse: PluginHookRegistration[];
+    AgentStop: PluginHookRegistration[];
+  };
+}
+
+interface PluginMcpConfig {
+  conformance: {
+    type: "stdio";
+    command: string;
+    args: string[];
+    env: { CONFORMANCE_CATALOGUE_ROOT: string };
+  };
+}
+
 const PLUGIN_DIRECTORY = "quality-software--conformance";
 export const COPILOT_PLUGIN_SKILLS = ["conformance-review", "codebase-onboarding", "pr-pattern-review"] as const;
 
-export function copilotPluginManifest(): Record<string, unknown> {
+export function copilotPluginManifest(): CopilotPluginManifest {
   return {
     name: "quality-software-conformance",
     version: "0.2.0",
@@ -43,7 +85,7 @@ export function copilotPluginManifest(): Record<string, unknown> {
 }
 
 export function copilotPluginName(): string {
-  return copilotPluginManifest().name as string;
+  return copilotPluginManifest().name;
 }
 
 export function copilotPluginPaths(homeDir = homedir()): CopilotPluginPaths {
@@ -166,7 +208,7 @@ function commandOutput(error: unknown): string {
   return `${stdout}${stderr}${maybe.message ?? ""}`.trim();
 }
 
-function pluginHooks(catalogueRoot: string, nodePath: string): Record<string, unknown> {
+function pluginHooks(catalogueRoot: string, nodePath: string): PluginHooksConfig {
   return {
     hooks: {
       SessionStart: [
@@ -189,7 +231,7 @@ function pluginHooks(catalogueRoot: string, nodePath: string): Record<string, un
   };
 }
 
-function pluginMcp(catalogueRoot: string, nodePath: string): Record<string, unknown> {
+function pluginMcp(catalogueRoot: string, nodePath: string): PluginMcpConfig {
   return {
     conformance: {
       type: "stdio",
