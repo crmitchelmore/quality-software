@@ -49,7 +49,24 @@ practice-manifest.yaml  single source of truth for practice-pattern + new philos
 docs/           generated Markdown: index.md + patterns/** + product-patterns/** + ux-patterns/** + philosophies/**
 tools/          TypeScript tooling: validate(:practice/:phil), generate-docs(:practice/:phil), stats
 design/         validator design
+integration/    runnable conformance engine, CLI, MCP server, plugin bundle, PR review logic and tests
+.github/        repo instructions, conformance skills/hooks, reusable PR review action and CI workflows
 ```
+
+## Modular monolith boundaries
+
+The repository is intentionally one modular monolith rather than a collection of separately
+versioned packages. Keep each bounded area deep and cohesive:
+
+- Catalogue source lives in `patterns/`, `product-patterns/`, `ux-patterns/`, `philosophies/`,
+  and the manifest files; generated catalogue docs live under `docs/`.
+- Catalogue build tooling lives in `tools/` and should not own runtime conformance behaviour.
+- Runtime conformance behaviour lives in `integration/`; external project workflows should reuse
+  the shared `.github/actions/conformance-pr-review` action instead of duplicating install/review
+  scripts.
+- Agent-facing surfaces live in `.github/hooks`, `.github/skills`, `integration/plugin`, and
+  `integration/src/mcp.ts`, but they should route through the canonical integration contracts and
+  engine rather than reimplementing checks.
 
 ## Each pattern captures
 
