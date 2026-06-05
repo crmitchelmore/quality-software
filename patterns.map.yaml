@@ -4,8 +4,8 @@ version: 1
 meta:
   detector: human-review-plus-codebase-onboarding
   limitations:
-    - Shell validation and generated onboarding CLI execution were blocked by an erroring preToolUse hook in this active session.
-    - Candidate patterns below are selected from repository structure, docs, and integration code review; they are not proof of full conformance.
+    - Pattern evidence is curated from repository structure, docs, tests, and integration code review; it is not a formal proof of full conformance.
+    - Candidate patterns below should be revisited as the runtime and catalogue surfaces evolve.
     - Product and UX practices are advisory because the repository is primarily a catalogue/tooling project, not a production UI.
 
 patterns:
@@ -90,11 +90,17 @@ patterns:
       - project-map.ts separates parsing modules from deriving edges, duplicates, candidates, and capabilities.
       - judge.ts routes pattern/region pairs through prompt construction, parsing, span validation, and advisory findings.
       - policy/certify.ts separately certifies deterministic violations.
+      - review/pr-review.ts coordinates the PR review flow while baseline reconstruction, consistency advisories, reuse checks, and summaries live in separate review filters.
     anchors:
       - integration/src/model/project-map.ts
       - integration/src/judge/judge.ts
       - integration/src/policy/certify.ts
       - integration/src/engine.ts
+      - integration/src/review/pr-review.ts
+      - integration/src/review/baseline.ts
+      - integration/src/review/consistency.ts
+      - integration/src/review/reuse.ts
+      - integration/src/review/summary.ts
     philosophies: [simple-made-easy]
 
   - id: adapter
@@ -135,9 +141,11 @@ patterns:
     evidence:
       - cli.ts exposes hook, init, onboard, check, review, install-copilot, doctor, and profile commands while delegating deeper behaviour.
       - mcp.ts exposes conformance_profile, conformance_check_change, conformance_suggest_reuse, and conformance_init.
+      - review/pr-review.ts remains the stable PR-review facade while specialised review modules hide baseline, consistency, reuse, summary, and git details.
     anchors:
       - integration/src/cli.ts
       - integration/src/mcp.ts
+      - integration/src/review/pr-review.ts
     philosophies: [a-philosophy-of-software-design]
 
   - id: factory-method
@@ -185,9 +193,11 @@ patterns:
       - schema/ defines source-of-truth pattern, practice-pattern, and philosophy schemas.
       - design/validator/12-integration-contract.md documents canonical events and verdict fields.
       - integration/src/plugin/install.ts owns the Copilot plugin manifest and install contract.
+      - integration/src/review/types.ts owns the PR review input/result contract and is re-exported by the facade for backwards compatibility.
     anchors:
       - integration/src/contract.ts
       - integration/src/plugin/install.ts
+      - integration/src/review/types.ts
       - schema/pattern.schema.json
       - schema/practice-pattern.schema.json
       - schema/philosophy.schema.json
