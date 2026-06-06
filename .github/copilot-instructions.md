@@ -20,6 +20,9 @@
 - In `integration/src/**`, do not construct git commands with shell strings. Use
   `execFile`/`execFileSync` and argument arrays. In GitHub Actions, pass GitHub refs through
   `env:` and quote them inside `run:` scripts.
+- In TypeScript facades tested through `tsx`, re-export erased declarations with
+  `export type` and import them with `import type`. `tsc --noEmit` may not catch
+  runtime ESM re-export failures that `npm test` catches under `node --import tsx`.
 - When installing or testing the Copilot CLI plugin, generated hooks, MCP config, and PR
   workflows must resolve the catalogue from an absolute project root or the active
   catalogue fallback. Do not rely on a consumer repo exporting `CONFORMANCE_CATALOGUE_ROOT`;
