@@ -136,12 +136,13 @@ patterns:
     confidence: medium
     flavour: Providers, detectors, and model-routing decisions are replaceable policy objects behind common interfaces.
     evidence:
-      - model/lang/registry.ts selects language providers for TypeScript and universal extraction.
+      - model/lang/registry.ts selects language providers for TypeScript and universal extraction; model/lang/universal-specs.ts owns the fallback language spec registry.
       - detectors/index.ts builds the active detector set from a resolved profile.
       - llm/router.ts routes pattern judgement by scale/event and budget.
     anchors:
       - integration/src/model/lang/registry.ts
       - integration/src/model/lang/types.ts
+      - integration/src/model/lang/universal-specs.ts
       - integration/src/detectors/index.ts
       - integration/src/llm/router.ts
     philosophies: [simple-made-easy]
