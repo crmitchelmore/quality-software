@@ -9,6 +9,10 @@ import type { Provenance } from "./lang/types.js";
 import { DEFAULT_LAYER_PREFIXES, classifyLayer } from "./layers.js";
 import { detectCapabilities, classifyCapabilityUse, type CapabilityCluster, type CapabilityUse } from "./capabilities.js";
 import { inferCandidates } from "./candidates.js";
+import { deriveDependencyGraph } from "./graph.js";
+import { deriveDuplicateSymbols, pickCanonical } from "./duplicates.js";
+
+export { pickCanonical } from "./duplicates.js";
 
 /**
  * The codebase EVIDENCE MAP (design 14). Deliberately NOT an authoritative
@@ -206,77 +210,8 @@ export function deriveEvidenceMap(modules: ModuleInfo[], repoRoot: string, opts:
   const registry = opts.registry ?? defaultRegistry();
   const providerIds = new Set(modules.map((m) => m.provenance.provider));
 
-  // --- dependency graph + inbound counts (resolution delegated to the provider) ---
-  const known = new Set(modules.map((m) => m.path));
-
-  // Orchestrator-level FQN/symbol index for package-qualified languages (design 15.5).
-  const byFqn = new Map<string, string>(); // "pkg.Symbol" -> file
-  const byPackage = new Map<string, string[]>(); // "pkg" -> files
-  for (const m of modules) {
-    if (!m.packageName) continue;
-    const arr = byPackage.get(m.packageName) ?? [];
-    arr.push(m.path);
-    byPackage.set(m.packageName, arr);
-    for (const e of m.exports) {
-      byFqn.set(`${m.packageName}.${e.name}`, m.path);
-    }
-  }
-  const fqnResolve = (raw: string): string[] => {
-    if (raw.startsWith(".")) return [];
-    const exact = byFqn.get(raw);
-    if (exact) return [exact];
-    // wildcard / package import (`com.foo.*` arrives as `com.foo`) -> all package files
-    const pkg = byPackage.get(raw);
-    if (pkg) return pkg;
-    // `com.foo.Bar` where Bar isn't indexed: try the parent package
-    const parent = raw.includes(".") ? raw.slice(0, raw.lastIndexOf(".")) : undefined;
-    if (parent && byPackage.has(parent)) return byPackage.get(parent)!;
-    return [];
-  };
-
-  const inbound = new Map<string, number>();
-  const edges: { from: string; to: string }[] = [];
-  for (const m of modules) {
-    const provider = registry.providerFor(m.path);
-    const resolvedTargets = new Set<string>();
-    for (const imp of m.imports) {
-      const direct = provider?.resolveRef(imp.spec, { fromModule: m.path, known });
-      const targets = direct ? [direct] : fqnResolve(imp.spec);
-      imp.resolved = targets[0];
-      for (const t of targets) if (t !== m.path) resolvedTargets.add(t);
-    }
-    for (const t of resolvedTargets) {
-      edges.push({ from: m.path, to: t });
-      inbound.set(t, (inbound.get(t) ?? 0) + 1);
-    }
-  }
-  const byPath = new Map(modules.map((m) => [m.path, m]));
-  for (const m of modules) m.inbound = inbound.get(m.path) ?? 0;
-
-  // --- duplicate symbols + scored canonical (only own declarations, not re-exports) ---
-  const symbolToFiles = new Map<string, string[]>();
-  for (const m of modules) {
-    for (const e of m.exports) {
-      if (e.kind === "reexport" || e.name === "default") continue;
-      const arr = symbolToFiles.get(e.name) ?? [];
-      arr.push(m.path);
-      symbolToFiles.set(e.name, arr);
-    }
-  }
-  const duplicateSymbols: DuplicateCluster[] = [];
-  for (const [name, files] of symbolToFiles) {
-    const unique = [...new Set(files)];
-    if (unique.length < 2) continue;
-    const layers = [...new Set(unique.map((f) => byPath.get(f)!.layer))];
-    duplicateSymbols.push({
-      name,
-      files: unique,
-      sameLayer: layers.length === 1,
-      layers,
-      canonical: pickCanonical(unique, byPath),
-    });
-  }
-  duplicateSymbols.sort((a, b) => b.files.length - a.files.length || a.name.localeCompare(b.name));
+  const { edges, byPath } = deriveDependencyGraph(modules, registry);
+  const duplicateSymbols = deriveDuplicateSymbols(modules, byPath);
 
   // --- Tier 3: advisory candidate patterns (confidence-tagged) ---
   const candidatePatterns = inferCandidates(modules, edges, byPath);
@@ -304,55 +239,4 @@ export function deriveEvidenceMap(modules: ModuleInfo[], repoRoot: string, opts:
     candidatePatterns,
     capabilityClusters,
   };
-}
-
-/**
- * Scored canonical pick (design 14, critique #1). Inbound imports is ONE signal,
- * not the deciding rule: prefer explicit-quality signals (preferred layer, non-test,
- * non-barrel) and use inbound + short path only to break ties. Always confidence-tagged.
- */
-export function pickCanonical(files: string[], byPath: Map<string, ModuleInfo>): CanonicalChoice {
-  const PREFERRED: Layer[] = ["domain", "application"];
-  const scored = files.map((path) => {
-    const m = byPath.get(path)!;
-    const reasons: string[] = [];
-    let score = 0;
-    if (PREFERRED.includes(m.layer)) {
-      score += 4;
-      reasons.push(`in preferred layer (${m.layer})`);
-    } else if (m.layer === "interface") {
-      score += 1;
-    }
-    if (!m.isTest) {
-      score += 2;
-    } else {
-      score -= 3;
-      reasons.push("penalised: test/fixture file");
-    }
-    if (!m.isBarrel) {
-      score += 2;
-    } else {
-      score -= 3;
-      reasons.push("penalised: barrel/index re-export");
-    }
-    if (/(deprecated|legacy|old|example|sample)/i.test(path)) {
-      score -= 3;
-      reasons.push("penalised: deprecated/legacy/example path");
-    }
-    score += Math.min(m.inbound, 5) * 0.5;
-    if (m.inbound > 0) reasons.push(`${m.inbound} inbound import${m.inbound === 1 ? "" : "s"}`);
-    // shorter path is a weak tie-breaker
-    score += Math.max(0, 3 - path.split("/").length) * 0.1;
-    return { path, score, reasons, layer: m.layer };
-  });
-  scored.sort((a, b) => b.score - a.score || a.path.length - b.path.length);
-  const top = scored[0];
-  const runnerUp = scored[1];
-  const margin = top.score - (runnerUp?.score ?? -Infinity);
-
-  let confidence: CanonicalChoice["confidence"] = "low";
-  if (PREFERRED.includes(top.layer as Layer) && margin >= 3) confidence = "high";
-  else if (margin >= 2) confidence = "medium";
-
-  return { path: top.path, confidence, reasons: top.reasons.length ? top.reasons : ["highest combined score"] };
 }
