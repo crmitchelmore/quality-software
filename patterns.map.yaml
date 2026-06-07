@@ -91,6 +91,7 @@ patterns:
     evidence:
       - project-map.ts coordinates the evidence map while model/graph.ts derives dependency edges and model/duplicates.ts derives duplicate/canonical evidence.
       - model/candidates.ts isolates Tier-3 advisory candidate inference from the evidence-map derivation step.
+      - model/capability-registry.ts owns the capability catalogue while model/capabilities.ts applies classification and clustering filters.
       - judge.ts routes pattern/region pairs through prompt construction, parsing, span validation, and advisory findings.
       - policy/certify.ts separately certifies deterministic violations.
       - review/pr-review.ts coordinates the PR review flow while baseline reconstruction, consistency advisories, reuse checks, and summaries live in separate review filters.
@@ -99,6 +100,8 @@ patterns:
       - integration/src/model/graph.ts
       - integration/src/model/duplicates.ts
       - integration/src/model/candidates.ts
+      - integration/src/model/capability-registry.ts
+      - integration/src/model/capabilities.ts
       - integration/src/judge/judge.ts
       - integration/src/policy/certify.ts
       - integration/src/engine.ts
