@@ -53,9 +53,11 @@ patterns:
     flavour: Contract, engine, model, detector, policy, review, adapter, and presentation layers within the integration package.
     evidence:
       - integration/src is split into contract, model, detectors, policy, review, adapters, judge, llm, cli, and mcp modules.
+      - integration/src/cli.ts is a dispatcher facade; command behaviour lives in focused integration/src/cli/* modules.
       - Tests mirror these layers with engine, profile, model, policy, adapter, PR review, and judge coverage.
     anchors:
       - integration/src/contract.ts
+      - integration/src/cli/
       - integration/src/model/
       - integration/src/detectors/
       - integration/src/policy/
@@ -141,11 +143,12 @@ patterns:
     confidence: medium
     flavour: CLI and MCP provide simple operational surfaces over catalogue, profile, engine, onboarding, and review internals.
     evidence:
-      - cli.ts exposes hook, init, onboard, check, review, install-copilot, doctor, and profile commands while delegating deeper behaviour.
+      - cli.ts exposes hook, init, onboard, check, review, install-copilot, doctor, and profile commands while delegating command behaviour to integration/src/cli/* modules.
       - mcp.ts exposes conformance_profile, conformance_check_change, conformance_suggest_reuse, and conformance_init.
       - review/pr-review.ts remains the stable PR-review facade while specialised review modules hide baseline, consistency, reuse, summary, and git details.
     anchors:
       - integration/src/cli.ts
+      - integration/src/cli/
       - integration/src/mcp.ts
       - integration/src/review/pr-review.ts
     philosophies: [a-philosophy-of-software-design]
