@@ -72,9 +72,10 @@ patterns:
     confidence: low
     flavour: Core conformance engine plus plugin-like extension surfaces for hooks, skills, MCP tools, PR action, and future runtimes.
     evidence:
-      - integration/src/plugin/install.ts builds and registers the Copilot plugin bundle from one runtime-facing extension seam.
+      - integration/src/plugin/bundle.ts builds the Copilot plugin bundle while integration/src/plugin/install.ts registers it through one runtime-facing extension seam.
       - .github/skills and adapters expose multiple runtime-specific extension points over the same core.
     anchors:
+      - integration/src/plugin/bundle.ts
       - integration/src/plugin/install.ts
       - integration/plugin/plugin.json
       - .github/hooks/conformance.json
@@ -168,13 +169,14 @@ patterns:
       - inferCandidates(modules, edges, byPath) centralises structural candidate-pattern construction.
       - proposeProfileFromEvidence(map, catalogue) converts evidence into a conservative candidate profile.
       - buildPatternMap(map, catalogue) converts evidence into reviewable anchors and flavours.
-      - copilotPluginManifest() and installCopilotPlugin() centralise construction of the local plugin bundle.
+      - copilotPluginManifest() and writePluginBundle() centralise construction of the local plugin bundle separately from installation.
     anchors:
       - integration/src/detectors/index.ts
       - integration/src/model/candidates.ts
       - integration/src/model/proposal.ts
       - integration/src/model/pattern-map.ts
       - integration/src/model/inventory.ts
+      - integration/src/plugin/bundle.ts
       - integration/src/plugin/install.ts
     philosophies: [a-philosophy-of-software-design]
 
@@ -192,6 +194,7 @@ patterns:
       - integration/src/engine.ts
       - integration/src/judge/judge.ts
       - integration/src/model/project-map.ts
+      - integration/src/plugin/bundle.ts
       - integration/src/plugin/install.ts
     philosophies: [clean-architecture-solid]
 
@@ -204,10 +207,11 @@ patterns:
       - contract.ts is the runtime-agnostic event/verdict contract.
       - schema/ defines source-of-truth pattern, practice-pattern, and philosophy schemas.
       - design/validator/12-integration-contract.md documents canonical events and verdict fields.
-      - integration/src/plugin/install.ts owns the Copilot plugin manifest and install contract.
+      - integration/src/plugin/bundle.ts owns the Copilot plugin manifest while integration/src/plugin/install.ts owns the install contract.
       - integration/src/review/types.ts owns the PR review input/result contract and is re-exported by the facade for backwards compatibility.
     anchors:
       - integration/src/contract.ts
+      - integration/src/plugin/bundle.ts
       - integration/src/plugin/install.ts
       - integration/src/review/types.ts
       - schema/pattern.schema.json
