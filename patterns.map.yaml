@@ -36,6 +36,7 @@ patterns:
     evidence:
       - contract.ts defines the canonical event, change set, finding, detector, and verdict seam.
       - engine.ts contains the shared conformance engine; adapters translate runtime payloads rather than owning conformance logic.
+      - mcp.ts owns JSON-RPC stdio protocol handling while mcp/tools.ts owns the MCP tool contracts and execution.
       - design/validator/12-integration-contract.md states one engine, one contract, thin adapters.
     anchors:
       - integration/src/contract.ts
@@ -43,6 +44,7 @@ patterns:
       - integration/src/adapters/copilot.ts
       - integration/src/adapters/runtimes.ts
       - integration/src/mcp.ts
+      - integration/src/mcp/tools.ts
       - design/validator/12-integration-contract.md
     philosophies: [information-hiding, clean-architecture-solid]
 
@@ -125,6 +127,7 @@ patterns:
       - integration/src/adapters/copilot.ts
       - integration/src/adapters/runtimes.ts
       - integration/src/mcp.ts
+      - integration/src/mcp/tools.ts
     philosophies: [information-hiding]
 
   - id: strategy
@@ -150,12 +153,13 @@ patterns:
     flavour: CLI and MCP provide simple operational surfaces over catalogue, profile, engine, onboarding, and review internals.
     evidence:
       - cli.ts exposes hook, init, onboard, check, review, install-copilot, doctor, and profile commands while delegating command behaviour to integration/src/cli/* modules.
-      - mcp.ts exposes conformance_profile, conformance_check_change, conformance_suggest_reuse, and conformance_init.
+      - mcp.ts exposes the JSON-RPC server facade and mcp/tools.ts exposes conformance_profile, conformance_check_change, conformance_suggest_reuse, and conformance_init.
       - review/pr-review.ts remains the stable PR-review facade while specialised review modules hide baseline, consistency, reuse, summary, and git details.
     anchors:
       - integration/src/cli.ts
       - integration/src/cli/
       - integration/src/mcp.ts
+      - integration/src/mcp/tools.ts
       - integration/src/review/pr-review.ts
     philosophies: [a-philosophy-of-software-design]
 
