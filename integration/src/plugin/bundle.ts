@@ -19,19 +19,15 @@ export interface CopilotPluginManifest {
 interface PluginHookCommand {
   type: "command";
   command: string;
-  timeout: number;
-}
-
-interface PluginHookRegistration {
-  matcher?: string;
-  hooks: PluginHookCommand[];
+  timeoutSec: number;
 }
 
 interface PluginHooksConfig {
+  version: 1;
   hooks: {
-    SessionStart: PluginHookRegistration[];
-    PostToolUse: PluginHookRegistration[];
-    AgentStop: PluginHookRegistration[];
+    sessionStart: PluginHookCommand[];
+    postToolUse: PluginHookCommand[];
+    agentStop: PluginHookCommand[];
   };
 }
 
@@ -85,23 +81,11 @@ export function writePluginBundle(target: string, catalogueRoot: string, nodePat
 
 function pluginHooks(catalogueRoot: string, nodePath: string): PluginHooksConfig {
   return {
+    version: 1,
     hooks: {
-      SessionStart: [
-        {
-          hooks: [{ type: "command", command: hookCommand(catalogueRoot, nodePath, "session-start"), timeout: 5000 }],
-        },
-      ],
-      PostToolUse: [
-        {
-          matcher: "edit|create|apply_patch|Write|Edit|MultiEdit",
-          hooks: [{ type: "command", command: hookCommand(catalogueRoot, nodePath, "post-write"), timeout: 5000 }],
-        },
-      ],
-      AgentStop: [
-        {
-          hooks: [{ type: "command", command: hookCommand(catalogueRoot, nodePath, "turn-end"), timeout: 5000 }],
-        },
-      ],
+      sessionStart: [{ type: "command", command: hookCommand(catalogueRoot, nodePath, "session-start"), timeoutSec: 5 }],
+      postToolUse: [{ type: "command", command: hookCommand(catalogueRoot, nodePath, "post-write"), timeoutSec: 5 }],
+      agentStop: [{ type: "command", command: hookCommand(catalogueRoot, nodePath, "turn-end"), timeoutSec: 5 }],
     },
   };
 }

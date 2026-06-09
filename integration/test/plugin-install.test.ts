@@ -39,7 +39,10 @@ test("installCopilotPlugin writes a persistent source bundle and registers it", 
     assert.match(output, /Persistent local plugin source/);
     assert.deepEqual(JSON.parse(readFileSync(join(paths.sourceTarget, "plugin.json"), "utf8")), copilotPluginManifest());
     assert.ok(existsSync(join(paths.sourceTarget, ".mcp.json")));
-    assert.ok(existsSync(join(paths.sourceTarget, "hooks", "hooks.json")));
+    const generatedHooks = JSON.parse(readFileSync(join(paths.sourceTarget, "hooks", "hooks.json"), "utf8"));
+    assert.equal(generatedHooks.version, 1);
+    assert.match(generatedHooks.hooks.postToolUse[0].command, /post-write/);
+    assert.equal(generatedHooks.hooks.postToolUse[0].timeoutSec, 5);
     assert.ok(existsSync(join(paths.sourceTarget, "skills", "conformance-review", "SKILL.md")));
     for (const commandName of Object.keys(copilotPluginCommandFiles())) {
       assert.ok(existsSync(join(paths.sourceTarget, "commands", commandName)));
@@ -86,7 +89,12 @@ test("committed plugin bundle mirrors the generated installer contract", () => {
   assert.deepEqual(JSON.parse(readFileSync(join(pluginRoot, "plugin.json"), "utf8")), manifest);
   assert.deepEqual(JSON.parse(readFileSync(join(pluginRoot, ".claude-plugin", "plugin.json"), "utf8")), manifest);
   assert.equal(JSON.parse(readFileSync(join(pluginRoot, ".mcp.json"), "utf8")).conformance.command, "conformance-mcp");
-  assert.ok(JSON.parse(readFileSync(join(pluginRoot, "hooks", "hooks.json"), "utf8")).hooks.SessionStart);
+  const hooks = JSON.parse(readFileSync(join(pluginRoot, "hooks", "hooks.json"), "utf8"));
+  assert.equal(hooks.version, 1);
+  assert.match(hooks.hooks.sessionStart[0].command, /session-start/);
+  assert.match(hooks.hooks.postToolUse[0].command, /post-write/);
+  assert.match(hooks.hooks.agentStop[0].command, /turn-end/);
+  assert.equal(hooks.hooks.postToolUse[0].timeoutSec, 5);
 
   for (const [commandName, commandBody] of Object.entries(copilotPluginCommandFiles())) {
     assert.equal(readFileSync(join(pluginRoot, "commands", commandName), "utf8"), commandBody);

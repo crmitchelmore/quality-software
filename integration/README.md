@@ -90,8 +90,8 @@ The installer stages a persistent Open Plugins-compatible source bundle at
 `copilot plugin install`, which copies it to
 `~/.copilot/installed-plugins/_direct/quality-software--conformance`, with:
 
-1. **Advisory hooks** — `SessionStart` (prime), `PostToolUse` on edits (advise), and
-   `AgentStop` (nudge). The plugin intentionally does **not** install a `PreToolUse` bash
+1. **Advisory hooks** — `sessionStart` (prime), `postToolUse` after tool success (advise when
+   a written file path is present), and `agentStop` (nudge). The plugin intentionally does **not** install a `preToolUse` bash
    guard because local AI development must fail open.
 2. **Skills** — conformance review, PR pattern review, and codebase onboarding.
 3. **Commands** — `conformance-doctor`, `conformance-onboard`, and `conformance-review`.
