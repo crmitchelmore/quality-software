@@ -1,37 +1,25 @@
 {
+  "version": 1,
   "hooks": {
-    "SessionStart": [
+    "sessionStart": [
       {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/bin/sh -lc 'if command -v conformance >/dev/null 2>&1; then conformance hook session-start || printf '\\''{}'\\''; else printf '\\''{}'\\''; fi'",
-            "timeout": 5000
-          }
-        ]
+        "type": "command",
+        "command": "/bin/sh -lc 'if command -v conformance >/dev/null 2>&1; then conformance hook session-start || printf \"{}\"; else printf \"{}\"; fi'",
+        "timeoutSec": 5
       }
     ],
-    "PostToolUse": [
+    "postToolUse": [
       {
-        "matcher": "edit|create|apply_patch|Write|Edit|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/bin/sh -lc 'if command -v conformance >/dev/null 2>&1; then conformance hook post-write || printf '\\''{}'\\''; else printf '\\''{}'\\''; fi'",
-            "timeout": 5000
-          }
-        ]
+        "type": "command",
+        "command": "/bin/sh -lc 'if command -v conformance >/dev/null 2>&1; then conformance hook post-write || printf \"{}\"; else printf \"{}\"; fi'",
+        "timeoutSec": 5
       }
     ],
-    "AgentStop": [
+    "agentStop": [
       {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/bin/sh -lc 'if command -v conformance >/dev/null 2>&1; then conformance hook turn-end || printf '\\''{}'\\''; else printf '\\''{}'\\''; fi'",
-            "timeout": 5000
-          }
-        ]
+        "type": "command",
+        "command": "/bin/sh -lc 'if command -v conformance >/dev/null 2>&1; then conformance hook turn-end || printf \"{}\"; else printf \"{}\"; fi'",
+        "timeoutSec": 5
       }
     ]
   }
