@@ -4,21 +4,21 @@
     "sessionStart": [
       {
         "type": "command",
-        "command": "/bin/sh -lc 'if command -v conformance >/dev/null 2>&1; then conformance hook session-start || printf '\\''{}'\\''; else printf '\\''{}'\\''; fi'",
+        "command": "/bin/sh -lc 'if command -v conformance >/dev/null 2>&1; then conformance hook session-start || printf \"{}\"; else printf \"{}\"; fi'",
         "timeoutSec": 5
       }
     ],
     "postToolUse": [
       {
         "type": "command",
-        "command": "/bin/sh -lc 'if command -v conformance >/dev/null 2>&1; then conformance hook post-write || printf '\\''{}'\\''; else printf '\\''{}'\\''; fi'",
+        "command": "/bin/sh -lc 'if command -v conformance >/dev/null 2>&1; then conformance hook post-write || printf \"{}\"; else printf \"{}\"; fi'",
         "timeoutSec": 5
       }
     ],
     "agentStop": [
       {
         "type": "command",
-        "command": "/bin/sh -lc 'if command -v conformance >/dev/null 2>&1; then conformance hook turn-end || printf '\\''{}'\\''; else printf '\\''{}'\\''; fi'",
+        "command": "/bin/sh -lc 'if command -v conformance >/dev/null 2>&1; then conformance hook turn-end || printf \"{}\"; else printf \"{}\"; fi'",
         "timeoutSec": 5
       }
     ]

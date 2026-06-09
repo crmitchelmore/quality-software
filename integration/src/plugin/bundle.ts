@@ -113,7 +113,7 @@ export function copilotPluginCommandFiles(): Record<string, string> {
 
 function hookCommand(catalogueRoot: string, nodePath: string, phase: Phase): string {
   const bin = join(catalogueRoot, "integration", "bin", "conformance.mjs");
-  const inner = `CONFORMANCE_CATALOGUE_ROOT=${sh(catalogueRoot)} ${sh(nodePath)} ${sh(bin)} hook ${phase} || printf '{}'`;
+  const inner = `CONFORMANCE_CATALOGUE_ROOT=${sh(catalogueRoot)} ${sh(nodePath)} ${sh(bin)} hook ${phase} || printf "{}"`;
   return `/bin/sh -lc ${sh(inner)}`;
 }
 
