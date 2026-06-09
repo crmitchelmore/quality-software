@@ -24,6 +24,33 @@ with supporting evidence in [`patterns.map.yaml`](patterns.map.yaml),
 tracked in [`docs/launch/productionisation-roadmap.md`](docs/launch/productionisation-roadmap.md),
 with the initial pilot operating guide in [`docs/launch/pilot-rollout.md`](docs/launch/pilot-rollout.md).
 
+## How it works
+
+Quality Software has three core concepts:
+
+1. **Knowledge catalogue** — the menu of software patterns, product practices, UX practices, and
+   design philosophies that a project can choose from.
+2. **Project profile** — the repository contract, stored in `patterns.config.yaml`, that records
+   what the project adopts, rejects, warns about, or promotes to certified enforcement.
+3. **Conformance engine** — the runtime-agnostic feedback loop that evaluates write-time changes,
+   pull requests, and whole-codebase evidence against that profile.
+
+The intended rollout is evidence-first. Brownfield onboarding builds an evidence map of existing
+architecture, conventions, canonical helpers, duplicated abstractions, and likely pattern choices.
+Maintainers review that output and ratify a profile before anything becomes policy.
+
+Once a profile exists, agent-facing integrations use the same engine in three phases:
+
+1. **Write-time** hooks give agents fast, fail-open advisory feedback on local issues such as
+   boundary leaks, banned constructs, and obvious missed reuse.
+2. **PR review** checks the net-new effect of a diff, surfaces duplicate or inconsistent
+   implementations, and blocks only when a deterministic certified rule is explicitly configured.
+3. **Whole-codebase** scans establish baselines, find systemic drift, and identify migration
+   opportunities.
+
+The trust model is deliberate: LLM-backed judgement can provide useful advice, but merge blocking
+belongs only to measured, deterministic checks with clear evidence and remediation.
+
 ## What is enforced today
 
 The catalogue is intentionally broad; the runtime does **not** enforce all 275 patterns.
